@@ -1,2 +1,9 @@
 server:
   port: 8080
+
+
+upbit:
+  client:
+    baseUrl: http://localhost:8080/actuator/health
+    readTimeout: 5000
+    connectionTimeout: 5000
