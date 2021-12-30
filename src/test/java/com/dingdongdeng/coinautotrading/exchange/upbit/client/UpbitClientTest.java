@@ -7,6 +7,8 @@ import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitRequest.OrderC
 import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitRequest.OrderChanceRequest;
 import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitRequest.OrderRequest;
 import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitResponse.OrderResponse;
+import com.dingdongdeng.coinautotrading.exchange.upbit.model.type.OrdType;
+import com.dingdongdeng.coinautotrading.exchange.upbit.model.type.Side;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,10 +46,10 @@ class UpbitClientTest {
     public void 지정가_주문_매수_테스트() {
         OrderRequest request = OrderRequest.builder()
             .market("KRW-ETH")
-            .side("bid")
+            .side(Side.bid)
             .volume(1.0)
             .price(5000.0)
-            .ordType("limit")
+            .ordType(OrdType.limit)
             .build();
 
         log.info("result : {}", upbitClient.order(request));
@@ -57,10 +59,10 @@ class UpbitClientTest {
     public void 지정가_주문_매도_테스트() {
         OrderRequest request = OrderRequest.builder()
             .market("KRW-ETH")
-            .side("ask")
+            .side(Side.ask)
             .volume(1.0)
             .price(5000.0)
-            .ordType("limit")
+            .ordType(OrdType.limit)
             .build();
 
         log.info("result : {}", upbitClient.order(request));
@@ -70,10 +72,10 @@ class UpbitClientTest {
     public void 주문_이후_취소_테스트() {
         OrderRequest orderRequest = OrderRequest.builder()
             .market("KRW-ETH")
-            .side("bid")
+            .side(Side.bid)
             .volume(1.0)
             .price(5000.0)
-            .ordType("limit")
+            .ordType(OrdType.limit)
             .build();
 
         OrderResponse orderResponse = upbitClient.order(orderRequest);
