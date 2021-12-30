@@ -1,0 +1,6 @@
+GET localhost:8080/auto-trading/upbit?command=start
+
+###
+GET localhost:8080/auto-trading/upbit?command=stop
+
+###
