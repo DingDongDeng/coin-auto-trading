@@ -2,19 +2,21 @@ package com.dingdongdeng.coinautotrading.upbit.client;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.dingdongdeng.coinautotrading.common.client.util.QueryParamsConverter;
 import com.dingdongdeng.coinautotrading.upbit.client.config.UpbitClientResourceProperties;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class UpbitClientTokenGenerator {
+public class UpbitTokenGenerator {
 
     private final UpbitClientResourceProperties properties;
+    private final QueryParamsConverter queryParamsConverter;
 
     public String makeToken() {
         String accessKey = properties.getAccessKey();
@@ -28,13 +30,18 @@ public class UpbitClientTokenGenerator {
         return "Bearer " + jwtToken;
     }
 
-    public String makeToken(String queryParam) {
+    public String makeToken(Object request) {
         try {
+            String params = queryParamsConverter.convert(request).entrySet()
+                .stream()
+                .map(entry -> entry.getKey() + "=" + entry.getValue().get(0))
+                .collect(Collectors.joining("&"));
+
             String accessKey = properties.getAccessKey();
             String secretKey = properties.getSecretKey();
 
             MessageDigest md = MessageDigest.getInstance("SHA-512");
-            md.update(queryParam.getBytes("UTF-8"));
+            md.update(params.getBytes("UTF-8"));
 
             String queryHash = String.format("%0128x", new BigInteger(1, md.digest()));
 

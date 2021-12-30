@@ -1,6 +1,9 @@
 package com.dingdongdeng.coinautotrading.upbit.client;
 
 import com.dingdongdeng.coinautotrading.common.client.Client;
+import com.dingdongdeng.coinautotrading.common.client.util.QueryParamsConverter;
+import com.dingdongdeng.coinautotrading.upbit.model.UpbitRequest.MarketCodeRequest;
+import com.dingdongdeng.coinautotrading.upbit.model.UpbitRequest.OrderChanceRequest;
 import com.dingdongdeng.coinautotrading.upbit.model.UpbitResponse.AccountsResponse;
 import com.dingdongdeng.coinautotrading.upbit.model.UpbitResponse.MarketCodeResponse;
 import com.dingdongdeng.coinautotrading.upbit.model.UpbitResponse.OrdersChanceResponse;
@@ -13,10 +16,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Component
 public class UpbitClient extends Client {
 
-    private final UpbitClientTokenGenerator tokenGenerator;
+    private final UpbitTokenGenerator tokenGenerator;
 
-    public UpbitClient(WebClient upbitWebClient, UpbitClientTokenGenerator tokenGenerator) {
-        super(upbitWebClient);
+    public UpbitClient(WebClient upbitWebClient, UpbitTokenGenerator tokenGenerator, QueryParamsConverter queryParamsConverter) {
+        super(upbitWebClient, queryParamsConverter);
         this.tokenGenerator = tokenGenerator;
     }
 
@@ -24,24 +27,25 @@ public class UpbitClient extends Client {
         return get("/v1/accounts", List.class, makeHeaders(null));
     }
 
-    public OrdersChanceResponse getOrdersChance(String marketId) {
-        String queryParam = "market=" + marketId;
-        return get("/v1/orders/chance", queryParam, OrdersChanceResponse.class, makeHeaders(queryParam));
+    public OrdersChanceResponse getOrdersChance(OrderChanceRequest request) {
+        return get("/v1/orders/chance", request, OrdersChanceResponse.class, makeHeaders(request));
     }
 
-    public List<MarketCodeResponse> getMarketList(boolean isDetail) {
-        String queryParam = "isDetails=" + isDetail;
-        return get("/v1/market/all", queryParam, List.class, makeHeaders(queryParam));
+    public List<MarketCodeResponse> getMarketList(MarketCodeRequest request) {
+        return get("/v1/market/all", request, List.class, makeHeaders(request));
     }
 
-    private HttpHeaders makeHeaders(String queryParam) {
+//    public String order(){
+//        return post("/v1/orders", new Object(), String.class, makeHeaders());
+//    }
+
+    private HttpHeaders makeHeaders(Object request) {
         HttpHeaders headers = new HttpHeaders();
-
-        if (Objects.nonNull(queryParam)) {
-            headers.add("Authorization", tokenGenerator.makeToken(queryParam));
-        } else {
-            headers.add("Authorization", tokenGenerator.makeToken());
+        if (Objects.nonNull(request)) {
+            headers.add("Authorization", tokenGenerator.makeToken(request));
+            return headers;
         }
+        headers.add("Authorization", tokenGenerator.makeToken());
         return headers;
     }
 }
