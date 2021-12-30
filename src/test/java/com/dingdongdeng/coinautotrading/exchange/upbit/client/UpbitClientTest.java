@@ -1,9 +1,9 @@
-package com.dingdongdeng.coinautotrading.upbit.client;
+package com.dingdongdeng.coinautotrading.exchange.upbit.client;
 
 //import static org.junit.jupiter.api.Assertions.*;
 
-import com.dingdongdeng.coinautotrading.upbit.model.UpbitRequest.MarketCodeRequest;
-import com.dingdongdeng.coinautotrading.upbit.model.UpbitRequest.OrderChanceRequest;
+import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitRequest.MarketCodeRequest;
+import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitRequest.OrderChanceRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

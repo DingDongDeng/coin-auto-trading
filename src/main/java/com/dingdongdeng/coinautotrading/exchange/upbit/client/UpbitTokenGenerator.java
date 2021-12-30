@@ -1,9 +1,9 @@
-package com.dingdongdeng.coinautotrading.upbit.client;
+package com.dingdongdeng.coinautotrading.exchange.upbit.client;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.dingdongdeng.coinautotrading.common.client.util.QueryParamsConverter;
-import com.dingdongdeng.coinautotrading.upbit.client.config.UpbitClientResourceProperties;
+import com.dingdongdeng.coinautotrading.exchange.upbit.client.config.UpbitClientResourceProperties;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.util.UUID;
