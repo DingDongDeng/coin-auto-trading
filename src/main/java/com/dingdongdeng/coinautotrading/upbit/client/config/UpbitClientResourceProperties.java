@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 @Data
 @ConfigurationProperties(prefix = "upbit.client")
 @Configuration
-public class ClientResourceProperties {
+public class UpbitClientResourceProperties {
 
     private String accessKey;
     private String secretKey;
