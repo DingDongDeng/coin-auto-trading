@@ -43,11 +43,7 @@ public class UpbitClient extends Client {
 
     private HttpHeaders makeHeaders(Object request) {
         HttpHeaders headers = new HttpHeaders();
-        if (Objects.nonNull(request)) {
-            headers.add("Authorization", tokenGenerator.makeToken(request));
-            return headers;
-        }
-        headers.add("Authorization", tokenGenerator.makeToken());
+        headers.add("Authorization", tokenGenerator.makeToken(request));
         return headers;
     }
 }
