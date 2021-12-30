@@ -4,8 +4,12 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.dingdongdeng.coinautotrading.common.client.Client;
 import com.dingdongdeng.coinautotrading.upbit.client.config.UpbitClientResourceProperties;
+import com.dingdongdeng.coinautotrading.upbit.model.UpbitResponse.AccountsResponse;
+import com.dingdongdeng.coinautotrading.upbit.model.UpbitResponse.MarketCodeResponse;
+import com.dingdongdeng.coinautotrading.upbit.model.UpbitResponse.OrdersChanceResponse;
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -21,18 +25,18 @@ public class UpbitClient extends Client {
         this.properties = properties;
     }
 
-    public String getAccounts() {
-        return get("/v1/accounts", String.class, makeToken());
+    public List<AccountsResponse> getAccounts() {
+        return get("/v1/accounts", List.class, makeToken());
     }
 
-    public String getAvailOrder(String marketId) {
+    public OrdersChanceResponse getOrdersChance(String marketId) {
         String queryParam = "market=" + marketId;
-        return get("/v1/orders/chance", queryParam, String.class, makeToken(queryParam));
+        return get("/v1/orders/chance", queryParam, OrdersChanceResponse.class, makeToken(queryParam));
     }
 
-    public String getMarketList(boolean isDetail) {
+    public List<MarketCodeResponse> getMarketList(boolean isDetail) {
         String queryParam = "isDetails=" + isDetail;
-        return get("/v1/market/all", queryParam, String.class, makeToken(queryParam));
+        return get("/v1/market/all", queryParam, List.class, makeToken(queryParam));
     }
 
     private HttpHeaders makeToken() {
