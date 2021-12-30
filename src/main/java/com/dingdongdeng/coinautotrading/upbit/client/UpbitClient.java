@@ -9,4 +9,12 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class UpbitClient {
 
     private final WebClient upbitWebClient;
+
+    public String getAccounts() {
+        return upbitWebClient.get()
+            .uri("/v1/accounts")
+            .retrieve()
+            .bodyToMono(String.class)
+            .block();
+    }
 }
