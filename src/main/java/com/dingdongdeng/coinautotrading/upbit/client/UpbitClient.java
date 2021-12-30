@@ -1,16 +1,11 @@
 package com.dingdongdeng.coinautotrading.upbit.client;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.dingdongdeng.coinautotrading.common.client.Client;
-import com.dingdongdeng.coinautotrading.upbit.client.config.UpbitClientResourceProperties;
 import com.dingdongdeng.coinautotrading.upbit.model.UpbitResponse.AccountsResponse;
 import com.dingdongdeng.coinautotrading.upbit.model.UpbitResponse.MarketCodeResponse;
 import com.dingdongdeng.coinautotrading.upbit.model.UpbitResponse.OrdersChanceResponse;
-import java.math.BigInteger;
-import java.security.MessageDigest;
 import java.util.List;
-import java.util.UUID;
+import java.util.Objects;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -18,64 +13,35 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Component
 public class UpbitClient extends Client {
 
-    private final UpbitClientResourceProperties properties;
+    private final UpbitClientTokenGenerator tokenGenerator;
 
-    public UpbitClient(WebClient upbitWebClient, UpbitClientResourceProperties properties) {
+    public UpbitClient(WebClient upbitWebClient, UpbitClientTokenGenerator tokenGenerator) {
         super(upbitWebClient);
-        this.properties = properties;
+        this.tokenGenerator = tokenGenerator;
     }
 
     public List<AccountsResponse> getAccounts() {
-        return get("/v1/accounts", List.class, makeToken());
+        return get("/v1/accounts", List.class, makeHeaders(null));
     }
 
     public OrdersChanceResponse getOrdersChance(String marketId) {
         String queryParam = "market=" + marketId;
-        return get("/v1/orders/chance", queryParam, OrdersChanceResponse.class, makeToken(queryParam));
+        return get("/v1/orders/chance", queryParam, OrdersChanceResponse.class, makeHeaders(queryParam));
     }
 
     public List<MarketCodeResponse> getMarketList(boolean isDetail) {
         String queryParam = "isDetails=" + isDetail;
-        return get("/v1/market/all", queryParam, List.class, makeToken(queryParam));
+        return get("/v1/market/all", queryParam, List.class, makeHeaders(queryParam));
     }
 
-    private HttpHeaders makeToken() {
+    private HttpHeaders makeHeaders(String queryParam) {
         HttpHeaders headers = new HttpHeaders();
-        String accessKey = properties.getAccessKey();
-        String secretKey = properties.getSecretKey();
 
-        Algorithm algorithm = Algorithm.HMAC256(secretKey);
-        String jwtToken = JWT.create()
-            .withClaim("access_key", accessKey)
-            .withClaim("nonce", UUID.randomUUID().toString())
-            .sign(algorithm);
-        headers.add("Authorization", "Bearer " + jwtToken);
-        return headers;
-    }
-
-    private HttpHeaders makeToken(String queryParam) {
-        try {
-            HttpHeaders headers = new HttpHeaders();
-            String accessKey = properties.getAccessKey();
-            String secretKey = properties.getSecretKey();
-
-            MessageDigest md = MessageDigest.getInstance("SHA-512");
-            md.update(queryParam.getBytes("UTF-8"));
-
-            String queryHash = String.format("%0128x", new BigInteger(1, md.digest()));
-
-            Algorithm algorithm = Algorithm.HMAC256(secretKey);
-            String jwtToken = JWT.create()
-                .withClaim("access_key", accessKey)
-                .withClaim("nonce", UUID.randomUUID().toString())
-                .withClaim("query_hash", queryHash)
-                .withClaim("query_hash_alg", "SHA512")
-                .sign(algorithm);
-
-            headers.add("Authorization", "Bearer " + jwtToken);
-            return headers;
-        } catch (Exception e) {
-            throw new RuntimeException("fail make upbit token");
+        if (Objects.nonNull(queryParam)) {
+            headers.add("Authorization", tokenGenerator.makeToken(queryParam));
+        } else {
+            headers.add("Authorization", tokenGenerator.makeToken());
         }
+        return headers;
     }
 }
