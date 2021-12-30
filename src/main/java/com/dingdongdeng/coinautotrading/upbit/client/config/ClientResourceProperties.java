@@ -9,6 +9,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ClientResourceProperties {
 
+    private String accessKey;
+    private String secretKey;
+
     private String baseUrl;
     private int readTimeout;
     private int connectionTimeout;
