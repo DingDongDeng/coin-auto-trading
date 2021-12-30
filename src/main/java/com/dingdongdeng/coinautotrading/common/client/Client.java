@@ -53,8 +53,19 @@ public abstract class Client {
         return null;
     }
 
-    protected <T> T delete(String path, String params, Class<T> clazz) {
-        return null;
+    protected <T> T delete(String path, Object params, Class<T> clazz, HttpHeaders headers) {
+        return get(path, queryParamsConverter.convert(params), clazz, headers);
+    }
+
+    protected <T> T delete(String path, MultiValueMap params, Class<T> clazz, HttpHeaders headers) {
+        return responseHandle(
+            () -> webClient.delete()
+                .uri(uriBuilder -> uriBuilder.path(path).queryParams(params).build())
+                .headers(headers_ -> headers_.addAll(headers))
+                .retrieve()
+                .bodyToMono(clazz)
+                .block()
+        );
     }
 
     private <T> T responseHandle(Supplier<T> request) {
@@ -66,6 +77,5 @@ public abstract class Client {
             throw new ApiResponseException(e);
         }
     }
-
 
 }

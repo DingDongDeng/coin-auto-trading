@@ -3,8 +3,10 @@ package com.dingdongdeng.coinautotrading.exchange.upbit.client;
 //import static org.junit.jupiter.api.Assertions.*;
 
 import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitRequest.MarketCodeRequest;
+import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitRequest.OrderCancelRequest;
 import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitRequest.OrderChanceRequest;
 import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitRequest.OrderRequest;
+import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitResponse.OrderResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +64,25 @@ class UpbitClientTest {
             .build();
 
         log.info("result : {}", upbitClient.order(request));
+    }
+
+    @Test
+    public void 주문_이후_취소_테스트() {
+        OrderRequest orderRequest = OrderRequest.builder()
+            .market("KRW-ETH")
+            .side("bid")
+            .volume(1.0)
+            .price(5000.0)
+            .ordType("limit")
+            .build();
+
+        OrderResponse orderResponse = upbitClient.order(orderRequest);
+        log.info("result orderResponse: {}", orderResponse);
+
+        OrderCancelRequest orderCancelRequest = OrderCancelRequest.builder()
+            .uuid(orderResponse.getUuid())
+            .build();
+        log.info("result orderCancelResponse: {}", upbitClient.orderCancel(orderCancelRequest));
     }
 
 

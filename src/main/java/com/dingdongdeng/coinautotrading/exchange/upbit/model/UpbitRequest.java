@@ -48,4 +48,16 @@ public class UpbitRequest {
         private String identifier; // 조회용 사용자 지정값 (선택) (Uniq 값 사용)
     }
 
+    @ToString
+    @Getter
+    @Builder
+    @JsonInclude(Include.NON_NULL)
+    public static class OrderCancelRequest {
+
+        @JsonProperty("uuid")
+        private String uuid; // 취소할 주문의 UUID
+        @JsonProperty("identifier")
+        private String identifier; // 조회용 사용자 지정값
+    }
+
 }

@@ -3,14 +3,15 @@ package com.dingdongdeng.coinautotrading.exchange.upbit.client;
 import com.dingdongdeng.coinautotrading.common.client.Client;
 import com.dingdongdeng.coinautotrading.common.client.util.QueryParamsConverter;
 import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitRequest.MarketCodeRequest;
+import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitRequest.OrderCancelRequest;
 import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitRequest.OrderChanceRequest;
 import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitRequest.OrderRequest;
 import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitResponse.AccountsResponse;
 import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitResponse.MarketCodeResponse;
+import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitResponse.OrderCancelResponse;
 import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitResponse.OrderResponse;
 import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitResponse.OrdersChanceResponse;
 import java.util.List;
-import java.util.Objects;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -39,6 +40,10 @@ public class UpbitClient extends Client {
 
     public OrderResponse order(OrderRequest request) {
         return post("/v1/orders", request, OrderResponse.class, makeHeaders(request));
+    }
+
+    public OrderCancelResponse orderCancel(OrderCancelRequest request) {
+        return delete("/v1/order", request, OrderCancelResponse.class, makeHeaders(request));
     }
 
     private HttpHeaders makeHeaders(Object request) {
