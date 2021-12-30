@@ -4,8 +4,10 @@ import com.dingdongdeng.coinautotrading.common.client.Client;
 import com.dingdongdeng.coinautotrading.common.client.util.QueryParamsConverter;
 import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitRequest.MarketCodeRequest;
 import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitRequest.OrderChanceRequest;
+import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitRequest.OrderRequest;
 import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitResponse.AccountsResponse;
 import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitResponse.MarketCodeResponse;
+import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitResponse.OrderResponse;
 import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitResponse.OrdersChanceResponse;
 import java.util.List;
 import java.util.Objects;
@@ -35,9 +37,9 @@ public class UpbitClient extends Client {
         return get("/v1/market/all", request, List.class, makeHeaders(request));
     }
 
-//    public String order(){
-//        return post("/v1/orders", new Object(), String.class, makeHeaders());
-//    }
+    public OrderResponse order(OrderRequest request) {
+        return post("/v1/orders", request, OrderResponse.class, makeHeaders(request));
+    }
 
     private HttpHeaders makeHeaders(Object request) {
         HttpHeaders headers = new HttpHeaders();

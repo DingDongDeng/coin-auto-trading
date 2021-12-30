@@ -15,11 +15,11 @@ public class UpbitResponse {
         @JsonProperty("currency")
         private String currency; // 화폐를 의미하는 영문 대문자 코드
         @JsonProperty("balance")
-        private long balance; // 주문가능 금액/수량
+        private Double balance; // 주문가능 금액/수량
         @JsonProperty("locked")
-        private long locked; // 주문 중 묶여있는 금액/수량
+        private Double locked; // 주문 중 묶여있는 금액/수량
         @JsonProperty("avg_buy_price")
-        private long avgBuyPrice; // 매수평균가
+        private Double avgBuyPrice; // 매수평균가
         @JsonProperty("avg_buy_price_modified")
         private boolean avgBuyPriceModified; // 매수평균가 수정 여부
         @JsonProperty("unit_currency")
@@ -134,7 +134,44 @@ public class UpbitResponse {
         private String englishName; // 거래 대상 암호화폐 영문명
         @JsonProperty("market_warning")
         private String marketWarning; // 유의 종목 여부 NONE (해당 사항 없음), CAUTION(투자유의)
+    }
 
+    @ToString
+    @Getter
+    public static class OrderResponse {
+
+        @JsonProperty("uuid")
+        private String uuid; // 주문의 고유 아이디
+        @JsonProperty("side")
+        private String side; // 주문 종류
+        @JsonProperty("ord_type")
+        private String ordType; // 주문 방식
+        @JsonProperty("price")
+        private Double price; // 주문 당시 화폐 가격
+        @JsonProperty("avg_price")
+        private Double avgPrice; // 체결 가격의 평균가
+        @JsonProperty("state")
+        private String state; // 주문 상태
+        @JsonProperty("market")
+        private String market; // 마켓의 유일키
+        @JsonProperty("created_at")
+        private String createdAt; // 주문 생성 시간
+        @JsonProperty("volume")
+        private Double volume; // 사용자가 입력한 주문 양
+        @JsonProperty("remaining_volume")
+        private Double remainingVolume; // 체결 후 남은 주문 양
+        @JsonProperty("reserved_fee")
+        private Double reservedFee; // 수수료로 예약된 비용
+        @JsonProperty("remaining_fee")
+        private Double remainingFee; // 남은 수수료
+        @JsonProperty("paid_fee")
+        private Double paidFee; // 사용된 수수료
+        @JsonProperty("locked")
+        private Double locked; // 거래에 사용중인 비용
+        @JsonProperty("executed_volume")
+        private Double executedVolume; // 체결된 양
+        @JsonProperty("trade_count")
+        private Integer tradeCount; // 해당 주문에 걸린 체결 수
     }
 
 }
