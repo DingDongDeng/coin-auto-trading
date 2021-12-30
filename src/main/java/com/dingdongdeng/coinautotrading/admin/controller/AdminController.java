@@ -1,6 +1,6 @@
 package com.dingdongdeng.coinautotrading.admin.controller;
 
-import com.dingdongdeng.coinautotrading.admin.type.CoinExchangeType;
+import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.admin.type.Command;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
