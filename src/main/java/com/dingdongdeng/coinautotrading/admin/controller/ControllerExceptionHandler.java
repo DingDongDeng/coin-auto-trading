@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading.autotrading.controller;
+package com.dingdongdeng.coinautotrading.admin.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
