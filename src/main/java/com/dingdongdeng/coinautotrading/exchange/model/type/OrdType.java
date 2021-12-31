@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading.exchange.upbit.model.type;
+package com.dingdongdeng.coinautotrading.exchange.model.type;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

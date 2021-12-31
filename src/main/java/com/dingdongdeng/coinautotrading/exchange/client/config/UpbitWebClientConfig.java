@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading.exchange.upbit.client.config;
+package com.dingdongdeng.coinautotrading.exchange.client.config;
 
 import com.dingdongdeng.coinautotrading.common.client.config.WebClientConfig;
 import lombok.RequiredArgsConstructor;

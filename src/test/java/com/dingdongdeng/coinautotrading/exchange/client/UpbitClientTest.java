@@ -1,14 +1,14 @@
-package com.dingdongdeng.coinautotrading.exchange.upbit.client;
+package com.dingdongdeng.coinautotrading.exchange.client;
 
 //import static org.junit.jupiter.api.Assertions.*;
 
-import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitRequest.MarketCodeRequest;
-import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitRequest.OrderCancelRequest;
-import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitRequest.OrderChanceRequest;
-import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitRequest.OrderRequest;
-import com.dingdongdeng.coinautotrading.exchange.upbit.model.UpbitResponse.OrderResponse;
-import com.dingdongdeng.coinautotrading.exchange.upbit.model.type.OrdType;
-import com.dingdongdeng.coinautotrading.exchange.upbit.model.type.Side;
+import com.dingdongdeng.coinautotrading.exchange.model.UpbitRequest.MarketCodeRequest;
+import com.dingdongdeng.coinautotrading.exchange.model.UpbitRequest.OrderCancelRequest;
+import com.dingdongdeng.coinautotrading.exchange.model.UpbitRequest.OrderChanceRequest;
+import com.dingdongdeng.coinautotrading.exchange.model.UpbitRequest.OrderRequest;
+import com.dingdongdeng.coinautotrading.exchange.model.UpbitResponse.OrderResponse;
+import com.dingdongdeng.coinautotrading.exchange.model.type.OrdType;
+import com.dingdongdeng.coinautotrading.exchange.model.type.Side;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
