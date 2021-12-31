@@ -20,12 +20,12 @@ public class PrototypeStrategy extends Strategy {
 
     @Override
     protected OrderType what() {
-        return null;
+        return OrderType.BUY;
     }
 
     @Override
     protected boolean when(OrderType orderType) {
-        return false;
+        return true;
     }
 
     @Override

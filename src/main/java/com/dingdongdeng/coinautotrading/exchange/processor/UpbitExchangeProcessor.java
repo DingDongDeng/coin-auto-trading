@@ -1,5 +1,6 @@
 package com.dingdongdeng.coinautotrading.exchange.processor;
 
+import com.dingdongdeng.coinautotrading.autotrading.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.exchange.client.UpbitClient;
 import lombok.RequiredArgsConstructor;
@@ -14,18 +15,18 @@ public class UpbitExchangeProcessor implements ExchangeProcessor {
     private final UpbitClient upbitClient;
 
     @Override
-    public void order() {
-
+    public void order(OrderType orderType) {
+        log.info("upbit excute : order {}", orderType);
     }
 
     @Override
     public void orderCancel() {
-
+        log.info("upbit excute : order cancel");
     }
 
     @Override
     public void getAccount() {
-
+        log.info("upbit excute : get account");
     }
 
     @Override

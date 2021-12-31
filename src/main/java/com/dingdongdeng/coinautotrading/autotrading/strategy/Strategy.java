@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public abstract class Strategy {
 
-    private final ExchangeProcessor processor;
+    protected final ExchangeProcessor processor;
 
     abstract public StrategyCode getCode();
 
@@ -20,7 +20,7 @@ public abstract class Strategy {
         OrderType orderType = what();
         if (when(orderType)) {
             if (orderType == OrderType.BUY || orderType == OrderType.SELL) {
-                processor.order();
+                processor.order(orderType);
             }
             if (orderType == OrderType.ORDER_CANCEL) {
                 processor.orderCancel();

@@ -3,18 +3,14 @@ package com.dingdongdeng.coinautotrading.autotrading.strategy;
 import com.dingdongdeng.coinautotrading.autotrading.strategy.type.StrategyCode;
 import com.dingdongdeng.coinautotrading.autotrading.type.OrderType;
 import com.dingdongdeng.coinautotrading.exchange.processor.ExchangeProcessor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@RequiredArgsConstructor
 public class Prototype2Strategy extends Strategy {
 
-    private final ExchangeProcessor processor;
-
-    @Override
-    public void execute() {
-        log.info("sample prototype2Strategy");
+    //fixme stateful 해야함 , 임베디드 db든 필요함
+    public Prototype2Strategy(ExchangeProcessor processor) {
+        super(processor);
     }
 
     @Override
@@ -24,12 +20,12 @@ public class Prototype2Strategy extends Strategy {
 
     @Override
     protected OrderType what() {
-        return null;
+        return OrderType.SELL;
     }
 
     @Override
     protected boolean when(OrderType orderType) {
-        return false;
+        return true;
     }
 
     @Override
