@@ -14,7 +14,17 @@ public class UpbitExchangeProcessor implements ExchangeProcessor {
     private final UpbitClient upbitClient;
 
     @Override
-    public void process() {
+    public void order() {
+
+    }
+
+    @Override
+    public void orderCancel() {
+
+    }
+
+    @Override
+    public void getAccount() {
 
     }
 

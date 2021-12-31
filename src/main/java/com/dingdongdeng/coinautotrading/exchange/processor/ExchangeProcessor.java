@@ -4,7 +4,11 @@ import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 
 public interface ExchangeProcessor {
 
-    void process();
+    void order();
+
+    void orderCancel();
+
+    void getAccount();
 
     CoinExchangeType getExchangeType();
 }
