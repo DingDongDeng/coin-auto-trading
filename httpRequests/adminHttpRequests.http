@@ -1,6 +1,6 @@
-GET localhost:8080/admin/upbit?command=start
+GET localhost:8080/admin/upbit?command=start&strategy=prototype2
 
 ###
-GET localhost:8080/admin/upbit?command=stop
+GET localhost:8080/admin/upbit?command=stop&strategy=prototype
 
 ###

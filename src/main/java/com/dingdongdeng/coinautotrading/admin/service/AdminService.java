@@ -2,11 +2,8 @@ package com.dingdongdeng.coinautotrading.admin.service;
 
 import com.dingdongdeng.coinautotrading.admin.type.Command;
 import com.dingdongdeng.coinautotrading.autotrading.service.AutoTradingService;
-import com.dingdongdeng.coinautotrading.autotrading.strategy.PrototypeStrategy;
-import com.dingdongdeng.coinautotrading.autotrading.strategy.Strategy;
+import com.dingdongdeng.coinautotrading.autotrading.strategy.type.StrategyCode;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
-import com.dingdongdeng.coinautotrading.exchange.processor.ExchangeProcessor;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,9 +14,8 @@ import org.springframework.stereotype.Service;
 public class AdminService {
 
     private final AutoTradingService autoTradingService;
-    private final List<ExchangeProcessor> processorList;
 
-    public void command(CoinExchangeType coinExchangeType, Command command) {
+    public void command(CoinExchangeType coinExchangeType, Command command, StrategyCode strategyCode) {
 
         if (command == Command.STOP) {
             autoTradingService.stop();
@@ -27,18 +23,7 @@ public class AdminService {
         }
 
         if (command == Command.START) {
-            autoTradingService.execute(makeTargetStrategy(getTargetProcessor(coinExchangeType)));
+            autoTradingService.start(coinExchangeType, strategyCode);
         }
-    }
-
-    private ExchangeProcessor getTargetProcessor(CoinExchangeType coinExchangeType) {
-        return processorList.stream()
-            .filter(processor -> processor.getExchangeType() == coinExchangeType)
-            .findFirst()
-            .orElseThrow();
-    }
-
-    private Strategy makeTargetStrategy(ExchangeProcessor processor) {
-        return new PrototypeStrategy(processor);
     }
 }
