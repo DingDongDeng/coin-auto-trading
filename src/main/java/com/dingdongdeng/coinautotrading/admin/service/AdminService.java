@@ -4,7 +4,6 @@ import com.dingdongdeng.coinautotrading.admin.type.Command;
 import com.dingdongdeng.coinautotrading.autotrading.service.AutoTradingService;
 import com.dingdongdeng.coinautotrading.autotrading.strategy.PrototypeStrategy;
 import com.dingdongdeng.coinautotrading.autotrading.strategy.Strategy;
-import com.dingdongdeng.coinautotrading.autotrading.type.AutoTradingStatus;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.exchange.processor.ExchangeProcessor;
 import java.util.List;
@@ -23,15 +22,11 @@ public class AdminService {
     public void command(CoinExchangeType coinExchangeType, Command command) {
 
         if (command == Command.STOP) {
-            autoTradingService.updateStatus(AutoTradingStatus.STOPPED);
+            autoTradingService.stop();
             return;
         }
 
         if (command == Command.START) {
-            if (autoTradingService.isRunning()) {
-                return;
-            }
-            autoTradingService.updateStatus(AutoTradingStatus.RUNNING);
             autoTradingService.execute(makeTargetStrategy(getTargetProcessor(coinExchangeType)));
         }
     }

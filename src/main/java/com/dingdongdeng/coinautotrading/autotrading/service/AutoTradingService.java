@@ -16,17 +16,25 @@ public class AutoTradingService {
 
     @Async
     public void execute(Strategy strategy) {
-        while (status == AutoTradingStatus.RUNNING) {
+        if (isRunning()) {
+            return;
+        }
+        updateStatus(AutoTradingStatus.RUNNING);
+        while (isRunning()) {
             delay(1000);
             strategy.execute();
         }
     }
 
-    public void updateStatus(AutoTradingStatus status) {
+    public void stop() {
+        updateStatus(AutoTradingStatus.STOPPED);
+    }
+
+    private void updateStatus(AutoTradingStatus status) {
         this.status = status;
     }
 
-    public boolean isRunning() {
+    private boolean isRunning() {
         return this.status == AutoTradingStatus.RUNNING;
     }
 
