@@ -1,7 +1,7 @@
 package com.dingdongdeng.coinautotrading.exchange.model;
 
-import com.dingdongdeng.coinautotrading.exchange.model.type.OrdType;
-import com.dingdongdeng.coinautotrading.exchange.model.type.Side;
+import com.dingdongdeng.coinautotrading.exchange.model.UpbitEnum.OrdType;
+import com.dingdongdeng.coinautotrading.exchange.model.UpbitEnum.Side;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
