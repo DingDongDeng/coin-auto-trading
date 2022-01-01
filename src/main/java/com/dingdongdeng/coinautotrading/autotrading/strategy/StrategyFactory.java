@@ -1,6 +1,6 @@
 package com.dingdongdeng.coinautotrading.autotrading.strategy;
 
-import com.dingdongdeng.coinautotrading.autotrading.strategy.type.StrategyCode;
+import com.dingdongdeng.coinautotrading.autotrading.strategy.model.type.StrategyCode;
 import com.dingdongdeng.coinautotrading.exchange.processor.ExchangeProcessor;
 import java.util.NoSuchElementException;
 import org.springframework.stereotype.Component;

@@ -2,7 +2,7 @@ package com.dingdongdeng.coinautotrading.autotrading.service;
 
 import com.dingdongdeng.coinautotrading.autotrading.strategy.Strategy;
 import com.dingdongdeng.coinautotrading.autotrading.strategy.StrategyFactory;
-import com.dingdongdeng.coinautotrading.autotrading.strategy.type.StrategyCode;
+import com.dingdongdeng.coinautotrading.autotrading.strategy.model.type.StrategyCode;
 import com.dingdongdeng.coinautotrading.autotrading.type.AutoTradingStatus;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.exchange.processor.ExchangeProcessor;
