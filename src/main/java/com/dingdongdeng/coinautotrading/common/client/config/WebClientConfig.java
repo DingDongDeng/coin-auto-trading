@@ -1,16 +1,13 @@
 package com.dingdongdeng.coinautotrading.common.client.config;
 
-import com.dingdongdeng.coinautotrading.common.logging.LoggingUtils;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import java.time.Duration;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 
@@ -34,15 +31,7 @@ public abstract class WebClientConfig {
             .clientConnector(new ReactorClientHttpConnector(httpClient))
             .filters(exchangeFilterFunctions -> {
                 exchangeFilterFunctions.add(new WebClientLogger());
-                exchangeFilterFunctions.add(mdcFilter());
             })
             .build();
-    }
-
-    private ExchangeFilterFunction mdcFilter() {
-        return (clientRequest, next) -> {
-            Map<String, String> context = LoggingUtils.getLogData();
-            return next.exchange(clientRequest).doOnNext(value -> LoggingUtils.setLogData(context));
-        };
     }
 }

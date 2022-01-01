@@ -2,6 +2,7 @@ package com.dingdongdeng.coinautotrading.exchange.client;
 
 //import static org.junit.jupiter.api.Assertions.*;
 
+import com.dingdongdeng.coinautotrading.common.logging.LoggingUtils;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.OrdType;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.Side;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.MarketCodeRequest;
@@ -29,6 +30,8 @@ class UpbitClientTest {
 
     @Test
     public void 마켓_정보_조회_테스트() {
+        LoggingUtils.clear();
+        LoggingUtils.put("test", "aaaa");
         MarketCodeRequest request = MarketCodeRequest.builder()
             .isDetail(true)
             .build();
@@ -71,6 +74,9 @@ class UpbitClientTest {
 
     @Test
     public void 주문과_조회와_취소_테스트() {
+        LoggingUtils.clear();
+        LoggingUtils.put("test", "aaaa");
+
         OrderRequest orderRequest = OrderRequest.builder()
             .market("KRW-ETH")
             .side(Side.bid)

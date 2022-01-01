@@ -9,7 +9,7 @@ import org.slf4j.MDC;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LoggingUtils {
 
-    private static void put(String key, String value) {
+    public static void put(String key, String value) {
         MDC.put(key, value);
     }
 
