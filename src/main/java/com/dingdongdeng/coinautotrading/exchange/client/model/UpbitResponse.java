@@ -1,5 +1,7 @@
 package com.dingdongdeng.coinautotrading.exchange.client.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import lombok.Getter;
@@ -138,6 +140,7 @@ public class UpbitResponse {
 
     @ToString
     @Getter
+    @JsonInclude(Include.NON_NULL)
     public static class OrderResponse {
 
         @JsonProperty("uuid")
@@ -172,6 +175,28 @@ public class UpbitResponse {
         private Double executedVolume; // 체결된 양
         @JsonProperty("trade_count")
         private Integer tradeCount; // 해당 주문에 걸린 체결 수
+        @JsonProperty("trades")
+        private List<Trade> tradeList; // 체결
+    }
+
+    @ToString
+    @Getter
+    public static class Trade {
+
+        @JsonProperty("market")
+        private String market; // 마켓의 유일 키
+        @JsonProperty("uuid")
+        private String uuid; // 체결의 고유 아이디
+        @JsonProperty("price")
+        private Double price; // 체결 가격
+        @JsonProperty("volume")
+        private String volume; // 체결 양
+        @JsonProperty("funds")
+        private String funds; // 체결된 총 가격
+        @JsonProperty("side")
+        private String side; // 체결 종류
+        @JsonProperty("created_at")
+        private String createdAt; // 체결 시각
     }
 
     @ToString

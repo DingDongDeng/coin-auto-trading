@@ -5,6 +5,7 @@ import com.dingdongdeng.coinautotrading.common.client.util.QueryParamsConverter;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.MarketCodeRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderCancelRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderChanceRequest;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderInfoRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.AccountsResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.MarketCodeResponse;
@@ -36,6 +37,10 @@ public class UpbitClient extends Client {
 
     public List<MarketCodeResponse> getMarketList(MarketCodeRequest request) {
         return get("/v1/market/all", request, List.class, makeHeaders(request));
+    }
+
+    public OrderResponse getOrderInfo(OrderInfoRequest request) {
+        return get("/v1/order", request, OrderResponse.class, makeHeaders(request));
     }
 
     public OrderResponse order(OrderRequest request) {

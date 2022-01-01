@@ -24,6 +24,18 @@ public class UpbitRequest {
     @ToString
     @Getter
     @Builder
+    @JsonInclude(Include.NON_NULL)
+    public static class OrderInfoRequest {
+
+        @JsonProperty("uuid")
+        private String uuid; // 주문 UUID
+        @JsonProperty("identifier")
+        private String identifier; // 조회용 사용자 지정 값
+    }
+
+    @ToString
+    @Getter
+    @Builder
     public static class MarketCodeRequest {
 
         @JsonProperty("isDetail")
