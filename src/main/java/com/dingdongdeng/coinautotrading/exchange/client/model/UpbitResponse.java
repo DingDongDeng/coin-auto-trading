@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading.exchange.model;
+package com.dingdongdeng.coinautotrading.exchange.client.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
