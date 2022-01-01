@@ -1,6 +1,5 @@
 package com.dingdongdeng.coinautotrading.autotrading.strategy;
 
-import com.dingdongdeng.coinautotrading.autotrading.strategy.type.StrategyCode;
 import com.dingdongdeng.coinautotrading.autotrading.type.OrderType;
 import com.dingdongdeng.coinautotrading.exchange.processor.ExchangeProcessor;
 import lombok.RequiredArgsConstructor;
@@ -11,8 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class Strategy {
 
     protected final ExchangeProcessor processor;
-
-    abstract public StrategyCode getCode();
 
     public void execute() {
         log.info("prototype strategy");
