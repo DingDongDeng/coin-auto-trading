@@ -1,7 +1,10 @@
 package com.dingdongdeng.coinautotrading.autotrading.strategy;
 
+import com.dingdongdeng.coinautotrading.autotrading.strategy.model.What;
 import com.dingdongdeng.coinautotrading.autotrading.type.OrderType;
 import com.dingdongdeng.coinautotrading.exchange.processor.ExchangeProcessor;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderCancelParam;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,24 +15,37 @@ public abstract class Strategy {
     protected final ExchangeProcessor processor;
 
     public void execute() {
-        log.info("prototype strategy");
-
-        OrderType orderType = what();
-        if (when(orderType)) {
-            if (orderType == OrderType.BUY || orderType == OrderType.SELL) {
-                processor.order(orderType);
+        What what = what();
+        if (when(what)) {
+            if (isOrder(what)) {
+                processor.order(makeProcessOrderParam());
             }
-            if (orderType == OrderType.ORDER_CANCEL) {
-                processor.orderCancel();
+            if (isOrderCancel(what)) {
+                processor.orderCancel(makeProcessOrderCancelParam());
             }
         }
-
     }
 
-    abstract protected OrderType what();
+    abstract protected What what();
 
-    abstract protected boolean when(OrderType orderType);
+    abstract protected boolean when(What what);
 
-    abstract protected double how(OrderType orderType);
+    private boolean isOrder(What what) {
+        OrderType orderType = what.getOrderType();
+        return orderType == OrderType.BUY || orderType == OrderType.SELL;
+    }
+
+    private boolean isOrderCancel(What what) {
+        OrderType orderType = what.getOrderType();
+        return orderType == OrderType.ORDER_CANCEL;
+    }
+
+    private ProcessOrderParam makeProcessOrderParam() {
+        return ProcessOrderParam.builder().build();
+    }
+
+    private ProcessOrderCancelParam makeProcessOrderCancelParam() {
+        return ProcessOrderCancelParam.builder().build();
+    }
 
 }

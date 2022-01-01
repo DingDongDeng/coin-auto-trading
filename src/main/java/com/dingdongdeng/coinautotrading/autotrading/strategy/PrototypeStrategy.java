@@ -1,5 +1,6 @@
 package com.dingdongdeng.coinautotrading.autotrading.strategy;
 
+import com.dingdongdeng.coinautotrading.autotrading.strategy.model.What;
 import com.dingdongdeng.coinautotrading.autotrading.type.OrderType;
 import com.dingdongdeng.coinautotrading.exchange.processor.ExchangeProcessor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,17 +14,12 @@ public class PrototypeStrategy extends Strategy {
     }
 
     @Override
-    protected OrderType what() {
-        return OrderType.BUY;
+    protected What what() {
+        return What.builder().orderType(OrderType.BUY).build();
     }
 
     @Override
-    protected boolean when(OrderType orderType) {
+    protected boolean when(What what) {
         return true;
-    }
-
-    @Override
-    protected double how(OrderType orderType) {
-        return 0;
     }
 }
