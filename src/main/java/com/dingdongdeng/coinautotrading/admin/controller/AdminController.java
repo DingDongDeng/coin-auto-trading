@@ -23,9 +23,9 @@ public class AdminController {
     @GetMapping("/{coinExchangeType}")
     public String command(@PathVariable String coinExchangeType, @RequestParam String command, @RequestParam String strategy) {
         adminService.command(
-            CoinExchangeType.valueOf(coinExchangeType.toUpperCase()),
-            Command.valueOf(command.toUpperCase()),
-            StrategyCode.valueOf(strategy.toUpperCase())
+            CoinExchangeType.of(coinExchangeType),
+            Command.of(command),
+            StrategyCode.of(strategy)
         );
         return "execute command : " + coinExchangeType + "/" + command;
     }
