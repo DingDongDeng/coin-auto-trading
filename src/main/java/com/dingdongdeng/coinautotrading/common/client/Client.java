@@ -54,7 +54,7 @@ public abstract class Client {
     }
 
     protected <T> T delete(String path, Object params, Class<T> clazz, HttpHeaders headers) {
-        return get(path, queryParamsConverter.convert(params), clazz, headers);
+        return delete(path, queryParamsConverter.convert(params), clazz, headers);
     }
 
     protected <T> T delete(String path, MultiValueMap params, Class<T> clazz, HttpHeaders headers) {
