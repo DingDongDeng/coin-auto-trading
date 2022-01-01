@@ -1,12 +1,15 @@
 package com.dingdongdeng.coinautotrading.exchange.processor;
 
-import com.dingdongdeng.coinautotrading.autotrading.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.exchange.client.UpbitClient;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessResultAccount;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessResultOrder;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessResultOrderCancel;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessResultOrderInfo;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessAccountParam;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessAccountResult;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderCancelParam;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderCancelResult;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderInfoParam;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderInfoResult;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderParam;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -19,25 +22,25 @@ public class UpbitExchangeProcessor implements ExchangeProcessor {
     private final UpbitClient upbitClient;
 
     @Override
-    public ProcessResultOrder order(OrderType orderType) {
-        log.info("upbit excute : order {}", orderType);
+    public ProcessOrderResult order(ProcessOrderParam param) {
+        log.info("upbit execute : order ");
         return null;
     }
 
     @Override
-    public ProcessResultOrderCancel orderCancel() {
-        log.info("upbit excute : order cancel");
+    public ProcessOrderCancelResult orderCancel(ProcessOrderCancelParam param) {
+        log.info("upbit execute : order cancel");
         return null;
     }
 
     @Override
-    public ProcessResultAccount getAccount() {
-        log.info("upbit excute : get account");
+    public ProcessAccountResult getAccount(ProcessAccountParam param) {
+        log.info("upbit execute : get account");
         return null;
     }
 
     @Override
-    public ProcessResultOrderInfo getOrderInfo() {
+    public ProcessOrderInfoResult getOrderInfo(ProcessOrderInfoParam param) {
         log.info("upbit execute : get order info");
         return null;
     }

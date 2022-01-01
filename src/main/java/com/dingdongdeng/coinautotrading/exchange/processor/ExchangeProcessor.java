@@ -1,21 +1,24 @@
 package com.dingdongdeng.coinautotrading.exchange.processor;
 
-import com.dingdongdeng.coinautotrading.autotrading.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessResultAccount;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessResultOrder;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessResultOrderCancel;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessResultOrderInfo;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessAccountParam;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessAccountResult;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderCancelParam;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderCancelResult;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderInfoParam;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderInfoResult;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderParam;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderResult;
 
 public interface ExchangeProcessor {
 
-    ProcessResultOrder order(OrderType orderType);
+    ProcessOrderResult order(ProcessOrderParam param);
 
-    ProcessResultOrderCancel orderCancel();
+    ProcessOrderCancelResult orderCancel(ProcessOrderCancelParam param);
 
-    ProcessResultAccount getAccount();
+    ProcessAccountResult getAccount(ProcessAccountParam param);
 
-    ProcessResultOrderInfo getOrderInfo();
+    ProcessOrderInfoResult getOrderInfo(ProcessOrderInfoParam param);
 
     CoinExchangeType getExchangeType();
 }
