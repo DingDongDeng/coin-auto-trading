@@ -30,8 +30,8 @@ public class UpbitEnum {
     @Getter
     @AllArgsConstructor
     public enum Side {
-        bid("매수", OrderType.BUYING),
-        ask("매도", OrderType.SELLING),
+        bid("매수", OrderType.BUY),
+        ask("매도", OrderType.SELL),
         ;
 
         private String desc;

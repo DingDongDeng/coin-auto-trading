@@ -1,7 +1,7 @@
 package com.dingdongdeng.coinautotrading.autotrading.strategy;
 
 import com.dingdongdeng.coinautotrading.autotrading.strategy.model.What;
-import com.dingdongdeng.coinautotrading.autotrading.type.TaskType;
+import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.exchange.processor.ExchangeProcessor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,7 +16,7 @@ public class PrototypeStrategy extends Strategy {
 
     @Override
     protected What what() {
-        return What.builder().taskType(TaskType.BUY).build();
+        return What.builder().orderType(OrderType.BUY).build();
     }
 
     @Override

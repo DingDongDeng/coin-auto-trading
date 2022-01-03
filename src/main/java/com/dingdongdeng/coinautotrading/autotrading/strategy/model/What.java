@@ -1,6 +1,6 @@
 package com.dingdongdeng.coinautotrading.autotrading.strategy.model;
 
-import com.dingdongdeng.coinautotrading.autotrading.type.TaskType;
+import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -10,5 +10,5 @@ import lombok.ToString;
 @Builder
 public class What {
 
-    private TaskType taskType;
+    private OrderType orderType;
 }
