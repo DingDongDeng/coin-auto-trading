@@ -1,5 +1,8 @@
 package com.dingdongdeng.coinautotrading.exchange.client.model;
 
+import com.dingdongdeng.coinautotrading.common.type.OrderType;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.OrdType;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.Side;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -146,9 +149,9 @@ public class UpbitResponse {
         @JsonProperty("uuid")
         private String uuid; // 주문의 고유 아이디
         @JsonProperty("side")
-        private String side; // 주문 종류
+        private Side side; // 주문 종류
         @JsonProperty("ord_type")
-        private String ordType; // 주문 방식
+        private OrdType ordType; // 주문 방식
         @JsonProperty("price")
         private Double price; // 주문 당시 화폐 가격
         @JsonProperty("avg_price")
@@ -194,7 +197,7 @@ public class UpbitResponse {
         @JsonProperty("funds")
         private String funds; // 체결된 총 가격
         @JsonProperty("side")
-        private String side; // 체결 종류
+        private Side side; // 체결 종류
         @JsonProperty("created_at")
         private String createdAt; // 체결 시각
     }
@@ -204,35 +207,35 @@ public class UpbitResponse {
     public static class OrderCancelResponse {
 
         @JsonProperty("uuid")
-        private String uuid; //	주문의 고유 아이디	String
+        private String uuid; // 주문의 고유 아이디
         @JsonProperty("side")
-        private String side; //	주문 종류	String
+        private Side side; // 주문 종류
         @JsonProperty("ord_type")
-        private String ordType; //	주문 방식	String
+        private OrderType ordType; // 주문 방식
         @JsonProperty("price")
-        private Double price; //	주문 당시 화폐 가격	NumberString
+        private Double price; // 주문 당시 화폐 가격
         @JsonProperty("state")
-        private String state; //	주문 상태	String
+        private String state; // 주문 상태
         @JsonProperty("market")
-        private String market; //	마켓의 유일키	String
+        private String market; // 마켓의 유일키
         @JsonProperty("created_at")
-        private String createdAt; //	주문 생성 시간	String
+        private String createdAt; // 주문 생성 시간
         @JsonProperty("volume")
-        private Double volume; //	사용자가 입력한 주문 양	NumberString
+        private Double volume; // 사용자가 입력한 주문 양
         @JsonProperty("remaining_volume")
-        private Double remainingVolume; //	체결 후 남은 주문 양	NumberString
+        private Double remainingVolume; // 체결 후 남은 주문 양
         @JsonProperty("reserved_fee")
-        private Double reservedFee; //	수수료로 예약된 비용	NumberString
+        private Double reservedFee; // 수수료로 예약된 비용
         @JsonProperty("remaining_fee")
-        private Double remainingFee; //	남은 수수료	NumberString
+        private Double remainingFee; // 남은 수수료
         @JsonProperty("paid_fee")
-        private Double paidFee; //	사용된 수수료	NumberString
+        private Double paidFee; // 사용된 수수료
         @JsonProperty("locked")
-        private Double locked; //	거래에 사용중인 비용	NumberString
+        private Double locked; // 거래에 사용중인 비용
         @JsonProperty("executed_volume")
-        private Double executedVolume; //	체결된 양	NumberString
+        private Double executedVolume; // 체결된 양
         @JsonProperty("trade_count")
-        private Integer tradeCount; //	해당 주문에 걸린 체결 수	Integer
+        private Integer tradeCount; // 해당 주문에 걸린 체결 수
     }
 
 }
