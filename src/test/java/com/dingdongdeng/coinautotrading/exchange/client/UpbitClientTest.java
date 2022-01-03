@@ -46,31 +46,31 @@ class UpbitClientTest {
         log.info("result : {}", upbitClient.getOrdersChance(request));
     }
 
-    @Test
-    public void 지정가_주문_매수_테스트() {
-        OrderRequest request = OrderRequest.builder()
-            .market("KRW-ETH")
-            .side(Side.bid)
-            .volume(1.0)
-            .price(5000.0)
-            .ordType(OrdType.limit)
-            .build();
-
-        log.info("result : {}", upbitClient.order(request));
-    }
-
-    @Test
-    public void 지정가_주문_매도_테스트() {
-        OrderRequest request = OrderRequest.builder()
-            .market("KRW-ETH")
-            .side(Side.ask)
-            .volume(1.0)
-            .price(5000.0)
-            .ordType(OrdType.limit)
-            .build();
-
-        log.info("result : {}", upbitClient.order(request));
-    }
+    //@Test
+    //public void 지정가_주문_매수_테스트() {
+    //    OrderRequest request = OrderRequest.builder()
+    //        .market("KRW-ETH")
+    //        .side(Side.bid)
+    //        .volume(1.0)
+    //        .price(5000.0)
+    //        .ordType(OrdType.limit)
+    //        .build();
+    //
+    //    log.info("result : {}", upbitClient.order(request));
+    //}
+    //
+    //@Test
+    //public void 지정가_주문_매도_테스트() {
+    //    OrderRequest request = OrderRequest.builder()
+    //        .market("KRW-ETH")
+    //        .side(Side.ask)
+    //        .volume(1.0)
+    //        .price(5000.0)
+    //        .ordType(OrdType.limit)
+    //        .build();
+    //
+    //    log.info("result : {}", upbitClient.order(request));
+    //}
 
     @Test
     public void 주문과_조회와_취소_테스트() {

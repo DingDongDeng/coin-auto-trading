@@ -1,6 +1,5 @@
 package com.dingdongdeng.coinautotrading.exchange.client.model;
 
-import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.OrdType;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.Side;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -211,7 +210,7 @@ public class UpbitResponse {
         @JsonProperty("side")
         private Side side; // 주문 종류
         @JsonProperty("ord_type")
-        private OrderType ordType; // 주문 방식
+        private OrdType ordType; // 주문 방식
         @JsonProperty("price")
         private Double price; // 주문 당시 화폐 가격
         @JsonProperty("state")
