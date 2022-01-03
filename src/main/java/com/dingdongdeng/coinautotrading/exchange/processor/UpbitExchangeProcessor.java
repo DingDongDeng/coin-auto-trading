@@ -7,6 +7,7 @@ import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.Side;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderCancelRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderInfoRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderRequest;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.AccountsResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.OrderCancelResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.OrderResponse;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessAccountParam;
@@ -17,6 +18,7 @@ import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderInf
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderInfoResult;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderParam;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderResult;
+import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -90,7 +92,18 @@ public class UpbitExchangeProcessor implements ExchangeProcessor {
     @Override
     public ProcessAccountResult getAccount(ProcessAccountParam param) {
         log.info("upbit execute : get account {}", param);
-        return null;
+        AccountsResponse response = upbitClient.getAccounts().stream()
+            .findFirst()
+            .orElseThrow(() -> new NoSuchElementException("계좌를 찾지 못함"));
+
+        return ProcessAccountResult.builder()
+            .currency(response.getCurrency())
+            .balance(response.getBalance())
+            .locked(response.getLocked())
+            .avgBuyPrice(response.getAvgBuyPrice())
+            .avgBuyPriceModified(response.isAvgBuyPriceModified())
+            .unitCurrency(response.getUnitCurrency())
+            .build();
     }
 
     @Override

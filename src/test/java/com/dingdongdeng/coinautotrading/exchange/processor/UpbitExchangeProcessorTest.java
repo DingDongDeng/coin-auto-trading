@@ -4,6 +4,7 @@ package com.dingdongdeng.coinautotrading.exchange.processor;
 
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessAccountParam;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderCancelParam;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderCancelResult;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderInfoParam;
@@ -21,6 +22,12 @@ class UpbitExchangeProcessorTest {
 
     @Autowired
     private UpbitExchangeProcessor processor;
+
+    @Test
+    public void 계좌_조회_테스트() {
+        ProcessAccountParam param = ProcessAccountParam.builder().build();
+        log.info("result : {}", processor.getAccount(param));
+    }
 
     @Test
     public void 주문과_조회와_취소_프로세스_테스트() {
