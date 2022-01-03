@@ -2,6 +2,10 @@ package com.dingdongdeng.coinautotrading.exchange.processor;
 
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.exchange.client.UpbitClient;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.OrdType;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.Side;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderRequest;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.OrderResponse;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessAccountParam;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessAccountResult;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderCancelParam;
@@ -24,7 +28,33 @@ public class UpbitExchangeProcessor implements ExchangeProcessor {
     @Override
     public ProcessOrderResult order(ProcessOrderParam param) {
         log.info("upbit execute : order ");
-        return null;
+        OrderResponse response = upbitClient.order(
+            OrderRequest.builder()
+                .market(param.getMarketId())
+                .side(Side.of(param.getOrderType()))
+                .volume(param.getVolume())
+                .price(param.getPrice())
+                .ordType(OrdType.of(param.getPriceType()))
+                .build()
+        );
+        return ProcessOrderResult.builder()
+            .orderId(response.getUuid())
+            .orderType(response.getSide().getOrderType())
+            .priceType(response.getOrdType().getPriceType())
+            .price(response.getPrice())
+            .avgPrice(response.getAvgPrice())
+            .state(response.getState())
+            .market(response.getMarket())
+            .createdAt(response.getCreatedAt())
+            .volume(response.getVolume())
+            .remainingVolume(response.getRemainingVolume())
+            .reservedFee(response.getReservedFee())
+            .remainingFee(response.getRemainingFee())
+            .paidFee(response.getPaidFee())
+            .locked(response.getLocked())
+            .executedVolume(response.getExecutedVolume())
+            .tradeCount(response.getTradeCount())
+            .build();
     }
 
     @Override

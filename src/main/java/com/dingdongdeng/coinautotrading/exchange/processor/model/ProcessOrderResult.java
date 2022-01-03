@@ -1,7 +1,7 @@
 package com.dingdongdeng.coinautotrading.exchange.processor.model;
 
-import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.Trade;
-import java.util.List;
+import com.dingdongdeng.coinautotrading.common.type.OrderType;
+import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -11,9 +11,9 @@ import lombok.ToString;
 @Builder
 public class ProcessOrderResult {
 
-    private String uuid; // 주문의 고유 아이디
-    private String side; // 주문 종류
-    private String ordType; // 주문 방식
+    private String orderId; // 주문의 고유 아이디
+    private OrderType orderType; // 주문 종류
+    private PriceType priceType; // 주문 방식
     private Double price; // 주문 당시 화폐 가격
     private Double avgPrice; // 체결 가격의 평균가
     private String state; // 주문 상태
@@ -27,5 +27,4 @@ public class ProcessOrderResult {
     private Double locked; // 거래에 사용중인 비용
     private Double executedVolume; // 체결된 양
     private Integer tradeCount; // 해당 주문에 걸린 체결 수
-    private List<Trade> tradeList; // 체결
 }
