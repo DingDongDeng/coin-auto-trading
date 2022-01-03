@@ -1,6 +1,6 @@
 package com.dingdongdeng.coinautotrading.autotrading.type;
 
-public enum OrderType {
+public enum TaskType {
     BUY,
     SELL,
     ORDER_CANCEL,

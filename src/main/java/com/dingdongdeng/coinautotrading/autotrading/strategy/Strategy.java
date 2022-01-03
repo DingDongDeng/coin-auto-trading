@@ -1,7 +1,7 @@
 package com.dingdongdeng.coinautotrading.autotrading.strategy;
 
 import com.dingdongdeng.coinautotrading.autotrading.strategy.model.What;
-import com.dingdongdeng.coinautotrading.autotrading.type.OrderType;
+import com.dingdongdeng.coinautotrading.autotrading.type.TaskType;
 import com.dingdongdeng.coinautotrading.exchange.processor.ExchangeProcessor;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderCancelParam;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderParam;
@@ -31,13 +31,13 @@ public abstract class Strategy {
     abstract protected boolean when(What what);
 
     private boolean isOrder(What what) {
-        OrderType orderType = what.getOrderType();
-        return orderType == OrderType.BUY || orderType == OrderType.SELL;
+        TaskType taskType = what.getTaskType();
+        return taskType == TaskType.BUY || taskType == TaskType.SELL;
     }
 
     private boolean isOrderCancel(What what) {
-        OrderType orderType = what.getOrderType();
-        return orderType == OrderType.ORDER_CANCEL;
+        TaskType taskType = what.getTaskType();
+        return taskType == TaskType.ORDER_CANCEL;
     }
 
     private ProcessOrderParam makeProcessOrderParam() {
