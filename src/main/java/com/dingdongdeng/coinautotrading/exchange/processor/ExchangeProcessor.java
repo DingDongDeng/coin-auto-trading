@@ -12,6 +12,7 @@ import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderRes
 
 public interface ExchangeProcessor {
 
+    //fixme Strategy 작성 후, 불필요한 필드들 result에서 제거해서 최적화해야함
     ProcessOrderResult order(ProcessOrderParam param);
 
     ProcessOrderCancelResult orderCancel(ProcessOrderCancelParam param);
