@@ -176,7 +176,7 @@ public class UpbitResponse {
         @JsonProperty("executed_volume")
         private Double executedVolume; // 체결된 양
         @JsonProperty("trade_count")
-        private Integer tradeCount; // 해당 주문에 걸린 체결 수
+        private Long tradeCount; // 해당 주문에 걸린 체결 수
         @JsonProperty("trades")
         private List<Trade> tradeList; // 체결
     }
@@ -234,7 +234,7 @@ public class UpbitResponse {
         @JsonProperty("executed_volume")
         private Double executedVolume; // 체결된 양
         @JsonProperty("trade_count")
-        private Integer tradeCount; // 해당 주문에 걸린 체결 수
+        private Long tradeCount; // 해당 주문에 걸린 체결 수
     }
 
 }

@@ -26,5 +26,5 @@ public class ProcessOrderResult {
     private Double paidFee; // 사용된 수수료
     private Double locked; // 거래에 사용중인 비용
     private Double executedVolume; // 체결된 양
-    private Integer tradeCount; // 해당 주문에 걸린 체결 수
+    private Long tradeCount; // 해당 주문에 걸린 체결 수
 }

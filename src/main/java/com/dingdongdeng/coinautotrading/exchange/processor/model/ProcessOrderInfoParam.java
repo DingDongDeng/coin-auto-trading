@@ -9,4 +9,5 @@ import lombok.ToString;
 @Builder
 public class ProcessOrderInfoParam {
 
+    private String orderId;
 }

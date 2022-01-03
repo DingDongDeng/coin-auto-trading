@@ -4,7 +4,10 @@ import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.exchange.client.UpbitClient;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.OrdType;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.Side;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderCancelRequest;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderInfoRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderRequest;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.OrderCancelResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.OrderResponse;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessAccountParam;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessAccountResult;
@@ -27,7 +30,7 @@ public class UpbitExchangeProcessor implements ExchangeProcessor {
 
     @Override
     public ProcessOrderResult order(ProcessOrderParam param) {
-        log.info("upbit execute : order ");
+        log.info("upbit execute : order {}", param);
         OrderResponse response = upbitClient.order(
             OrderRequest.builder()
                 .market(param.getMarketId())
@@ -59,20 +62,64 @@ public class UpbitExchangeProcessor implements ExchangeProcessor {
 
     @Override
     public ProcessOrderCancelResult orderCancel(ProcessOrderCancelParam param) {
-        log.info("upbit execute : order cancel");
-        return null;
+        log.info("upbit execute : order cancel {}", param);
+        OrderCancelResponse response = upbitClient.orderCancel(
+            OrderCancelRequest.builder()
+                .uuid(param.getOrderId())
+                .build()
+        );
+        return ProcessOrderCancelResult.builder()
+            .orderId(response.getUuid())
+            .orderType(response.getSide().getOrderType())
+            .priceType(response.getOrdType().getPriceType())
+            .price(response.getPrice())
+            .state(response.getState())
+            .market(response.getMarket())
+            .createdAt(response.getCreatedAt())
+            .volume(response.getVolume())
+            .remainingVolume(response.getRemainingVolume())
+            .reservedFee(response.getReservedFee())
+            .remainingFee(response.getRemainingFee())
+            .paidFee(response.getPaidFee())
+            .locked(response.getLocked())
+            .executedVolume(response.getExecutedVolume())
+            .tradeCount(response.getTradeCount())
+            .build();
     }
 
     @Override
     public ProcessAccountResult getAccount(ProcessAccountParam param) {
-        log.info("upbit execute : get account");
+        log.info("upbit execute : get account {}", param);
         return null;
     }
 
     @Override
     public ProcessOrderInfoResult getOrderInfo(ProcessOrderInfoParam param) {
-        log.info("upbit execute : get order info");
-        return null;
+        log.info("upbit execute : get order info {}", param);
+        OrderResponse response = upbitClient.getOrderInfo(
+            OrderInfoRequest.builder()
+                .uuid(param.getOrderId())
+                .build()
+        );
+        return ProcessOrderInfoResult.builder()
+            .orderId(response.getUuid())
+            .orderType(response.getSide().getOrderType())
+            .priceType(response.getOrdType().getPriceType())
+            .price(response.getPrice())
+            .avgPrice(response.getAvgPrice())
+            .state(response.getState())
+            .market(response.getMarket())
+            .createdAt(response.getCreatedAt())
+            .volume(response.getVolume())
+            .remainingVolume(response.getRemainingVolume())
+            .reservedFee(response.getReservedFee())
+            .remainingFee(response.getRemainingFee())
+            .paidFee(response.getPaidFee())
+            .locked(response.getLocked())
+            .executedVolume(response.getExecutedVolume())
+            .tradeCount(response.getTradeCount())
+            .tradeList(response.getTradeList())
+            .build();
     }
 
     @Override

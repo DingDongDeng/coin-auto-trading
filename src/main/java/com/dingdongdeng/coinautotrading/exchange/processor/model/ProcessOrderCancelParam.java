@@ -8,5 +8,5 @@ import lombok.ToString;
 @Getter
 @Builder
 public class ProcessOrderCancelParam {
-
+    private String orderId;
 }
