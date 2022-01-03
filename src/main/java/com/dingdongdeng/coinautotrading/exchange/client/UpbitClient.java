@@ -13,6 +13,7 @@ import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.Orde
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.OrderResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.OrdersChanceResponse;
 import java.util.List;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -28,7 +29,8 @@ public class UpbitClient extends Client {
     }
 
     public List<AccountsResponse> getAccounts() {
-        return get("/v1/accounts", List.class, makeHeaders(null));
+        return get("/v1/accounts", new ParameterizedTypeReference<>() {
+        }, makeHeaders(null));
     }
 
     public OrdersChanceResponse getOrdersChance(OrderChanceRequest request) {
@@ -36,7 +38,8 @@ public class UpbitClient extends Client {
     }
 
     public List<MarketCodeResponse> getMarketList(MarketCodeRequest request) {
-        return get("/v1/market/all", request, List.class, makeHeaders(request));
+        return get("/v1/market/all", request, new ParameterizedTypeReference<>() {
+        }, makeHeaders(request));
     }
 
     public OrderResponse getOrderInfo(OrderInfoRequest request) {

@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -33,6 +34,25 @@ public abstract class Client {
                 .headers(headers_ -> headers_.addAll(headers))
                 .retrieve()
                 .bodyToMono(clazz)
+                .block()
+        );
+    }
+
+    protected <T> T get(String path, ParameterizedTypeReference<T> parameterizedTypeReference, HttpHeaders headers) {
+        return get(path, null, parameterizedTypeReference, headers);
+    }
+
+    protected <T> T get(String path, Object params, ParameterizedTypeReference<T> parameterizedTypeReference, HttpHeaders headers) {
+        return get(path, queryParamsConverter.convert(params), parameterizedTypeReference, headers);
+    }
+
+    protected <T> T get(String path, MultiValueMap params, ParameterizedTypeReference<T> parameterizedTypeReference, HttpHeaders headers) {
+        return responseHandle(
+            () -> webClient.get()
+                .uri(uriBuilder -> uriBuilder.path(path).queryParams(params).build())
+                .headers(headers_ -> headers_.addAll(headers))
+                .retrieve()
+                .bodyToMono(parameterizedTypeReference)
                 .block()
         );
     }
