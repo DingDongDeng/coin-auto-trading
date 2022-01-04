@@ -11,7 +11,7 @@ import org.springframework.util.MultiValueMap;
 
 @RequiredArgsConstructor
 @Component
-public class QueryParamsConverter {
+public class QueryParamsConverter { //fixme 적절한 이름으로 수정필요
 
     private final ObjectMapper objectMapper;
 
