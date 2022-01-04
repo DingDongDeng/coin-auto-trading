@@ -2,6 +2,7 @@ package com.dingdongdeng.coinautotrading.exchange.processor;
 
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.exchange.client.UpbitClient;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.MarketType;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.OrdType;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.Side;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderCancelRequest;
@@ -35,7 +36,7 @@ public class UpbitExchangeProcessor implements ExchangeProcessor {
         log.info("upbit execute : order {}", param);
         OrderResponse response = upbitClient.order(
             OrderRequest.builder()
-                .market(param.getCoinType())
+                .market(MarketType.of(param.getCoinType()).getCode())
                 .side(Side.of(param.getOrderType()))
                 .volume(param.getVolume())
                 .price(param.getPrice())

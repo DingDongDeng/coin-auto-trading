@@ -1,5 +1,6 @@
 package com.dingdongdeng.coinautotrading.exchange.client.model;
 
+import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import java.util.Arrays;
@@ -8,6 +9,23 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 public class UpbitEnum {
+
+    @Getter
+    @AllArgsConstructor
+    public enum MarketType {
+        KRW_ETH("원화 이더리움", "KRW-ETH", CoinType.ETHEREUM),
+        ;
+        private String desc;
+        private String code;
+        private CoinType coinType;
+
+        public static MarketType of(CoinType coinType) {
+            return Arrays.stream(MarketType.values())
+                .filter(type -> type.getCoinType() == coinType)
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException(coinType.name()));
+        }
+    }
 
     @Getter
     @AllArgsConstructor
