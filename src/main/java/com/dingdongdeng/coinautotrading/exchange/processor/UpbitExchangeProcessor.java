@@ -35,7 +35,7 @@ public class UpbitExchangeProcessor implements ExchangeProcessor {
         log.info("upbit execute : order {}", param);
         OrderResponse response = upbitClient.order(
             OrderRequest.builder()
-                .market(param.getMarketId())
+                .market(param.getCoinType())
                 .side(Side.of(param.getOrderType()))
                 .volume(param.getVolume())
                 .price(param.getPrice())

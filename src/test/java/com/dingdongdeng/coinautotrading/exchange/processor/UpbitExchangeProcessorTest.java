@@ -32,7 +32,7 @@ class UpbitExchangeProcessorTest {
     @Test
     public void 주문과_조회와_취소_프로세스_테스트() {
         ProcessOrderParam orderParam = ProcessOrderParam.builder()
-            .marketId("KRW-ETH")
+            .coinType("KRW-ETH")
             .orderType(OrderType.BUY)
             .volume(1.0)
             .price(5000.0)
