@@ -2,6 +2,7 @@ package com.dingdongdeng.coinautotrading.exchange.processor;
 
 //import static org.junit.jupiter.api.Assertions.*;
 
+import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessAccountParam;
@@ -32,7 +33,7 @@ class UpbitExchangeProcessorTest {
     @Test
     public void 주문과_조회와_취소_프로세스_테스트() {
         ProcessOrderParam orderParam = ProcessOrderParam.builder()
-            .coinType("KRW-ETH")
+            .coinType(CoinType.ETHEREUM)
             .orderType(OrderType.BUY)
             .volume(1.0)
             .price(5000.0)
