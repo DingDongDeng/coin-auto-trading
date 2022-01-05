@@ -2,6 +2,7 @@ package com.dingdongdeng.coinautotrading.exchange.client.model;
 
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.OrdType;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.Side;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.State;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -156,7 +157,7 @@ public class UpbitResponse {
         @JsonProperty("avg_price")
         private Double avgPrice; // 체결 가격의 평균가
         @JsonProperty("state")
-        private String state; // 주문 상태
+        private State state; // 주문 상태
         @JsonProperty("market")
         private String market; // 마켓의 유일키
         @JsonProperty("created_at")

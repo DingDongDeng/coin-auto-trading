@@ -1,5 +1,6 @@
 package com.dingdongdeng.coinautotrading.exchange.processor.model;
 
+import com.dingdongdeng.coinautotrading.common.type.OrderState;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import lombok.Builder;
@@ -16,7 +17,7 @@ public class ProcessOrderResult {
     private PriceType priceType; // 주문 방식
     private Double price; // 주문 당시 화폐 가격
     private Double avgPrice; // 체결 가격의 평균가
-    private String state; // 주문 상태
+    private OrderState orderState; // 주문 상태
     private String market; // 마켓의 유일키
     private String createdAt; // 주문 생성 시간
     private Double volume; // 사용자가 입력한 주문 양

@@ -1,6 +1,7 @@
 package com.dingdongdeng.coinautotrading.autotrading.strategy;
 
 import com.dingdongdeng.coinautotrading.autotrading.strategy.model.OrderTask;
+import com.dingdongdeng.coinautotrading.common.type.OrderState;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.exchange.processor.ExchangeProcessor;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessAccountParam;
@@ -20,10 +21,11 @@ public abstract class Strategy {
     private final Stack<ProcessOrderResult> unDecidedOrderStack = new Stack<>();
 
     public void execute() {
+        //fixme 미체결된 주문 확인 로직 필요
         OrderTask orderTask = makeOrderTask(processor.getAccount(ProcessAccountParam.builder().build()), unDecidedOrderStack);
         if (isOrder(orderTask)) {
             ProcessOrderResult orderResult = processor.order(makeProcessOrderParam(orderTask));
-            if (orderResult.getState().equalsIgnoreCase("미체결")) {//fixme 정확한 응답값 확인 필요
+            if (orderResult.getOrderState() == OrderState.WAIT) {
                 unDecidedOrderStack.push(orderResult);
             }
             return;
@@ -46,11 +48,19 @@ public abstract class Strategy {
     }
 
     private ProcessOrderParam makeProcessOrderParam(OrderTask orderTask) {
-        return ProcessOrderParam.builder().build();
+        return ProcessOrderParam.builder()
+            .coinType(orderTask.getCoinType())
+            .orderType(orderTask.getOrderType())
+            .volume(orderTask.getVolume())
+            .price(orderTask.getPrice())
+            .priceType(orderTask.getPriceType())
+            .build();
     }
 
     private ProcessOrderCancelParam makeProcessOrderCancelParam(OrderTask orderTask) {
-        return ProcessOrderCancelParam.builder().build();
+        return ProcessOrderCancelParam.builder()
+            .orderId(orderTask.getOrderId())
+            .build();
     }
 
 }

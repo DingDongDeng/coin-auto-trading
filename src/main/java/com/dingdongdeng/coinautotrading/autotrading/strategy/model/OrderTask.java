@@ -17,5 +17,6 @@ public class OrderTask {
     private Double volume;
     private Double price;
     private PriceType priceType;
+    private String orderId;
 
 }

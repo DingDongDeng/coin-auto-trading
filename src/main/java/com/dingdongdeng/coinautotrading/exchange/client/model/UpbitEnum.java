@@ -1,6 +1,7 @@
 package com.dingdongdeng.coinautotrading.exchange.client.model;
 
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
+import com.dingdongdeng.coinautotrading.common.type.OrderState;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import java.util.Arrays;
@@ -9,6 +10,19 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 public class UpbitEnum {
+
+    @Getter
+    @AllArgsConstructor
+    public enum State {
+
+        wait("미체결", OrderState.WAIT),
+        done("전체 체결 완료", OrderState.DONE),
+        cancel("주문 취소", OrderState.CANCELED);
+
+        private String desc;
+        private OrderState orderState;
+
+    }
 
     @Getter
     @AllArgsConstructor
