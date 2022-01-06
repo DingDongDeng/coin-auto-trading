@@ -31,6 +31,9 @@ public class ExchangeOrder {
     @Column(name = "exchange_order_id")
     private Long id;
 
+    @Column(name = "order_id", columnDefinition = "VARCHAR(30) COMMENT '주문 번호'")
+    private String orderId;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "order_type", columnDefinition = "VARCHAR(30) DEFAULT 'guest' COMMENT '주문 종류'")
     private OrderType orderType;
