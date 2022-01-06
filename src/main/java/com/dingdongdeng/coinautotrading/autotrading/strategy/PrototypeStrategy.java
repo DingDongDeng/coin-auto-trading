@@ -6,8 +6,6 @@ import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import com.dingdongdeng.coinautotrading.exchange.processor.ExchangeProcessor;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessAccountResult;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderResult;
-import java.util.Stack;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -20,7 +18,7 @@ public class PrototypeStrategy extends Strategy {
     }
 
     @Override
-    protected OrderTask makeOrderTask(ProcessAccountResult account, Stack<ProcessOrderResult> unDecidedOrderStack) {
+    protected OrderTask makeOrderTask(ProcessAccountResult account) {
         /**
          * 계좌의 돈을 확인한다
          *
@@ -30,8 +28,9 @@ public class PrototypeStrategy extends Strategy {
          */
 
         double RSI = getRsi();
-        double volume = 0.0;
-        double price = 0.0;
+        double volume = 1.0;
+        double price = 5000.0;
+
         if (RSI < 0.3) {
             //미체결된 주문이 있다면??
             //체결된 주문이 있다면??
@@ -45,10 +44,16 @@ public class PrototypeStrategy extends Strategy {
         }
 
         if (RSI > 0.5) {
-
+            return OrderTask.builder()
+                .coinType(CoinType.ETHEREUM)
+                .orderType(OrderType.SELL)
+                .volume(volume)
+                .price(price)
+                .priceType(PriceType.LIMIT_PRICE)
+                .build();
         }
 
-        return OrderTask.builder().orderType(null).build();
+        return OrderTask.builder().build();
     }
 
     private double getRsi() {
