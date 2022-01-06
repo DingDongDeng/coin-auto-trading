@@ -19,6 +19,10 @@ public class LoggingUtils {
         MDC.put(key, value);
     }
 
+    public static String get(String key) {
+        return MDC.get(key);
+    }
+
     public static Map<String, String> getLogData() {
         return MDC.getCopyOfContextMap();
     }

@@ -33,7 +33,7 @@ public class UpbitExchangeProcessor implements ExchangeProcessor {
 
     @Override
     public ProcessOrderResult order(ProcessOrderParam param) {
-        log.info("upbit execute : order {}", param);
+        log.info("upbit process : order {}", param);
         OrderResponse response = upbitClient.order(
             OrderRequest.builder()
                 .market(MarketType.of(param.getCoinType()).getCode())
@@ -65,7 +65,7 @@ public class UpbitExchangeProcessor implements ExchangeProcessor {
 
     @Override
     public ProcessOrderCancelResult orderCancel(ProcessOrderCancelParam param) {
-        log.info("upbit execute : order cancel {}", param);
+        log.info("upbit process : order cancel {}", param);
         OrderCancelResponse response = upbitClient.orderCancel(
             OrderCancelRequest.builder()
                 .uuid(param.getOrderId())
@@ -92,7 +92,7 @@ public class UpbitExchangeProcessor implements ExchangeProcessor {
 
     @Override
     public ProcessAccountResult getAccount(ProcessAccountParam param) {
-        log.info("upbit execute : get account {}", param);
+        log.info("upbit process : get account {}", param);
         AccountsResponse response = upbitClient.getAccounts().stream()
             .findFirst()
             .orElseThrow(() -> new NoSuchElementException("계좌를 찾지 못함"));
@@ -109,7 +109,7 @@ public class UpbitExchangeProcessor implements ExchangeProcessor {
 
     @Override
     public ProcessOrderInfoResult getOrderInfo(ProcessOrderInfoParam param) {
-        log.info("upbit execute : get order info {}", param);
+        log.info("upbit process : get order info {}", param);
         OrderResponse response = upbitClient.getOrderInfo(
             OrderInfoRequest.builder()
                 .uuid(param.getOrderId())

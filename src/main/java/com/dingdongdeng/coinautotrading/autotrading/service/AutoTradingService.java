@@ -33,7 +33,11 @@ public class AutoTradingService {
 
         while (isRunning()) {
             delay(1000);
-            strategy.execute();
+            try {
+                strategy.execute();
+            } catch (Exception e) {
+                log.error("strategy execute exception : {}", e.getMessage(), e); //fixme 슬랙(이메일은 에러 많이났을때 난사해서 문제될수도)
+            }
         }
     }
 
