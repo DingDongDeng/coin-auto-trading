@@ -3,6 +3,8 @@ package com.dingdongdeng.coinautotrading.exchange.processor;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessAccountParam;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessAccountResult;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessCandleParam;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessCandleResult;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderCancelParam;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderCancelResult;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderInfoParam;
@@ -20,6 +22,8 @@ public interface ExchangeProcessor {
     ProcessAccountResult getAccount(ProcessAccountParam param);
 
     ProcessOrderInfoResult getOrderInfo(ProcessOrderInfoParam param);
+
+    ProcessCandleResult getCandleList(ProcessCandleParam param);
 
     CoinExchangeType getExchangeType();
 }

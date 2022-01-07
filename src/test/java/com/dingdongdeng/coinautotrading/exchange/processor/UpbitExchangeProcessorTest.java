@@ -6,12 +6,14 @@ import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessAccountParam;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessCandleParam;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderCancelParam;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderCancelResult;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderInfoParam;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderInfoResult;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderParam;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderResult;
+import java.time.LocalDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,5 +55,17 @@ class UpbitExchangeProcessorTest {
             .build();
         ProcessOrderCancelResult cancelResult = processor.orderCancel(cancelParam);
         log.info("cancel result : {}", cancelResult);
+    }
+
+    @Test
+    public void 캔들_조회_테스트() {
+        ProcessCandleParam param = ProcessCandleParam.builder()
+            .unit(15)
+            .coinType(CoinType.ETHEREUM)
+            .to(LocalDateTime.now())
+            .count(10)
+            .build();
+
+        log.info("candle result : {}", processor.getCandleList(param));
     }
 }

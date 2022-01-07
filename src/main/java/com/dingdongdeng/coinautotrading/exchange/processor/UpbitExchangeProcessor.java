@@ -5,21 +5,28 @@ import com.dingdongdeng.coinautotrading.exchange.client.UpbitClient;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.MarketType;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.OrdType;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.Side;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.CandleRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderCancelRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderInfoRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.AccountsResponse;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.CandleResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.OrderCancelResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.OrderResponse;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessAccountParam;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessAccountResult;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessCandleParam;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessCandleResult;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessCandleResult.ProcessCandle;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderCancelParam;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderCancelResult;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderInfoParam;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderInfoResult;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderParam;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderResult;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -135,6 +142,40 @@ public class UpbitExchangeProcessor implements ExchangeProcessor {
             .tradeList(response.getTradeList())
             .build();
     }
+
+    @Override
+    public ProcessCandleResult getCandleList(ProcessCandleParam param) {
+        log.info("upbit process : get candel list {}", param);
+        List<CandleResponse> response = upbitClient.getCandle(
+            CandleRequest.builder()
+                .unit(param.getUnit())
+                .market(MarketType.of(param.getCoinType()).getCode())
+                .to(param.getTo())
+                .count(param.getCount())
+                .build()
+        );
+
+        return ProcessCandleResult.builder()
+            .unit(param.getUnit())
+            .coinType(param.getCoinType())
+            .candleList(
+                response.stream().map(
+                    candel -> ProcessCandle.builder()
+                        .candleDateTimeUtc(candel.getCandleDateTimeUtc())
+                        .candleDateTimeKst(candel.getCandleDateTimeKst())
+                        .openingPrice(candel.getOpeningPrice())
+                        .highPrice(candel.getHighPrice())
+                        .lowPrice(candel.getLowPrice())
+                        .tradePrice(candel.getTradePrice())
+                        .timestamp(candel.getTimestamp())
+                        .candleAccTradePrice(candel.getCandleAccTradePrice())
+                        .candleAccTradeVolume(candel.getCandleAccTradeVolume())
+                        .build()
+                ).collect(Collectors.toList())
+            )
+            .build();
+    }
+
 
     @Override
     public CoinExchangeType getExchangeType() {
