@@ -2,9 +2,11 @@ package com.dingdongdeng.coinautotrading.exchange.client.model;
 
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.OrdType;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.Side;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -72,6 +74,19 @@ public class UpbitRequest {
         private String uuid; // 취소할 주문의 UUID
         @JsonProperty("identifier")
         private String identifier; // 조회용 사용자 지정값
+    }
+
+    @ToString
+    @Getter
+    @Builder
+    @JsonInclude(Include.NON_NULL)
+    public static class CandleRequest {
+
+        private Integer unit; // 분 단위. 가능한 값 : 1, 3, 5, 15, 10, 30, 60, 240
+        private String market; // 마켓 ID (필수)
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
+        private LocalDateTime to; // 마지막 캔들 시각 (비우면 가장 최근 시각)
+        private Integer count; // 캔들 개수(최대 200개)
     }
 
 }

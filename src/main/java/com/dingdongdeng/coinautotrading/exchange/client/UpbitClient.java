@@ -2,12 +2,14 @@ package com.dingdongdeng.coinautotrading.exchange.client;
 
 import com.dingdongdeng.coinautotrading.common.client.Client;
 import com.dingdongdeng.coinautotrading.common.client.util.QueryParamsConverter;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.CandleRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.MarketCodeRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderCancelRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderChanceRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderInfoRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.AccountsResponse;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.CandleResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.MarketCodeResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.OrderCancelResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.OrderResponse;
@@ -52,6 +54,11 @@ public class UpbitClient extends Client {
 
     public OrderCancelResponse orderCancel(OrderCancelRequest request) {
         return delete("/v1/order", request, OrderCancelResponse.class, makeHeaders(request));
+    }
+
+    public List<CandleResponse> getCandle(CandleRequest request) {
+        return get("/v1/candles/minutes/" + request.getUnit(), request, new ParameterizedTypeReference<>() {
+        }, makeHeaders(request));
     }
 
     private HttpHeaders makeHeaders(Object request) {

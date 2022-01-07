@@ -4,14 +4,17 @@ package com.dingdongdeng.coinautotrading.exchange.client;
 
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.OrdType;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.Side;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.CandleRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.MarketCodeRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderCancelRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderChanceRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderInfoRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.AccountsResponse;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.CandleResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.MarketCodeResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.OrderResponse;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -75,6 +78,19 @@ class UpbitClientTest {
             .uuid(orderResponse.getUuid())
             .build();
         log.info("result orderCancelResponse: {}", upbitClient.orderCancel(orderCancelRequest));
+    }
+
+    @Test
+    public void 캔들_조회_테스트() {
+        CandleRequest request = CandleRequest.builder()
+            .unit(15)
+            .market("KRW-ETH")
+            .to(LocalDateTime.now())
+            .count(200)
+            .build();
+
+        List<CandleResponse> response = upbitClient.getCandle(request);
+        log.info("result : {}", response);
     }
 
     //@Test
