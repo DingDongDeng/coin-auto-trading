@@ -15,9 +15,10 @@ public class UpbitEnum {
     @AllArgsConstructor
     public enum State {
 
-        wait("미체결", OrderState.WAIT),
+        wait("체결 대기", OrderState.WAIT),
+        watch("예약주문 대기", OrderState.WATCH),
         done("전체 체결 완료", OrderState.DONE),
-        cancel("주문 취소", OrderState.CANCELED);
+        cancel("주문 취소", OrderState.CANCEL);
 
         private String desc;
         private OrderState orderState;
