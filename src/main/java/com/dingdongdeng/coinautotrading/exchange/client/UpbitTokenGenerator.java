@@ -9,7 +9,6 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -42,15 +41,8 @@ public class UpbitTokenGenerator {
 
     private String makeQueryHash(Object request) {
         try {
-            String params = queryParamsConverter.convert(request).entrySet()
-                .stream()
-                .map(
-                    outterEntry -> outterEntry.getValue().stream()
-                        .map(innerEntry -> outterEntry.getKey() + "=" + innerEntry)
-                        .collect(Collectors.joining("&"))
-                )
-                .collect(Collectors.joining("&"));
-
+            String params = queryParamsConverter.convertStr(request).substring(1); //?name=aaa&age=12 형태에서 ? 제거
+            log.info("params ### {}", params);
             MessageDigest md = MessageDigest.getInstance("SHA-512");
             md.update(params.getBytes("UTF-8"));
 

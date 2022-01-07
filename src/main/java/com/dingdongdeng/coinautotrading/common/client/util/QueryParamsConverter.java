@@ -10,14 +10,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @RequiredArgsConstructor
 @Component
-public class QueryParamsConverter { //fixme 적절한 이름으로 수정필요
+public class QueryParamsConverter {
 
     private final ObjectMapper objectMapper;
 
-    public MultiValueMap<String, String> convert(Object object) {
+    public MultiValueMap<String, String> convertMap(Object object) {
         try {
             MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
             if (Objects.isNull(object)) {
@@ -31,7 +32,6 @@ public class QueryParamsConverter { //fixme 적절한 이름으로 수정필요
                     List<String> str = (List<String>) ((List) value).stream()
                         .map(String::valueOf)
                         .collect(Collectors.toList());
-
                     str.forEach(s -> params.add(key + "[]", s));
                     return;
                 }
@@ -41,5 +41,13 @@ public class QueryParamsConverter { //fixme 적절한 이름으로 수정필요
         } catch (Exception e) {
             throw new IllegalStateException("fail generate query params", e);
         }
+    }
+
+    public String convertStr(Object object) {
+        return UriComponentsBuilder.fromUriString("")
+            .queryParams(convertMap(object))
+            .build()
+            //.encode()
+            .toUriString();
     }
 }
