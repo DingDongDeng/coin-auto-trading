@@ -11,8 +11,10 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class UpbitTokenGenerator {
@@ -42,7 +44,11 @@ public class UpbitTokenGenerator {
         try {
             String params = queryParamsConverter.convert(request).entrySet()
                 .stream()
-                .map(entry -> entry.getKey() + "=" + entry.getValue().get(0))
+                .map(
+                    outterEntry -> outterEntry.getValue().stream()
+                        .map(innerEntry -> outterEntry.getKey() + "=" + innerEntry)
+                        .collect(Collectors.joining("&"))
+                )
                 .collect(Collectors.joining("&"));
 
             MessageDigest md = MessageDigest.getInstance("SHA-512");
@@ -50,7 +56,7 @@ public class UpbitTokenGenerator {
 
             return String.format("%0128x", new BigInteger(1, md.digest()));
         } catch (Exception e) {
-            throw new RuntimeException("fail make query hash");
+            throw new RuntimeException("fail make query hash", e);
         }
     }
 }
