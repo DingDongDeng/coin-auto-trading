@@ -32,6 +32,7 @@ public class AutoTradingService {
         Strategy strategy = strategyFactory.create(strategyCode, processor);
 
         while (isRunning()) {
+            log.info("------ beginning of autotrading cycle -----");
             delay(1000);
             try {
                 strategy.execute();
