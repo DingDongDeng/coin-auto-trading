@@ -4,10 +4,12 @@ package com.dingdongdeng.coinautotrading.exchange.client;
 
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.OrdType;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.Side;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.State;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.CandleRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.MarketCodeRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderCancelRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderChanceRequest;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderInfoListRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderInfoRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.AccountsResponse;
@@ -57,6 +59,8 @@ class UpbitClientTest {
 
     @Test
     public void 주문과_조회와_취소_테스트() {
+
+        // 주문
         OrderRequest orderRequest = OrderRequest.builder()
             .market("KRW-ETH")
             .side(Side.bid)
@@ -64,16 +68,31 @@ class UpbitClientTest {
             .price(5000.0)
             .ordType(OrdType.limit)
             .build();
-
         OrderResponse orderResponse = upbitClient.order(orderRequest);
         log.info("result orderResponse: {}", orderResponse);
 
+        // 조회
         OrderInfoRequest orderInfoRequest = OrderInfoRequest.builder()
             .uuid(orderResponse.getUuid())
             .build();
         OrderResponse orderInfoResponse = upbitClient.getOrderInfo(orderInfoRequest);
         log.info("result orderInfoResponse: {}", orderInfoResponse);
 
+        // 리스트 조회
+        OrderInfoListRequest orderInfoListRequest = OrderInfoListRequest.builder()
+            .market("KRW-ETH")
+            .uuidList(List.of(orderInfoResponse.getUuid()))
+            .identifierList(null)
+            .state(null)
+            .stateList(List.of(State.wait, State.watch))
+            .page(1)
+            .limit(100)
+            .orderBy("desc")
+            .build();
+        List<OrderResponse> orderInfoListResponse = upbitClient.getOrderInfoList(orderInfoListRequest);
+        log.info("result orderInfoListResponse: {}", orderInfoListResponse);
+
+        // 취소
         OrderCancelRequest orderCancelRequest = OrderCancelRequest.builder()
             .uuid(orderResponse.getUuid())
             .build();

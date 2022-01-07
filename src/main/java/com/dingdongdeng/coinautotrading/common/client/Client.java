@@ -24,10 +24,10 @@ public abstract class Client {
     }
 
     protected <T> T get(String path, Object params, Class<T> clazz, HttpHeaders headers) {
-        return get(path, queryParamsConverter.convert(params), clazz, headers);
+        return get(path, queryParamsConverter.convertMap(params), clazz, headers);
     }
 
-    protected <T> T get(String path, MultiValueMap params, Class<T> clazz, HttpHeaders headers) {
+    protected <T> T get(String path, MultiValueMap<String, String> params, Class<T> clazz, HttpHeaders headers) {
         return responseHandle(
             () -> webClient.get()
                 .uri(uriBuilder -> uriBuilder.path(path).queryParams(params).build())
@@ -43,10 +43,10 @@ public abstract class Client {
     }
 
     protected <T> T get(String path, Object params, ParameterizedTypeReference<T> parameterizedTypeReference, HttpHeaders headers) {
-        return get(path, queryParamsConverter.convert(params), parameterizedTypeReference, headers);
+        return get(path, queryParamsConverter.convertMap(params), parameterizedTypeReference, headers);
     }
 
-    protected <T> T get(String path, MultiValueMap params, ParameterizedTypeReference<T> parameterizedTypeReference, HttpHeaders headers) {
+    protected <T> T get(String path, MultiValueMap<String, String> params, ParameterizedTypeReference<T> parameterizedTypeReference, HttpHeaders headers) {
         return responseHandle(
             () -> webClient.get()
                 .uri(uriBuilder -> uriBuilder.path(path).queryParams(params).build())
@@ -74,7 +74,7 @@ public abstract class Client {
     }
 
     protected <T> T delete(String path, Object params, Class<T> clazz, HttpHeaders headers) {
-        return delete(path, queryParamsConverter.convert(params), clazz, headers);
+        return delete(path, queryParamsConverter.convertMap(params), clazz, headers);
     }
 
     protected <T> T delete(String path, MultiValueMap params, Class<T> clazz, HttpHeaders headers) {

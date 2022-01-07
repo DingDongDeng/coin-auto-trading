@@ -2,11 +2,13 @@ package com.dingdongdeng.coinautotrading.exchange.client.model;
 
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.OrdType;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.Side;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.State;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -33,6 +35,30 @@ public class UpbitRequest {
         private String uuid; // 주문 UUID
         @JsonProperty("identifier")
         private String identifier; // 조회용 사용자 지정 값
+    }
+
+    @ToString
+    @Getter
+    @Builder
+    @JsonInclude(Include.NON_NULL)
+    public static class OrderInfoListRequest {
+
+        @JsonProperty("market")
+        private String market; // 마켓 아이디
+        @JsonProperty("uuids")
+        private List<String> uuidList; // 주문 UUID의 목록
+        @JsonProperty("identifiers")
+        private List<String> identifierList; // 주문 identifier의 목록
+        @JsonProperty("state")
+        private State state; // 주문 상태
+        @JsonProperty("states")
+        private List<State> stateList; // 주문 상태의 목록 //* 미체결 주문(wait, watch)과 완료 주문(done, cancel)은 혼합하여 조회하실 수 없습니다.
+        @JsonProperty("page")
+        private Integer page; // 페이지 수, default: 1
+        @JsonProperty("limit")
+        private Integer limit; // 요청 개수, default: 100
+        @JsonProperty("order_by")
+        private String orderBy; // 정렬 방식 - asc : 오름차순 - desc : 내림차순 (default)
     }
 
     @ToString
