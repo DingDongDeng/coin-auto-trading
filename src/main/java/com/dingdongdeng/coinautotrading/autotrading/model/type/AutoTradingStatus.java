@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading.autotrading.type;
+package com.dingdongdeng.coinautotrading.autotrading.model.type;
 
 public enum AutoTradingStatus {
     INIT,

@@ -1,10 +1,9 @@
 package com.dingdongdeng.coinautotrading.autotrading.service;
 
+import com.dingdongdeng.coinautotrading.autotrading.model.AutoTradingStartParam;
+import com.dingdongdeng.coinautotrading.autotrading.model.type.AutoTradingStatus;
 import com.dingdongdeng.coinautotrading.autotrading.strategy.Strategy;
 import com.dingdongdeng.coinautotrading.autotrading.strategy.StrategyFactory;
-import com.dingdongdeng.coinautotrading.autotrading.strategy.model.type.StrategyCode;
-import com.dingdongdeng.coinautotrading.autotrading.type.AutoTradingStatus;
-import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.exchange.processor.ExchangeProcessor;
 import com.dingdongdeng.coinautotrading.exchange.processor.ExchangeProcessorSelector;
 import lombok.RequiredArgsConstructor;
@@ -22,14 +21,14 @@ public class AutoTradingService {
     private final StrategyFactory strategyFactory;
 
     @Async
-    public void start(CoinExchangeType coinExchangeType, StrategyCode strategyCode) {
+    public void start(AutoTradingStartParam param) {
         if (isRunning()) {
             return;
         }
 
         updateStatus(AutoTradingStatus.RUNNING);
-        ExchangeProcessor processor = processorSelector.getTargetProcessor(coinExchangeType);
-        Strategy strategy = strategyFactory.create(strategyCode, processor);
+        ExchangeProcessor processor = processorSelector.getTargetProcessor(param.getCoinExchangeType());
+        Strategy strategy = strategyFactory.create(param.getStrategyCode(), processor, param.getCoinType(), param.getTradingTerm());
 
         while (isRunning()) {
             log.info("------ beginning of autotrading cycle -----");
