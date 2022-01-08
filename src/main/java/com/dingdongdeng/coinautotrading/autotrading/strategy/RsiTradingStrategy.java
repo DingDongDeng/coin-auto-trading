@@ -1,41 +1,34 @@
 package com.dingdongdeng.coinautotrading.autotrading.strategy;
 
 import com.dingdongdeng.coinautotrading.autotrading.strategy.model.OrderTask;
+import com.dingdongdeng.coinautotrading.autotrading.strategy.model.TradingInfo;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
+import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.exchange.processor.ExchangeProcessor;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessAccountResult;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class PrototypeStrategy extends Strategy {
+public class RsiTradingStrategy extends Strategy {
 
     //fixme 백테스팅 고려하기
-    //fixme stateful 해야함 , 임베디드 db든 필요함
-    public PrototypeStrategy(ExchangeProcessor processor) {
-        super(processor);
+    public RsiTradingStrategy(CoinType coinType, TradingTerm tradingTerm, ExchangeProcessor processor) {
+        super(coinType, tradingTerm, processor);
     }
 
     @Override
-    protected OrderTask makeOrderTask(ProcessAccountResult account) {
-        /**
-         * 계좌의 돈을 확인한다
-         *
-         * 조건이 되면(rsi)
-         * 주문(매수,매도)를 한다
-         *
-         */
-
-        double RSI = getRsi();
+    protected OrderTask makeOrderTask(TradingInfo tradingInfo) {
+        CoinType coinType = tradingInfo.getCoinType();
+        double rsi = tradingInfo.getRsi();
         double volume = 1.0;
         double price = 5000.0;
 
-        if (RSI < 0.3) {
+        if (rsi < 0.3) {
             //미체결된 주문이 있다면??
             //체결된 주문이 있다면??
             return OrderTask.builder()
-                .coinType(CoinType.ETHEREUM)
+                .coinType(coinType)
                 .orderType(OrderType.BUY)
                 .volume(volume)
                 .price(price)
@@ -43,9 +36,9 @@ public class PrototypeStrategy extends Strategy {
                 .build();
         }
 
-        if (RSI > 0.5) {
+        if (rsi > 0.5) {
             return OrderTask.builder()
-                .coinType(CoinType.ETHEREUM)
+                .coinType(coinType)
                 .orderType(OrderType.SELL)
                 .volume(volume)
                 .price(price)
@@ -54,9 +47,5 @@ public class PrototypeStrategy extends Strategy {
         }
 
         return OrderTask.builder().build();
-    }
-
-    private double getRsi() {
-        return 0.0;
     }
 }

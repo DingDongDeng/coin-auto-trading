@@ -5,15 +5,13 @@ package com.dingdongdeng.coinautotrading.exchange.processor;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessAccountParam;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessCandleParam;
+import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrder;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderCancel;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderCancelParam;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderCancelResult;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderInfoParam;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderInfoResult;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderParam;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderResult;
-import java.time.LocalDateTime;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessTradingInfo;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessTradingInfoParam;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +25,6 @@ class UpbitExchangeProcessorTest {
     private UpbitExchangeProcessor processor;
 
     @Test
-    public void 계좌_조회_테스트() {
-        ProcessAccountParam param = ProcessAccountParam.builder().build();
-        log.info("result : {}", processor.getAccount(param));
-    }
-
-    @Test
     public void 주문과_조회와_취소_프로세스_테스트() {
         ProcessOrderParam orderParam = ProcessOrderParam.builder()
             .coinType(CoinType.ETHEREUM)
@@ -41,31 +33,25 @@ class UpbitExchangeProcessorTest {
             .price(5000.0)
             .priceType(PriceType.LIMIT_PRICE)
             .build();
-        ProcessOrderResult orderResult = processor.order(orderParam);
+        ProcessOrder orderResult = processor.order(orderParam);
         log.info("order result : {}", orderResult);
 
-        ProcessOrderInfoParam orderInfoParam = ProcessOrderInfoParam.builder()
+        ProcessOrderCancelParam cancelParam = ProcessOrderCancelParam.builder()
             .orderId(orderResult.getOrderId())
             .build();
-        ProcessOrderInfoResult orderInfoResult = processor.getOrderInfo(orderInfoParam);
-        log.info("orderInfo result : {}", orderInfoResult);
-
-        ProcessOrderCancelParam cancelParam = ProcessOrderCancelParam.builder()
-            .orderId(orderInfoResult.getOrderId())
-            .build();
-        ProcessOrderCancelResult cancelResult = processor.orderCancel(cancelParam);
+        ProcessOrderCancel cancelResult = processor.orderCancel(cancelParam);
         log.info("cancel result : {}", cancelResult);
     }
 
     @Test
-    public void 캔들_조회_테스트() {
-        ProcessCandleParam param = ProcessCandleParam.builder()
-            .unit(15)
-            .coinType(CoinType.ETHEREUM)
-            .to(LocalDateTime.now())
-            .count(10)
-            .build();
-
-        log.info("candle result : {}", processor.getCandleList(param));
+    public void 거래를_위한_정보_생성_테스트() {
+        ProcessTradingInfo processTradingInfo = processor.getTradingInformation(
+            ProcessTradingInfoParam.builder()
+                .coinType(CoinType.ETHEREUM)
+                .tradingTerm(TradingTerm.SCALPING)
+                .build()
+        );
+        log.info("tradingInfo result : {}", processTradingInfo);
     }
+
 }

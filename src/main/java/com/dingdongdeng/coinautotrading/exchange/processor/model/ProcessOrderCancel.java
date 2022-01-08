@@ -9,7 +9,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @Builder
-public class ProcessOrderCancelResult {
+public class ProcessOrderCancel {
 
     private String orderId; //	주문의 고유 아이디	String
     private OrderType orderType; //	주문 종류	String

@@ -9,17 +9,17 @@ import lombok.ToString;
 @ToString
 @Getter
 @Builder
-public class ProcessCandleResult {
+public class ProcessCandle {
 
     private CoinType coinType;
     private Integer unit; // 분 단위(유닛)
-    private List<ProcessCandle> candleList;
+    private List<Candle> candleList;
 
 
     @ToString
     @Getter
     @Builder
-    public static class ProcessCandle {
+    public static class Candle {
 
         private String candleDateTimeUtc; // 캔들 기준 시각(UTC 기준)
         private String candleDateTimeKst; // 캔들 기준 시각(KST 기준)
