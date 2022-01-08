@@ -1,9 +1,9 @@
-package com.dingdongdeng.coinautotrading.trading.service;
+package com.dingdongdeng.coinautotrading.trading.autotrading.service;
 
 import com.dingdongdeng.coinautotrading.exchange.processor.ExchangeProcessor;
 import com.dingdongdeng.coinautotrading.exchange.processor.ExchangeProcessorSelector;
-import com.dingdongdeng.coinautotrading.trading.model.AutoTradingStartParam;
-import com.dingdongdeng.coinautotrading.trading.model.type.AutoTradingStatus;
+import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingStartParam;
+import com.dingdongdeng.coinautotrading.trading.autotrading.model.type.AutoTradingStatus;
 import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyFactory;
 import lombok.RequiredArgsConstructor;
