@@ -57,7 +57,7 @@ public abstract class Strategy {
 
         return TradingInfo.builder()
             .coinType(exchangeTradingInfo.getCoinType())
-            .rsi(indexCalculator.getRsi(exchangeTradingInfo.getCandles()))
+            .rsi(indexCalculator.getRsi(tradingTerm, exchangeTradingInfo.getCandles()))
             .build();
     }
 

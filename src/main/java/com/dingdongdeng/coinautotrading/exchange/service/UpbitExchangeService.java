@@ -125,17 +125,17 @@ public class UpbitExchangeService implements ExchangeService {
     }
 
     private ExchangeCandles makeCandleInfo(ExchangeTradingInfoParam param) {
-        int unit = param.getTradingTerm() == TradingTerm.SCALPING ? 15 : 60;
-        List<CandleResponse> response = upbitClient.getCandle(
+        TradingTerm tradingTerm = param.getTradingTerm();
+        List<CandleResponse> response = upbitClient.getMinuteCandle(
             CandleRequest.builder()
-                .unit(unit)
+                .unit(tradingTerm.getCandleUnit().getSize())
                 .market(MarketType.of(param.getCoinType()).getCode())
                 .to(LocalDateTime.now())
                 .count(200)
                 .build()
         );
         return ExchangeCandles.builder()
-            .unit(unit)
+            .candleUnit(tradingTerm.getCandleUnit())
             .coinType(param.getCoinType())
             .candleList(
                 response.stream().map(
