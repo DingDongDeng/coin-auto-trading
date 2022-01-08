@@ -42,7 +42,7 @@ public class UpbitTokenGenerator {
     private String makeQueryHash(Object request) {
         try {
             String params = queryParamsConverter.convertStr(request).substring(1); //?name=aaa&age=12 형태에서 ? 제거
-            log.info("params ### {}", params);
+            log.info("upbit query hash by params : {}", params);
             MessageDigest md = MessageDigest.getInstance("SHA-512");
             md.update(params.getBytes("UTF-8"));
 
