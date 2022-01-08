@@ -49,7 +49,7 @@ public class UpbitExchangeService implements ExchangeService {
                 .ordType(OrdType.of(param.getPriceType()))
                 .build()
         );
-        return makeProcessOrder(response);
+        return makeExchangeOrder(response);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class UpbitExchangeService implements ExchangeService {
         List<ExchangeOrder> undecidedExchangeOrderList = makeUndecidedOrderList(param);
 
         // 캔들 정보 조회
-        ExchangeCandles candleInfo = makeCandleInfo(param);
+        ExchangeCandles candleInfo = makeExchangeCandles(param);
 
         // 계좌 정보 조회
         AccountsResponse accounts = upbitClient.getAccounts().stream().findFirst().orElseThrow(() -> new NoSuchElementException("계좌를 찾지 못함"));
@@ -120,11 +120,11 @@ public class UpbitExchangeService implements ExchangeService {
                 .stateList(List.of(State.wait, State.watch))
                 .build())
             .stream()
-            .map(this::makeProcessOrder)
+            .map(this::makeExchangeOrder)
             .collect(Collectors.toList());
     }
 
-    private ExchangeCandles makeCandleInfo(ExchangeTradingInfoParam param) {
+    private ExchangeCandles makeExchangeCandles(ExchangeTradingInfoParam param) {
         TradingTerm tradingTerm = param.getTradingTerm();
         List<CandleResponse> response = upbitClient.getMinuteCandle(
             CandleRequest.builder()
@@ -155,7 +155,7 @@ public class UpbitExchangeService implements ExchangeService {
             .build();
     }
 
-    private ExchangeOrder makeProcessOrder(OrderResponse response) {
+    private ExchangeOrder makeExchangeOrder(OrderResponse response) {
         return ExchangeOrder.builder()
             .orderId(response.getUuid())
             .orderType(response.getSide().getOrderType())
