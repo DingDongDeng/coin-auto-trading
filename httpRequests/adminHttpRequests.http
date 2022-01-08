@@ -1,6 +1,16 @@
-GET localhost:8080/admin/upbit?command=start&strategy=prototype2
+POST localhost:8080/admin/command/start
+Content-Type: application/json
+
+{
+  "coinType": "ETHEREUM",
+  "coinExchangeType": "UPBIT",
+  "tradingTerm": "SCALPING",
+  "strategyCode": "RSI"
+}
+
 
 ###
-GET localhost:8080/admin/upbit?command=stop&strategy=prototype
+POST localhost:8080/admin/command/stop
+Content-Type: application/json
 
 ###

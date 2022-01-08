@@ -1,9 +1,9 @@
 package com.dingdongdeng.coinautotrading.admin.service;
 
-import com.dingdongdeng.coinautotrading.admin.type.Command;
+import com.dingdongdeng.coinautotrading.admin.CommandRequest;
+import com.dingdongdeng.coinautotrading.admin.model.type.Command;
+import com.dingdongdeng.coinautotrading.autotrading.model.AutoTradingStartParam;
 import com.dingdongdeng.coinautotrading.autotrading.service.AutoTradingService;
-import com.dingdongdeng.coinautotrading.autotrading.strategy.model.type.StrategyCode;
-import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ public class AdminService {
 
     private final AutoTradingService autoTradingService;
 
-    public void command(CoinExchangeType coinExchangeType, Command command, StrategyCode strategyCode) {
+    public void command(Command command, CommandRequest request) {
 
         if (command == Command.STOP) {
             autoTradingService.stop();
@@ -23,7 +23,16 @@ public class AdminService {
         }
 
         if (command == Command.START) {
-            autoTradingService.start(coinExchangeType, strategyCode);
+            autoTradingService.start(makeAutoTradingStartParam(request));
         }
+    }
+
+    private AutoTradingStartParam makeAutoTradingStartParam(CommandRequest request) {
+        return AutoTradingStartParam.builder()
+            .coinType(request.getCoinType())
+            .coinExchangeType(request.getCoinExchangeType())
+            .tradingTerm(request.getTradingTerm())
+            .strategyCode(request.getStrategyCode())
+            .build();
     }
 }

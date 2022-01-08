@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading.admin.type;
+package com.dingdongdeng.coinautotrading.admin.model.type;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
