@@ -20,7 +20,7 @@ public abstract class Strategy {
 
     private final CoinType coinType;
     private final TradingTerm tradingTerm;
-    private final ExchangeService processor;
+    private final ExchangeService exchangeService;
     private final IndexCalculator indexCalculator;
 
     public void execute() {
@@ -33,19 +33,33 @@ public abstract class Strategy {
 
         // 매수, 매도 주문
         if (isOrder(tradingTask)) {
-            processor.order(makeProcessOrderParam(tradingTask));
+            exchangeService.order(makeProcessOrderParam(tradingTask));
             return;
         }
 
         // 주문 취소
         if (isOrderCancel(tradingTask)) {
-            processor.orderCancel(makeProcessOrderCancelParam(tradingTask));
+            exchangeService.orderCancel(makeProcessOrderCancelParam(tradingTask));
         }
 
         // 아무것도 하지 않음
     }
 
-    abstract protected TradingTask makeTradingTask(com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo tradingInfo);
+    abstract protected TradingTask makeTradingTask(TradingInfo tradingInfo);
+
+    private TradingInfo makeTradingInfo(CoinType coinType, TradingTerm tradingTerm) { //fixme processor가 여기있는게 맘에 안듦
+        ExchangeTradingInfoParam exchangeTradingInfoParam = ExchangeTradingInfoParam.builder()
+            .coinType(coinType)
+            .tradingTerm(tradingTerm)
+            .build();
+
+        ExchangeTradingInfo exchangeTradingInfo = exchangeService.getTradingInformation(exchangeTradingInfoParam);
+
+        return TradingInfo.builder()
+            .coinType(exchangeTradingInfo.getCoinType())
+            .rsi(indexCalculator.getRsi(exchangeTradingInfo.getCandles()))
+            .build();
+    }
 
     private boolean isOrder(TradingTask tradingTask) {
         OrderType orderType = tradingTask.getOrderType();
@@ -55,20 +69,6 @@ public abstract class Strategy {
     private boolean isOrderCancel(TradingTask tradingTask) {
         OrderType orderType = tradingTask.getOrderType();
         return orderType == OrderType.CANCEL;
-    }
-
-    private TradingInfo makeTradingInfo(CoinType coinType, TradingTerm tradingTerm) { //fixme processor가 여기있는게 맘에 안듦
-        ExchangeTradingInfoParam exchangeTradingInfoParam = ExchangeTradingInfoParam.builder()
-            .coinType(coinType)
-            .tradingTerm(tradingTerm)
-            .build();
-
-        ExchangeTradingInfo exchangeTradingInfo = processor.getTradingInformation(exchangeTradingInfoParam);
-
-        return TradingInfo.builder()
-            .coinType(exchangeTradingInfo.getCoinType())
-            .rsi(indexCalculator.getRsi(exchangeTradingInfo.getCandles()))
-            .build();
     }
 
     private ExchangeOrderParam makeProcessOrderParam(TradingTask tradingTask) {
