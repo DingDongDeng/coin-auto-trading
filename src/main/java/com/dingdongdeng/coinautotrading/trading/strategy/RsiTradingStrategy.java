@@ -5,6 +5,7 @@ import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.exchange.service.ExchangeService;
+import com.dingdongdeng.coinautotrading.trading.index.service.IndexCalculator;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
 import lombok.extern.slf4j.Slf4j;
@@ -13,12 +14,12 @@ import lombok.extern.slf4j.Slf4j;
 public class RsiTradingStrategy extends Strategy {
 
     //fixme 백테스팅 고려하기
-    public RsiTradingStrategy(CoinType coinType, TradingTerm tradingTerm, ExchangeService processor) {
-        super(coinType, tradingTerm, processor);
+    public RsiTradingStrategy(CoinType coinType, TradingTerm tradingTerm, ExchangeService processor, IndexCalculator indexCalculator) {
+        super(coinType, tradingTerm, processor, indexCalculator);
     }
 
     @Override
-    protected TradingTask makeOrderTask(TradingInfo tradingInfo) {
+    protected TradingTask makeTradingTask(TradingInfo tradingInfo) {
         CoinType coinType = tradingInfo.getCoinType();
         double rsi = tradingInfo.getRsi();
         double volume = 1.0;

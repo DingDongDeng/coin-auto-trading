@@ -1,5 +1,6 @@
 package com.dingdongdeng.coinautotrading.exchange.service.model;
 
+import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import lombok.ToString;
 @Builder
 public class ExchangeTradingInfo {
 
+    private CoinType coinType;
     /**
      * 계좌
      **/
@@ -25,7 +27,7 @@ public class ExchangeTradingInfo {
     private String unitCurrency; // 평단가 기준 화폐
 
     private List<ExchangeOrder> undecidedExchangeOrderList; // 미체결 주문 내역
-    private ExchangeCandles candle; // 캔들 정보
+    private ExchangeCandles candles; // 캔들 정보
 
     /**
      * 보조 지표

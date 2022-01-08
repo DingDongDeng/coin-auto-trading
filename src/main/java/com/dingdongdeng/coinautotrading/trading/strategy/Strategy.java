@@ -8,6 +8,7 @@ import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderCanc
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderParam;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeTradingInfo;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeTradingInfoParam;
+import com.dingdongdeng.coinautotrading.trading.index.service.IndexCalculator;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
 import lombok.RequiredArgsConstructor;
@@ -20,13 +21,14 @@ public abstract class Strategy {
     private final CoinType coinType;
     private final TradingTerm tradingTerm;
     private final ExchangeService processor;
+    private final IndexCalculator indexCalculator;
 
     public void execute() {
 
         TradingInfo tradingInfo = makeTradingInfo(coinType, tradingTerm);
         log.info("tradingInfo : {}", tradingInfo);
 
-        TradingTask tradingTask = this.makeOrderTask(tradingInfo);
+        TradingTask tradingTask = this.makeTradingTask(tradingInfo);
         log.info("tradingTask : {}", tradingTask);
 
         // 매수, 매도 주문
@@ -43,7 +45,7 @@ public abstract class Strategy {
         // 아무것도 하지 않음
     }
 
-    abstract protected TradingTask makeOrderTask(com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo tradingInfo);
+    abstract protected TradingTask makeTradingTask(com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo tradingInfo);
 
     private boolean isOrder(TradingTask tradingTask) {
         OrderType orderType = tradingTask.getOrderType();
@@ -64,7 +66,8 @@ public abstract class Strategy {
         ExchangeTradingInfo exchangeTradingInfo = processor.getTradingInformation(exchangeTradingInfoParam);
 
         return TradingInfo.builder()
-            .rsi(exchangeTradingInfo.getRsi())
+            .coinType(exchangeTradingInfo.getCoinType())
+            .rsi(indexCalculator.getRsi(exchangeTradingInfo.getCandles()))
             .build();
     }
 

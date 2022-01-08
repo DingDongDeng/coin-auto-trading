@@ -102,7 +102,7 @@ public class UpbitExchangeService implements ExchangeService {
             .unitCurrency(accounts.getUnitCurrency())
 
             .undecidedExchangeOrderList(undecidedExchangeOrderList)
-            .candle(candleInfo)
+            .candles(candleInfo)
 
             .rsi(0.5)
             .build();
