@@ -9,7 +9,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @Builder
-public class ProcessCandle {
+public class ProcessedCandle {
 
     private CoinType coinType;
     private Integer unit; // 분 단위(유닛)

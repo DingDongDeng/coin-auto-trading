@@ -8,8 +8,8 @@ import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.exchange.processor.ExchangeProcessor;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderCancelParam;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderParam;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessTradingInfo;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessTradingInfoParam;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessedTradingInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -61,7 +61,7 @@ public abstract class Strategy {
             .tradingTerm(tradingTerm)
             .build();
 
-        ProcessTradingInfo tradingInfo = processor.getTradingInformation(tradingInfoParam);
+        ProcessedTradingInfo tradingInfo = processor.getTradingInformation(tradingInfoParam);
 
         return TradingInfo.builder()
             .rsi(tradingInfo.getRsi())

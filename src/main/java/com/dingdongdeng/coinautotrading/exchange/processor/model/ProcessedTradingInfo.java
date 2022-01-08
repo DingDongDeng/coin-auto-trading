@@ -8,7 +8,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @Builder
-public class ProcessTradingInfo {
+public class ProcessedTradingInfo {
 
     /**
      * 계좌
@@ -24,8 +24,8 @@ public class ProcessTradingInfo {
     private boolean avgBuyPriceModified; // 매수평균가 수정 여부
     private String unitCurrency; // 평단가 기준 화폐
 
-    private List<ProcessOrder> undecidedOrderList; // 미체결 주문 내역
-    private ProcessCandle candle; // 캔들 정보
+    private List<ProcessedOrder> undecidedOrderList; // 미체결 주문 내역
+    private ProcessedCandle candle; // 캔들 정보
 
     /**
      * 보조 지표

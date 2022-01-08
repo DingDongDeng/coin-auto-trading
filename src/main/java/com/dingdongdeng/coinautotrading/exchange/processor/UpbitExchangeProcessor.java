@@ -15,13 +15,13 @@ import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.Acco
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.CandleResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.OrderCancelResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.OrderResponse;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessCandle;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrder;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderCancel;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderCancelParam;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderParam;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessTradingInfo;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessTradingInfoParam;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessedCandle;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessedOrder;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessedOrderCancel;
+import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessedTradingInfo;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -38,7 +38,7 @@ public class UpbitExchangeProcessor implements ExchangeProcessor {
     private final UpbitClient upbitClient;
 
     @Override
-    public ProcessOrder order(ProcessOrderParam param) {
+    public ProcessedOrder order(ProcessOrderParam param) {
         log.info("upbit process : order param = {}", param);
         OrderResponse response = upbitClient.order(
             OrderRequest.builder()
@@ -49,18 +49,18 @@ public class UpbitExchangeProcessor implements ExchangeProcessor {
                 .ordType(OrdType.of(param.getPriceType()))
                 .build()
         );
-        return makeProcessOrderResult(response);
+        return makeProcessOrder(response);
     }
 
     @Override
-    public ProcessOrderCancel orderCancel(ProcessOrderCancelParam param) {
+    public ProcessedOrderCancel orderCancel(ProcessOrderCancelParam param) {
         log.info("upbit process : order cancel param = {}", param);
         OrderCancelResponse response = upbitClient.orderCancel(
             OrderCancelRequest.builder()
                 .uuid(param.getOrderId())
                 .build()
         );
-        return ProcessOrderCancel.builder()
+        return ProcessedOrderCancel.builder()
             .orderId(response.getUuid())
             .orderType(response.getSide().getOrderType())
             .priceType(response.getOrdType().getPriceType())
@@ -80,19 +80,19 @@ public class UpbitExchangeProcessor implements ExchangeProcessor {
     }
 
     @Override
-    public ProcessTradingInfo getTradingInformation(ProcessTradingInfoParam param) {
+    public ProcessedTradingInfo getTradingInformation(ProcessTradingInfoParam param) {
         log.info("upbit process : get trading information param = {}", param);
 
         // 미체결 주문내역 조회
-        List<ProcessOrder> undecidedOrderList = makeUndecidedOrderList(param);
+        List<ProcessedOrder> undecidedOrderList = makeUndecidedOrderList(param);
 
         // 캔들 정보 조회
-        ProcessCandle candleInfo = makeCandleInfo(param);
+        ProcessedCandle candleInfo = makeCandleInfo(param);
 
         // 계좌 정보 조회
         AccountsResponse accounts = upbitClient.getAccounts().stream().findFirst().orElseThrow(() -> new NoSuchElementException("계좌를 찾지 못함"));
 
-        return ProcessTradingInfo.builder()
+        return ProcessedTradingInfo.builder()
             .currency(accounts.getCurrency())
             .balance(accounts.getBalance())
             .locked(accounts.getLocked())
@@ -113,18 +113,18 @@ public class UpbitExchangeProcessor implements ExchangeProcessor {
         return CoinExchangeType.UPBIT;
     }
 
-    private List<ProcessOrder> makeUndecidedOrderList(ProcessTradingInfoParam param) {
+    private List<ProcessedOrder> makeUndecidedOrderList(ProcessTradingInfoParam param) {
         return upbitClient.getOrderInfoList(
             OrderInfoListRequest.builder()
                 .market(MarketType.of(param.getCoinType()).getCode())
                 .stateList(List.of(State.wait, State.watch))
                 .build())
             .stream()
-            .map(this::makeProcessOrderResult)
+            .map(this::makeProcessOrder)
             .collect(Collectors.toList());
     }
 
-    private ProcessCandle makeCandleInfo(ProcessTradingInfoParam param) {
+    private ProcessedCandle makeCandleInfo(ProcessTradingInfoParam param) {
         int unit = param.getTradingTerm() == TradingTerm.SCALPING ? 15 : 60;
         List<CandleResponse> response = upbitClient.getCandle(
             CandleRequest.builder()
@@ -134,12 +134,12 @@ public class UpbitExchangeProcessor implements ExchangeProcessor {
                 .count(200)
                 .build()
         );
-        return ProcessCandle.builder()
+        return ProcessedCandle.builder()
             .unit(unit)
             .coinType(param.getCoinType())
             .candleList(
                 response.stream().map(
-                    candel -> ProcessCandle.Candle.builder()
+                    candel -> ProcessedCandle.Candle.builder()
                         .candleDateTimeUtc(candel.getCandleDateTimeUtc())
                         .candleDateTimeKst(candel.getCandleDateTimeKst())
                         .openingPrice(candel.getOpeningPrice())
@@ -155,8 +155,8 @@ public class UpbitExchangeProcessor implements ExchangeProcessor {
             .build();
     }
 
-    private ProcessOrder makeProcessOrderResult(OrderResponse response) {
-        return ProcessOrder.builder()
+    private ProcessedOrder makeProcessOrder(OrderResponse response) {
+        return ProcessedOrder.builder()
             .orderId(response.getUuid())
             .orderType(response.getSide().getOrderType())
             .priceType(response.getOrdType().getPriceType())
