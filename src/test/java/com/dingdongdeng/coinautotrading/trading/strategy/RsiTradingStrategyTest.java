@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading.autotrading.strategy;
+package com.dingdongdeng.coinautotrading.trading.strategy;
 
 //import static org.junit.jupiter.api.Assertions.*;
 

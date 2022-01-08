@@ -1,11 +1,11 @@
-package com.dingdongdeng.coinautotrading.autotrading.service;
+package com.dingdongdeng.coinautotrading.trading.service;
 
-import com.dingdongdeng.coinautotrading.autotrading.model.AutoTradingStartParam;
-import com.dingdongdeng.coinautotrading.autotrading.model.type.AutoTradingStatus;
-import com.dingdongdeng.coinautotrading.autotrading.strategy.Strategy;
-import com.dingdongdeng.coinautotrading.autotrading.strategy.StrategyFactory;
 import com.dingdongdeng.coinautotrading.exchange.processor.ExchangeProcessor;
 import com.dingdongdeng.coinautotrading.exchange.processor.ExchangeProcessorSelector;
+import com.dingdongdeng.coinautotrading.trading.model.AutoTradingStartParam;
+import com.dingdongdeng.coinautotrading.trading.model.type.AutoTradingStatus;
+import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
+import com.dingdongdeng.coinautotrading.trading.strategy.StrategyFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;

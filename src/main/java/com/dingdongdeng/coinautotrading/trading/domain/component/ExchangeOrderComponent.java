@@ -1,8 +1,8 @@
-package com.dingdongdeng.coinautotrading.autotrading.domain.component;
+package com.dingdongdeng.coinautotrading.trading.domain.component;
 
-import com.dingdongdeng.coinautotrading.autotrading.domain.entity.ExchangeOrder;
-import com.dingdongdeng.coinautotrading.autotrading.domain.repository.ExchangeOrderRepository;
 import com.dingdongdeng.coinautotrading.common.domain.RepositoryComponent;
+import com.dingdongdeng.coinautotrading.trading.domain.entity.ExchangeOrder;
+import com.dingdongdeng.coinautotrading.trading.domain.repository.ExchangeOrderRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

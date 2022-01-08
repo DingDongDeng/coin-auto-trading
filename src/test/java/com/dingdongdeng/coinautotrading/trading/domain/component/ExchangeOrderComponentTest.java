@@ -1,9 +1,9 @@
-package com.dingdongdeng.coinautotrading.autotrading.domain.component;
+package com.dingdongdeng.coinautotrading.trading.domain.component;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.dingdongdeng.coinautotrading.autotrading.domain.entity.ExchangeOrder;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
+import com.dingdongdeng.coinautotrading.trading.domain.entity.ExchangeOrder;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

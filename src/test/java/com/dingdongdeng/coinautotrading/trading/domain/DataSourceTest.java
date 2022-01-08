@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading.autotrading.domain;
+package com.dingdongdeng.coinautotrading.trading.domain;
 
 import java.sql.Connection;
 import javax.sql.DataSource;

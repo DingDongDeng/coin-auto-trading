@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading.autotrading.strategy.model.type;
+package com.dingdongdeng.coinautotrading.trading.strategy.model.type;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;

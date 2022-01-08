@@ -1,9 +1,9 @@
-package com.dingdongdeng.coinautotrading.autotrading.model;
+package com.dingdongdeng.coinautotrading.trading.model;
 
-import com.dingdongdeng.coinautotrading.autotrading.strategy.model.type.StrategyCode;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.type.StrategyCode;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;

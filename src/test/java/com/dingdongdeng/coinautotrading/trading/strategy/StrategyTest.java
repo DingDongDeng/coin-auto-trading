@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading.autotrading.strategy;
+package com.dingdongdeng.coinautotrading.trading.strategy;
 
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;

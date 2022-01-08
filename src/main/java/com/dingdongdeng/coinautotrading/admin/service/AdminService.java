@@ -2,8 +2,8 @@ package com.dingdongdeng.coinautotrading.admin.service;
 
 import com.dingdongdeng.coinautotrading.admin.CommandRequest;
 import com.dingdongdeng.coinautotrading.admin.model.type.Command;
-import com.dingdongdeng.coinautotrading.autotrading.model.AutoTradingStartParam;
-import com.dingdongdeng.coinautotrading.autotrading.service.AutoTradingService;
+import com.dingdongdeng.coinautotrading.trading.model.AutoTradingStartParam;
+import com.dingdongdeng.coinautotrading.trading.service.AutoTradingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

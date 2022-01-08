@@ -1,12 +1,12 @@
-package com.dingdongdeng.coinautotrading.autotrading.strategy;
+package com.dingdongdeng.coinautotrading.trading.strategy;
 
-import com.dingdongdeng.coinautotrading.autotrading.strategy.model.OrderTask;
-import com.dingdongdeng.coinautotrading.autotrading.strategy.model.TradingInfo;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.exchange.processor.ExchangeProcessor;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.OrderTask;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -24,9 +24,11 @@ public class RsiTradingStrategy extends Strategy {
         double volume = 1.0;
         double price = 5000.0;
 
+        //미체결된 주문이 있다면??
+        //체결된 주문이 있다면??
+        // 손절 기준은?
+        // 익절 기준은?
         if (rsi < 0.3) {
-            //미체결된 주문이 있다면??
-            //체결된 주문이 있다면??
             return OrderTask.builder()
                 .coinType(coinType)
                 .orderType(OrderType.BUY)

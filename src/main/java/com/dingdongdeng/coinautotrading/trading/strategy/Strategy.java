@@ -1,7 +1,5 @@
-package com.dingdongdeng.coinautotrading.autotrading.strategy;
+package com.dingdongdeng.coinautotrading.trading.strategy;
 
-import com.dingdongdeng.coinautotrading.autotrading.strategy.model.OrderTask;
-import com.dingdongdeng.coinautotrading.autotrading.strategy.model.TradingInfo;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
@@ -10,6 +8,8 @@ import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderCan
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderParam;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessTradingInfoParam;
 import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessedTradingInfo;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.OrderTask;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
