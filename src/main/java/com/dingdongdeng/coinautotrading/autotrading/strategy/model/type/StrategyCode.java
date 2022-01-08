@@ -4,8 +4,7 @@ import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 public enum StrategyCode {
-    PROTOTYPE,
-    PROTOTYPE2,
+    RSI,
     ;
 
     public static StrategyCode of(String name) {
