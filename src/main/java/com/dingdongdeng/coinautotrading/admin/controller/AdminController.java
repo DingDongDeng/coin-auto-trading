@@ -1,6 +1,6 @@
 package com.dingdongdeng.coinautotrading.admin.controller;
 
-import com.dingdongdeng.coinautotrading.admin.CommandRequest;
+import com.dingdongdeng.coinautotrading.admin.model.CommandRequest;
 import com.dingdongdeng.coinautotrading.admin.model.type.Command;
 import com.dingdongdeng.coinautotrading.admin.service.AdminService;
 import lombok.RequiredArgsConstructor;

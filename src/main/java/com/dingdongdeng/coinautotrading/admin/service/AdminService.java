@@ -1,6 +1,6 @@
 package com.dingdongdeng.coinautotrading.admin.service;
 
-import com.dingdongdeng.coinautotrading.admin.CommandRequest;
+import com.dingdongdeng.coinautotrading.admin.model.CommandRequest;
 import com.dingdongdeng.coinautotrading.admin.model.type.Command;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingStartParam;
 import com.dingdongdeng.coinautotrading.trading.autotrading.service.AutoTradingService;
