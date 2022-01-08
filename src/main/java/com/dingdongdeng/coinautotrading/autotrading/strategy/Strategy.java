@@ -23,7 +23,7 @@ public abstract class Strategy {
 
     public void execute() {
 
-        TradingInfo tradingInfo = makeTradingInfo();
+        TradingInfo tradingInfo = makeTradingInfo(coinType, tradingTerm);
         log.info("tradingInfo : {}", tradingInfo);
 
         OrderTask orderTask = this.makeOrderTask(tradingInfo);
@@ -55,7 +55,7 @@ public abstract class Strategy {
         return orderType == OrderType.CANCEL;
     }
 
-    private TradingInfo makeTradingInfo() { //fixme processor가 여기있는게 맘에 안듦
+    private TradingInfo makeTradingInfo(CoinType coinType, TradingTerm tradingTerm) { //fixme processor가 여기있는게 맘에 안듦
         ProcessTradingInfoParam tradingInfoParam = ProcessTradingInfoParam.builder()
             .coinType(coinType)
             .tradingTerm(tradingTerm)
