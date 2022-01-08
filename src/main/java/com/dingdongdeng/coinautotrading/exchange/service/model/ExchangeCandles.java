@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading.exchange.processor.model;
+package com.dingdongdeng.coinautotrading.exchange.service.model;
 
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import java.util.List;
@@ -9,7 +9,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @Builder
-public class ProcessedCandle {
+public class ExchangeCandles {
 
     private CoinType coinType;
     private Integer unit; // 분 단위(유닛)

@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading.exchange.processor.model;
+package com.dingdongdeng.coinautotrading.exchange.service.model;
 
 import java.util.List;
 import lombok.Builder;
@@ -8,7 +8,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @Builder
-public class ProcessedTradingInfo {
+public class ExchangeTradingInfo {
 
     /**
      * 계좌
@@ -24,8 +24,8 @@ public class ProcessedTradingInfo {
     private boolean avgBuyPriceModified; // 매수평균가 수정 여부
     private String unitCurrency; // 평단가 기준 화폐
 
-    private List<ProcessedOrder> undecidedOrderList; // 미체결 주문 내역
-    private ProcessedCandle candle; // 캔들 정보
+    private List<ExchangeOrder> undecidedExchangeOrderList; // 미체결 주문 내역
+    private ExchangeCandles candle; // 캔들 정보
 
     /**
      * 보조 지표

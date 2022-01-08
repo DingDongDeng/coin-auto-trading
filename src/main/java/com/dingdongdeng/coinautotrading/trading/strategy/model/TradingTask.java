@@ -10,7 +10,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @Builder
-public class OrderTask {
+public class TradingTask {
 
     private CoinType coinType;
     private OrderType orderType;

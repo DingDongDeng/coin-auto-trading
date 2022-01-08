@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading.exchange.processor.model;
+package com.dingdongdeng.coinautotrading.exchange.service.model;
 
 import com.dingdongdeng.coinautotrading.common.type.OrderState;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
@@ -12,7 +12,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @Builder
-public class ProcessedOrder {
+public class ExchangeOrder {
 
     private String orderId; // 주문의 고유 아이디
     private OrderType orderType; // 주문 종류

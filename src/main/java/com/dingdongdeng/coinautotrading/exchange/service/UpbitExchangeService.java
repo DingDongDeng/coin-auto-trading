@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading.exchange.processor;
+package com.dingdongdeng.coinautotrading.exchange.service;
 
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
@@ -15,13 +15,13 @@ import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.Acco
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.CandleResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.OrderCancelResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.OrderResponse;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderCancelParam;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderParam;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessTradingInfoParam;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessedCandle;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessedOrder;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessedOrderCancel;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessedTradingInfo;
+import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeCandles;
+import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrder;
+import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderCancel;
+import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderCancelParam;
+import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderParam;
+import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeTradingInfo;
+import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeTradingInfoParam;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -33,12 +33,12 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class UpbitExchangeProcessor implements ExchangeProcessor {
+public class UpbitExchangeService implements ExchangeService {
 
     private final UpbitClient upbitClient;
 
     @Override
-    public ProcessedOrder order(ProcessOrderParam param) {
+    public ExchangeOrder order(ExchangeOrderParam param) {
         log.info("upbit process : order param = {}", param);
         OrderResponse response = upbitClient.order(
             OrderRequest.builder()
@@ -53,14 +53,14 @@ public class UpbitExchangeProcessor implements ExchangeProcessor {
     }
 
     @Override
-    public ProcessedOrderCancel orderCancel(ProcessOrderCancelParam param) {
+    public ExchangeOrderCancel orderCancel(ExchangeOrderCancelParam param) {
         log.info("upbit process : order cancel param = {}", param);
         OrderCancelResponse response = upbitClient.orderCancel(
             OrderCancelRequest.builder()
                 .uuid(param.getOrderId())
                 .build()
         );
-        return ProcessedOrderCancel.builder()
+        return ExchangeOrderCancel.builder()
             .orderId(response.getUuid())
             .orderType(response.getSide().getOrderType())
             .priceType(response.getOrdType().getPriceType())
@@ -80,19 +80,19 @@ public class UpbitExchangeProcessor implements ExchangeProcessor {
     }
 
     @Override
-    public ProcessedTradingInfo getTradingInformation(ProcessTradingInfoParam param) {
+    public ExchangeTradingInfo getTradingInformation(ExchangeTradingInfoParam param) {
         log.info("upbit process : get trading information param = {}", param);
 
         // 미체결 주문내역 조회
-        List<ProcessedOrder> undecidedOrderList = makeUndecidedOrderList(param);
+        List<ExchangeOrder> undecidedExchangeOrderList = makeUndecidedOrderList(param);
 
         // 캔들 정보 조회
-        ProcessedCandle candleInfo = makeCandleInfo(param);
+        ExchangeCandles candleInfo = makeCandleInfo(param);
 
         // 계좌 정보 조회
         AccountsResponse accounts = upbitClient.getAccounts().stream().findFirst().orElseThrow(() -> new NoSuchElementException("계좌를 찾지 못함"));
 
-        return ProcessedTradingInfo.builder()
+        return ExchangeTradingInfo.builder()
             .currency(accounts.getCurrency())
             .balance(accounts.getBalance())
             .locked(accounts.getLocked())
@@ -101,7 +101,7 @@ public class UpbitExchangeProcessor implements ExchangeProcessor {
             .avgBuyPriceModified(accounts.isAvgBuyPriceModified())
             .unitCurrency(accounts.getUnitCurrency())
 
-            .undecidedOrderList(undecidedOrderList)
+            .undecidedExchangeOrderList(undecidedExchangeOrderList)
             .candle(candleInfo)
 
             .rsi(0.5)
@@ -113,7 +113,7 @@ public class UpbitExchangeProcessor implements ExchangeProcessor {
         return CoinExchangeType.UPBIT;
     }
 
-    private List<ProcessedOrder> makeUndecidedOrderList(ProcessTradingInfoParam param) {
+    private List<ExchangeOrder> makeUndecidedOrderList(ExchangeTradingInfoParam param) {
         return upbitClient.getOrderInfoList(
             OrderInfoListRequest.builder()
                 .market(MarketType.of(param.getCoinType()).getCode())
@@ -124,7 +124,7 @@ public class UpbitExchangeProcessor implements ExchangeProcessor {
             .collect(Collectors.toList());
     }
 
-    private ProcessedCandle makeCandleInfo(ProcessTradingInfoParam param) {
+    private ExchangeCandles makeCandleInfo(ExchangeTradingInfoParam param) {
         int unit = param.getTradingTerm() == TradingTerm.SCALPING ? 15 : 60;
         List<CandleResponse> response = upbitClient.getCandle(
             CandleRequest.builder()
@@ -134,12 +134,12 @@ public class UpbitExchangeProcessor implements ExchangeProcessor {
                 .count(200)
                 .build()
         );
-        return ProcessedCandle.builder()
+        return ExchangeCandles.builder()
             .unit(unit)
             .coinType(param.getCoinType())
             .candleList(
                 response.stream().map(
-                    candel -> ProcessedCandle.Candle.builder()
+                    candel -> ExchangeCandles.Candle.builder()
                         .candleDateTimeUtc(candel.getCandleDateTimeUtc())
                         .candleDateTimeKst(candel.getCandleDateTimeKst())
                         .openingPrice(candel.getOpeningPrice())
@@ -155,8 +155,8 @@ public class UpbitExchangeProcessor implements ExchangeProcessor {
             .build();
     }
 
-    private ProcessedOrder makeProcessOrder(OrderResponse response) {
-        return ProcessedOrder.builder()
+    private ExchangeOrder makeProcessOrder(OrderResponse response) {
+        return ExchangeOrder.builder()
             .orderId(response.getUuid())
             .orderType(response.getSide().getOrderType())
             .priceType(response.getOrdType().getPriceType())

@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading.exchange.processor.model;
+package com.dingdongdeng.coinautotrading.exchange.service.model;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -7,6 +7,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @Builder
-public class ProcessOrderCancelParam {
+public class ExchangeOrderCancelParam {
+
     private String orderId;
 }

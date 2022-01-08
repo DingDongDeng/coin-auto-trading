@@ -4,21 +4,21 @@ import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
-import com.dingdongdeng.coinautotrading.exchange.processor.ExchangeProcessor;
-import com.dingdongdeng.coinautotrading.trading.strategy.model.OrderTask;
+import com.dingdongdeng.coinautotrading.exchange.service.ExchangeService;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class RsiTradingStrategy extends Strategy {
 
     //fixme 백테스팅 고려하기
-    public RsiTradingStrategy(CoinType coinType, TradingTerm tradingTerm, ExchangeProcessor processor) {
+    public RsiTradingStrategy(CoinType coinType, TradingTerm tradingTerm, ExchangeService processor) {
         super(coinType, tradingTerm, processor);
     }
 
     @Override
-    protected OrderTask makeOrderTask(TradingInfo tradingInfo) {
+    protected TradingTask makeOrderTask(TradingInfo tradingInfo) {
         CoinType coinType = tradingInfo.getCoinType();
         double rsi = tradingInfo.getRsi();
         double volume = 1.0;
@@ -29,7 +29,7 @@ public class RsiTradingStrategy extends Strategy {
         // 손절 기준은?
         // 익절 기준은?
         if (rsi < 0.3) {
-            return OrderTask.builder()
+            return TradingTask.builder()
                 .coinType(coinType)
                 .orderType(OrderType.BUY)
                 .volume(volume)
@@ -39,7 +39,7 @@ public class RsiTradingStrategy extends Strategy {
         }
 
         if (rsi > 0.5) {
-            return OrderTask.builder()
+            return TradingTask.builder()
                 .coinType(coinType)
                 .orderType(OrderType.SELL)
                 .volume(volume)
@@ -48,6 +48,6 @@ public class RsiTradingStrategy extends Strategy {
                 .build();
         }
 
-        return OrderTask.builder().build();
+        return TradingTask.builder().build();
     }
 }

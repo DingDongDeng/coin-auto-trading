@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading.exchange.processor;
+package com.dingdongdeng.coinautotrading.exchange.service;
 
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import java.util.List;
@@ -7,11 +7,11 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class ExchangeProcessorSelector {
+public class ExchangeServiceSelector {
 
-    private final List<ExchangeProcessor> processorList;
+    private final List<ExchangeService> processorList;
 
-    public ExchangeProcessor getTargetProcessor(CoinExchangeType coinExchangeType) {
+    public ExchangeService getTargetProcessor(CoinExchangeType coinExchangeType) {
         return processorList.stream()
             .filter(processor -> processor.getExchangeType() == coinExchangeType)
             .findFirst()

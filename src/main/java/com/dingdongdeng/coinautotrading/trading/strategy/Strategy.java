@@ -3,13 +3,13 @@ package com.dingdongdeng.coinautotrading.trading.strategy;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
-import com.dingdongdeng.coinautotrading.exchange.processor.ExchangeProcessor;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderCancelParam;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessOrderParam;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessTradingInfoParam;
-import com.dingdongdeng.coinautotrading.exchange.processor.model.ProcessedTradingInfo;
-import com.dingdongdeng.coinautotrading.trading.strategy.model.OrderTask;
+import com.dingdongdeng.coinautotrading.exchange.service.ExchangeService;
+import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderCancelParam;
+import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderParam;
+import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeTradingInfo;
+import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeTradingInfoParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,68 +19,68 @@ public abstract class Strategy {
 
     private final CoinType coinType;
     private final TradingTerm tradingTerm;
-    private final ExchangeProcessor processor;
+    private final ExchangeService processor;
 
     public void execute() {
 
         TradingInfo tradingInfo = makeTradingInfo(coinType, tradingTerm);
         log.info("tradingInfo : {}", tradingInfo);
 
-        OrderTask orderTask = this.makeOrderTask(tradingInfo);
-        log.info("orderTask : {}", orderTask);
+        TradingTask tradingTask = this.makeOrderTask(tradingInfo);
+        log.info("tradingTask : {}", tradingTask);
 
         // 매수, 매도 주문
-        if (isOrder(orderTask)) {
-            processor.order(makeProcessOrderParam(orderTask));
+        if (isOrder(tradingTask)) {
+            processor.order(makeProcessOrderParam(tradingTask));
             return;
         }
 
         // 주문 취소
-        if (isOrderCancel(orderTask)) {
-            processor.orderCancel(makeProcessOrderCancelParam(orderTask));
+        if (isOrderCancel(tradingTask)) {
+            processor.orderCancel(makeProcessOrderCancelParam(tradingTask));
         }
 
         // 아무것도 하지 않음
     }
 
-    abstract protected OrderTask makeOrderTask(TradingInfo tradingInfo);
+    abstract protected TradingTask makeOrderTask(com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo tradingInfo);
 
-    private boolean isOrder(OrderTask orderTask) {
-        OrderType orderType = orderTask.getOrderType();
+    private boolean isOrder(TradingTask tradingTask) {
+        OrderType orderType = tradingTask.getOrderType();
         return orderType == OrderType.BUY || orderType == OrderType.SELL;
     }
 
-    private boolean isOrderCancel(OrderTask orderTask) {
-        OrderType orderType = orderTask.getOrderType();
+    private boolean isOrderCancel(TradingTask tradingTask) {
+        OrderType orderType = tradingTask.getOrderType();
         return orderType == OrderType.CANCEL;
     }
 
     private TradingInfo makeTradingInfo(CoinType coinType, TradingTerm tradingTerm) { //fixme processor가 여기있는게 맘에 안듦
-        ProcessTradingInfoParam tradingInfoParam = ProcessTradingInfoParam.builder()
+        ExchangeTradingInfoParam exchangeTradingInfoParam = ExchangeTradingInfoParam.builder()
             .coinType(coinType)
             .tradingTerm(tradingTerm)
             .build();
 
-        ProcessedTradingInfo tradingInfo = processor.getTradingInformation(tradingInfoParam);
+        ExchangeTradingInfo exchangeTradingInfo = processor.getTradingInformation(exchangeTradingInfoParam);
 
         return TradingInfo.builder()
-            .rsi(tradingInfo.getRsi())
+            .rsi(exchangeTradingInfo.getRsi())
             .build();
     }
 
-    private ProcessOrderParam makeProcessOrderParam(OrderTask orderTask) {
-        return ProcessOrderParam.builder()
-            .coinType(orderTask.getCoinType())
-            .orderType(orderTask.getOrderType())
-            .volume(orderTask.getVolume())
-            .price(orderTask.getPrice())
-            .priceType(orderTask.getPriceType())
+    private ExchangeOrderParam makeProcessOrderParam(TradingTask tradingTask) {
+        return ExchangeOrderParam.builder()
+            .coinType(tradingTask.getCoinType())
+            .orderType(tradingTask.getOrderType())
+            .volume(tradingTask.getVolume())
+            .price(tradingTask.getPrice())
+            .priceType(tradingTask.getPriceType())
             .build();
     }
 
-    private ProcessOrderCancelParam makeProcessOrderCancelParam(OrderTask orderTask) {
-        return ProcessOrderCancelParam.builder()
-            .orderId(orderTask.getOrderId())
+    private ExchangeOrderCancelParam makeProcessOrderCancelParam(TradingTask tradingTask) {
+        return ExchangeOrderCancelParam.builder()
+            .orderId(tradingTask.getOrderId())
             .build();
     }
 

@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading.exchange.processor.model;
+package com.dingdongdeng.coinautotrading.exchange.service.model;
 
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
@@ -10,7 +10,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @Builder
-public class ProcessOrderParam {
+public class ExchangeOrderParam {
 
     private CoinType coinType; // 마켓 ID (필수)
     private OrderType orderType; // 주문 종류 (필수) - bid : 매수 - ask : 매도

@@ -1,7 +1,7 @@
 package com.dingdongdeng.coinautotrading.trading.autotrading.service;
 
-import com.dingdongdeng.coinautotrading.exchange.processor.ExchangeProcessor;
-import com.dingdongdeng.coinautotrading.exchange.processor.ExchangeProcessorSelector;
+import com.dingdongdeng.coinautotrading.exchange.service.ExchangeService;
+import com.dingdongdeng.coinautotrading.exchange.service.ExchangeServiceSelector;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingStartParam;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.type.AutoTradingStatus;
 import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class AutoTradingService {
 
     private AutoTradingStatus status = AutoTradingStatus.INIT;
-    private final ExchangeProcessorSelector processorSelector;
+    private final ExchangeServiceSelector processorSelector;
     private final StrategyFactory strategyFactory;
 
     @Async
@@ -27,7 +27,7 @@ public class AutoTradingService {
         }
 
         updateStatus(AutoTradingStatus.RUNNING);
-        ExchangeProcessor processor = processorSelector.getTargetProcessor(param.getCoinExchangeType());
+        ExchangeService processor = processorSelector.getTargetProcessor(param.getCoinExchangeType());
         Strategy strategy = strategyFactory.create(param.getStrategyCode(), processor, param.getCoinType(), param.getTradingTerm());
 
         while (isRunning()) {
