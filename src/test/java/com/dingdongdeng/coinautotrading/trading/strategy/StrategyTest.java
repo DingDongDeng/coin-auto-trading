@@ -2,8 +2,8 @@ package com.dingdongdeng.coinautotrading.trading.strategy;
 
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
+import com.dingdongdeng.coinautotrading.exchange.component.IndexCalculator;
 import com.dingdongdeng.coinautotrading.exchange.service.UpbitExchangeService;
-import com.dingdongdeng.coinautotrading.trading.index.service.IndexCalculator;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

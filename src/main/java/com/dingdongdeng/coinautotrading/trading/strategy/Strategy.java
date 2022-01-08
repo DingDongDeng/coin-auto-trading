@@ -3,12 +3,12 @@ package com.dingdongdeng.coinautotrading.trading.strategy;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
+import com.dingdongdeng.coinautotrading.exchange.component.IndexCalculator;
 import com.dingdongdeng.coinautotrading.exchange.service.ExchangeService;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderCancelParam;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderParam;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeTradingInfo;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeTradingInfoParam;
-import com.dingdongdeng.coinautotrading.trading.index.service.IndexCalculator;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
 import lombok.RequiredArgsConstructor;
@@ -57,7 +57,7 @@ public abstract class Strategy {
 
         return TradingInfo.builder()
             .coinType(exchangeTradingInfo.getCoinType())
-            .rsi(indexCalculator.getRsi(tradingTerm, exchangeTradingInfo.getCandles()))
+            .rsi(exchangeTradingInfo.getRsi())
             .build();
     }
 

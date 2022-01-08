@@ -15,6 +15,7 @@ import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.Acco
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.CandleResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.OrderCancelResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.OrderResponse;
+import com.dingdongdeng.coinautotrading.exchange.component.IndexCalculator;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrder;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderCancel;
@@ -36,6 +37,7 @@ import org.springframework.stereotype.Component;
 public class UpbitExchangeService implements ExchangeService {
 
     private final UpbitClient upbitClient;
+    private final IndexCalculator indexCalculator;
 
     @Override
     public ExchangeOrder order(ExchangeOrderParam param) {
@@ -87,7 +89,7 @@ public class UpbitExchangeService implements ExchangeService {
         List<ExchangeOrder> undecidedExchangeOrderList = makeUndecidedOrderList(param);
 
         // 캔들 정보 조회
-        ExchangeCandles candleInfo = makeExchangeCandles(param);
+        ExchangeCandles candles = makeExchangeCandles(param);
 
         // 계좌 정보 조회
         AccountsResponse accounts = upbitClient.getAccounts().stream().findFirst().orElseThrow(() -> new NoSuchElementException("계좌를 찾지 못함"));
@@ -102,9 +104,9 @@ public class UpbitExchangeService implements ExchangeService {
             .unitCurrency(accounts.getUnitCurrency())
 
             .undecidedExchangeOrderList(undecidedExchangeOrderList)
-            .candles(candleInfo)
+            .candles(candles)
 
-            .rsi(0.5)
+            .rsi(indexCalculator.getRsi(getExchangeType()))
             .build();
     }
 
