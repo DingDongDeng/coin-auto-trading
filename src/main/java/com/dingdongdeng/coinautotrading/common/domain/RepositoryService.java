@@ -2,7 +2,7 @@ package com.dingdongdeng.coinautotrading.common.domain;
 
 import java.util.List;
 
-public interface RepositoryComponent<T, ID> {
+public interface RepositoryService<T, ID> {
 
     T findById(ID id);
 
