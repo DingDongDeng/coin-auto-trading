@@ -100,7 +100,7 @@ class UpbitClientTest {
     }
 
     @Test
-    public void 캔들_조회_테스트() {
+    public void 분봉_캔들_조회_테스트() {
         CandleRequest request = CandleRequest.builder()
             .unit(15)
             .market("KRW-ETH")
@@ -108,7 +108,7 @@ class UpbitClientTest {
             .count(200)
             .build();
 
-        List<CandleResponse> response = upbitClient.getCandle(request);
+        List<CandleResponse> response = upbitClient.getMinuteCandle(request);
         log.info("result : {}", response);
     }
 

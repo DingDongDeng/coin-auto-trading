@@ -62,7 +62,7 @@ public class UpbitClient extends Client {
         return delete("/v1/order", request, OrderCancelResponse.class, makeHeaders(request));
     }
 
-    public List<CandleResponse> getCandle(CandleRequest request) {
+    public List<CandleResponse> getMinuteCandle(CandleRequest request) {
         return get("/v1/candles/minutes/" + request.getUnit(), request, new ParameterizedTypeReference<>() {
         }, makeHeaders(request));
     }
