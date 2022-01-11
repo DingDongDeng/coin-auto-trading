@@ -23,12 +23,12 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "exchange_order")
-public class ExchangeOrder {
+@Table(name = "trade_order")
+public class TradeOrder {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "trading_id")
+    @Column(name = "trade_order_id")
     private Long id;
 
     @Column(name = "order_id", columnDefinition = "VARCHAR(30) COMMENT '주문 번호'")

@@ -1,7 +1,7 @@
 package com.dingdongdeng.coinautotrading.exchange.scheduler;
 
-import com.dingdongdeng.coinautotrading.domain.entity.ExchangeCandle;
-import com.dingdongdeng.coinautotrading.domain.service.ExchangeCandleService;
+import com.dingdongdeng.coinautotrading.domain.entity.Candle;
+import com.dingdongdeng.coinautotrading.domain.service.CandleService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,13 +13,13 @@ import org.quartz.JobExecutionException;
 @Slf4j
 public abstract class CandleStoreJob implements Job {
 
-    private final ExchangeCandleService exchangeCandleService;
+    private final CandleService candleService;
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         log.info("run CandleStorJob");
-        exchangeCandleService.saveAll(getExchangeCandleList());
+        candleService.saveAll(getExchangeCandleList());
     }
 
-    abstract List<ExchangeCandle> getExchangeCandleList();
+    abstract List<Candle> getExchangeCandleList();
 }

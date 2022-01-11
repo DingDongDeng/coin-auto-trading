@@ -18,8 +18,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "exchange_candle")
-public class ExchangeCandle {
+@Table(name = "candle")
+public class Candle {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
