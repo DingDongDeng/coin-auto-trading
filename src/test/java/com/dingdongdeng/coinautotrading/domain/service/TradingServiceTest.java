@@ -1,9 +1,9 @@
-package com.dingdongdeng.coinautotrading.trading.domain.service;
+package com.dingdongdeng.coinautotrading.domain.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
-import com.dingdongdeng.coinautotrading.trading.domain.entity.Trading;
+import com.dingdongdeng.coinautotrading.domain.entity.Trading;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

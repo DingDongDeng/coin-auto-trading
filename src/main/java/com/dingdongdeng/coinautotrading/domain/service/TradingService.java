@@ -1,8 +1,8 @@
-package com.dingdongdeng.coinautotrading.trading.domain.service;
+package com.dingdongdeng.coinautotrading.domain.service;
 
 import com.dingdongdeng.coinautotrading.common.domain.RepositoryService;
-import com.dingdongdeng.coinautotrading.trading.domain.entity.Trading;
-import com.dingdongdeng.coinautotrading.trading.domain.repository.TradingRepository;
+import com.dingdongdeng.coinautotrading.domain.entity.Trading;
+import com.dingdongdeng.coinautotrading.domain.repository.TradingRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

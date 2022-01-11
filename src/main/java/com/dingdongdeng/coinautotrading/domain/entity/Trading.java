@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading.trading.domain.entity;
+package com.dingdongdeng.coinautotrading.domain.entity;
 
 import com.dingdongdeng.coinautotrading.common.type.OrderState;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
