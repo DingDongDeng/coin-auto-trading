@@ -23,8 +23,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "trading")
-public class Trading {
+@Table(name = "exchange_order")
+public class ExchangeOrder {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
