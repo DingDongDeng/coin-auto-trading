@@ -3,7 +3,6 @@ package com.dingdongdeng.coinautotrading.trading.strategy;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
-import com.dingdongdeng.coinautotrading.exchange.component.IndexCalculator;
 import com.dingdongdeng.coinautotrading.exchange.service.ExchangeService;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderCancelParam;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderParam;
@@ -21,7 +20,6 @@ public abstract class Strategy {
     private final CoinType coinType;
     private final TradingTerm tradingTerm;
     private final ExchangeService exchangeService;
-    private final IndexCalculator indexCalculator;
 
     public void execute() {
 
