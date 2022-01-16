@@ -29,11 +29,11 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 @Slf4j
 @RequiredArgsConstructor
-@Component
+@Service
 public class UpbitExchangeService implements ExchangeService {
 
     private final UpbitClient upbitClient;
