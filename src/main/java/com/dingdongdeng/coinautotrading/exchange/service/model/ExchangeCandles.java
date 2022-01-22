@@ -2,6 +2,7 @@ package com.dingdongdeng.coinautotrading.exchange.service.model;
 
 import com.dingdongdeng.coinautotrading.common.type.CandleUnit;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,8 +23,8 @@ public class ExchangeCandles {
     @Builder
     public static class Candle {
 
-        private String candleDateTimeUtc; // 캔들 기준 시각(UTC 기준)
-        private String candleDateTimeKst; // 캔들 기준 시각(KST 기준)
+        private LocalDateTime candleDateTimeUtc; // 캔들 기준 시각(UTC 기준)
+        private LocalDateTime candleDateTimeKst; // 캔들 기준 시각(KST 기준)
         private Double openingPrice; // 시가
         private Double highPrice; // 고가
         private Double lowPrice; // 저가

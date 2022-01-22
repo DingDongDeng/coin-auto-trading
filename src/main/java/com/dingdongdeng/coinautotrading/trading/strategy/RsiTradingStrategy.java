@@ -4,7 +4,6 @@ import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
-import com.dingdongdeng.coinautotrading.exchange.component.IndexCalculator;
 import com.dingdongdeng.coinautotrading.exchange.service.ExchangeService;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
@@ -14,8 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 public class RsiTradingStrategy extends Strategy {
 
     //fixme 백테스팅 고려하기
-    public RsiTradingStrategy(CoinType coinType, TradingTerm tradingTerm, ExchangeService processor, IndexCalculator indexCalculator) {
-        super(coinType, tradingTerm, processor, indexCalculator);
+    public RsiTradingStrategy(CoinType coinType, TradingTerm tradingTerm, ExchangeService processor) {
+        super(coinType, tradingTerm, processor);
     }
 
     @Override

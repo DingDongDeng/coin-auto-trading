@@ -4,11 +4,14 @@ import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.OrdType;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.Side;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.State;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
+import java.util.Objects;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -110,9 +113,19 @@ public class UpbitRequest {
 
         private Integer unit; // 분 단위. 가능한 값 : 1, 3, 5, 15, 10, 30, 60, 240
         private String market; // 마켓 ID (필수)
-        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
-        private LocalDateTime to; // 마지막 캔들 시각 (비우면 가장 최근 시각)
+        @JsonIgnore
+        private LocalDateTime toKst; // 마지막 캔들 시각 (비우면 가장 최근 시각), UTC 기준
         private Integer count; // 캔들 개수(최대 200개)
+
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        private LocalDateTime getTo() {
+            if (Objects.isNull(toKst)) {
+                return null;
+            }
+            return toKst.atZone(ZoneId.of("Asia/Seoul"))
+                .withZoneSameInstant(ZoneId.of("UTC"))
+                .toLocalDateTime();
+        }
     }
 
 }

@@ -6,9 +6,11 @@ import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.State;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Getter;
 import lombok.ToString;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @ToString
 public class UpbitResponse {
@@ -244,10 +246,12 @@ public class UpbitResponse {
 
         @JsonProperty("market")
         private String market; // 마켓명
+        @DateTimeFormat(pattern = "yyyy-MM-ddTHH:mm:ss")
         @JsonProperty("candle_date_time_utc")
-        private String candleDateTimeUtc; // 캔들 기준 시각(UTC 기준)
+        private LocalDateTime candleDateTimeUtc; // 캔들 기준 시각(UTC 기준)
+        @DateTimeFormat(pattern = "yyyy-MM-ddTHH:mm:ss")
         @JsonProperty("candle_date_time_kst")
-        private String candleDateTimeKst; // 캔들 기준 시각(KST 기준)
+        private LocalDateTime candleDateTimeKst; // 캔들 기준 시각(KST 기준)
         @JsonProperty("opening_price")
         private Double openingPrice; // 시가
         @JsonProperty("high_price")

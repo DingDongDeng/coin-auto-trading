@@ -101,11 +101,13 @@ class UpbitClientTest {
 
     @Test
     public void 분봉_캔들_조회_테스트() {
+        LocalDateTime to = LocalDateTime.of(2022, 01, 13, 21, 9, 0);
+
         CandleRequest request = CandleRequest.builder()
-            .unit(15)
+            .unit(1)
             .market("KRW-ETH")
-            .to(LocalDateTime.now())
-            .count(200)
+            .toKst(to)
+            .count(2)
             .build();
 
         List<CandleResponse> response = upbitClient.getMinuteCandle(request);

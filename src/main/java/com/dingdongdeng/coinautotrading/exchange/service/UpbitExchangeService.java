@@ -132,7 +132,7 @@ public class UpbitExchangeService implements ExchangeService {
             CandleRequest.builder()
                 .unit(tradingTerm.getCandleUnit().getSize())
                 .market(MarketType.of(param.getCoinType()).getCode())
-                .to(LocalDateTime.now())
+                .toKst(LocalDateTime.now())
                 .count(200)
                 .build()
         );

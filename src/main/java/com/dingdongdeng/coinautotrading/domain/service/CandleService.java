@@ -1,6 +1,8 @@
 package com.dingdongdeng.coinautotrading.domain.service;
 
 import com.dingdongdeng.coinautotrading.common.domain.RepositoryService;
+import com.dingdongdeng.coinautotrading.common.type.CandleUnit;
+import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.domain.entity.Candle;
 import com.dingdongdeng.coinautotrading.domain.repository.CandleRepository;
 import java.util.List;
@@ -27,5 +29,10 @@ public class CandleService implements RepositoryService<Candle, Long> {
 
     public List<Candle> saveAll(Iterable<Candle> iterable) {
         return repository.saveAll(iterable);
+    }
+
+    public Candle findLastCandle(CoinType coinType, CandleUnit candleUnit) {
+//        return repository.findByCoinTypeAnd
+        return null;
     }
 }
