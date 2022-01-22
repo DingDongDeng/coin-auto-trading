@@ -27,8 +27,8 @@ public class AutoTradingService {
         }
 
         updateStatus(AutoTradingStatus.RUNNING);
-        ExchangeService processor = processorSelector.getTargetProcessor(param.getCoinExchangeType());
-        Strategy strategy = strategyFactory.create(param.getStrategyCode(), processor, param.getCoinType(), param.getTradingTerm());
+        ExchangeService exchangeService = processorSelector.getTargetProcessor(param.getCoinExchangeType());
+        Strategy strategy = strategyFactory.create(param.getStrategyCode(), exchangeService, param.getCoinType(), param.getTradingTerm());
 
         while (isRunning()) {
             log.info("------ beginning of autotrading cycle -----");

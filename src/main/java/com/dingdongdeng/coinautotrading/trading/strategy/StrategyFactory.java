@@ -15,9 +15,9 @@ public class StrategyFactory {
 
     private final IndexCalculator indexCalculator;
 
-    public Strategy create(StrategyCode strategyCode, ExchangeService processor, CoinType coinType, TradingTerm tradingTerm) {
+    public Strategy create(StrategyCode strategyCode, ExchangeService exchangeService, CoinType coinType, TradingTerm tradingTerm) {
         if (strategyCode == StrategyCode.RSI) {
-            return new RsiTradingStrategy(coinType, tradingTerm, processor, indexCalculator);
+            return new RsiTradingStrategy(coinType, tradingTerm, exchangeService, indexCalculator);
         }
 
         throw new NoSuchElementException("not found strategy code : " + strategyCode);
