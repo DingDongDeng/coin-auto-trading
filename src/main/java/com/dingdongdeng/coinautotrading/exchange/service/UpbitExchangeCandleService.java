@@ -10,6 +10,7 @@ import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeCandles;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,17 +59,45 @@ public class UpbitExchangeCandleService implements ExchangeCandleService {
     }
 
     private LocalDateTime getlimitedEndDateTime(CandleUnit candleUnit, LocalDateTime start, LocalDateTime end) {
-        LocalDateTime limitedEndDateTime = start.plusMinutes(MAX_COUNT_SIZE);
+        LocalDateTime limitedEndDateTime;
+        switch (candleUnit.getUnitType()) {
+            case WEEK:
+                limitedEndDateTime = start.plusWeeks(MAX_COUNT_SIZE);
+                break;
+            case DAY:
+                limitedEndDateTime = start.plusDays(MAX_COUNT_SIZE);
+                break;
+            case MIN:
+                limitedEndDateTime = start.plusMinutes(MAX_COUNT_SIZE);
+                break;
+            default:
+                throw new NoSuchElementException("fail make limitedEndDateTime");
+        }
         return end.isAfter(limitedEndDateTime) ? limitedEndDateTime : end;
     }
 
+
     private int getCandleCount(CandleUnit candleUnit, LocalDateTime start, LocalDateTime limitedEndDateTime) {
-        Long diff = ChronoUnit.MINUTES.between(start, limitedEndDateTime);
+        Long diff = null;
+        switch (candleUnit.getUnitType()) {
+            case WEEK:
+                diff = ChronoUnit.WEEKS.between(start, limitedEndDateTime);
+                break;
+            case DAY:
+                diff = ChronoUnit.DAYS.between(start, limitedEndDateTime);
+                break;
+            case MIN:
+                diff = ChronoUnit.MINUTES.between(start, limitedEndDateTime);
+                if (limitedEndDateTime.getSecond() == 0) {
+                    diff = diff - 1;
+                }
+                break;
+            default:
+                throw new NoSuchElementException("fail make candleCount");
+        }
+
         if (diff > 200) {
             throw new RuntimeException("upbit candle max size over");
-        }
-        if (limitedEndDateTime.getSecond() == 0) {
-            return diff.intValue() - 1;
         }
         return diff.intValue();
     }
