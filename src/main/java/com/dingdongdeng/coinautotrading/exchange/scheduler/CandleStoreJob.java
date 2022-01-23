@@ -34,7 +34,6 @@ public abstract class CandleStoreJob implements Job {
         });
 
         //fixme CompletedFuture를 활용할수 있는 구조로 해보자
-        // transaction 단위는 coinType단위로 끝내서 너무 오랫동안 트랜잭션 잡고있지 않게하자
         // 중복 저장의 위험은 unique 컬럼을 설정해서 방지하는게 좋을거같아(거의 발생안할 이슈라고 판단됨)
     }
 
@@ -47,6 +46,12 @@ public abstract class CandleStoreJob implements Job {
                 .candleUnit(candleUnit)
                 .candleDateTimeUtc(candle.getCandleDateTimeUtc())
                 .candleDateTimeKst(candle.getCandleDateTimeKst())
+                .openingPrice(candle.getOpeningPrice())
+                .highPrice(candle.getHighPrice())
+                .lowPrice(candle.getLowPrice())
+                .tradePrice(candle.getTradePrice())
+                .candleAccTradePrice(candle.getCandleAccTradePrice())
+                .candleAccTradeVolume(candle.getCandleAccTradeVolume())
                 .build())
             .collect(Collectors.toList());
     }

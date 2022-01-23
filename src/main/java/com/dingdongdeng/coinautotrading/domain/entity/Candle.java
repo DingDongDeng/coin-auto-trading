@@ -44,4 +44,22 @@ public class Candle {
 
     @Column(name = "candle_date_time_kst")
     private LocalDateTime candleDateTimeKst;
+
+    @Column(name = "opening_price")
+    private Double openingPrice; // 시가
+
+    @Column(name = "executed_volume")
+    private Double highPrice; // 고가
+
+    @Column(name = "executed_volume")
+    private Double lowPrice; // 저가
+
+    @Column(name = "executed_volume")
+    private Double tradePrice; // 종가
+
+    @Column(name = "executed_volume")
+    private Double candleAccTradePrice; // 누적 거래 금액
+
+    @Column(name = "executed_volume")
+    private Double candleAccTradeVolume; // 누적 거래량
 }
