@@ -6,8 +6,10 @@ import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.domain.entity.Candle;
 import com.dingdongdeng.coinautotrading.domain.repository.CandleRepository;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,8 +33,9 @@ public class CandleService implements RepositoryService<Candle, Long> {
         return repository.saveAll(iterable);
     }
 
-    public Candle findLastCandle(CoinType coinType, CandleUnit candleUnit) {
-//        return repository.findByCoinTypeAnd
-        return null;
+    public Optional<Candle> findLastCandle(CoinType coinType, CandleUnit candleUnit) {
+        return repository.findAllCandleList(coinType, candleUnit, PageRequest.of(0, 1))
+            .stream()
+            .findFirst();
     }
 }

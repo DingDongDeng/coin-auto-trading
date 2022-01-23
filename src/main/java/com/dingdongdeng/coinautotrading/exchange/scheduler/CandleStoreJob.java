@@ -8,6 +8,7 @@ import com.dingdongdeng.coinautotrading.exchange.service.ExchangeCandleService;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeCandles;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
@@ -25,13 +26,11 @@ public abstract class CandleStoreJob implements Job {
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        delay(500);
-
         log.info("run CandleStorJob");
         TARGET_COINT_LIST.forEach(coinType -> {
-            Candle candle = candleService.findLastCandle(coinType, CANDLE_UNIT);
+            Candle candle = candleService.findLastCandle(coinType, CANDLE_UNIT).orElse(Candle.builder().candleDateTimeKst(LocalDateTime.now().minusWeeks(2)).build());
             ExchangeCandles exchangeCandlesList = exchangeCandleService.getCandleList(coinType, CANDLE_UNIT, candle.getCandleDateTimeKst(), LocalDateTime.now());
-            candleService.saveAll(null);
+            candleService.saveAll(makeCandleList(exchangeCandlesList));
         });
 
         //fixme CompletedFuture를 활용할수 있는 구조로 해보자
@@ -39,11 +38,16 @@ public abstract class CandleStoreJob implements Job {
         // 중복 저장의 위험은 unique 컬럼을 설정해서 방지하는게 좋을거같아(거의 발생안할 이슈라고 판단됨)
     }
 
-    private void delay(long milliseconds) {
-        try {
-            Thread.sleep(milliseconds);
-        } catch (InterruptedException e) {
-            log.error(e.getMessage(), e);
-        }
+    private List<Candle> makeCandleList(ExchangeCandles exchangeCandles) {
+        CoinType coinType = exchangeCandles.getCoinType();
+        CandleUnit candleUnit = exchangeCandles.getCandleUnit();
+        return exchangeCandles.getCandleList().stream()
+            .map(candle -> Candle.builder()
+                .coinType(coinType)
+                .candleUnit(candleUnit)
+                .candleDateTimeUtc(candle.getCandleDateTimeUtc())
+                .candleDateTimeKst(candle.getCandleDateTimeKst())
+                .build())
+            .collect(Collectors.toList());
     }
 }
