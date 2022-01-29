@@ -1,6 +1,7 @@
 package com.dingdongdeng.coinautotrading.domain.entity;
 
 import com.dingdongdeng.coinautotrading.common.type.CandleUnit;
+import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
@@ -30,6 +31,10 @@ public class Candle {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "exchange_candle_id")
     private Long id;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "coin_exchange_type")
+    private CoinExchangeType coinExchangeType;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "coin_type")

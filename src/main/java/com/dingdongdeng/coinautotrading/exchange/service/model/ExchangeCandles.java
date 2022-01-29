@@ -1,6 +1,7 @@
 package com.dingdongdeng.coinautotrading.exchange.service.model;
 
 import com.dingdongdeng.coinautotrading.common.type.CandleUnit;
+import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,6 +14,7 @@ import lombok.ToString;
 @Builder
 public class ExchangeCandles {
 
+    private CoinExchangeType coinExchangeType;
     private CoinType coinType;
     private CandleUnit candleUnit; // 분 단위(유닛)
     private List<Candle> candleList;

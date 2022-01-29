@@ -1,6 +1,7 @@
 package com.dingdongdeng.coinautotrading.exchange.service;
 
 import com.dingdongdeng.coinautotrading.common.type.CandleUnit;
+import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.exchange.client.UpbitClient;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.MarketType;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UpbitExchangeCandleService implements ExchangeCandleService {
 
+    private final CoinExchangeType COIN_EXCHANGE_TYPE = CoinExchangeType.UPBIT;
     private final UpbitClient upbitClient;
     private final long MAX_COUNT_SIZE = 200;
 
@@ -38,6 +40,7 @@ public class UpbitExchangeCandleService implements ExchangeCandleService {
                 .build()
         );
         return ExchangeCandles.builder()
+            .coinExchangeType(COIN_EXCHANGE_TYPE)
             .candleUnit(candleUnit)
             .coinType(coinType)
             .candleList(

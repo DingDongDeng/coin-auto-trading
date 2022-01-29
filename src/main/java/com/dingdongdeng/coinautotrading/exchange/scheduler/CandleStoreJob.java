@@ -43,6 +43,7 @@ public abstract class CandleStoreJob implements Job {
         return exchangeCandles.getCandleList().stream()
             .map(candle -> Candle.builder()
                 .coinType(coinType)
+                .coinExchangeType(exchangeCandles.getCoinExchangeType())
                 .candleUnit(candleUnit)
                 .candleDateTimeUtc(candle.getCandleDateTimeUtc())
                 .candleDateTimeKst(candle.getCandleDateTimeKst())
