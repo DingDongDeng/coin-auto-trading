@@ -15,11 +15,13 @@ import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.Order
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderInfoListRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderInfoRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderRequest;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.TickerRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.AccountsResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.CandleResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.MarketCodeResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.OrderBookResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.OrderResponse;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.TickerResponse;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -121,6 +123,12 @@ class UpbitClientTest {
     @Test
     public void 주문_호가_조회_테스트() {
         OrderBookResponse response = upbitClient.getOrderBook(OrderBookRequest.builder().marketList(List.of(MarketType.KRW_ETH.getCode())).build());
+        log.info("result : {}", response);
+    }
+
+    @Test
+    public void 현재가_조회_테스트() {
+        TickerResponse response = upbitClient.getTicker(TickerRequest.builder().marketList(List.of(MarketType.KRW_ETH.getCode())).build());
         log.info("result : {}", response);
     }
 

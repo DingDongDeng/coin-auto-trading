@@ -10,6 +10,7 @@ import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.Order
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderInfoListRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderInfoRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderRequest;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.TickerRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.AccountsResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.CandleResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.MarketCodeResponse;
@@ -17,6 +18,7 @@ import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.Orde
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.OrderCancelResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.OrderResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.OrdersChanceResponse;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.TickerResponse;
 import java.util.List;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -71,6 +73,11 @@ public class UpbitClient extends Client {
 
     public OrderBookResponse getOrderBook(OrderBookRequest request) {
         return get("/v1/orderbook", request, new ParameterizedTypeReference<>() {
+        }, makeHeaders(request));
+    }
+
+    public TickerResponse getTicker(TickerRequest request) {
+        return get("/v1/ticker", request, new ParameterizedTypeReference<>() {
         }, makeHeaders(request));
     }
 

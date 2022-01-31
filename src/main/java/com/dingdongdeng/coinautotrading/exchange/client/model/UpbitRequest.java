@@ -137,4 +137,14 @@ public class UpbitRequest {
         @JsonProperty("markets")
         private List<String> marketList;
     }
+
+    @ToString
+    @Getter
+    @Builder
+    @JsonInclude(Include.NON_NULL)
+    public static class TickerRequest {
+
+        @JsonProperty("markets")
+        private List<String> marketList;
+    }
 }
