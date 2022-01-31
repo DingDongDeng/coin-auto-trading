@@ -61,6 +61,11 @@ public class UpbitExchangeCandleService implements ExchangeCandleService {
             .build();
     }
 
+    @Override
+    public CoinExchangeType getCoinExchangeType() {
+        return COIN_EXCHANGE_TYPE;
+    }
+
     private LocalDateTime getlimitedEndDateTime(CandleUnit candleUnit, LocalDateTime start, LocalDateTime end) {
         LocalDateTime limitedEndDateTime;
         switch (candleUnit.getUnitType()) {

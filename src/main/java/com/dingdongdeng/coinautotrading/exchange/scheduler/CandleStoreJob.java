@@ -29,7 +29,8 @@ public abstract class CandleStoreJob implements Job {
     public void execute(JobExecutionContext context) throws JobExecutionException {
         log.info("run CandleStorJob");
         TARGET_COINT_LIST.forEach(coinType -> {
-            Candle candle = candleService.findLastCandle(coinType, CANDLE_UNIT).orElse(Candle.builder().candleDateTimeKst(LocalDateTime.now().minusDays(LIMIT_DAYS)).build());
+            Candle candle = candleService.findOneLastCandle(exchangeCandleService.getCoinExchangeType(), coinType, CANDLE_UNIT)
+                .orElse(Candle.builder().candleDateTimeKst(LocalDateTime.now().minusDays(LIMIT_DAYS)).build());
             ExchangeCandles exchangeCandlesList = exchangeCandleService.getCandleList(coinType, CANDLE_UNIT, candle.getCandleDateTimeKst(), LocalDateTime.now());
             candleService.saveAll(makeCandleList(exchangeCandlesList));
         });
