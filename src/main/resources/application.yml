@@ -32,3 +32,7 @@ spring:
     embedded:
       host: localhost
       port: 6370
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
