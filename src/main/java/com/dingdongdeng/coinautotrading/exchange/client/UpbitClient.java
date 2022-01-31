@@ -71,12 +71,12 @@ public class UpbitClient extends Client {
         }, makeHeaders(request));
     }
 
-    public OrderBookResponse getOrderBook(OrderBookRequest request) {
+    public List<OrderBookResponse> getOrderBook(OrderBookRequest request) {
         return get("/v1/orderbook", request, new ParameterizedTypeReference<>() {
         }, makeHeaders(request));
     }
 
-    public TickerResponse getTicker(TickerRequest request) {
+    public List<TickerResponse> getTicker(TickerRequest request) {
         return get("/v1/ticker", request, new ParameterizedTypeReference<>() {
         }, makeHeaders(request));
     }

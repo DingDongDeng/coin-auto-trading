@@ -122,13 +122,13 @@ class UpbitClientTest {
 
     @Test
     public void 주문_호가_조회_테스트() {
-        OrderBookResponse response = upbitClient.getOrderBook(OrderBookRequest.builder().marketList(List.of(MarketType.KRW_ETH.getCode())).build());
+        List<OrderBookResponse> response = upbitClient.getOrderBook(OrderBookRequest.builder().market(MarketType.KRW_ETH.getCode()).build());
         log.info("result : {}", response);
     }
 
     @Test
     public void 현재가_조회_테스트() {
-        TickerResponse response = upbitClient.getTicker(TickerRequest.builder().marketList(List.of(MarketType.KRW_ETH.getCode())).build());
+        List<TickerResponse> response = upbitClient.getTicker(TickerRequest.builder().market(MarketType.KRW_ETH.getCode()).build());
         log.info("result : {}", response);
     }
 

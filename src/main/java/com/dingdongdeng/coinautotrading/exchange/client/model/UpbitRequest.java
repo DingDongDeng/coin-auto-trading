@@ -135,7 +135,7 @@ public class UpbitRequest {
     public static class OrderBookRequest {
 
         @JsonProperty("markets")
-        private List<String> marketList;
+        private String market; //fixme List 파싱이 안됨 400에러
     }
 
     @ToString
@@ -145,6 +145,6 @@ public class UpbitRequest {
     public static class TickerRequest {
 
         @JsonProperty("markets")
-        private List<String> marketList;
+        private String market; //fixme List 파싱이 안됨 400에러
     }
 }

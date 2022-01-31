@@ -27,7 +27,6 @@ import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeTicker;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeTradingInfo;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeTradingInfoParam;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -191,9 +190,9 @@ public class UpbitExchangeService implements ExchangeService {
     private ExchangeTicker getExchangeTicker(ExchangeTradingInfoParam param) {
         TickerResponse response = upbitClient.getTicker(
             TickerRequest.builder()
-                .marketList(Arrays.asList(MarketType.of(param.getCoinType()).getCode()))
+                .market(MarketType.of(param.getCoinType()).getCode())
                 .build()
-        );
+        ).stream().findFirst().orElseThrow(NoSuchElementException::new);
         return ExchangeTicker.builder()
             .market(response.getMarket())
             .tradeDate(response.getTradeDate())
