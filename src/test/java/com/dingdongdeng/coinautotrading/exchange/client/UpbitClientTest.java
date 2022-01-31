@@ -2,11 +2,14 @@ package com.dingdongdeng.coinautotrading.exchange.client;
 
 //import static org.junit.jupiter.api.Assertions.*;
 
+import com.dingdongdeng.coinautotrading.common.type.CoinType;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.MarketType;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.OrdType;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.Side;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.State;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.CandleRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.MarketCodeRequest;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderBookRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderCancelRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderChanceRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderInfoListRequest;
@@ -15,6 +18,7 @@ import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.Order
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.AccountsResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.CandleResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.MarketCodeResponse;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.OrderBookResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.OrderResponse;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -52,7 +56,7 @@ class UpbitClientTest {
     @Test
     public void 주문_가능_정보_조회_테스트() {
         OrderChanceRequest request = OrderChanceRequest.builder()
-            .market("KRW-ETH")
+            .market(MarketType.of(CoinType.ETHEREUM).getCode())
             .build();
         log.info("result : {}", upbitClient.getOrdersChance(request));
     }
@@ -114,29 +118,10 @@ class UpbitClientTest {
         log.info("result : {}", response);
     }
 
-    //@Test
-    //public void 지정가_주문_매수_테스트() {
-    //    OrderRequest request = OrderRequest.builder()
-    //        .market("KRW-ETH")
-    //        .side(Side.bid)
-    //        .volume(1.0)
-    //        .price(5000.0)
-    //        .ordType(OrdType.limit)
-    //        .build();
-    //
-    //    log.info("result : {}", upbitClient.order(request));
-    //}
-    //
-    //@Test
-    //public void 지정가_주문_매도_테스트() {
-    //    OrderRequest request = OrderRequest.builder()
-    //        .market("KRW-ETH")
-    //        .side(Side.ask)
-    //        .volume(1.0)
-    //        .price(5000.0)
-    //        .ordType(OrdType.limit)
-    //        .build();
-    //
-    //    log.info("result : {}", upbitClient.order(request));
-    //}
+    @Test
+    public void 주문_호가_조회_테스트() {
+        OrderBookResponse response = upbitClient.getOrderBook(OrderBookRequest.builder().marketList(List.of(MarketType.KRW_ETH.getCode())).build());
+        log.info("result : {}", response);
+    }
+
 }

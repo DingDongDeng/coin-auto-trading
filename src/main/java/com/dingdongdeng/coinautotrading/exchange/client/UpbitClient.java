@@ -4,6 +4,7 @@ import com.dingdongdeng.coinautotrading.common.client.Client;
 import com.dingdongdeng.coinautotrading.common.client.util.QueryParamsConverter;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.CandleRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.MarketCodeRequest;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderBookRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderCancelRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderChanceRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderInfoListRequest;
@@ -12,6 +13,7 @@ import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.Order
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.AccountsResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.CandleResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.MarketCodeResponse;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.OrderBookResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.OrderCancelResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.OrderResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.OrdersChanceResponse;
@@ -64,6 +66,11 @@ public class UpbitClient extends Client {
 
     public List<CandleResponse> getMinuteCandle(CandleRequest request) {
         return get("/v1/candles/minutes/" + request.getUnit(), request, new ParameterizedTypeReference<>() {
+        }, makeHeaders(request));
+    }
+
+    public OrderBookResponse getOrderBook(OrderBookRequest request) {
+        return get("/v1/orderbook", request, new ParameterizedTypeReference<>() {
         }, makeHeaders(request));
     }
 
