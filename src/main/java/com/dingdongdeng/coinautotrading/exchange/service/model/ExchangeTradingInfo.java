@@ -28,6 +28,7 @@ public class ExchangeTradingInfo {
 
     private List<ExchangeOrder> undecidedExchangeOrderList; // 미체결 주문 내역
     private ExchangeCandles candles; // 캔들 정보
+    private ExchangeTicker ticker; // 현재가 정보
 
     /**
      * 보조 지표

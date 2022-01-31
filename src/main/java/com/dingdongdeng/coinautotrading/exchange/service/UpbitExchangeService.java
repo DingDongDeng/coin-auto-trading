@@ -11,19 +11,23 @@ import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.Candl
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderCancelRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderInfoListRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderRequest;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.TickerRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.AccountsResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.CandleResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.OrderCancelResponse;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.OrderResponse;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.TickerResponse;
 import com.dingdongdeng.coinautotrading.exchange.component.IndexCalculator;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrder;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderCancel;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderCancelParam;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderParam;
+import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeTicker;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeTradingInfo;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeTradingInfoParam;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -86,10 +90,13 @@ public class UpbitExchangeService implements ExchangeService {
         log.info("upbit process : get trading information param = {}", param);
 
         // 미체결 주문내역 조회
-        List<ExchangeOrder> undecidedExchangeOrderList = makeUndecidedOrderList(param);
+        List<ExchangeOrder> undecidedExchangeOrderList = getUndecidedOrderList(param);
 
         // 캔들 정보 조회
-        ExchangeCandles candles = makeExchangeCandles(param);
+        ExchangeCandles candles = getExchangeCandles(param);
+
+        // 현재가 정보 조회
+        ExchangeTicker ticker = getExchangeTicker(param);
 
         // 계좌 정보 조회
         AccountsResponse accounts = upbitClient.getAccounts().stream().findFirst().orElseThrow(() -> new NoSuchElementException("계좌를 찾지 못함"));
@@ -105,8 +112,9 @@ public class UpbitExchangeService implements ExchangeService {
 
             .undecidedExchangeOrderList(undecidedExchangeOrderList)
             .candles(candles)
+            .ticker(ticker)
 
-            .rsi(indexCalculator.getRsi(getExchangeType()))
+            .rsi(indexCalculator.getRsi(candles, ticker.getTradePrice()))
             .build();
     }
 
@@ -115,7 +123,7 @@ public class UpbitExchangeService implements ExchangeService {
         return CoinExchangeType.UPBIT;
     }
 
-    private List<ExchangeOrder> makeUndecidedOrderList(ExchangeTradingInfoParam param) {
+    private List<ExchangeOrder> getUndecidedOrderList(ExchangeTradingInfoParam param) {
         return upbitClient.getOrderInfoList(
             OrderInfoListRequest.builder()
                 .market(MarketType.of(param.getCoinType()).getCode())
@@ -126,7 +134,7 @@ public class UpbitExchangeService implements ExchangeService {
             .collect(Collectors.toList());
     }
 
-    private ExchangeCandles makeExchangeCandles(ExchangeTradingInfoParam param) {
+    private ExchangeCandles getExchangeCandles(ExchangeTradingInfoParam param) {
         TradingTerm tradingTerm = param.getTradingTerm();
         List<CandleResponse> response = upbitClient.getMinuteCandle(
             CandleRequest.builder()
@@ -137,6 +145,7 @@ public class UpbitExchangeService implements ExchangeService {
                 .build()
         );
         return ExchangeCandles.builder()
+            .coinExchangeType(getExchangeType())
             .candleUnit(tradingTerm.getCandleUnit())
             .coinType(param.getCoinType())
             .candleList(
@@ -176,6 +185,41 @@ public class UpbitExchangeService implements ExchangeService {
             .executedVolume(response.getExecutedVolume())
             .tradeCount(response.getTradeCount())
             .tradeList(response.getTradeList())
+            .build();
+    }
+
+    private ExchangeTicker getExchangeTicker(ExchangeTradingInfoParam param) {
+        TickerResponse response = upbitClient.getTicker(
+            TickerRequest.builder()
+                .marketList(Arrays.asList(MarketType.of(param.getCoinType()).getCode()))
+                .build()
+        );
+        return ExchangeTicker.builder()
+            .market(response.getMarket())
+            .tradeDate(response.getTradeDate())
+            .tradeTime(response.getTradeTime())
+            .tradeDateKst(response.getTradeDateKst())
+            .tradeTimeKst(response.getTradeTimeKst())
+            .openingPrice(response.getOpeningPrice())
+            .highPrice(response.getHighPrice())
+            .lowPrice(response.getLowPrice())
+            .tradePrice(response.getTradePrice())
+            .prevClosingPrice(response.getPrevClosingPrice())
+            .change(response.getChange())
+            .changePrice(response.getChangePrice())
+            .changeRate(response.getChangeRate())
+            .signedChangePrice(response.getSignedChangePrice())
+            .signedChangeRate(response.getSignedChangeRate())
+            .tradeVolume(response.getTradeVolume())
+            .accTradePrice(response.getAccTradePrice())
+            .accTradePrice24h(response.getAccTradePrice24h())
+            .accTradeVolume(response.getAccTradeVolume())
+            .accTradeVolume24h(response.getAccTradeVolume24h())
+            .highest52WeekPrice(response.getHighest52WeekPrice())
+            .highest52WeekDate(response.getHighest52WeekDate())
+            .lowest52WeekPrice(response.getLowest52WeekPrice())
+            .lowest52WeekDate(response.getLowest52WeekDate())
+            .timestamp(response.getTimestamp())
             .build();
     }
 }
