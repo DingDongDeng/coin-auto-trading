@@ -181,12 +181,12 @@ public class UpbitResponse {
         @JsonProperty("trade_count")
         private Long tradeCount; // 해당 주문에 걸린 체결 수
         @JsonProperty("trades")
-        private List<Trade> tradeList; // 체결
+        private List<TradeResponse> tradeList; // 체결
     }
 
     @ToString
     @Getter
-    public static class Trade {
+    public static class TradeResponse {
 
         @JsonProperty("market")
         private String market; // 마켓의 유일 키
@@ -270,4 +270,31 @@ public class UpbitResponse {
         private Integer unit; // 분 단위(유닛)
     }
 
+    @ToString
+    @Getter
+    public static class OrderBookResponse {
+
+        @JsonProperty("market")
+        private String market; // 마켓 코드
+        @JsonProperty("timestamp")
+        private Long timestamp; // 호가 생성 시각
+        @JsonProperty("total_ask_size")
+        private Double totalAskSize; // 호가 매도 총 잔량
+        @JsonProperty("total_bid_size")
+        private Double totalBidSize; // 호가 매수 총 잔량
+        @JsonProperty("orderbook_units")
+        private List<OrderBookUnitResponse> orderbookUnitList; // 호가
+    }
+
+    public static class OrderBookUnitResponse {
+
+        @JsonProperty("ask_price")
+        private Double askPrice; // 매도호가
+        @JsonProperty("bid_price")
+        private Double bidPrice; // 매수호가
+        @JsonProperty("ask_size")
+        private Double askSize; // 매도 잔량
+        @JsonProperty("bid_size")
+        private Double bidSize; // 매수 잔량
+    }
 }

@@ -3,7 +3,7 @@ package com.dingdongdeng.coinautotrading.exchange.service.model;
 import com.dingdongdeng.coinautotrading.common.type.OrderState;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
-import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.Trade;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.TradeResponse;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,5 +30,5 @@ public class ExchangeOrder {
     private Double locked; // 거래에 사용중인 비용
     private Double executedVolume; // 체결된 양
     private Long tradeCount; // 해당 주문에 걸린 체결 수
-    private List<Trade> tradeList; // 체결
+    private List<TradeResponse> tradeList; // 체결
 }

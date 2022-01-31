@@ -114,11 +114,11 @@ public class UpbitRequest {
         private Integer unit; // 분 단위. 가능한 값 : 1, 3, 5, 15, 10, 30, 60, 240
         private String market; // 마켓 ID (필수)
         @JsonIgnore
-        private LocalDateTime toKst; // 마지막 캔들 시각 (비우면 가장 최근 시각), UTC 기준
+        private LocalDateTime toKst;
         private Integer count; // 캔들 개수(최대 200개)
 
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-        private LocalDateTime getTo() {
+        private LocalDateTime getTo() { // 마지막 캔들 시각 (비우면 가장 최근 시각), UTC 기준
             if (Objects.isNull(toKst)) {
                 return null;
             }
@@ -128,4 +128,13 @@ public class UpbitRequest {
         }
     }
 
+    @ToString
+    @Getter
+    @Builder
+    @JsonInclude(Include.NON_NULL)
+    public static class OrderBookRequest {
+
+        @JsonProperty("markets")
+        private List<String> marketList;
+    }
 }
