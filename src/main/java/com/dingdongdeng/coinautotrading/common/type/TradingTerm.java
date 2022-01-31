@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum TradingTerm {
+    EXTREAM_SCALPING("극한의 스캘핑", CandleUnit.UNIT_1M),
     SCALPING("스캘핑", CandleUnit.UNIT_15M),
     DAY("데이", CandleUnit.UNIT_1D),
     SWING("스윙", CandleUnit.UNIT_1W),
