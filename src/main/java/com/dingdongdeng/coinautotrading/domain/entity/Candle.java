@@ -29,7 +29,7 @@ public class Candle {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "exchange_candle_id")
+    @Column(name = "candle_id")
     private Long id;
 
     @Enumerated(EnumType.STRING)
@@ -53,18 +53,18 @@ public class Candle {
     @Column(name = "opening_price")
     private Double openingPrice; // 시가
 
-    @Column(name = "executed_volume")
+    @Column(name = "high_price")
     private Double highPrice; // 고가
 
-    @Column(name = "executed_volume")
+    @Column(name = "low_price")
     private Double lowPrice; // 저가
 
-    @Column(name = "executed_volume")
+    @Column(name = "trade_price")
     private Double tradePrice; // 종가
 
-    @Column(name = "executed_volume")
+    @Column(name = "candle_acc_trade_price")
     private Double candleAccTradePrice; // 누적 거래 금액
 
-    @Column(name = "executed_volume")
+    @Column(name = "candle_acc_trade_volume")
     private Double candleAccTradeVolume; // 누적 거래량
 }
