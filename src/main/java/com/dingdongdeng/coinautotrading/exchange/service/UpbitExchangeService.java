@@ -190,7 +190,7 @@ public class UpbitExchangeService implements ExchangeService {
     private ExchangeTicker getExchangeTicker(ExchangeTradingInfoParam param) {
         TickerResponse response = upbitClient.getTicker(
             TickerRequest.builder()
-                .market(MarketType.of(param.getCoinType()).getCode())
+                .marketList(List.of(MarketType.of(param.getCoinType()).getCode()))
                 .build()
         ).stream().findFirst().orElseThrow(NoSuchElementException::new);
         return ExchangeTicker.builder()

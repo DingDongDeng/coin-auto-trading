@@ -32,7 +32,7 @@ public class QueryParamsConverter {
                     List<String> str = (List<String>) ((List) value).stream()
                         .map(String::valueOf)
                         .collect(Collectors.toList());
-                    str.forEach(s -> params.add(key + "[]", s));
+                    str.forEach(s -> params.add(key + "", s));
                     return;
                 }
                 params.add(key, String.valueOf(value));

@@ -48,7 +48,7 @@ public class UpbitRequest {
 
         @JsonProperty("market")
         private String market; // 마켓 아이디
-        @JsonProperty("uuids")
+        @JsonProperty("uuids[]")
         private List<String> uuidList; // 주문 UUID의 목록
         @JsonProperty("identifiers")
         private List<String> identifierList; // 주문 identifier의 목록
@@ -135,7 +135,7 @@ public class UpbitRequest {
     public static class OrderBookRequest {
 
         @JsonProperty("markets")
-        private String market; //fixme List 파싱이 안됨 400에러
+        private List<String> marketList;
     }
 
     @ToString
@@ -145,6 +145,6 @@ public class UpbitRequest {
     public static class TickerRequest {
 
         @JsonProperty("markets")
-        private String market; //fixme List 파싱이 안됨 400에러
+        private List<String> marketList;
     }
 }

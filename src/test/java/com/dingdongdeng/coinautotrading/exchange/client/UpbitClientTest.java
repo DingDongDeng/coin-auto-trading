@@ -64,6 +64,22 @@ class UpbitClientTest {
     }
 
     @Test
+    public void 주문_리스트_조회_테스트() {
+        // 리스트 조회
+        OrderInfoListRequest orderInfoListRequest = OrderInfoListRequest.builder()
+            .market("KRW-ETH")
+            .identifierList(null)
+            .state(null)
+            .stateList(List.of(State.wait, State.watch))
+            .page(1)
+            .limit(100)
+            .orderBy("desc")
+            .build();
+        List<OrderResponse> orderInfoListResponse = upbitClient.getOrderInfoList(orderInfoListRequest);
+        log.info("result orderInfoListResponse: {}", orderInfoListResponse);
+    }
+
+    @Test
     public void 주문과_조회와_취소_테스트() {
 
         // 주문
@@ -122,13 +138,21 @@ class UpbitClientTest {
 
     @Test
     public void 주문_호가_조회_테스트() {
-        List<OrderBookResponse> response = upbitClient.getOrderBook(OrderBookRequest.builder().market(MarketType.KRW_ETH.getCode()).build());
+        List<OrderBookResponse> response = upbitClient.getOrderBook(
+            OrderBookRequest.builder()
+                .marketList(List.of(MarketType.KRW_ETH.getCode()))
+                .build()
+        );
         log.info("result : {}", response);
     }
 
     @Test
     public void 현재가_조회_테스트() {
-        List<TickerResponse> response = upbitClient.getTicker(TickerRequest.builder().market(MarketType.KRW_ETH.getCode()).build());
+        List<TickerResponse> response = upbitClient.getTicker(
+            TickerRequest.builder()
+                .marketList(List.of(MarketType.KRW_ETH.getCode()))
+                .build()
+        );
         log.info("result : {}", response);
     }
 
