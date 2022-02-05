@@ -163,7 +163,7 @@ public class UpbitResponse {
         private State state; // 주문 상태
         @JsonProperty("market")
         private String market; // 마켓의 유일키
-        @JsonFormat(pattern = "yyyy-MM-ddTHH:mm:ssXXX")
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
         @JsonProperty("created_at")
         private LocalDateTime createdAt; // 주문 생성 시간
         @JsonProperty("volume")
@@ -222,7 +222,7 @@ public class UpbitResponse {
         private State state; // 주문 상태
         @JsonProperty("market")
         private String market; // 마켓의 유일키
-        @JsonFormat(pattern = "yyyy-MM-ddTHH:mm:ssXXX")
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
         @JsonProperty("created_at")
         private LocalDateTime createdAt; // 주문 생성 시간
         @JsonProperty("volume")
