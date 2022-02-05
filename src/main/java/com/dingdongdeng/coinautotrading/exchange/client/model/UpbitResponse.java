@@ -3,6 +3,7 @@ package com.dingdongdeng.coinautotrading.exchange.client.model;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.OrdType;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.Side;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.State;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -162,8 +163,9 @@ public class UpbitResponse {
         private State state; // 주문 상태
         @JsonProperty("market")
         private String market; // 마켓의 유일키
+        @JsonFormat(pattern = "yyyy-MM-ddTHH:mm:ssXXX")
         @JsonProperty("created_at")
-        private String createdAt; // 주문 생성 시간
+        private LocalDateTime createdAt; // 주문 생성 시간
         @JsonProperty("volume")
         private Double volume; // 사용자가 입력한 주문 양
         @JsonProperty("remaining_volume")

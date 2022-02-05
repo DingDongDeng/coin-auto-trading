@@ -4,6 +4,7 @@ import com.dingdongdeng.coinautotrading.common.type.OrderState;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.TradeResponse;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,7 +22,7 @@ public class ExchangeOrder {
     private Double avgPrice; // 체결 가격의 평균가
     private OrderState orderState; // 주문 상태
     private String market; // 마켓의 유일키
-    private String createdAt; // 주문 생성 시간
+    private LocalDateTime createdAt; // 주문 생성 시간
     private Double volume; // 사용자가 입력한 주문 양
     private Double remainingVolume; // 체결 후 남은 주문 양
     private Double reservedFee; // 수수료로 예약된 비용
