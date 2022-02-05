@@ -25,4 +25,6 @@ public class TradingTask {
     // 주문 취소
     private String orderId;
 
+    private String tag; // 주문의 의도를 구분하기 위한 값(ex: 손절 주문, 익절 주문, 매수 주문 등)
+
 }
