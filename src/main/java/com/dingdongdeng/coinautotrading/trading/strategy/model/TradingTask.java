@@ -21,6 +21,8 @@ public class TradingTask {
     private Double volume;
     private Double price;
     private PriceType priceType;
+
+    // 주문 취소
     private String orderId;
 
 }
