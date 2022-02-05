@@ -1,5 +1,6 @@
 package com.dingdongdeng.coinautotrading.exchange.service.model;
 
+import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import java.util.List;
 import lombok.Builder;
@@ -11,6 +12,7 @@ import lombok.ToString;
 @Builder
 public class ExchangeTradingInfo {
 
+    private CoinExchangeType coinExchangeType;
     private CoinType coinType;
     /**
      * 계좌
