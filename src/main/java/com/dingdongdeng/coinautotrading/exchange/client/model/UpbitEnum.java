@@ -40,6 +40,14 @@ public class UpbitEnum {
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException(coinType.name()));
         }
+
+        public static MarketType of(String code) {
+            return Arrays.stream(MarketType.values())
+                .filter(type -> type.getCode().equalsIgnoreCase(code))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException(code));
+
+        }
     }
 
     @Getter

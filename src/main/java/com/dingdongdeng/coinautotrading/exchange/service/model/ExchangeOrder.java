@@ -1,5 +1,6 @@
 package com.dingdongdeng.coinautotrading.exchange.service.model;
 
+import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.OrderState;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
@@ -21,7 +22,7 @@ public class ExchangeOrder {
     private Double price; // 주문 당시 화폐 가격
     private Double avgPrice; // 체결 가격의 평균가
     private OrderState orderState; // 주문 상태
-    private String market; // 마켓의 유일키
+    private CoinType coinType;
     private LocalDateTime createdAt; // 주문 생성 시간
     private Double volume; // 사용자가 입력한 주문 양
     private Double remainingVolume; // 체결 후 남은 주문 양

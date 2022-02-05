@@ -219,11 +219,12 @@ public class UpbitResponse {
         @JsonProperty("price")
         private Double price; // 주문 당시 화폐 가격
         @JsonProperty("state")
-        private String state; // 주문 상태
+        private State state; // 주문 상태
         @JsonProperty("market")
         private String market; // 마켓의 유일키
+        @JsonFormat(pattern = "yyyy-MM-ddTHH:mm:ssXXX")
         @JsonProperty("created_at")
-        private String createdAt; // 주문 생성 시간
+        private LocalDateTime createdAt; // 주문 생성 시간
         @JsonProperty("volume")
         private Double volume; // 사용자가 입력한 주문 양
         @JsonProperty("remaining_volume")
