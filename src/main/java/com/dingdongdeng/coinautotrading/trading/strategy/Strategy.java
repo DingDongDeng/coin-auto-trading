@@ -9,6 +9,7 @@ import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderPara
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeTradingInfo;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeTradingInfoParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,24 +25,26 @@ public abstract class Strategy {
 
         ExchangeTradingInfo exchangeTradingInfo = exchangeService.getTradingInformation(makeExchangeTradingInfoParam(coinType, tradingTerm));
 
-        TradingTask tradingTask = this.makeTradingTask(exchangeTradingInfo);
-        log.info("tradingTask : {}", tradingTask);
+        List<TradingTask> tradingTaskList = this.makeTradingTask(exchangeTradingInfo);
+        log.info("tradingTaskList : {}", tradingTaskList);
 
-        // 매수, 매도 주문
-        if (isOrder(tradingTask)) {
-            exchangeService.order(makeExchangeOrderParam(tradingTask));
-            return;
-        }
+        tradingTaskList.forEach(tradingTask -> {
+            // 매수, 매도 주문
+            if (isOrder(tradingTask)) {
+                exchangeService.order(makeExchangeOrderParam(tradingTask));
+                return;
+            }
 
-        // 주문 취소
-        if (isOrderCancel(tradingTask)) {
-            exchangeService.orderCancel(makeExchangeOrderCancelParam(tradingTask));
-        }
+            // 주문 취소
+            if (isOrderCancel(tradingTask)) {
+                exchangeService.orderCancel(makeExchangeOrderCancelParam(tradingTask));
+            }
 
-        // 아무것도 하지 않음
+            // 아무것도 하지 않음
+        });
     }
 
-    abstract protected TradingTask makeTradingTask(ExchangeTradingInfo tradingInfo);
+    abstract protected List<TradingTask> makeTradingTask(ExchangeTradingInfo tradingInfo);
 
     private boolean isOrder(TradingTask tradingTask) {
         OrderType orderType = tradingTask.getOrderType();
