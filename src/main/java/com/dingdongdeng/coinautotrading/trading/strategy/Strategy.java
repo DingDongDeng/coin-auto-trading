@@ -4,6 +4,7 @@ import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.exchange.service.ExchangeService;
+import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrder;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderCancelParam;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderParam;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeTradingInfo;
@@ -31,7 +32,8 @@ public abstract class Strategy {
         tradingTaskList.forEach(tradingTask -> {
             // 매수, 매도 주문
             if (isOrder(tradingTask)) {
-                exchangeService.order(makeExchangeOrderParam(tradingTask));
+                ExchangeOrder order = exchangeService.order(makeExchangeOrderParam(tradingTask));
+                handleOrderResult(order, tradingTask);
                 return;
             }
 
@@ -45,6 +47,8 @@ public abstract class Strategy {
     }
 
     abstract protected List<TradingTask> makeTradingTask(ExchangeTradingInfo tradingInfo);
+
+    abstract protected void handleOrderResult(ExchangeOrder order, TradingTask tradingTask);
 
     private boolean isOrder(TradingTask tradingTask) {
         OrderType orderType = tradingTask.getOrderType();
