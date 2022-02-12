@@ -9,6 +9,7 @@ import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderCanc
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderParam;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeTradingInfo;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeTradingInfoParam;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public abstract class Strategy {
             // 매수, 매도 주문
             if (isOrder(tradingTask)) {
                 ExchangeOrder order = exchangeService.order(makeExchangeOrderParam(tradingTask));
-                handleOrderResult(order, tradingTask);
+                handleOrderResult(order, makeTradingResult(tradingTask, order));
                 return;
             }
 
@@ -48,7 +49,7 @@ public abstract class Strategy {
 
     abstract protected List<TradingTask> makeTradingTask(ExchangeTradingInfo tradingInfo);
 
-    abstract protected void handleOrderResult(ExchangeOrder order, TradingTask tradingTask);
+    abstract protected void handleOrderResult(ExchangeOrder order, TradingResult tradingResult);
 
     private boolean isOrder(TradingTask tradingTask) {
         OrderType orderType = tradingTask.getOrderType();
@@ -83,4 +84,16 @@ public abstract class Strategy {
             .build();
     }
 
+    private TradingResult makeTradingResult(TradingTask tradingTask, ExchangeOrder exchangeOrder) {
+        return TradingResult.builder()
+            .strategyName(tradingTask.getStrategyName())
+            .coinType(tradingTask.getCoinType())
+            .orderType(tradingTask.getOrderType())
+            .volume(tradingTask.getVolume())
+            .price(tradingTask.getPrice())
+            .priceType(tradingTask.getPriceType())
+            .orderId(exchangeOrder.getOrderId())
+            .tag(tradingTask.getTag())
+            .build();
+    }
 }
