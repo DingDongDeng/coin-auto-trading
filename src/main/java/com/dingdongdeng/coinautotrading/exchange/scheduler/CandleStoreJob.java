@@ -27,6 +27,9 @@ public abstract class CandleStoreJob implements Job {
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
+        if (true) {
+            return; //fixme 스케줄러가 아니라 백테스팅 세팅할때 로직 사용하도록하자
+        }
         log.info("run CandleStorJob");
         TARGET_COINT_LIST.forEach(coinType -> {
             Candle candle = candleService.findOneLastCandle(exchangeCandleService.getCoinExchangeType(), coinType, CANDLE_UNIT)
