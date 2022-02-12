@@ -56,6 +56,7 @@ public class RsiTradingStrategy extends Strategy {
             .filter(o -> ChronoUnit.MINUTES.between(o.getCreatedAt(), LocalDateTime.now()) > 2)
             .collect(Collectors.toList());
         if (!oldUndecidedBuyOrderList.isEmpty()) {
+            log.info("미체결 상태의 오래된 주문을 취소");
             return oldUndecidedBuyOrderList.stream()
                 .map(o -> TradingTask.builder().orderId(o.getOrderId()).build())
                 .collect(Collectors.toList());
@@ -140,6 +141,7 @@ public class RsiTradingStrategy extends Strategy {
             );
         }
 
+        log.info("아무것도 하지 않음");
         return List.of(new TradingTask());
     }
 

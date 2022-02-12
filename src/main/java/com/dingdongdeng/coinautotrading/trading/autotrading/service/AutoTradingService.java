@@ -31,13 +31,14 @@ public class AutoTradingService {
         Strategy strategy = strategyFactory.create(param.getStrategyCode(), exchangeService, param.getCoinType(), param.getTradingTerm());
 
         while (isRunning()) {
-            log.info("------ beginning of autotrading cycle -----");
+            log.info("\n------------------------------ beginning of autotrading cycle -----------------------------------------");
             delay(1000);
             try {
                 strategy.execute();
             } catch (Exception e) {
                 log.error("strategy execute exception : {}", e.getMessage(), e); //fixme 슬랙(이메일은 에러 많이났을때 난사해서 문제될수도)
             }
+            log.info("\n------------------------------ end of autotrading cycle -----------------------------------------");
         }
     }
 
