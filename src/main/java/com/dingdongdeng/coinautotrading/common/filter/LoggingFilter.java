@@ -1,6 +1,5 @@
-package com.dingdongdeng.coinautotrading.common.config.filter;
+package com.dingdongdeng.coinautotrading.common.filter;
 
-import com.dingdongdeng.coinautotrading.common.logging.LoggingUtils;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
@@ -22,7 +21,7 @@ public class LoggingFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
 
-        LoggingUtils.track(); //logging trackingId
+        LoggingUtils.trace();
         ContentCachingRequestWrapper wrappingRequest = new ContentCachingRequestWrapper(request);
         ContentCachingResponseWrapper wrappingResponse = new ContentCachingResponseWrapper(response);
 

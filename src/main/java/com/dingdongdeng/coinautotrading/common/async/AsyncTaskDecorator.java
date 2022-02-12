@@ -1,6 +1,6 @@
-package com.dingdongdeng.coinautotrading.common.config.async;
+package com.dingdongdeng.coinautotrading.common.async;
 
-import com.dingdongdeng.coinautotrading.common.logging.LoggingUtils;
+import com.dingdongdeng.coinautotrading.common.filter.LoggingUtils;
 import java.util.Map;
 import org.springframework.core.task.TaskDecorator;
 

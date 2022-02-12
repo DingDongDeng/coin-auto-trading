@@ -1,6 +1,6 @@
 package com.dingdongdeng.coinautotrading.common.client.config;
 
-import com.dingdongdeng.coinautotrading.common.logging.LoggingUtils;
+import com.dingdongdeng.coinautotrading.common.filter.LoggingUtils;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;

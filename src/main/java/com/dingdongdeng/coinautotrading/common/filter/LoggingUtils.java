@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading.common.logging;
+package com.dingdongdeng.coinautotrading.common.filter;
 
 import java.util.Map;
 import java.util.Objects;
@@ -10,9 +10,9 @@ import org.slf4j.MDC;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LoggingUtils {
 
-    public static void track() {
+    public static void trace() {
         clear();
-        put("trackingId", UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10));
+        put("traceId", UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10));
     }
 
     public static void put(String key, String value) {

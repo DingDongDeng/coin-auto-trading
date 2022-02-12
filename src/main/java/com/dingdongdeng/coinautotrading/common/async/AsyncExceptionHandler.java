@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading.common.config.async;
+package com.dingdongdeng.coinautotrading.common.async;
 
 import java.lang.reflect.Method;
 import lombok.extern.slf4j.Slf4j;

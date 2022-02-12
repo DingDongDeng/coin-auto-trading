@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading.common.config.filter;
+package com.dingdongdeng.coinautotrading.common.filter;
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;

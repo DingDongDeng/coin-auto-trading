@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading.common.config.async;
+package com.dingdongdeng.coinautotrading.common.async;
 
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.context.annotation.Bean;

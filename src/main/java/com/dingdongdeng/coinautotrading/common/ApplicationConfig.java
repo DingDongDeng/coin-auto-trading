@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading.common.config;
+package com.dingdongdeng.coinautotrading.common;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
