@@ -10,6 +10,9 @@ upbit:
     connectionTimeout: 5000
 
 spring:
+  profiles:
+    active: test
+
   jpa:
     open-in-view: false
     hibernate:
