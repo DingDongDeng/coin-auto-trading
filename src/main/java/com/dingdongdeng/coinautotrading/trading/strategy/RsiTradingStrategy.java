@@ -5,71 +5,151 @@ import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.exchange.service.ExchangeService;
+import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrder;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeTradingInfo;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.type.TradingTag;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class RsiTradingStrategy extends Strategy {
 
-    //fixme 백테스팅 고려하기
-    public RsiTradingStrategy(CoinType coinType, TradingTerm tradingTerm, ExchangeService processor) {
+    private final double STANDARD_OF_LOW_RSI = 0.25;
+    private final double STANDARD_OF_PROFIT_RATE = 1.3;
+    private final double STANDARD_OF_LOSS_RATE = 0.7;
+    private final double ORDER_PRICE = 5000;
+    private final double ACCOUNT_BALANCE_LIMIT = 3000000; //계좌 금액 안전 장치
+
+    private final StrategyAssistant assistant;
+
+    public RsiTradingStrategy(CoinType coinType, TradingTerm tradingTerm, ExchangeService processor, StrategyAssistant assistant) {
         super(coinType, tradingTerm, processor);
+        this.assistant = assistant;
     }
 
     @Override
-    protected TradingTask makeTradingTask(ExchangeTradingInfo tradingInfo) {
-        CoinType coinType = tradingInfo.getCoinType();
-        double balance = tradingInfo.getBalance();
-        double rsi = tradingInfo.getRsi();
+    protected List<TradingTask> makeTradingTask(ExchangeTradingInfo tradingInfo) {
 
-        double volume = 1.0;
-        double price = 5000.0;
+        log.info("tradingInfo : {}", tradingInfo);
+        CoinType coinType = tradingInfo.getCoinType();
+        double rsi = tradingInfo.getRsi();
+        List<ExchangeOrder> undecidedOrderList = tradingInfo.getUndecidedExchangeOrderList();
 
         /**
-         * 계좌에 충분한 돈이 있는지 확인
-         * 미체결된 주문이 아무것도 없고, rsi가 0.25 미만이면 현재 가격으로 지정가 매수 주문을 한다.
-         *
-         * 매수주문이 체결상태면
-         * 손실금액이 30%지점에 지정가 손절 매도주문을 한다
-         * 이익금액이 30%지점에 지정가 익절 매도주문을 한다
-         *
-         * 매수주문이 미체결상태면
-         * 주문을 넣은지 10초가 지났고, rsi가 0.25미만이면 주문을 취소한다
-         *
-         * 손절or익절 매도 주문이 체결되면 모든 포지션을 정리한다
-         *
-         *
-         * optional
-         * //하락장 방어로직
-         * 손절이 연속되면, 현재가를 저장하고 매매를 멈춘다
-         * 이전에 저장한 현재가보다 가격이 20%높아지면 다시 매매를 시작한다
+         * 계좌 상태가 거래 가능한지 확인
          */
-
-        //미체결된 주문이 있다면??
-        //체결된 주문이 있다면??
-        // 손절 기준은?
-        // 익절 기준은?
-        if (rsi < 0.25) {
-            return TradingTask.builder()
-                .coinType(coinType)
-                .orderType(OrderType.BUY)
-                .volume(volume)
-                .price(price)
-                .priceType(PriceType.LIMIT_PRICE)
-                .build();
+        if (!assistant.isEnoughBalance(tradingInfo.getBalance(), ACCOUNT_BALANCE_LIMIT)) {
+            log.warn("계좌가 거래 가능한 상태가 아님");
+            return List.of(new TradingTask());
         }
 
-        if (rsi > 0.5) {
-            return TradingTask.builder()
-                .coinType(coinType)
-                .orderType(OrderType.SELL)
-                .volume(volume)
-                .price(price)
-                .priceType(PriceType.LIMIT_PRICE)
-                .build();
+        /**
+         * 미체결 상태가 너무 오래되면, 주문을 취소
+         */
+        List<ExchangeOrder> oldUndecidedBuyOrderList = undecidedOrderList.stream()
+            .filter(o -> ChronoUnit.MINUTES.between(o.getCreatedAt(), LocalDateTime.now()) > 2)
+            .collect(Collectors.toList());
+        if (!oldUndecidedBuyOrderList.isEmpty()) {
+            return oldUndecidedBuyOrderList.stream()
+                .map(o -> TradingTask.builder().orderId(o.getOrderId()).build())
+                .collect(Collectors.toList());
         }
 
-        return TradingTask.builder().build();
+        /**
+         * 매수 주문이 체결된 후 현재 가격을 모니터링하다가 익절/손절 주문을 요청함
+         */
+        TradingResult buyTradingResult = assistant.findBuyTradingResult(this.getClass());
+        TradingResult profitTradingResult = assistant.findProfitTradingResult(this.getClass());
+        TradingResult lossTradingResult = assistant.findLossTradingResult(this.getClass());
+        if (Objects.nonNull(buyTradingResult.getId()) && undecidedOrderList.stream().noneMatch(o -> o.getOrderId().equals(buyTradingResult.getOrderId()))) {
+            log.info("매수 주문이 체결된 상태임");
+            double currentPrice = tradingInfo.getTicker().getTradePrice();
+
+            // 익절/손절 중복 요청 방지
+            if (Objects.nonNull(profitTradingResult.getId()) || Objects.nonNull(lossTradingResult.getId())) {
+                log.info("익절, 손절 주문을 했었음");
+
+                // 익절/손절 체결된 경우 정보 초기화
+                if (undecidedOrderList.isEmpty()) {
+                    log.info("익절, 손절 주문이 체결되었음");
+                    //매수, 익절, 손절에 대한 정보를 모두 초기화
+                    assistant.delete(profitTradingResult);
+                    assistant.delete(lossTradingResult);
+                    assistant.delete(assistant.findBuyTradingResult(this.getClass()));
+                }
+                return List.of(new TradingTask());
+            }
+
+            //익절 주문
+            if (currentPrice > buyTradingResult.getPrice() * STANDARD_OF_PROFIT_RATE) {
+                log.info("익절 주문 요청");
+                return List.of(
+                    TradingTask.builder()
+                        .coinType(coinType)
+                        .orderType(OrderType.SELL)
+                        .volume(buyTradingResult.getVolume())
+                        .price(buyTradingResult.getPrice() * STANDARD_OF_PROFIT_RATE)
+                        .priceType(PriceType.LIMIT_PRICE)
+                        .tag(TradingTag.PROFIT)
+                        .build()
+                );
+            }
+
+            //손절 주문
+            if (currentPrice < buyTradingResult.getPrice() * STANDARD_OF_LOSS_RATE) {
+                log.info("손절 주문 요청");
+                return List.of(
+                    TradingTask.builder()
+                        .coinType(coinType)
+                        .orderType(OrderType.SELL)
+                        .volume(buyTradingResult.getVolume())
+                        .price(buyTradingResult.getPrice() * STANDARD_OF_LOSS_RATE)
+                        .priceType(PriceType.LIMIT_PRICE)
+                        .tag(TradingTag.LOSS)
+                        .build()
+
+                );
+            }
+
+            return List.of(new TradingTask());
+        }
+
+        /**
+         * rsi가 조건을 만족하고, 미체결중인 내역이 없다면 매수 주문을 요청함
+         */
+        if (isBuyTiming(rsi, undecidedOrderList)) {
+            log.info("매수 주문 요청");
+            double price = ORDER_PRICE;
+            double volume = price / tradingInfo.getTicker().getTradePrice();
+
+            return List.of(
+                TradingTask.builder()
+                    .coinType(coinType)
+                    .orderType(OrderType.BUY)
+                    .volume(volume)
+                    .price(price)
+                    .priceType(PriceType.LIMIT_PRICE)
+                    .tag(TradingTag.BUY)
+                    .build()
+            );
+        }
+
+        return List.of(new TradingTask());
     }
+
+    @Override
+    protected void handleOrderResult(ExchangeOrder order, TradingResult tradingResult) {
+        assistant.saveTradingResult(tradingResult);
+    }
+
+    private boolean isBuyTiming(double rsi, List<ExchangeOrder> undecidedOrderList) {
+        return undecidedOrderList.isEmpty() && rsi < STANDARD_OF_LOW_RSI;
+    }
+
 }
