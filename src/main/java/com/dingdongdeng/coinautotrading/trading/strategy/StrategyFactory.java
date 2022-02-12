@@ -12,9 +12,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class StrategyFactory {
 
+    private final StrategyAssistant strategyAssistant;
+
     public Strategy create(StrategyCode strategyCode, ExchangeService exchangeService, CoinType coinType, TradingTerm tradingTerm) {
         if (strategyCode == StrategyCode.RSI) {
-            return new RsiTradingStrategy(coinType, tradingTerm, exchangeService);
+            return new RsiTradingStrategy(coinType, tradingTerm, exchangeService, strategyAssistant);
         }
 
         throw new NoSuchElementException("not found strategy code : " + strategyCode);
