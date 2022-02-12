@@ -9,14 +9,19 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
 
 @ToString
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@RedisHash("tradingTask")
 public class TradingTask {
 
+    @Id
+    private String id;
     private CoinType coinType;
     private OrderType orderType;
     private Double volume;
