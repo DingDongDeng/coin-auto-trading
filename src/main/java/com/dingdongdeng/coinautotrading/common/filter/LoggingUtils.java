@@ -3,11 +3,10 @@ package com.dingdongdeng.coinautotrading.common.filter;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 import org.slf4j.MDC;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public class LoggingUtils {
 
     public static void trace() {
