@@ -67,7 +67,7 @@ class AdminControllerTest {
             .build();
 
         Mockito.doNothing()
-            .when(adminService).command(command, request);
+            .when(adminService).command(Mockito.any(), Mockito.any());
 
         MvcResult result = this.mockMvc.perform(
             RestDocumentationRequestBuilders.post("/admin/command/{command}", command)
