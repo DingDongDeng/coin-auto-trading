@@ -1,7 +1,6 @@
 ifndef::snippets[]
 :snippets: ../../../build/generated-snippets
 endif::[]
-
 = API Document
 :doctype: book
 :icons: font
@@ -26,19 +25,13 @@ endif::[]
 // 응답 : operation::/admin/command[snippets='http-response,response-fields']
 
 === 자동매매 명령어 API
-
 ==== 설명
-
 ----
 자동매매 명령어 API 입니다.
 커맨드에 따라 매매를 시작,정지할 수 있고 관련 파라미터를 설정하여 커스텀하게 사용이 가능합니다.
 ----
-
 ==== 요청
-
 operation::/admin/command[snippets='curl-request,http-request']
-
 ==== 응답
-
 operation::/admin/command[snippets='http-response,response-fields']
 
