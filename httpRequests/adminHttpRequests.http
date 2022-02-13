@@ -13,4 +13,10 @@ Content-Type: application/json
 POST localhost:8080/admin/command/stop
 Content-Type: application/json
 
+{
+  "coinType": "ETHEREUM",
+  "coinExchangeType": "UPBIT",
+  "tradingTerm": "SCALPING",
+  "strategyCode": "RSI"
+}
 ###
