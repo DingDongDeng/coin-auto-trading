@@ -1,14 +1,16 @@
 plugins {
     id 'org.springframework.boot' version '2.6.2'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id "org.asciidoctor.jvm.convert" version "3.3.2"
     id 'java'
 }
 
 group = 'com.dingdongdeng'
-version = '0.0.1-SNAPSHOT'
+version = '1.1.0-RELEASE'
 sourceCompatibility = '11'
 
 configurations {
+    asciidoctorExt
     compileOnly {
         extendsFrom annotationProcessor
     }
@@ -16,6 +18,10 @@ configurations {
 
 repositories {
     mavenCentral()
+}
+
+ext {
+    snippetsDir = file('build/generated-snippets')
 }
 
 dependencies {
@@ -31,7 +37,7 @@ dependencies {
     implementation 'com.auth0:java-jwt:3.18.2' // upbit api 헤더 생성을 위함
 
     implementation 'com.h2database:h2'
-    implementation ('it.ozimov:embedded-redis:0.7.3'){
+    implementation('it.ozimov:embedded-redis:0.7.3') {
         exclude group: "org.slf4j", module: "slf4j-simple"
     }
 
@@ -39,14 +45,35 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-    //fixme resdoc
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
 
     // test
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 }
 
 test {
+    //fixme 좀 더 우아하게좀....
+    String accessKey = findProperty('UPBIT_ACCESS_KEY') ?: 'empty'
+    String secretKey = findProperty('UPBIT_SECRET_KEY') ?: 'empty'
+
+    systemProperty "UPBIT_ACCESS_KEY", accessKey
+    systemProperty "UPBIT_SECRET_KEY", secretKey
+
+    outputs.dir snippetsDir
     useJUnitPlatform()
+}
+
+asciidoctor {
+    configurations 'asciidoctorExt'
+    inputs.dir snippetsDir
+    dependsOn test
+    doLast {
+        copy {
+            from "${asciidoctor.outputDir}"
+            into 'src/main/resources/static/docs'
+        }
+    }
 }

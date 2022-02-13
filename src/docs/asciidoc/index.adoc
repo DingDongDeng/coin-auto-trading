@@ -1,0 +1,37 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+= API Document
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 3
+:sectlinks:
+:docinfo: shared-head
+:operation-curl-request-title: curl
+:operation-http-request-title: request http
+:operation-path-parameters-title: request path parameters
+:operation-request-parameters-title: request params
+:operation-request-headers-title: request headers
+:operation-request-body-title: request body
+:operation-http-response-title: response http
+:operation-response-body-title: response body
+:operation-response-fields-title: response fields
+
+== CoinAutoTrading
+// 템플릿 종류
+// 요청 : operation::/admin/command[snippets='curl-request,http-request,request-headers,path-parameters,request-parameters,request-fields']
+// 응답 : operation::/admin/command[snippets='http-response,response-fields']
+
+=== 자동매매 명령어 API
+==== 설명
+----
+자동매매 명령어 API 입니다.
+커맨드에 따라 매매를 시작,정지할 수 있고 관련 파라미터를 설정하여 커스텀하게 사용이 가능합니다.
+----
+==== 요청
+operation::/admin/command[snippets='curl-request,http-request']
+==== 응답
+operation::/admin/command[snippets='http-response,response-fields']
+
