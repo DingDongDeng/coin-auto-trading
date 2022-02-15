@@ -101,6 +101,8 @@ public class UpbitExchangeService implements ExchangeService {
         AccountsResponse accounts = upbitClient.getAccounts().stream().findFirst().orElseThrow(() -> new NoSuchElementException("계좌를 찾지 못함"));
 
         return ExchangeTradingInfo.builder()
+            .coinType(param.getCoinType())
+            .coinExchangeType(getExchangeType())
             .currency(accounts.getCurrency())
             .balance(accounts.getBalance())
             .locked(accounts.getLocked())
