@@ -126,8 +126,8 @@ public class RsiTradingStrategy extends Strategy {
          */
         if (isBuyTiming(rsi, undecidedOrderList)) {
             log.info("매수 주문 요청");
-            double price = ORDER_PRICE;
-            double volume = price / tradingInfo.getTicker().getTradePrice();
+            double price = tradingInfo.getTicker().getTradePrice();
+            double volume = ORDER_PRICE / price;
 
             return List.of(
                 TradingTask.builder()
