@@ -195,7 +195,7 @@ public class RsiTradingStrategy extends Strategy {
     }
 
     private boolean isBuyTiming(double rsi, TradingResult buyTradingResult) {
-        return Objects.isNull(buyTradingResult.getId()) && rsi < STANDARD_OF_LOW_RSI;
+        return !buyTradingResult.isExist() && rsi < STANDARD_OF_LOW_RSI;
     }
 
     private boolean isTooOld(TradingResult tradingResult) {

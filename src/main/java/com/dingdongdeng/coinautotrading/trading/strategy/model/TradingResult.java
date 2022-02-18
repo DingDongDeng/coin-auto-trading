@@ -44,7 +44,7 @@ public class TradingResult {
     }
 
     public boolean isExist() {
-        return Objects.isNull(this.id);
+        return Objects.nonNull(this.id);
     }
 
 }
