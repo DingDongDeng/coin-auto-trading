@@ -9,6 +9,7 @@ import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrder;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeTradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.type.StrategyCode;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.TradingTag;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -45,7 +46,7 @@ public class RsiTradingStrategy extends Strategy {
          * 계좌 상태가 거래 가능한지 확인
          */
         if (!assistant.isEnoughBalance(tradingInfo.getBalance(), ACCOUNT_BALANCE_LIMIT)) {
-            log.warn("계좌가 거래 가능한 상태가 아님");
+            log.warn("{} :: 계좌가 거래 가능한 상태가 아님", getCode());
             return List.of(new TradingTask());
         }
 
@@ -56,7 +57,7 @@ public class RsiTradingStrategy extends Strategy {
             .filter(o -> ChronoUnit.MINUTES.between(o.getCreatedAt(), LocalDateTime.now()) > 2)
             .collect(Collectors.toList());
         if (!oldUndecidedBuyOrderList.isEmpty()) {
-            log.info("미체결 상태의 오래된 주문을 취소");
+            log.info("{} :: 미체결 상태의 오래된 주문을 취소", getCode());
             return oldUndecidedBuyOrderList.stream()
                 .map(o -> TradingTask.builder().orderId(o.getOrderId()).build())
                 .collect(Collectors.toList());
@@ -65,33 +66,35 @@ public class RsiTradingStrategy extends Strategy {
         /**
          * 매수 주문이 체결된 후 현재 가격을 모니터링하다가 익절/손절 주문을 요청함
          */
-        TradingResult buyTradingResult = assistant.findBuyTradingResult(this.getClass());
-        TradingResult profitTradingResult = assistant.findProfitTradingResult(this.getClass());
-        TradingResult lossTradingResult = assistant.findLossTradingResult(this.getClass());
+        TradingResult buyTradingResult = assistant.findBuyTradingResult(getCode().name());
+        TradingResult profitTradingResult = assistant.findProfitTradingResult(getCode().name());
+        TradingResult lossTradingResult = assistant.findLossTradingResult(getCode().name());
+        //fixme 미체결 내역이 비어있더라도 실제로는 미체결 내역이 있을수 있음
         if (Objects.nonNull(buyTradingResult.getId()) && undecidedOrderList.stream().noneMatch(o -> o.getOrderId().equals(buyTradingResult.getOrderId()))) {
-            log.info("매수 주문이 체결된 상태임");
+            log.info("{} :: 매수 주문이 체결된 상태임", getCode());
             double currentPrice = tradingInfo.getTicker().getTradePrice();
 
             // 익절/손절 중복 요청 방지
             if (Objects.nonNull(profitTradingResult.getId()) || Objects.nonNull(lossTradingResult.getId())) {
-                log.info("익절, 손절 주문을 했었음");
+                log.info("{} :: 익절, 손절 주문을 했었음", getCode());
 
                 // 익절/손절 체결된 경우 정보 초기화
                 if (undecidedOrderList.isEmpty()) {
-                    log.info("익절, 손절 주문이 체결되었음");
+                    log.info("{} :: 익절, 손절 주문이 체결되었음", getCode());
                     //매수, 익절, 손절에 대한 정보를 모두 초기화
                     assistant.delete(profitTradingResult);
                     assistant.delete(lossTradingResult);
-                    assistant.delete(assistant.findBuyTradingResult(this.getClass()));
+                    assistant.delete(assistant.findBuyTradingResult(getCode().name()));
                 }
                 return List.of(new TradingTask());
             }
 
             //익절 주문
             if (currentPrice > buyTradingResult.getPrice() * STANDARD_OF_PROFIT_RATE) {
-                log.info("익절 주문 요청");
+                log.info("{} :: 익절 주문 요청", getCode());
                 return List.of(
                     TradingTask.builder()
+                        .strategyName(getCode().name())
                         .coinType(coinType)
                         .orderType(OrderType.SELL)
                         .volume(buyTradingResult.getVolume())
@@ -104,9 +107,10 @@ public class RsiTradingStrategy extends Strategy {
 
             //손절 주문
             if (currentPrice < buyTradingResult.getPrice() * STANDARD_OF_LOSS_RATE) {
-                log.info("손절 주문 요청");
+                log.info("{} :: 손절 주문 요청", getCode());
                 return List.of(
                     TradingTask.builder()
+                        .strategyName(getCode().name())
                         .coinType(coinType)
                         .orderType(OrderType.SELL)
                         .volume(buyTradingResult.getVolume())
@@ -122,15 +126,16 @@ public class RsiTradingStrategy extends Strategy {
         }
 
         /**
-         * rsi가 조건을 만족하고, 미체결중인 내역이 없다면 매수 주문을 요청함
+         * rsi가 조건을 만족하고, 매수주문을 한적이 없다면 매수주문을 함
          */
-        if (isBuyTiming(rsi, undecidedOrderList)) {
-            log.info("매수 주문 요청");
+        if (isBuyTiming(rsi)) {
+            log.info("{} :: 매수 주문 요청", getCode());
             double price = tradingInfo.getTicker().getTradePrice();
             double volume = ORDER_PRICE / price;
 
             return List.of(
                 TradingTask.builder()
+                    .strategyName(getCode().name())
                     .coinType(coinType)
                     .orderType(OrderType.BUY)
                     .volume(volume)
@@ -141,7 +146,7 @@ public class RsiTradingStrategy extends Strategy {
             );
         }
 
-        log.info("아무것도 하지 않음");
+        log.info("{} :: 아무것도 하지 않음", getCode());
         return List.of(new TradingTask());
     }
 
@@ -150,8 +155,14 @@ public class RsiTradingStrategy extends Strategy {
         assistant.saveTradingResult(tradingResult);
     }
 
-    private boolean isBuyTiming(double rsi, List<ExchangeOrder> undecidedOrderList) {
-        return undecidedOrderList.isEmpty() && rsi < STANDARD_OF_LOW_RSI;
+    @Override
+    protected StrategyCode getCode() {
+        return StrategyCode.RSI;
+    }
+
+    private boolean isBuyTiming(double rsi) {
+        TradingResult buyTradingResult = assistant.findBuyTradingResult(getCode().name());
+        return Objects.isNull(buyTradingResult.getId()) && rsi < STANDARD_OF_LOW_RSI;
     }
 
 }

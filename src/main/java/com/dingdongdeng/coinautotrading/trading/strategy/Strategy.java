@@ -11,6 +11,7 @@ import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeTradingIn
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeTradingInfoParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.type.StrategyCode;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,6 +51,8 @@ public abstract class Strategy {
     abstract protected List<TradingTask> makeTradingTask(ExchangeTradingInfo tradingInfo);
 
     abstract protected void handleOrderResult(ExchangeOrder order, TradingResult tradingResult);
+
+    abstract protected StrategyCode getCode();
 
     private boolean isOrder(TradingTask tradingTask) {
         OrderType orderType = tradingTask.getOrderType();

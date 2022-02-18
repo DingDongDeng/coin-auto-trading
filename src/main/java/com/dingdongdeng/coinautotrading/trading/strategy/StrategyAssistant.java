@@ -29,16 +29,16 @@ public class StrategyAssistant {
         return tradingResultRepository.findById(getKey(strategyName, tag)).orElse(new TradingResult());
     }
 
-    public TradingResult findProfitTradingResult(Class clazz) {
-        return findTradingResult(clazz.getSimpleName(), TradingTag.PROFIT);
+    public TradingResult findProfitTradingResult(String strategyName) {
+        return findTradingResult(strategyName, TradingTag.PROFIT);
     }
 
-    public TradingResult findLossTradingResult(Class clazz) {
-        return findTradingResult(clazz.getSimpleName(), TradingTag.LOSS);
+    public TradingResult findLossTradingResult(String strategyName) {
+        return findTradingResult(strategyName, TradingTag.LOSS);
     }
 
-    public TradingResult findBuyTradingResult(Class clazz) {
-        return findTradingResult(clazz.getSimpleName(), TradingTag.BUY);
+    public TradingResult findBuyTradingResult(String strategyName) {
+        return findTradingResult(strategyName, TradingTag.BUY);
     }
 
     public boolean isEnoughBalance(double balance, double accountBalanceLimit) {
