@@ -26,6 +26,7 @@ public class EmbeddedRedisConfig {
     @PostConstruct
     public void postConstruct() {
         try {
+            redisServer.stop();
             redisServer.start();
         } catch (Exception ige) {
             log.error(ige.getMessage());
