@@ -60,6 +60,7 @@ public class RsiTradingStrategy extends Strategy {
         /**
          * 미체결 상태가 너무 오래되면, 주문을 취소
          */
+        //fixme 리팩토링 필요
         if (!buyTradingResult.isDone() && isTooOld(buyTradingResult)) {
             log.info("{} :: 미체결 상태의 오래된 주문을 취소", getCode());
             return List.of(

@@ -1,6 +1,8 @@
 package com.dingdongdeng.coinautotrading.trading.strategy;
 
 import com.dingdongdeng.coinautotrading.exchange.service.ExchangeService;
+import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrder;
+import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderInfoParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.StrategyCode;
@@ -22,11 +24,10 @@ public class StrategyAssistant {
     }
 
     public TradingResultPack syncedTradingResultPack(StrategyCode code) {
-        //fixme 단건 조회 api로 읽어와서 값 만들고 redis에 업데이트해야함
         return TradingResultPack.builder()
-            .buyTradingResult(findTradingResult(code, TradingTag.BUY))
-            .profitTradingResult(findTradingResult(code, TradingTag.PROFIT))
-            .lossTradingResult(findTradingResult(code, TradingTag.LOSS))
+            .buyTradingResult(updateTradingResult(findTradingResult(code, TradingTag.BUY)))
+            .profitTradingResult(updateTradingResult(findTradingResult(code, TradingTag.PROFIT)))
+            .lossTradingResult(updateTradingResult(findTradingResult(code, TradingTag.LOSS)))
             .build();
     }
 
@@ -53,5 +54,28 @@ public class StrategyAssistant {
 
     private String getKey(StrategyCode code, TradingTag tag) {
         return code.name() + ":" + tag.name(); // RSI:BUY, RSI:PROFIT, RSI:LOSS
+    }
+
+    private TradingResult updateTradingResult(TradingResult tradingResult) {
+        if (!tradingResult.isExist()) {
+            return new TradingResult();
+        }
+
+        ExchangeOrder exchangeOrder = exchangeService.getOrderInfo(
+            ExchangeOrderInfoParam.builder().orderId(tradingResult.getOrderId()).build()
+        );
+
+        return TradingResult.builder()
+            .strategyCode(tradingResult.getStrategyCode())
+            .coinType(tradingResult.getCoinType())
+            .orderType(tradingResult.getOrderType())
+            .orderState(exchangeOrder.getOrderState())
+            .volume(tradingResult.getVolume())
+            .price(tradingResult.getPrice())
+            .priceType(tradingResult.getPriceType())
+            .orderId(exchangeOrder.getOrderId())
+            .tag(tradingResult.getTag())
+            .createdAt(exchangeOrder.getCreatedAt())
+            .build();
     }
 }
