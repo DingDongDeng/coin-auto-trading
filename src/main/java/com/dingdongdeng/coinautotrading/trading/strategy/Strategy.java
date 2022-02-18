@@ -36,27 +36,27 @@ public abstract class Strategy {
             // 매수, 매도 주문
             if (isOrder(tradingTask)) {
                 ExchangeOrder order = exchangeService.order(makeExchangeOrderParam(tradingTask));
-                handleOrderResult(order, makeTradingResult(tradingTask, order));
+                this.handleOrderResult(order, makeTradingResult(tradingTask, order));
                 return;
             }
 
             // 주문 취소
             if (isOrderCancel(tradingTask)) {
                 ExchangeOrderCancel orderCancel = exchangeService.orderCancel(makeExchangeOrderCancelParam(tradingTask));
-                handleOrderCancelResult(orderCancel, makeTradingResult(tradingTask, orderCancel));
+                this.handleOrderCancelResult(orderCancel, makeTradingResult(tradingTask, orderCancel));
             }
 
             // 아무것도 하지 않음
         });
     }
 
+    abstract public StrategyCode getCode();
+
     abstract protected List<TradingTask> makeTradingTask(ExchangeTradingInfo tradingInfo);
 
     abstract protected void handleOrderResult(ExchangeOrder order, TradingResult tradingResult);
 
     abstract protected void handleOrderCancelResult(ExchangeOrderCancel orderCancel, TradingResult tradingResult);
-
-    abstract protected StrategyCode getCode();
 
     private boolean isOrder(TradingTask tradingTask) {
         OrderType orderType = tradingTask.getOrderType();
