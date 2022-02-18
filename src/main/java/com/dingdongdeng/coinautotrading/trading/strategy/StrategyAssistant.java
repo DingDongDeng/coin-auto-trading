@@ -34,9 +34,15 @@ public class StrategyAssistant {
         TradingResult profitTradingResult = findTradingResult(code, TradingTag.PROFIT);
         TradingResult lossTradingResult = findTradingResult(code, TradingTag.LOSS);
 
-        tradingResultRepository.delete(buyTradingResult);
-        tradingResultRepository.delete(profitTradingResult);
-        tradingResultRepository.delete(lossTradingResult);
+        if (buyTradingResult.isExist()) {
+            tradingResultRepository.delete(buyTradingResult);
+        }
+        if (profitTradingResult.isExist()) {
+            tradingResultRepository.delete(profitTradingResult);
+        }
+        if (lossTradingResult.isExist()) {
+            tradingResultRepository.delete(lossTradingResult);
+        }
     }
 
     public void reset(TradingResult tradingResult) {

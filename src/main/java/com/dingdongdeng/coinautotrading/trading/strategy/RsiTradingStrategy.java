@@ -22,10 +22,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RsiTradingStrategy extends Strategy {
 
-    private final double STANDARD_OF_LOW_RSI = 0.25;
-    private final double STANDARD_OF_PROFIT_RATE = 1.3;
-    private final double STANDARD_OF_LOSS_RATE = 0.7;
-    private final int STANDRD_OF_TOO_OLD_TIME = 2; //분(minuite)
+    private final double STANDARD_OF_LOW_RSI = 0.30;
+    private final double STANDARD_OF_PROFIT_RATE = 1.03;
+    private final double STANDARD_OF_LOSS_RATE = 0.97;
+    private final int STANDRD_OF_TOO_OLD_TIME = 1; //분(minuite)
     private final double ORDER_PRICE = 5100;
     private final double ACCOUNT_BALANCE_LIMIT = 3000000; //계좌 금액 안전 장치
 
@@ -125,7 +125,7 @@ public class RsiTradingStrategy extends Strategy {
                         .coinType(coinType)
                         .orderType(OrderType.SELL)
                         .volume(buyTradingResult.getVolume())
-                        .price(buyTradingResult.getPrice() * STANDARD_OF_PROFIT_RATE)
+                        .price(currentPrice)
                         .priceType(PriceType.LIMIT_PRICE)
                         .tag(TradingTag.PROFIT)
                         .build()
@@ -141,7 +141,7 @@ public class RsiTradingStrategy extends Strategy {
                         .coinType(coinType)
                         .orderType(OrderType.SELL)
                         .volume(buyTradingResult.getVolume())
-                        .price(buyTradingResult.getPrice() * STANDARD_OF_LOSS_RATE)
+                        .price(currentPrice)
                         .priceType(PriceType.LIMIT_PRICE)
                         .tag(TradingTag.LOSS)
                         .build()
@@ -203,7 +203,7 @@ public class RsiTradingStrategy extends Strategy {
         if (Objects.isNull(tradingResult.getCreatedAt())) {
             return false;
         }
-        return ChronoUnit.MINUTES.between(tradingResult.getCreatedAt(), LocalDateTime.now()) > STANDRD_OF_TOO_OLD_TIME;
+        return ChronoUnit.MINUTES.between(tradingResult.getCreatedAt(), LocalDateTime.now()) >= STANDRD_OF_TOO_OLD_TIME;
     }
 
 
