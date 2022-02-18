@@ -6,6 +6,7 @@ import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.exchange.service.ExchangeService;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrder;
+import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderCancel;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeTradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
@@ -16,8 +17,6 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -39,7 +38,7 @@ public class RsiTradingStrategy extends Strategy {
 
     @Override
     protected List<TradingTask> makeTradingTask(ExchangeTradingInfo tradingInfo) {
-
+        log.info("{} :: ---------------------------------------", getCode());
         log.info("tradingInfo : {}", tradingInfo);
         CoinType coinType = tradingInfo.getCoinType();
         double rsi = tradingInfo.getRsi();
@@ -61,18 +60,39 @@ public class RsiTradingStrategy extends Strategy {
         /**
          * 미체결 상태가 너무 오래되면, 주문을 취소
          */
-        List<TradingResult> tooOldTradingResultList = Stream.of(buyTradingResult, profitTradingResult, lossTradingResult)
-            .filter(t -> !t.isDone())
-            .filter(this::isTooOld)
-            .collect(Collectors.toList());
-        if (!tooOldTradingResultList.isEmpty()) {
+        if (!buyTradingResult.isDone() && isTooOld(buyTradingResult)) {
             log.info("{} :: 미체결 상태의 오래된 주문을 취소", getCode());
-            return tooOldTradingResultList.stream()
-                .map(t -> TradingTask.builder()
-                    .orderId(t.getOrderId())
+            return List.of(
+                TradingTask.builder()
+                    .strategyCode(getCode())
+                    .coinType(coinType)
+                    .orderId(buyTradingResult.getOrderId())
                     .orderType(OrderType.CANCEL)
+                    .tag(TradingTag.BUY)
                     .build()
-                ).collect(Collectors.toList());
+            );
+        }
+        if (!profitTradingResult.isDone() && isTooOld(profitTradingResult)) {
+            return List.of(
+                TradingTask.builder()
+                    .strategyCode(getCode())
+                    .coinType(coinType)
+                    .orderId(profitTradingResult.getOrderId())
+                    .orderType(OrderType.CANCEL)
+                    .tag(TradingTag.PROFIT)
+                    .build()
+            );
+        }
+        if (!lossTradingResult.isDone() && isTooOld(lossTradingResult)) {
+            return List.of(
+                TradingTask.builder()
+                    .strategyCode(getCode())
+                    .coinType(coinType)
+                    .orderId(lossTradingResult.getOrderId())
+                    .orderType(OrderType.CANCEL)
+                    .tag(TradingTag.LOSS)
+                    .build()
+            );
         }
 
         /**
@@ -157,7 +177,12 @@ public class RsiTradingStrategy extends Strategy {
 
     @Override
     protected void handleOrderResult(ExchangeOrder order, TradingResult tradingResult) {
-        assistant.storeTradingResult(tradingResult);
+        assistant.storeTradingResult(tradingResult); // 주문 성공 건 정보 저장
+    }
+
+    @Override
+    protected void handleOrderCancelResult(ExchangeOrderCancel orderCancel, TradingResult tradingResult) {
+        assistant.reset(tradingResult); // 주문 취소 건 정보 제거
     }
 
     @Override
@@ -174,7 +199,11 @@ public class RsiTradingStrategy extends Strategy {
     }
 
     private boolean isTooOld(TradingResult tradingResult) {
+        if (Objects.isNull(tradingResult.getCreatedAt())) {
+            return false;
+        }
         return ChronoUnit.MINUTES.between(tradingResult.getCreatedAt(), LocalDateTime.now()) > STANDRD_OF_TOO_OLD_TIME;
     }
+
 
 }

@@ -1,5 +1,6 @@
 package com.dingdongdeng.coinautotrading.trading.strategy;
 
+import com.dingdongdeng.coinautotrading.exchange.service.ExchangeService;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.StrategyCode;
@@ -12,9 +13,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class StrategyAssistant {
 
+    private final ExchangeService exchangeService;
     private final TradingResultRepository tradingResultRepository;
 
+    public void storeTradingResult(TradingResult tradingResult) {
+        tradingResult.setId(getKey(tradingResult.getStrategyCode(), tradingResult.getTag()));
+        tradingResultRepository.save(tradingResult);
+    }
+
     public TradingResultPack syncedTradingResultPack(StrategyCode code) {
+        //fixme 단건 조회 api로 읽어와서 값 만들고 redis에 업데이트해야함
         return TradingResultPack.builder()
             .buyTradingResult(findTradingResult(code, TradingTag.BUY))
             .profitTradingResult(findTradingResult(code, TradingTag.PROFIT))
@@ -32,9 +40,11 @@ public class StrategyAssistant {
         tradingResultRepository.delete(lossTradingResult);
     }
 
-    public void storeTradingResult(TradingResult tradingResult) {
-        tradingResult.setId(getKey(tradingResult.getStrategyCode(), tradingResult.getTag()));
-        tradingResultRepository.save(tradingResult);
+    public void reset(TradingResult tradingResult) {
+        StrategyCode code = tradingResult.getStrategyCode();
+        TradingTag tag = tradingResult.getTag();
+        TradingResult storedTradingResult = findTradingResult(code, tag);
+        tradingResultRepository.delete(storedTradingResult);
     }
 
     private TradingResult findTradingResult(StrategyCode code, TradingTag tag) {

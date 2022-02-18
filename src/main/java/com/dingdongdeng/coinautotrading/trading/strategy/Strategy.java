@@ -5,6 +5,7 @@ import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.exchange.service.ExchangeService;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrder;
+import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderCancel;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderCancelParam;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderParam;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeTradingInfo;
@@ -41,7 +42,8 @@ public abstract class Strategy {
 
             // 주문 취소
             if (isOrderCancel(tradingTask)) {
-                exchangeService.orderCancel(makeExchangeOrderCancelParam(tradingTask));
+                ExchangeOrderCancel orderCancel = exchangeService.orderCancel(makeExchangeOrderCancelParam(tradingTask));
+                handleOrderCancelResult(orderCancel, makeTradingResult(tradingTask, orderCancel));
             }
 
             // 아무것도 하지 않음
@@ -51,6 +53,8 @@ public abstract class Strategy {
     abstract protected List<TradingTask> makeTradingTask(ExchangeTradingInfo tradingInfo);
 
     abstract protected void handleOrderResult(ExchangeOrder order, TradingResult tradingResult);
+
+    abstract protected void handleOrderCancelResult(ExchangeOrderCancel orderCancel, TradingResult tradingResult);
 
     abstract protected StrategyCode getCode();
 
@@ -99,6 +103,21 @@ public abstract class Strategy {
             .orderId(exchangeOrder.getOrderId())
             .tag(tradingTask.getTag())
             .createdAt(exchangeOrder.getCreatedAt())
+            .build();
+    }
+
+    private TradingResult makeTradingResult(TradingTask tradingTask, ExchangeOrderCancel exchangeOrderCancel) {
+        return TradingResult.builder()
+            .strategyCode(tradingTask.getStrategyCode())
+            .coinType(tradingTask.getCoinType())
+            .orderType(tradingTask.getOrderType())
+            .orderState(exchangeOrderCancel.getOrderState())
+            .volume(tradingTask.getVolume())
+            .price(tradingTask.getPrice())
+            .priceType(tradingTask.getPriceType())
+            .orderId(exchangeOrderCancel.getOrderId())
+            .tag(tradingTask.getTag())
+            .createdAt(exchangeOrderCancel.getCreatedAt())
             .build();
     }
 }
