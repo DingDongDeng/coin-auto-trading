@@ -52,6 +52,6 @@ public class StrategyAssistant {
     }
 
     private String getKey(StrategyCode code, TradingTag tag) {
-        return code.name() + ":" + tag.name(); // RSI:BUY
+        return code.name() + ":" + tag.name(); // RSI:BUY, RSI:PROFIT, RSI:LOSS
     }
 }
