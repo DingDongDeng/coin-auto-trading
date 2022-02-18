@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.dingdongdeng'
-version = '1.1.1-RELEASE'
+version = '1.1.2-RELEASE'
 sourceCompatibility = '11'
 
 configurations {
