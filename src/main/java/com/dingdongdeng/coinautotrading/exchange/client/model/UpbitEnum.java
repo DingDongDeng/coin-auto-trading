@@ -29,6 +29,9 @@ public class UpbitEnum {
     @AllArgsConstructor
     public enum MarketType {
         KRW_ETH("원화 이더리움", "KRW-ETH", CoinType.ETHEREUM),
+        KRW_ADA("원화 에이다", "KRW-ADA", CoinType.ADA),
+        KRW_XRP("원화 리플", "KRW-XRP", CoinType.XRP),
+        KRW_DOGE("원화 도지", "KRW-DOGE", CoinType.DOGE),
         ;
         private String desc;
         private String code;
