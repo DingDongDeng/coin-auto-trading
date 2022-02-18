@@ -9,10 +9,8 @@ import com.dingdongdeng.coinautotrading.trading.strategy.model.type.StrategyCode
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.TradingTag;
 import com.dingdongdeng.coinautotrading.trading.strategy.repository.TradingResultRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
-@Component
 public class StrategyAssistant {
 
     private final ExchangeService exchangeService;
@@ -60,12 +58,11 @@ public class StrategyAssistant {
         if (!tradingResult.isExist()) {
             return new TradingResult();
         }
-
         ExchangeOrder exchangeOrder = exchangeService.getOrderInfo(
             ExchangeOrderInfoParam.builder().orderId(tradingResult.getOrderId()).build()
         );
-
         return TradingResult.builder()
+            .id(tradingResult.getId())
             .strategyCode(tradingResult.getStrategyCode())
             .coinType(tradingResult.getCoinType())
             .orderType(tradingResult.getOrderType())
