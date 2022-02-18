@@ -2,17 +2,14 @@ package com.dingdongdeng.coinautotrading.exchange.service.model;
 
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Builder;
-import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.ToString;
 
 @ToString
 @Getter
 @Builder
-public class ExchangeTradingInfo {
+public class ExchangeTradingInfo { //fixme 사용중인 모델만 남도록 리팩토링
 
     private CoinExchangeType coinExchangeType;
     private CoinType coinType;
@@ -30,8 +27,6 @@ public class ExchangeTradingInfo {
     private boolean avgBuyPriceModified; // 매수평균가 수정 여부
     private String unitCurrency; // 평단가 기준 화폐
 
-    @Default
-    private List<ExchangeOrder> undecidedExchangeOrderList = new ArrayList<>(); // 미체결 주문 내역
     private ExchangeCandles candles; // 캔들 정보
     private ExchangeTicker ticker; // 현재가 정보
 

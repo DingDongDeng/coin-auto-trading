@@ -88,9 +88,6 @@ public class UpbitExchangeService implements ExchangeService {
     public ExchangeTradingInfo getTradingInformation(ExchangeTradingInfoParam param) {
         log.info("upbit process : get trading information param = {}", param);
 
-        // 미체결 주문내역 조회
-        List<ExchangeOrder> undecidedExchangeOrderList = getUndecidedOrderList(param);
-
         // 캔들 정보 조회
         ExchangeCandles candles = getExchangeCandles(param);
 
@@ -111,7 +108,6 @@ public class UpbitExchangeService implements ExchangeService {
             .avgBuyPriceModified(accounts.isAvgBuyPriceModified())
             .unitCurrency(accounts.getUnitCurrency())
 
-            .undecidedExchangeOrderList(undecidedExchangeOrderList)
             .candles(candles)
             .ticker(ticker)
 

@@ -89,14 +89,16 @@ public abstract class Strategy {
 
     private TradingResult makeTradingResult(TradingTask tradingTask, ExchangeOrder exchangeOrder) {
         return TradingResult.builder()
-            .strategyName(tradingTask.getStrategyName())
+            .strategyCode(tradingTask.getStrategyCode())
             .coinType(tradingTask.getCoinType())
             .orderType(tradingTask.getOrderType())
+            .orderState(exchangeOrder.getOrderState())
             .volume(tradingTask.getVolume())
             .price(tradingTask.getPrice())
             .priceType(tradingTask.getPriceType())
             .orderId(exchangeOrder.getOrderId())
             .tag(tradingTask.getTag())
+            .createdAt(exchangeOrder.getCreatedAt())
             .build();
     }
 }
