@@ -186,7 +186,7 @@ public class RsiTradingStrategy extends Strategy {
     }
 
     @Override
-    protected StrategyCode getCode() {
+    public StrategyCode getCode() {
         return StrategyCode.RSI;
     }
 
