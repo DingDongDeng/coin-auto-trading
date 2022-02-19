@@ -9,6 +9,7 @@ import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrder;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderCancel;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderCancelParam;
+import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderInfoParam;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderParam;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeTradingInfo;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeTradingInfoParam;
@@ -22,7 +23,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class UpbitExchangeServiceTest {
 
     @Autowired
-    private UpbitExchangeService processor;
+    private UpbitExchangeService upbitExchangeService;
 
     @Test
     public void 주문과_조회와_취소_프로세스_테스트() {
@@ -33,19 +34,22 @@ class UpbitExchangeServiceTest {
             .price(5000.0)
             .priceType(PriceType.LIMIT_PRICE)
             .build();
-        ExchangeOrder exchangeOrderResult = processor.order(exchangeOrderParam);
+        ExchangeOrder exchangeOrderResult = upbitExchangeService.order(exchangeOrderParam);
         log.info("exchangeOrder result : {}", exchangeOrderResult);
+
+        ExchangeOrder exchangeOrderInfoResult = upbitExchangeService.getOrderInfo(ExchangeOrderInfoParam.builder().orderId(exchangeOrderResult.getOrderId()).build());
+        log.info("exchangeOrderInfo result : {}", exchangeOrderInfoResult);
 
         ExchangeOrderCancelParam cancelParam = ExchangeOrderCancelParam.builder()
             .orderId(exchangeOrderResult.getOrderId())
             .build();
-        ExchangeOrderCancel cancelResult = processor.orderCancel(cancelParam);
+        ExchangeOrderCancel cancelResult = upbitExchangeService.orderCancel(cancelParam);
         log.info("exchangeCancel result : {}", cancelResult);
     }
 
     @Test
     public void 거래를_위한_정보_생성_테스트() {
-        ExchangeTradingInfo exchangeTradingInfo = processor.getTradingInformation(
+        ExchangeTradingInfo exchangeTradingInfo = upbitExchangeService.getTradingInformation(
             ExchangeTradingInfoParam.builder()
                 .coinType(CoinType.ETHEREUM)
                 .tradingTerm(TradingTerm.SCALPING)

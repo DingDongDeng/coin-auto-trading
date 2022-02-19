@@ -6,10 +6,9 @@ import com.dingdongdeng.coinautotrading.exchange.client.UpbitClient;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.MarketType;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.OrdType;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.Side;
-import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitEnum.State;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.CandleRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderCancelRequest;
-import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderInfoListRequest;
+import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderInfoRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.OrderRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitRequest.TickerRequest;
 import com.dingdongdeng.coinautotrading.exchange.client.model.UpbitResponse.AccountsResponse;
@@ -22,6 +21,7 @@ import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrder;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderCancel;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderCancelParam;
+import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderInfoParam;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderParam;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeTicker;
 import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeTradingInfo;
@@ -88,9 +88,6 @@ public class UpbitExchangeService implements ExchangeService {
     public ExchangeTradingInfo getTradingInformation(ExchangeTradingInfoParam param) {
         log.info("upbit process : get trading information param = {}", param);
 
-        // 미체결 주문내역 조회
-        List<ExchangeOrder> undecidedExchangeOrderList = getUndecidedOrderList(param);
-
         // 캔들 정보 조회
         ExchangeCandles candles = getExchangeCandles(param);
 
@@ -101,6 +98,8 @@ public class UpbitExchangeService implements ExchangeService {
         AccountsResponse accounts = upbitClient.getAccounts().stream().findFirst().orElseThrow(() -> new NoSuchElementException("계좌를 찾지 못함"));
 
         return ExchangeTradingInfo.builder()
+            .coinType(param.getCoinType())
+            .coinExchangeType(getExchangeType())
             .currency(accounts.getCurrency())
             .balance(accounts.getBalance())
             .locked(accounts.getLocked())
@@ -109,7 +108,6 @@ public class UpbitExchangeService implements ExchangeService {
             .avgBuyPriceModified(accounts.isAvgBuyPriceModified())
             .unitCurrency(accounts.getUnitCurrency())
 
-            .undecidedExchangeOrderList(undecidedExchangeOrderList)
             .candles(candles)
             .ticker(ticker)
 
@@ -118,19 +116,17 @@ public class UpbitExchangeService implements ExchangeService {
     }
 
     @Override
-    public CoinExchangeType getExchangeType() {
-        return CoinExchangeType.UPBIT;
+    public ExchangeOrder getOrderInfo(ExchangeOrderInfoParam param) {
+        return makeExchangeOrder(
+            upbitClient.getOrderInfo(OrderInfoRequest.builder()
+                .uuid(param.getOrderId())
+                .build())
+        );
     }
 
-    private List<ExchangeOrder> getUndecidedOrderList(ExchangeTradingInfoParam param) {
-        return upbitClient.getOrderInfoList(
-            OrderInfoListRequest.builder()
-                .market(MarketType.of(param.getCoinType()).getCode())
-                .stateList(List.of(State.wait, State.watch))
-                .build())
-            .stream()
-            .map(this::makeExchangeOrder)
-            .collect(Collectors.toList());
+    @Override
+    public CoinExchangeType getExchangeType() {
+        return CoinExchangeType.UPBIT;
     }
 
     private ExchangeCandles getExchangeCandles(ExchangeTradingInfoParam param) {
