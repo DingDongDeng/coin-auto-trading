@@ -44,6 +44,6 @@ jobs:
       - name: Jib
         env:
           DOCKERHUB_REPOSITORY_PATH: ${{ secrets.DOCKERHUB_REPOSITORY_PATH }}
-        run: ./gradlew jib -Djib.to.image="DOCKERHUB_REPOSITORY_PATH" -x test
+        run: ./gradlew jib -Djib.to.image=$DOCKERHUB_REPOSITORY_PATH -x test
 
 
