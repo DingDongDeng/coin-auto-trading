@@ -80,10 +80,6 @@ asciidoctor {
 }
 
 jib { // https://github.com/GoogleContainerTools/jib/tree/master/jib-gradle-plugin
-//    to {
-//        image = ""
-//    }
-
     container {
         creationTime = "USE_CURRENT_TIMESTAMP"
     }
