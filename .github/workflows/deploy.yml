@@ -36,12 +36,12 @@ jobs:
         run: echo 'empty test'
 
       - name: Jib
-        run: ./gradlew jib -x test \
-        -Djib.to.auth.username=${{ secrets.DOCKER_HUB_USER_NAME }} \
-        -Djib.to.auth.password=${{ secrets.DOCKER_HUB_ACCESS_TOKEN }} \
-        -Djib.to.image=${{ secrets.DOCKER_HUB_USER_NAME }}/${{ secrets.DOCKER_HUB_REPOSITORY_NAME }}
-        -Djib.to.tags=latest
-        -Djib.container.creationTime=USE_CURRENT_TIMESTAMP
-        -Djib.container.jvmFlags=-XX:MaxRAMPercentage=60.0,-XX:MinRAMPercentage=60.0
+        run: ./gradlew jib -x test
+          -Djib.to.auth.username=${{ secrets.DOCKER_HUB_USER_NAME }}
+          -Djib.to.auth.password=${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          -Djib.to.image=${{ secrets.DOCKER_HUB_USER_NAME }}/${{ secrets.DOCKER_HUB_REPOSITORY_NAME }}
+          -Djib.to.tags=latest
+          -Djib.container.creationTime=USE_CURRENT_TIMESTAMP
+          -Djib.container.jvmFlags=-XX:MaxRAMPercentage=60.0,-XX:MinRAMPercentage=60.0
 
 
