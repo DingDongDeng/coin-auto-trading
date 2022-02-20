@@ -1,8 +1,10 @@
 ## 소개
+
 사용자의 컴퓨터에서 간단한 명령어들을 통해 자동매매를 이용하기 위한 프로젝트입니다.  
 거래소, 코인, 매매전략을 선택하여, 효과적인 매매가 가능하게 됩니다.  
 ---
 ### 사전준비
+
 자동매매를 지원하는 거래소들 중, 원하는 거래소의 액세스키, 시크릿키를 생성해주세요.(각 거래소 홈페이지 참조)  
 
 ---
@@ -40,17 +42,3 @@ http://localhost:8080/docs/index.html
 위 링크에 기술 되어있는curl 명령어를 커맨드창에 입력하여 자동매매 시작, 정지가 가능합니다.
 ```
   
----
-
-### 개선 사항 목록
-- 백테스팅 구현하기
-- 모델 매핑 라이브러리를 사용하기
-    - https://cchoimin.tistory.com/entry/model-mapping-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-Mapstruct
-- 도커 이용한 실행 사용성 검토
-
-### sample
-- gradle asciidoctor bootRun -PUPBIT_SECRET_KEY={시크릿키} -PUPBIT_ACCESS_KEY={액세스키}
-- gradle --tests "com.dingdongdeng.coinautotrading.exchange.client.UpbitClientTest.주문과_조회와_취소_테스트"  --project-prop UPBIT_SECRET_KEY={시크릿키} --project-prop UPBIT_ACCESS_KEY={액세스키}
-
-
-
