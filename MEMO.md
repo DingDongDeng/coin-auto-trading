@@ -5,6 +5,7 @@
 - 도커 이용한 실행 사용성 검토
 - logback 이슈 검토
 - 버저닝 자동화 (github tag, build.gradle version, image tag)
+- 프로젝트를 멀티모듈로 재구성하여, 모니터링 모듈, 문서 모듈 등을 구분하여 사용
 
 ### command sample
 - gradle asciidoctor bootRun -PUPBIT_SECRET_KEY={시크릿키} -PUPBIT_ACCESS_KEY={액세스키}
