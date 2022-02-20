@@ -13,22 +13,32 @@
 ---
 ### 실행방법
 ```
+### docker-compose.yml 파일을 생성해주세요.
 version: "3.7"
-
 services:
   coinautotrading:
-    image: dingdongdeng/coinautotrading
+    name: coinautotrading
+    image: dingdongdeng/coinautotrading:latest
     ports:
       - 8080:8080
     environment:
-      UPBIT_ACCESS_KEY: {액스세키}
-      UPBIT_SECRET_KEY: {시크릿키}
-    cpus: ".30"  # CPU 프로세스 사용률 30%로 제한
-    mem_limit: "1g"  # 1GB로 메모리 제한
+      UPBIT_ACCESS_KEY: {액세스_키} 
+      UPBIT_SECRET_KEY: {시크릿_키}
+    deploy:
+      resources:
+        limits:
+          cpus: '0.30'
+          memory: 1G
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "3"
+        max-size: "10m"
 ```
-
----
-### 사용법
-사용자 콘솔 화면 준비 중 입니다.
-
-  
+```
+### 파일이 생성되었다면 아래 명령어로 실행해주세요.
+docker-compose -f docker-compose.yml up -d
+```
+```
+브라우저로 localhost:8080/user/console 접속해주세요.
+```

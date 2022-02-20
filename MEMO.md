@@ -6,6 +6,9 @@
 - logback 이슈 검토
 - 버저닝 자동화 (github tag, build.gradle version, image tag)
 - 프로젝트를 멀티모듈로 재구성하여, 모니터링 모듈, 문서 모듈 등을 구분하여 사용
+- test 시에 거래소 api를 실제로 찌르지 않도록 수정 필요(결국 단순 동작 테스트에서 실제 로직 테스트하도록 테스트코드 강화해야함)
+- RsiStrategy 설정 값들 동적으로 받을 수 있도록 수정
+- admin 패키지를 user 패키지로 변경하면서 사용자 인터페이스를 위한 패키징 구조 재설계 필요
 
 ### command sample
 - gradle asciidoctor bootRun -PUPBIT_SECRET_KEY={시크릿키} -PUPBIT_ACCESS_KEY={액세스키}
