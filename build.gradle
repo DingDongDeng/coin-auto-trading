@@ -2,6 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.6.2'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id "org.asciidoctor.jvm.convert" version "3.3.2"
+    id 'com.google.cloud.tools.jib' version '3.2.0'
     id 'java'
 }
 
@@ -76,4 +77,20 @@ asciidoctor {
             into 'src/main/resources/static/docs'
         }
     }
+}
+
+jib { // https://github.com/GoogleContainerTools/jib/tree/master/jib-gradle-plugin
+    container {
+        creationTime = "USE_CURRENT_TIMESTAMP"
+    }
+
+    //fixme github action workflow 확립되면 rest doc 설정 수정
+//    extraDirectories {
+//        paths {
+//            path {
+//                from = "${asciidoctor.outputDir}"
+//                into = "/app/resources/static/docs"
+//            }
+//        }
+//    }
 }
