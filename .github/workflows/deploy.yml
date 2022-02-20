@@ -44,6 +44,10 @@ jobs:
       - name: Jib
         env:
           DOCKERHUB_REPOSITORY_PATH: ${{ secrets.DOCKERHUB_REPOSITORY_PATH }}
-        run: ./gradlew jib -Djib.to.image=$DOCKERHUB_REPOSITORY_PATH -x test
+        run: ./gradlew jib -x test
+          -Djib.to.image=$DOCKERHUB_REPOSITORY_PATH
+          -Djib.to.tags=latest
+          -Djib.container.creationTime=USE_CURRENT_TIMESTAMP
+          -Djib.container.jvmFlags=-XX:MaxRAMPercentage=60.0,-XX:MinRAMPercentage=60.0
 
 
