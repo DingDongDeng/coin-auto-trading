@@ -42,9 +42,9 @@ jobs:
           DOCKER_HUB_REPOSITORY_NAME: ${{ secrets.DOCKER_HUB_REPOSITORY_NAME }}
           DOCKER_HUB_REPOSITORY_PATH: ${{ secrets.DOCKER_HUB_REPOSITORY_PATH }}
         run: ./gradlew jib -x test
-          --image $DOCKER_HUB_REPOSITORY_PATH
-          -Djib.to.auth.username=$DOCKER_HUB_USER_NAME
-          -Djib.to.auth.password=$DOCKER_HUB_ACCESS_TOKEN
+          -Djib.to.image="$DOCKER_HUB_REPOSITORY_PATH"
+          -Djib.to.auth.username="$DOCKER_HUB_USER_NAME"
+          -Djib.to.auth.password="$DOCKER_HUB_ACCESS_TOKEN"
           -Djib.to.tags=latest
           -Djib.container.creationTime=USE_CURRENT_TIMESTAMP
           -Djib.container.jvmFlags=-XX:MaxRAMPercentage=60.0,-XX:MinRAMPercentage=60.0
