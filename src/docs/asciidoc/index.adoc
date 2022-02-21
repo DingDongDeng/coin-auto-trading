@@ -31,7 +31,8 @@ endif::[]
 커맨드에 따라 매매를 시작,정지할 수 있고 관련 파라미터를 설정하여 커스텀하게 사용이 가능합니다.
 ----
 ==== 요청
-operation::/admin/command[snippets='curl-request,http-request']
+operation::/trading/autotrading/command[snippets='curl-request,http-request']
 ==== 응답
-operation::/admin/command[snippets='http-response,response-fields']
+
+operation::/trading/autotrading/command[snippets='http-response,response-fields']
 

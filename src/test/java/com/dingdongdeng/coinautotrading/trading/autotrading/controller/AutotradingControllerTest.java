@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading.admin.controller;
+package com.dingdongdeng.coinautotrading.trading.autotrading.controller;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -9,12 +9,12 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.dingdongdeng.coinautotrading.ApiDocumentUtils;
-import com.dingdongdeng.coinautotrading.admin.model.CommandRequest;
-import com.dingdongdeng.coinautotrading.admin.model.type.Command;
-import com.dingdongdeng.coinautotrading.admin.service.AdminService;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
+import com.dingdongdeng.coinautotrading.trading.autotrading.model.CommandRequest;
+import com.dingdongdeng.coinautotrading.trading.autotrading.model.type.Command;
+import com.dingdongdeng.coinautotrading.trading.autotrading.service.AutoTradingManager;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.StrategyCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -41,13 +41,13 @@ import org.springframework.web.context.WebApplicationContext;
 @Slf4j
 @SpringBootTest
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class, MockitoExtension.class})
-class AdminControllerTest {
+class AutotradingControllerTest {
 
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
     @SpyBean
-    private AdminService adminService;
+    private AutoTradingManager autoTradingManager;
 
     @BeforeEach
     public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
@@ -67,16 +67,16 @@ class AdminControllerTest {
             .build();
 
         Mockito.doNothing()
-            .when(adminService).command(Mockito.any(), Mockito.any());
+            .when(autoTradingManager).command(Mockito.any(), Mockito.any());
 
         MvcResult result = this.mockMvc.perform(
-            RestDocumentationRequestBuilders.post("/admin/command/{command}", command)
+            RestDocumentationRequestBuilders.post("/trading/autotrading/command/{command}", command)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
         )
             .andExpect(status().isOk())
             .andDo(
-                document("admin/command",
+                document("trading/autotrading/command",
                     ApiDocumentUtils.getDocumentRequest(),
                     ApiDocumentUtils.getDocumentResponse(),
                     pathParameters(
