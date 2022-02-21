@@ -1,9 +1,9 @@
-package com.dingdongdeng.coinautotrading.admin.controller;
+package com.dingdongdeng.coinautotrading.trading.autotrading.controller;
 
-import com.dingdongdeng.coinautotrading.admin.model.CommandRequest;
-import com.dingdongdeng.coinautotrading.admin.model.type.Command;
-import com.dingdongdeng.coinautotrading.admin.service.AdminService;
 import com.dingdongdeng.coinautotrading.common.model.CommonResponse;
+import com.dingdongdeng.coinautotrading.trading.autotrading.model.CommandRequest;
+import com.dingdongdeng.coinautotrading.trading.autotrading.model.type.Command;
+import com.dingdongdeng.coinautotrading.trading.autotrading.service.AutoTradingManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -16,14 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/admin")
-public class AdminController {
+@RequestMapping("/trading/autotrading")
+public class AutotradingController {
 
-    private final AdminService adminService;
+    private final AutoTradingManager autoTradingManager;
 
     @PostMapping("/command/{command}")
     public ResponseEntity<CommonResponse<Void>> command(@PathVariable String command, @RequestBody CommandRequest request) {
-        adminService.command(Command.of(command), request);
+        autoTradingManager.command(Command.of(command), request);
         return ResponseEntity.ok(
             CommonResponse.<Void>builder().message("execute command : " + command + "/" + request).build()
         );

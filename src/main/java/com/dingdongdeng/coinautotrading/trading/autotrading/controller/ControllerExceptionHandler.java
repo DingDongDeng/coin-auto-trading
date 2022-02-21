@@ -1,11 +1,11 @@
-package com.dingdongdeng.coinautotrading.admin.controller;
+package com.dingdongdeng.coinautotrading.trading.autotrading.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
-@RestControllerAdvice(basePackages = "com.dingdongdeng.coinautotrading.admin.controller")
+@RestControllerAdvice(basePackages = "com.dingdongdeng.coinautotrading.trading.autotrading.controller")
 public class ControllerExceptionHandler {
 
     @ExceptionHandler(Exception.class)

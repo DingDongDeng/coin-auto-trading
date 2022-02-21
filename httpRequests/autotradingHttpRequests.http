@@ -1,4 +1,4 @@
-POST localhost:8080/admin/command/start
+POST localhost:8080/trading/autotrading/command/START
 Content-Type: application/json
 
 {
@@ -10,7 +10,7 @@ Content-Type: application/json
 
 
 ###
-POST localhost:8080/admin/command/stop
+POST localhost:8080/trading/autotrading/command/STOP
 Content-Type: application/json
 
 {
