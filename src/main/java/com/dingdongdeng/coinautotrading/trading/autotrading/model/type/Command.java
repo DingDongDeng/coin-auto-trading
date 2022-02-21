@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 public enum Command {
+    REGISTER,
     START,
     STOP,
     TERMINATION,
