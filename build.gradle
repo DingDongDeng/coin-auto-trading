@@ -2,11 +2,12 @@ plugins {
     id 'org.springframework.boot' version '2.6.2'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id "org.asciidoctor.jvm.convert" version "3.3.2"
+    id 'com.google.cloud.tools.jib' version '3.2.0'
     id 'java'
 }
 
 group = 'com.dingdongdeng'
-version = '1.1.2-RELEASE'
+version = '1.2.2-RELEASE'
 sourceCompatibility = '11'
 
 configurations {
@@ -33,6 +34,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-quartz'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     implementation 'com.auth0:java-jwt:3.18.2' // upbit api 헤더 생성을 위함
 
@@ -75,5 +77,11 @@ asciidoctor {
             from "${asciidoctor.outputDir}"
             into 'src/main/resources/static/docs'
         }
+    }
+}
+
+jib { // https://github.com/GoogleContainerTools/jib/tree/master/jib-gradle-plugin
+    container {
+        creationTime = "USE_CURRENT_TIMESTAMP"
     }
 }
