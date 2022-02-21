@@ -9,9 +9,9 @@ name: CI
 
 on:
   push:
-    branches: [ feature/CI구성 ] #fixme master로 수정
+    branches: [ master ]
   pull_request:
-    branches: [ feature/CI구성 ]
+    branches: [ master ]
 
 jobs:
   depoly:
