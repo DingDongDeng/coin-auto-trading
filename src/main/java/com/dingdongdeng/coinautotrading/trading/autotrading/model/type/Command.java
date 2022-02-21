@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading.admin.model.type;
+package com.dingdongdeng.coinautotrading.trading.autotrading.model.type;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 public enum Command {
     START,
     STOP,
+    TERMINATION,
     ;
 
     public static Command of(String name) {
