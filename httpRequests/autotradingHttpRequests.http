@@ -1,7 +1,9 @@
-POST localhost:8080/trading/autotrading/command/START
+POST localhost:8080/trading/autotrading/register
 Content-Type: application/json
+userId: 1234
 
 {
+  "title": "테스트입니다",
   "coinType": "ETHEREUM",
   "coinExchangeType": "UPBIT",
   "tradingTerm": "SCALPING",
@@ -10,13 +12,18 @@ Content-Type: application/json
 
 
 ###
-POST localhost:8080/trading/autotrading/command/STOP
+POST localhost:8080/trading/autotrading/50caaa98-d9e6-4abe-9702-9ebce1e8c6d4/start
 Content-Type: application/json
+userId: 1234
 
-{
-  "coinType": "ETHEREUM",
-  "coinExchangeType": "UPBIT",
-  "tradingTerm": "SCALPING",
-  "strategyCode": "RSI"
-}
+###
+POST localhost:8080/trading/autotrading/50caaa98-d9e6-4abe-9702-9ebce1e8c6d4/stop
+Content-Type: application/json
+userId: 1234
+
+###
+POST localhost:8080/trading/autotrading/50caaa98-d9e6-4abe-9702-9ebce1e8c6d4/terminate
+Content-Type: application/json
+userId: 1234
+
 ###
