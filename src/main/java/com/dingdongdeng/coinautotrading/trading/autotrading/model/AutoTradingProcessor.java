@@ -1,5 +1,7 @@
 package com.dingdongdeng.coinautotrading.trading.autotrading.model;
 
+import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
+import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.type.AutoTradingStatus;
 import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
 import java.util.concurrent.CompletableFuture;
@@ -19,7 +21,10 @@ import lombok.extern.slf4j.Slf4j;
 public class AutoTradingProcessor {
 
     private String id;
+    private String title;
     private String userId;
+    private CoinType coinType;
+    private CoinExchangeType coinExchangeType;
     private AutoTradingStatus status;
     private Strategy strategy;
     private long duration;
