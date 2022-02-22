@@ -14,27 +14,31 @@ public class AutoTradingManager {
 
     private final AutoTradingProcessorMap processorMap; //fixme 분산환경을 고려해서 구성이 가능한 내용일까???
 
-    public void register(AutoTradingProcessor processor) {
+    public AutoTradingProcessor register(AutoTradingProcessor processor) {
         processorMap.put(processor);
+        return processor;
     }
 
-    public void start(String processorId, String userId) {
+    public AutoTradingProcessor start(String processorId, String userId) {
         AutoTradingProcessor processor = get(processorId);
         validate(userId, processor);
         processor.start();
+        return processor;
     }
 
-    public void stop(String processorId, String userId) {
+    public AutoTradingProcessor stop(String processorId, String userId) {
         AutoTradingProcessor processor = get(processorId);
         validate(userId, processor);
         processor.stop();
+        return processor;
     }
 
-    public void terminate(String processorId, String userId) {
+    public AutoTradingProcessor terminate(String processorId, String userId) {
         AutoTradingProcessor processor = get(processorId);
         validate(userId, processor);
         processor.terminate();
         processorMap.remove(processorId);
+        return processor;
     }
 
     private AutoTradingProcessor get(String processorId) {
