@@ -12,9 +12,10 @@ import com.dingdongdeng.coinautotrading.ApiDocumentUtils;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
-import com.dingdongdeng.coinautotrading.trading.autotrading.model.CommandRequest;
-import com.dingdongdeng.coinautotrading.trading.autotrading.model.type.Command;
-import com.dingdongdeng.coinautotrading.trading.autotrading.service.AutoTradingManager;
+import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingRegisterRequest;
+import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingResponse;
+import com.dingdongdeng.coinautotrading.trading.autotrading.model.type.AutoTradingProcessStatus;
+import com.dingdongdeng.coinautotrading.trading.autotrading.service.AutoTradingService;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.StrategyCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +48,7 @@ class AutoTradingControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
     @SpyBean
-    private AutoTradingManager autoTradingManager;
+    private AutoTradingService autoTradingService;
 
     @BeforeEach
     public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
@@ -58,38 +59,106 @@ class AutoTradingControllerTest {
 
     @Test
     public void 커맨드_API_테스트() throws Exception {
-        Command command = Command.START;
-        CommandRequest request = CommandRequest.builder()
+//        Command command = Command.START;
+//        CommandRequest request = CommandRequest.builder()
+//            .coinType(CoinType.ETHEREUM)
+//            .coinExchangeType(CoinExchangeType.UPBIT)
+//            .tradingTerm(TradingTerm.SCALPING)
+//            .strategyCode(StrategyCode.RSI)
+//            .build();
+//
+//        Mockito.doNothing()
+//            .when(autoTradingManager).command(Mockito.any(), Mockito.any());
+//
+//        MvcResult result = this.mockMvc.perform(
+//            RestDocumentationRequestBuilders.post("/trading/autotrading/command/{command}", command)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(objectMapper.writeValueAsString(request))
+//        )
+//            .andExpect(status().isOk())
+//            .andDo(
+//                document("trading/autotrading/command",
+//                    ApiDocumentUtils.getDocumentRequest(),
+//                    ApiDocumentUtils.getDocumentResponse(),
+//                    pathParameters(
+//                        RequestDocumentation.parameterWithName("command").description("명령어 유형(START, STOP)")
+//                    ),
+//                    requestFields(
+//                        fieldWithPath("coinType").type(JsonFieldType.STRING).description("코인 종류(ETHEREUM)"),
+//                        fieldWithPath("coinExchangeType").type(JsonFieldType.STRING).description("거래소(UPBIT)"),
+//                        fieldWithPath("tradingTerm").type(JsonFieldType.STRING).description("매매 타입(EXTREAM_SCALPING, SCALPING, DAY, SWING)"),
+//                        fieldWithPath("strategyCode").type(JsonFieldType.STRING).description("매매 전략(RSI)")
+//                    ),
+//                    responseFields(
+//                        fieldWithPath("body").type(JsonFieldType.OBJECT).description("데이터").optional(),
+//                        fieldWithPath("message").type(JsonFieldType.STRING).description("메세지").optional()
+//                    )
+//                )
+//            )
+//            .andReturn();
+    }
+
+    @Test
+    public void 자동매매_등록_테스트() throws Exception {
+
+        String processorId = "abawefawef-awefawefawe-awefawefwaef";
+
+        String title = "RSI 매매 등록";
+        String userId = "1234";
+        CoinType coinType = CoinType.ETHEREUM;
+        CoinExchangeType coinExchangeType = CoinExchangeType.UPBIT;
+        StrategyCode strategyCode = StrategyCode.RSI;
+
+        AutoTradingRegisterRequest request = AutoTradingRegisterRequest.builder()
+            .title(title)
             .coinType(CoinType.ETHEREUM)
             .coinExchangeType(CoinExchangeType.UPBIT)
             .tradingTerm(TradingTerm.SCALPING)
             .strategyCode(StrategyCode.RSI)
             .build();
 
-        Mockito.doNothing()
-            .when(autoTradingManager).command(Mockito.any(), Mockito.any());
+        Mockito.doReturn(
+            AutoTradingResponse.builder()
+                .title(title)
+                .processorId(processorId)
+                .processDuration(1000)
+                .autoTradingProcessStatus(AutoTradingProcessStatus.INIT)
+                .userId(userId)
+                .strategyCode(strategyCode)
+                .coinType(coinType)
+                .coinExchangeType(coinExchangeType)
+                .build()
+        )
+            .when(autoTradingService).register(Mockito.any(), Mockito.any());
 
         MvcResult result = this.mockMvc.perform(
-            RestDocumentationRequestBuilders.post("/trading/autotrading/command/{command}", command)
+            RestDocumentationRequestBuilders.post("/trading/autotrading/register")
                 .contentType(MediaType.APPLICATION_JSON)
+                .header("userId", userId)
                 .content(objectMapper.writeValueAsString(request))
         )
             .andExpect(status().isOk())
             .andDo(
-                document("trading/autotrading/command",
+                document("trading/autotrading/register",
                     ApiDocumentUtils.getDocumentRequest(),
                     ApiDocumentUtils.getDocumentResponse(),
-                    pathParameters(
-                        RequestDocumentation.parameterWithName("command").description("명령어 유형(START, STOP)")
-                    ),
                     requestFields(
-                        fieldWithPath("coinType").type(JsonFieldType.STRING).description("코인 종류(ETHEREUM)"),
-                        fieldWithPath("coinExchangeType").type(JsonFieldType.STRING).description("거래소(UPBIT)"),
-                        fieldWithPath("tradingTerm").type(JsonFieldType.STRING).description("매매 타입(EXTREAM_SCALPING, SCALPING, DAY, SWING)"),
-                        fieldWithPath("strategyCode").type(JsonFieldType.STRING).description("매매 전략(RSI)")
+                        fieldWithPath("title").type(JsonFieldType.STRING).description("사용자가 등록한 자동매매 이름"),
+                        fieldWithPath("coinType").type(JsonFieldType.STRING).description("사용자가 등록한 자동매매 이름"),
+                        fieldWithPath("coinExchangeType").type(JsonFieldType.STRING).description("사용자가 등록한 자동매매 이름"),
+                        fieldWithPath("tradingTerm").type(JsonFieldType.STRING).description("사용자가 등록한 자동매매 이름"),
+                        fieldWithPath("strategyCode").type(JsonFieldType.STRING).description("사용자가 등록한 자동매매 이름")
                     ),
                     responseFields(
                         fieldWithPath("body").type(JsonFieldType.OBJECT).description("데이터").optional(),
+                        fieldWithPath("body.title").type(JsonFieldType.STRING).description("사용자가 등록한 자동매매 이름"),
+                        fieldWithPath("body.processorId").type(JsonFieldType.STRING).description("자동매매 프로세스 ID"),
+                        fieldWithPath("body.processDuration").type(JsonFieldType.NUMBER).description("프로세스 동작 간격"),
+                        fieldWithPath("body.autoTradingProcessStatus").type(JsonFieldType.STRING).description("자동매매 프로세스 상태"),
+                        fieldWithPath("body.userId").type(JsonFieldType.STRING).description("사용자ID"),
+                        fieldWithPath("body.strategyCode").type(JsonFieldType.STRING).description("매매 전략 코드 (RSI)"),
+                        fieldWithPath("body.coinType").type(JsonFieldType.STRING).description("자동매매 할 코인 종류 (ETHEREUM, DOGE ...)"),
+                        fieldWithPath("body.coinExchangeType").type(JsonFieldType.STRING).description("자동거래에 사용할 거래소 종류(upbit)"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("메세지").optional()
                     )
                 )
@@ -97,4 +166,68 @@ class AutoTradingControllerTest {
             .andReturn();
     }
 
+    @Test
+    public void 자동매매_시작_테스트() throws Exception {
+
+        String autoTradingProcessorId = "abawefawef-awefawefawe-awefawefwaef";
+
+        String title = "RSI 매매 등록";
+        String userId = "1234";
+        CoinType coinType = CoinType.ETHEREUM;
+        CoinExchangeType coinExchangeType = CoinExchangeType.UPBIT;
+        StrategyCode strategyCode = StrategyCode.RSI;
+
+        Mockito.doReturn(
+            AutoTradingResponse.builder()
+                .title(title)
+                .processorId(autoTradingProcessorId)
+                .processDuration(1000)
+                .autoTradingProcessStatus(AutoTradingProcessStatus.RUNNING)
+                .userId(userId)
+                .strategyCode(strategyCode)
+                .coinType(coinType)
+                .coinExchangeType(coinExchangeType)
+                .build()
+        )
+            .when(autoTradingService).start(Mockito.any(), Mockito.any());
+
+        MvcResult result = this.mockMvc.perform(
+            RestDocumentationRequestBuilders.post("/trading/autotrading/{autoTradingProcessorId}/start", autoTradingProcessorId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("userId", userId)
+        )
+            .andExpect(status().isOk())
+            .andDo(
+                document("trading/autotrading/start",
+                    ApiDocumentUtils.getDocumentRequest(),
+                    ApiDocumentUtils.getDocumentResponse(),
+                    pathParameters(
+                        RequestDocumentation.parameterWithName("autoTradingProcessorId").description("자동매매 프로세스 ID")
+                    ),
+                    responseFields(
+                        fieldWithPath("body").type(JsonFieldType.OBJECT).description("데이터").optional(),
+                        fieldWithPath("body.title").type(JsonFieldType.STRING).description("사용자가 등록한 자동매매 이름"),
+                        fieldWithPath("body.processorId").type(JsonFieldType.STRING).description("자동매매 프로세스 ID"),
+                        fieldWithPath("body.processDuration").type(JsonFieldType.NUMBER).description("프로세스 동작 간격"),
+                        fieldWithPath("body.autoTradingProcessStatus").type(JsonFieldType.STRING).description("자동매매 프로세스 상태"),
+                        fieldWithPath("body.userId").type(JsonFieldType.STRING).description("사용자ID"),
+                        fieldWithPath("body.strategyCode").type(JsonFieldType.STRING).description("매매 전략 코드 (RSI)"),
+                        fieldWithPath("body.coinType").type(JsonFieldType.STRING).description("자동매매 할 코인 종류 (ETHEREUM, DOGE ...)"),
+                        fieldWithPath("body.coinExchangeType").type(JsonFieldType.STRING).description("자동거래에 사용할 거래소 종류(upbit)"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("메세지").optional()
+                    )
+                )
+            )
+            .andReturn();
+    }
+
+    @Test
+    public void 자동매매_정지_테스트() throws Exception {
+
+    }
+
+    @Test
+    public void 자동매매_제거_테스트() throws Exception {
+
+    }
 }
