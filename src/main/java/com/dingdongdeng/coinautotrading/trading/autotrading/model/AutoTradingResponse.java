@@ -20,7 +20,7 @@ public class AutoTradingResponse {
     private String title;
     private String processorId;
     private long processDuration;
-    private AutoTradingProcessStatus autoTradingProcessStatus;
+    private AutoTradingProcessStatus processStatus;
     private String userId;
     private StrategyCode strategyCode;
     private CoinType coinType;

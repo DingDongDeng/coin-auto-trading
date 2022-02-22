@@ -57,7 +57,7 @@ public class AutoTradingService {
             .title(processor.getTitle())
             .processorId(processor.getId())
             .processDuration(processor.getDuration())
-            .autoTradingProcessStatus(processor.getStatus())
+            .processStatus(processor.getStatus())
             .userId(processor.getUserId())
             .strategyCode(processor.getStrategy().getCode())
             .coinType(processor.getCoinType())

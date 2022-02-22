@@ -122,7 +122,7 @@ class AutoTradingControllerTest {
                 .title(title)
                 .processorId(processorId)
                 .processDuration(1000)
-                .autoTradingProcessStatus(AutoTradingProcessStatus.INIT)
+                .processStatus(AutoTradingProcessStatus.INIT)
                 .userId(userId)
                 .strategyCode(strategyCode)
                 .coinType(coinType)
@@ -154,7 +154,7 @@ class AutoTradingControllerTest {
                         fieldWithPath("body.title").type(JsonFieldType.STRING).description("사용자가 등록한 자동매매 이름"),
                         fieldWithPath("body.processorId").type(JsonFieldType.STRING).description("자동매매 프로세스 ID"),
                         fieldWithPath("body.processDuration").type(JsonFieldType.NUMBER).description("프로세스 동작 간격"),
-                        fieldWithPath("body.autoTradingProcessStatus").type(JsonFieldType.STRING).description("자동매매 프로세스 상태"),
+                        fieldWithPath("body.processStatus").type(JsonFieldType.STRING).description("자동매매 프로세스 상태"),
                         fieldWithPath("body.userId").type(JsonFieldType.STRING).description("사용자ID"),
                         fieldWithPath("body.strategyCode").type(JsonFieldType.STRING).description("매매 전략 코드 (RSI)"),
                         fieldWithPath("body.coinType").type(JsonFieldType.STRING).description("자동매매 할 코인 종류 (ETHEREUM, DOGE ...)"),
@@ -182,7 +182,7 @@ class AutoTradingControllerTest {
                 .title(title)
                 .processorId(autoTradingProcessorId)
                 .processDuration(1000)
-                .autoTradingProcessStatus(AutoTradingProcessStatus.RUNNING)
+                .processStatus(AutoTradingProcessStatus.RUNNING)
                 .userId(userId)
                 .strategyCode(strategyCode)
                 .coinType(coinType)
@@ -209,7 +209,7 @@ class AutoTradingControllerTest {
                         fieldWithPath("body.title").type(JsonFieldType.STRING).description("사용자가 등록한 자동매매 이름"),
                         fieldWithPath("body.processorId").type(JsonFieldType.STRING).description("자동매매 프로세스 ID"),
                         fieldWithPath("body.processDuration").type(JsonFieldType.NUMBER).description("프로세스 동작 간격"),
-                        fieldWithPath("body.autoTradingProcessStatus").type(JsonFieldType.STRING).description("자동매매 프로세스 상태"),
+                        fieldWithPath("body.processStatus").type(JsonFieldType.STRING).description("자동매매 프로세스 상태"),
                         fieldWithPath("body.userId").type(JsonFieldType.STRING).description("사용자ID"),
                         fieldWithPath("body.strategyCode").type(JsonFieldType.STRING).description("매매 전략 코드 (RSI)"),
                         fieldWithPath("body.coinType").type(JsonFieldType.STRING).description("자동매매 할 코인 종류 (ETHEREUM, DOGE ...)"),
