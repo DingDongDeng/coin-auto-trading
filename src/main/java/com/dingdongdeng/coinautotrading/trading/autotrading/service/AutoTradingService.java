@@ -2,13 +2,14 @@ package com.dingdongdeng.coinautotrading.trading.autotrading.service;
 
 import com.dingdongdeng.coinautotrading.exchange.service.ExchangeService;
 import com.dingdongdeng.coinautotrading.exchange.service.ExchangeServiceSelector;
-import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingStartParam;
+import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingProcessor;
+import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingRegisterRequest;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.type.AutoTradingStatus;
 import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyFactory;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -16,50 +17,33 @@ import org.springframework.stereotype.Service;
 @Service
 public class AutoTradingService {
 
-    private AutoTradingStatus status = AutoTradingStatus.INIT;
+    private final AutoTradingManager autoTradingManager;
     private final ExchangeServiceSelector processorSelector;
     private final StrategyFactory strategyFactory;
 
-    @Async
-    public void start(AutoTradingStartParam param) {
-        if (isRunning()) {
-            return;
-        }
-
-        updateStatus(AutoTradingStatus.RUNNING);
-        ExchangeService exchangeService = processorSelector.getTargetProcessor(param.getCoinExchangeType());
-        Strategy strategy = strategyFactory.create(param.getStrategyCode(), exchangeService, param.getCoinType(), param.getTradingTerm());
-
-        while (isRunning()) {
-            log.info("\n------------------------------ beginning of autotrading cycle -----------------------------------------");
-            delay(1000);
-            try {
-                strategy.execute();
-            } catch (Exception e) {
-                log.error("strategy execute exception : {}", e.getMessage(), e); //fixme 슬랙(이메일은 에러 많이났을때 난사해서 문제될수도)
-            }
-            log.info("\n------------------------------ end of autotrading cycle -----------------------------------------");
-        }
+    public void register(AutoTradingRegisterRequest request, String userId) {
+        ExchangeService exchangeService = processorSelector.getTargetProcessor(request.getCoinExchangeType());
+        Strategy strategy = strategyFactory.create(request.getStrategyCode(), exchangeService, request.getCoinType(), request.getTradingTerm());
+        autoTradingManager.register(
+            AutoTradingProcessor.builder()
+                .id(UUID.randomUUID().toString())
+                .userId(userId)
+                .status(AutoTradingStatus.INIT)
+                .strategy(strategy)
+                .duration(1000)
+                .build()
+        );
     }
 
-    public void stop() {
-        updateStatus(AutoTradingStatus.STOPPED);
+    public void start(String processorId, String userId) {
+        autoTradingManager.start(processorId, userId);
     }
 
-    private void updateStatus(AutoTradingStatus status) {
-        this.status = status;
+    public void stop(String processorId, String userId) {
+        autoTradingManager.stop(processorId, userId);
     }
 
-    private boolean isRunning() {
-        return this.status == AutoTradingStatus.RUNNING;
+    public void terminate(String processorId, String userId) {
+        autoTradingManager.terminate(processorId, userId);
     }
-
-    private void delay(long milliseconds) {
-        try {
-            Thread.sleep(milliseconds);
-        } catch (InterruptedException e) {
-            log.error(e.getMessage(), e);
-        }
-    }
-
 }

@@ -1,37 +1,52 @@
 package com.dingdongdeng.coinautotrading.trading.autotrading.service;
 
-import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingStartParam;
-import com.dingdongdeng.coinautotrading.trading.autotrading.model.CommandRequest;
-import com.dingdongdeng.coinautotrading.trading.autotrading.model.type.Command;
+import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingProcessor;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 @Slf4j
 @RequiredArgsConstructor
-@Service
+@Component
 public class AutoTradingManager {
 
-    private final AutoTradingService autoTradingService;
+    private final AutoTradingProcessorMap processorMap; //fixme 분산환경을 고려해서 구성이 가능한 내용일까???
 
-    public void command(Command command, CommandRequest request) {
-
-        if (command == Command.STOP) {
-            autoTradingService.stop();
-            return;
-        }
-
-        if (command == Command.START) {
-            autoTradingService.start(makeAutoTradingStartParam(request));
-        }
+    public void register(AutoTradingProcessor processor) {
+        processorMap.put(processor);
     }
 
-    private AutoTradingStartParam makeAutoTradingStartParam(CommandRequest request) {
-        return AutoTradingStartParam.builder()
-            .coinType(request.getCoinType())
-            .coinExchangeType(request.getCoinExchangeType())
-            .tradingTerm(request.getTradingTerm())
-            .strategyCode(request.getStrategyCode())
-            .build();
+    public void start(String processorId, String userId) {
+        AutoTradingProcessor processor = get(processorId);
+        validate(userId, processor);
+        processor.start();
+    }
+
+    public void stop(String processorId, String userId) {
+        AutoTradingProcessor processor = get(processorId);
+        validate(userId, processor);
+        processor.stop();
+    }
+
+    public void terminate(String processorId, String userId) {
+        AutoTradingProcessor processor = get(processorId);
+        validate(userId, processor);
+        processor.terminate();
+        processorMap.remove(processorId);
+    }
+
+    private AutoTradingProcessor get(String processorId) {
+        return processorMap.get(processorId);
+    }
+
+    private void validate(String userId, AutoTradingProcessor processor) {
+        if (Objects.isNull(processor)) {
+            throw new NoSuchElementException("not found processor");
+        }
+        if (!processor.getUserId().equals(userId)) {
+            throw new IllegalArgumentException("userId : " + userId);
+        }
     }
 }
