@@ -4,5 +4,6 @@ public enum AutoTradingStatus {
     INIT,
     RUNNING,
     STOPPED,
+    TERMINATED,
     ;
 }
