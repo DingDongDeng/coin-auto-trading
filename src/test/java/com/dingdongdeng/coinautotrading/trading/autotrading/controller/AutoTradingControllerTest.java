@@ -1,5 +1,7 @@
 package com.dingdongdeng.coinautotrading.trading.autotrading.controller;
 
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -58,47 +60,6 @@ class AutoTradingControllerTest {
     }
 
     @Test
-    public void 커맨드_API_테스트() throws Exception {
-//        Command command = Command.START;
-//        CommandRequest request = CommandRequest.builder()
-//            .coinType(CoinType.ETHEREUM)
-//            .coinExchangeType(CoinExchangeType.UPBIT)
-//            .tradingTerm(TradingTerm.SCALPING)
-//            .strategyCode(StrategyCode.RSI)
-//            .build();
-//
-//        Mockito.doNothing()
-//            .when(autoTradingManager).command(Mockito.any(), Mockito.any());
-//
-//        MvcResult result = this.mockMvc.perform(
-//            RestDocumentationRequestBuilders.post("/trading/autotrading/command/{command}", command)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(objectMapper.writeValueAsString(request))
-//        )
-//            .andExpect(status().isOk())
-//            .andDo(
-//                document("trading/autotrading/command",
-//                    ApiDocumentUtils.getDocumentRequest(),
-//                    ApiDocumentUtils.getDocumentResponse(),
-//                    pathParameters(
-//                        RequestDocumentation.parameterWithName("command").description("명령어 유형(START, STOP)")
-//                    ),
-//                    requestFields(
-//                        fieldWithPath("coinType").type(JsonFieldType.STRING).description("코인 종류(ETHEREUM)"),
-//                        fieldWithPath("coinExchangeType").type(JsonFieldType.STRING).description("거래소(UPBIT)"),
-//                        fieldWithPath("tradingTerm").type(JsonFieldType.STRING).description("매매 타입(EXTREAM_SCALPING, SCALPING, DAY, SWING)"),
-//                        fieldWithPath("strategyCode").type(JsonFieldType.STRING).description("매매 전략(RSI)")
-//                    ),
-//                    responseFields(
-//                        fieldWithPath("body").type(JsonFieldType.OBJECT).description("데이터").optional(),
-//                        fieldWithPath("message").type(JsonFieldType.STRING).description("메세지").optional()
-//                    )
-//                )
-//            )
-//            .andReturn();
-    }
-
-    @Test
     public void 자동매매_등록_테스트() throws Exception {
 
         String processorId = "abawefawef-awefawefawe-awefawefwaef";
@@ -142,12 +103,15 @@ class AutoTradingControllerTest {
                 document("trading/autotrading/register",
                     ApiDocumentUtils.getDocumentRequest(),
                     ApiDocumentUtils.getDocumentResponse(),
+                    requestHeaders(
+                        headerWithName("userId").description("사용자ID")
+                    ),
                     requestFields(
                         fieldWithPath("title").type(JsonFieldType.STRING).description("사용자가 등록한 자동매매 이름"),
-                        fieldWithPath("coinType").type(JsonFieldType.STRING).description("사용자가 등록한 자동매매 이름"),
-                        fieldWithPath("coinExchangeType").type(JsonFieldType.STRING).description("사용자가 등록한 자동매매 이름"),
-                        fieldWithPath("tradingTerm").type(JsonFieldType.STRING).description("사용자가 등록한 자동매매 이름"),
-                        fieldWithPath("strategyCode").type(JsonFieldType.STRING).description("사용자가 등록한 자동매매 이름")
+                        fieldWithPath("coinType").type(JsonFieldType.STRING).description("자동매매 할 코인 종류 (ETHEREUM, DOGE ...)"),
+                        fieldWithPath("coinExchangeType").type(JsonFieldType.STRING).description("자동거래에 사용할 거래소 종류(upbit)"),
+                        fieldWithPath("tradingTerm").type(JsonFieldType.STRING).description("자동매매의 매매타입 (EXTREME_SCALPING, SCALPING,DAY,SWING)"),
+                        fieldWithPath("strategyCode").type(JsonFieldType.STRING).description("매매 전략 코드 (RSI)")
                     ),
                     responseFields(
                         fieldWithPath("body").type(JsonFieldType.OBJECT).description("데이터").optional(),
@@ -201,6 +165,9 @@ class AutoTradingControllerTest {
                 document("trading/autotrading/start",
                     ApiDocumentUtils.getDocumentRequest(),
                     ApiDocumentUtils.getDocumentResponse(),
+                    requestHeaders(
+                        headerWithName("userId").description("사용자ID")
+                    ),
                     pathParameters(
                         RequestDocumentation.parameterWithName("autoTradingProcessorId").description("자동매매 프로세스 ID")
                     ),
@@ -255,6 +222,9 @@ class AutoTradingControllerTest {
                 document("trading/autotrading/stop",
                     ApiDocumentUtils.getDocumentRequest(),
                     ApiDocumentUtils.getDocumentResponse(),
+                    requestHeaders(
+                        headerWithName("userId").description("사용자ID")
+                    ),
                     pathParameters(
                         RequestDocumentation.parameterWithName("autoTradingProcessorId").description("자동매매 프로세스 ID")
                     ),
@@ -309,6 +279,9 @@ class AutoTradingControllerTest {
                 document("trading/autotrading/terminate",
                     ApiDocumentUtils.getDocumentRequest(),
                     ApiDocumentUtils.getDocumentResponse(),
+                    requestHeaders(
+                        headerWithName("userId").description("사용자ID")
+                    ),
                     pathParameters(
                         RequestDocumentation.parameterWithName("autoTradingProcessorId").description("자동매매 프로세스 ID")
                     ),
