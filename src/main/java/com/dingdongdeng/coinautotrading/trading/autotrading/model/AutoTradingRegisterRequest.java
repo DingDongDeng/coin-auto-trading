@@ -11,6 +11,7 @@ import lombok.ToString;
 @Getter
 public class AutoTradingRegisterRequest {
 
+    private String title;
     private CoinType coinType;
     private CoinExchangeType coinExchangeType;
     private TradingTerm tradingTerm;
