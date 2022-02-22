@@ -41,7 +41,7 @@ import org.springframework.web.context.WebApplicationContext;
 @Slf4j
 @SpringBootTest
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class, MockitoExtension.class})
-class AutotradingControllerTest {
+class AutoTradingControllerTest {
 
     private MockMvc mockMvc;
     @Autowired
