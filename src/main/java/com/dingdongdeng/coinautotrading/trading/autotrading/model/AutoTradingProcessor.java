@@ -2,7 +2,7 @@ package com.dingdongdeng.coinautotrading.trading.autotrading.model;
 
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
-import com.dingdongdeng.coinautotrading.trading.autotrading.model.type.AutoTradingStatus;
+import com.dingdongdeng.coinautotrading.trading.autotrading.model.type.AutoTradingProcessStatus;
 import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
 import java.util.concurrent.CompletableFuture;
 import lombok.AllArgsConstructor;
@@ -25,7 +25,7 @@ public class AutoTradingProcessor {
     private String userId;
     private CoinType coinType;
     private CoinExchangeType coinExchangeType;
-    private AutoTradingStatus status;
+    private AutoTradingProcessStatus status;
     private Strategy strategy;
     private long duration;
 
@@ -34,16 +34,16 @@ public class AutoTradingProcessor {
         if (isRunning()) {
             return;
         }
-        this.status = AutoTradingStatus.RUNNING;
+        this.status = AutoTradingProcessStatus.RUNNING;
         CompletableFuture.runAsync(this::process); //fixme AsyncDecorater 설정이 먹힐려나>???
     }
 
     public void stop() {
-        this.status = AutoTradingStatus.STOPPED;
+        this.status = AutoTradingProcessStatus.STOPPED;
     }
 
     public void terminate() {
-        this.status = AutoTradingStatus.TERMINATED;
+        this.status = AutoTradingProcessStatus.TERMINATED;
     }
 
     private void process() {
@@ -64,15 +64,15 @@ public class AutoTradingProcessor {
     }
 
     private boolean isAvail() {
-        return this.status == AutoTradingStatus.RUNNING || this.status == AutoTradingStatus.STOPPED;
+        return this.status == AutoTradingProcessStatus.RUNNING || this.status == AutoTradingProcessStatus.STOPPED;
     }
 
     private boolean isRunning() {
-        return this.status == AutoTradingStatus.RUNNING;
+        return this.status == AutoTradingProcessStatus.RUNNING;
     }
 
     private boolean isStoped() {
-        return this.status == AutoTradingStatus.STOPPED;
+        return this.status == AutoTradingProcessStatus.STOPPED;
     }
 
     private void delay() {

@@ -5,7 +5,7 @@ import com.dingdongdeng.coinautotrading.exchange.service.ExchangeServiceSelector
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingProcessor;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingRegisterRequest;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingResponse;
-import com.dingdongdeng.coinautotrading.trading.autotrading.model.type.AutoTradingStatus;
+import com.dingdongdeng.coinautotrading.trading.autotrading.model.type.AutoTradingProcessStatus;
 import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyFactory;
 import java.util.UUID;
@@ -32,7 +32,7 @@ public class AutoTradingService {
                 .userId(userId)
                 .coinType(request.getCoinType())
                 .coinExchangeType(request.getCoinExchangeType())
-                .status(AutoTradingStatus.INIT)
+                .status(AutoTradingProcessStatus.INIT)
                 .strategy(strategy)
                 .duration(1000)
                 .build()
@@ -57,7 +57,7 @@ public class AutoTradingService {
             .title(processor.getTitle())
             .processorId(processor.getId())
             .processDuration(processor.getDuration())
-            .autoTradingStatus(processor.getStatus())
+            .autoTradingProcessStatus(processor.getStatus())
             .userId(processor.getUserId())
             .strategyCode(processor.getStrategy().getCode())
             .coinType(processor.getCoinType())
