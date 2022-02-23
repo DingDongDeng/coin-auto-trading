@@ -67,3 +67,25 @@ operation::/trading/autotrading/terminate[snippets='http-request,request-headers
 ==== 응답
 operation::/trading/autotrading/terminate[snippets='http-response,response-fields']
 
+
+
+=== 거래소 키 등록 API
+==== 설명
+----
+거래소 키 등록 API
+----
+==== 요청
+operation::/auth/key[snippets='http-request,request-headers,request-fields']
+==== 응답
+operation::/auth/key[snippets='http-response,response-fields']
+
+
+=== 사용자 거래소 키 조회 API
+==== 설명
+----
+사용자 거래소 키 조회 API
+----
+==== 요청
+operation::/auth/user/key[snippets='http-request,request-headers,path-parameters']
+==== 응답
+operation::/auth/user/key[snippets='http-response,response-fields']
