@@ -1,8 +1,8 @@
 package com.dingdongdeng.coinautotrading.trading.strategy;
 
-import com.dingdongdeng.coinautotrading.exchange.service.ExchangeService;
-import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrder;
-import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderInfoParam;
+import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeService;
+import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrder;
+import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrderInfoParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.StrategyCode;
