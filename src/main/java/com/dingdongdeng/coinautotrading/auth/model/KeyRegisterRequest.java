@@ -20,15 +20,4 @@ public class KeyRegisterRequest {
     private CoinExchangeType coinExchangeType;
     @NotNull
     private List<KeyPair> keyPairList;
-
-    @ToString
-    @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class KeyPair {
-
-        private String keyName;
-        private String value;
-    }
 }
