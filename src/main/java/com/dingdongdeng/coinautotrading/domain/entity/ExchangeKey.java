@@ -42,7 +42,7 @@ public class ExchangeKey {
     @Column(name = "value")
     private String value;
 
-    @Column(name = "userId")
+    @Column(name = "user_id")
     private String userId;
 
 }
