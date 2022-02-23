@@ -4,6 +4,7 @@ import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.StrategyCode;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,9 +18,13 @@ import lombok.ToString;
 @Builder
 public class AutoTradingRegisterRequest {
 
+    @NotNull
     private String title;
+    @NotNull
     private CoinType coinType;
+    @NotNull
     private CoinExchangeType coinExchangeType;
-    private TradingTerm tradingTerm;
+    @NotNull
     private StrategyCode strategyCode;
+    private TradingTerm tradingTerm;
 }
