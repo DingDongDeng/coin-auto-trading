@@ -2,7 +2,9 @@ package com.dingdongdeng.coinautotrading.auth.controller;
 
 import com.dingdongdeng.coinautotrading.auth.component.KeyService;
 import com.dingdongdeng.coinautotrading.auth.model.KeyRegisterRequest;
+import com.dingdongdeng.coinautotrading.auth.model.KeyResponse;
 import com.dingdongdeng.coinautotrading.common.model.CommonResponse;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,9 +22,9 @@ public class KeyController {
     private final KeyService keyService;
 
     @PostMapping("")
-    public CommonResponse<Void> register(@RequestBody KeyRegisterRequest request, @RequestHeader String userId) {
-        keyService.register(request, userId);
-        return CommonResponse.<Void>builder()
+    public CommonResponse<List<KeyResponse>> register(@RequestBody KeyRegisterRequest request, @RequestHeader String userId) {
+        return CommonResponse.<List<KeyResponse>>builder()
+            .body(keyService.register(request, userId))
             .message("key register success")
             .build();
     }

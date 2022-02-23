@@ -2,6 +2,7 @@ package com.dingdongdeng.coinautotrading.auth.component;
 
 import com.dingdongdeng.coinautotrading.auth.model.KeyRegisterRequest;
 import com.dingdongdeng.coinautotrading.auth.model.KeyRegisterRequest.KeyPair;
+import com.dingdongdeng.coinautotrading.auth.model.KeyResponse;
 import com.dingdongdeng.coinautotrading.domain.entity.ExchangeKey;
 import com.dingdongdeng.coinautotrading.domain.service.ExchangeKeyService;
 import java.util.List;
@@ -18,10 +19,10 @@ public class KeyService {
 
     private final ExchangeKeyService exchangeKeyService;
 
-    public void register(KeyRegisterRequest request, String userId) {
+    public List<KeyResponse> register(KeyRegisterRequest request, String userId) {
         List<KeyPair> keyPairList = request.getKeyPairList();
         String pairId = UUID.randomUUID().toString();
-        exchangeKeyService.saveAll(
+        List<ExchangeKey> exchangeKeyList = exchangeKeyService.saveAll(
             keyPairList.stream()
                 .map(
                     k -> ExchangeKey.builder()
@@ -34,5 +35,19 @@ public class KeyService {
                 )
                 .collect(Collectors.toList())
         );
+        return makeKeyResponse(exchangeKeyList);
+    }
+
+    private List<KeyResponse> makeKeyResponse(List<ExchangeKey> exchangeKeyList) {
+        return exchangeKeyList.stream()
+            .map(
+                k -> KeyResponse.builder()
+                    .pairId(k.getPairId())
+                    .coinExchangeType(k.getCoinExchangeType())
+                    .name(k.getName())
+                    .value(k.getValue())
+                    .build()
+            )
+            .collect(Collectors.toList());
     }
 }
