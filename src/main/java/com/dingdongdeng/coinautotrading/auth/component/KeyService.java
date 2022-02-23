@@ -38,6 +38,14 @@ public class KeyService {
         return makeKeyResponse(exchangeKeyList);
     }
 
+    public List<KeyResponse> getPairKeyList(String keyPairId) {
+        return makeKeyResponse(exchangeKeyService.findByPairId(keyPairId));
+    }
+
+    public List<KeyResponse> getUserKeyList(String userId) {
+        return makeKeyResponse(exchangeKeyService.findByUserId(userId));
+    }
+
     private List<KeyResponse> makeKeyResponse(List<ExchangeKey> exchangeKeyList) {
         return exchangeKeyList.stream()
             .map(

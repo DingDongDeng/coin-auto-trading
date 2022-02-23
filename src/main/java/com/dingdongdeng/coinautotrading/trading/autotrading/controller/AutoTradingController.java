@@ -22,7 +22,7 @@ public class AutoTradingController {
     private final AutoTradingService autoTradingService;
 
     @PostMapping("/register")
-    public CommonResponse<AutoTradingResponse> register(@RequestBody AutoTradingRegisterRequest request, @RequestHeader String userId) {
+    public CommonResponse<AutoTradingResponse> register(@RequestBody AutoTradingRegisterRequest request, @RequestHeader String keyPairId, @RequestHeader String userId) {
         return CommonResponse.<AutoTradingResponse>builder()
             .body(autoTradingService.register(request, userId))
             .message("autotrading register success")

@@ -21,6 +21,14 @@ public class ExchangeKeyService implements RepositoryService<ExchangeKey, Long> 
         return repository.findById(id).orElse(new ExchangeKey());
     }
 
+    public List<ExchangeKey> findByPairId(String pairId) {
+        return repository.findByPairId(pairId);
+    }
+
+    public List<ExchangeKey> findByUserId(String userId) {
+        return repository.findByUserId(userId);
+    }
+
     public ExchangeKey save(ExchangeKey entity) {
         return repository.save(entity);
     }
