@@ -29,6 +29,9 @@ public class ExchangeKey {
     @Column(name = "exchange_key_id")
     private Long id;
 
+    @Column(name = "pair_id")
+    private String pairId;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "coin_exchange_type")
     private CoinExchangeType coinExchangeType;
