@@ -1,0 +1,19 @@
+POST localhost:8080/auth/key
+Content-Type: application/json
+userId: 1234
+
+{
+  "coinExchangeType": "UPBIT",
+  "keyPairList": [
+    {
+      "keyName": "accessKey",
+      "value": "accesskey-12312312321321321"
+    },
+    {
+      "keyName": "secretKey",
+      "value": "secretKey-12312312321321321"
+    }
+  ]
+}
+
+###
