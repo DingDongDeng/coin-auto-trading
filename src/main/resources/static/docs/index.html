@@ -2218,8 +2218,8 @@
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /trading/autotrading/register HTTP/1.1
 Content-Type: application/json
-userId: 1234
-Content-Length: 152
+userId: 123456
+Content-Length: 208
 Host: localhost:8080
 
 {
@@ -2227,7 +2227,8 @@ Host: localhost:8080
   "coinType" : "ETHEREUM",
   "coinExchangeType" : "UPBIT",
   "strategyCode" : "RSI",
-  "tradingTerm" : "SCALPING"
+  "tradingTerm" : "SCALPING",
+  "keyPairId" : "509e7168-b00e-4f56-bd85-88c1233f72d3"
 }</code></pre>
               </div>
             </div>
@@ -2294,6 +2295,11 @@ Host: localhost:8080
                 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
                 <td class="tableblock halign-left valign-top"><p class="tableblock">매매 전략 코드 (RSI)</p></td>
               </tr>
+              <tr>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>keyPairId</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+                <td class="tableblock halign-left valign-top"><p class="tableblock">자동매매에 사용할 거래소 키페어 ID</p></td>
+              </tr>
               </tbody>
             </table>
           </div>
@@ -2306,7 +2312,7 @@ Host: localhost:8080
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 335
+Content-Length: 337
 
 {
   "body" : {
@@ -2314,7 +2320,7 @@ Content-Length: 335
     "processorId" : "abawefawef-awefawefawe-awefawefwaef",
     "processDuration" : 1000,
     "processStatus" : "INIT",
-    "userId" : "1234",
+    "userId" : "123456",
     "strategyCode" : "RSI",
     "coinType" : "ETHEREUM",
     "coinExchangeType" : "UPBIT"
@@ -2413,7 +2419,7 @@ Content-Length: 335
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /trading/autotrading/abawefawef-awefawefawe-awefawefwaef/start HTTP/1.1
 Content-Type: application/json
-userId: 1234
+userId: 123456
 Host: localhost:8080</code></pre>
               </div>
             </div>
@@ -2470,7 +2476,7 @@ Host: localhost:8080</code></pre>
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 335
+Content-Length: 337
 
 {
   "body" : {
@@ -2478,7 +2484,7 @@ Content-Length: 335
     "processorId" : "abawefawef-awefawefawe-awefawefwaef",
     "processDuration" : 1000,
     "processStatus" : "RUNNING",
-    "userId" : "1234",
+    "userId" : "123456",
     "strategyCode" : "RSI",
     "coinType" : "ETHEREUM",
     "coinExchangeType" : "UPBIT"
@@ -2577,7 +2583,7 @@ Content-Length: 335
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /trading/autotrading/abawefawef-awefawefawe-awefawefwaef/stop HTTP/1.1
 Content-Type: application/json
-userId: 1234
+userId: 123456
 Host: localhost:8080</code></pre>
               </div>
             </div>
@@ -2634,7 +2640,7 @@ Host: localhost:8080</code></pre>
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 334
+Content-Length: 336
 
 {
   "body" : {
@@ -2642,7 +2648,7 @@ Content-Length: 334
     "processorId" : "abawefawef-awefawefawe-awefawefwaef",
     "processDuration" : 1000,
     "processStatus" : "STOPPED",
-    "userId" : "1234",
+    "userId" : "123456",
     "strategyCode" : "RSI",
     "coinType" : "ETHEREUM",
     "coinExchangeType" : "UPBIT"
@@ -2741,7 +2747,7 @@ Content-Length: 334
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /trading/autotrading/abawefawef-awefawefawe-awefawefwaef/terminate HTTP/1.1
 Content-Type: application/json
-userId: 1234
+userId: 123456
 Host: localhost:8080</code></pre>
               </div>
             </div>
@@ -2798,7 +2804,7 @@ Host: localhost:8080</code></pre>
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 342
+Content-Length: 344
 
 {
   "body" : {
@@ -2806,7 +2812,7 @@ Content-Length: 342
     "processorId" : "abawefawef-awefawefawe-awefawefwaef",
     "processDuration" : 1000,
     "processStatus" : "TERMINATED",
-    "userId" : "1234",
+    "userId" : "123456",
     "strategyCode" : "RSI",
     "coinType" : "ETHEREUM",
     "coinExchangeType" : "UPBIT"
@@ -2995,12 +3001,12 @@ Content-Length: 372
 
 {
   "body" : [ {
-    "pairId" : "8e9f9104-baba-4645-8529-812c8ce8f4e0",
+    "pairId" : "6d989722-d124-45c4-9572-1a56b4f9972b",
     "coinExchangeType" : "UPBIT",
     "name" : "accessKey",
     "value" : "accessKey-123123123"
   }, {
-    "pairId" : "59b35f92-0ef7-4689-8282-6e50bc5bd49c",
+    "pairId" : "56e36b28-a80b-454c-ab63-3dbd6d211c21",
     "coinExchangeType" : "UPBIT",
     "name" : "secretKey",
     "value" : "secretKey-1231231223"
@@ -3136,21 +3142,21 @@ Host: localhost:8080</code></pre>
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 372
+Content-Length: 367
 
 {
   "body" : [ {
-    "pairId" : "e48edc9a-3b18-46d5-ac50-4640a24367ee",
+    "pairId" : "dcbdefc7-30a3-44b9-b4f4-889e4057c9ee",
     "coinExchangeType" : "UPBIT",
     "name" : "accessKey",
     "value" : "accessKey-123123123"
   }, {
-    "pairId" : "7cbc7cb4-9c7a-4603-914f-0b750684bb9a",
+    "pairId" : "0a9d7ceb-2564-4917-a9a9-e17a28827ebf",
     "coinExchangeType" : "UPBIT",
     "name" : "secretKey",
     "value" : "secretKey-1231231223"
   } ],
-  "message" : "key register success"
+  "message" : "key get success"
 }</code></pre>
               </div>
             </div>
