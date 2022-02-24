@@ -153,7 +153,8 @@ class AutoTradingControllerTest {
                         fieldWithPath("coinType").type(JsonFieldType.STRING).description("자동매매 할 코인 종류 (ETHEREUM, DOGE ...)"),
                         fieldWithPath("coinExchangeType").type(JsonFieldType.STRING).description("자동거래에 사용할 거래소 종류(upbit)"),
                         fieldWithPath("tradingTerm").type(JsonFieldType.STRING).description("자동매매의 매매타입 (EXTREME_SCALPING, SCALPING,DAY,SWING)"),
-                        fieldWithPath("strategyCode").type(JsonFieldType.STRING).description("매매 전략 코드 (RSI)")
+                        fieldWithPath("strategyCode").type(JsonFieldType.STRING).description("매매 전략 코드 (RSI)"),
+                        fieldWithPath("keyPairId").type(JsonFieldType.STRING).description("자동매매에 사용할 거래소 키페어 ID")
                     ),
                     responseFields(
                         fieldWithPath("body").type(JsonFieldType.OBJECT).description("데이터").optional(),
