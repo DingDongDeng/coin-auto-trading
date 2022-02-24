@@ -27,7 +27,7 @@ public class UpbitExchangeCandleService implements ExchangeCandleService {
     private final long MAX_COUNT_SIZE = 200;
 
     @Override
-    public ExchangeCandles getCandleList(CoinType coinType, CandleUnit candleUnit, LocalDateTime start, LocalDateTime end) {
+    public ExchangeCandles getCandleList(CoinType coinType, CandleUnit candleUnit, LocalDateTime start, LocalDateTime end, String keyPairId) {
         LocalDateTime limitedEndDateTime = getlimitedEndDateTime(candleUnit, start, end);
         int candleCount = getCandleCount(candleUnit, start, limitedEndDateTime);
 
@@ -37,7 +37,8 @@ public class UpbitExchangeCandleService implements ExchangeCandleService {
                 .market(MarketType.of(coinType).getCode())
                 .toKst(limitedEndDateTime)
                 .count(candleCount)
-                .build()
+                .build(),
+            keyPairId
         );
         return ExchangeCandles.builder()
             .coinExchangeType(COIN_EXCHANGE_TYPE)

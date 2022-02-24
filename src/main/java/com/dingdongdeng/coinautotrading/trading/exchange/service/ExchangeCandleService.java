@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 public interface ExchangeCandleService {
 
-    ExchangeCandles getCandleList(CoinType coinType, CandleUnit candleUnit, LocalDateTime start, LocalDateTime end);
+    ExchangeCandles getCandleList(CoinType coinType, CandleUnit candleUnit, LocalDateTime start, LocalDateTime end, String keyPairId);
 
     CoinExchangeType getCoinExchangeType();
 }
