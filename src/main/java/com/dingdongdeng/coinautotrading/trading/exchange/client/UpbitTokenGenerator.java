@@ -61,8 +61,8 @@ public class UpbitTokenGenerator {
 
     private String getKey(List<ExchangeKey> exchangeKeyList, String keyName) {
         return exchangeKeyList.stream()
-            .map(ExchangeKey::getName)
-            .filter(key -> key.equalsIgnoreCase(keyName))
+            .filter(key -> key.getName().equalsIgnoreCase(keyName))
+            .map(ExchangeKey::getValue)
             .findFirst()
             .orElseThrow(NoSuchElementException::new);
     }
