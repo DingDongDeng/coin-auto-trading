@@ -20,6 +20,7 @@
     - ~~user정보 접근 할수 있는 contextHolder필요~~
 - RsiStrategy 설정 값들 동적으로 받을 수 있도록 수정
 - admin 패키지를 user 패키지로 변경하면서 사용자 인터페이스를 위한 패키징 구조 재설계 필요
+- https://favicon.io/favicon-generator/  <<< favicon 
 
 ### command sample
 - gradle asciidoctor bootRun -PUPBIT_SECRET_KEY={시크릿키} -PUPBIT_ACCESS_KEY={액세스키}
