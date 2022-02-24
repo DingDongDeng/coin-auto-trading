@@ -27,7 +27,7 @@ public class AuthController {
     public CommonResponse<List<KeyResponse>> get(@PathVariable String userId) {
         return CommonResponse.<List<KeyResponse>>builder()
             .body(keyService.getUserKeyList(userId))
-            .message("key register success")
+            .message("key get success")
             .build();
     }
 
