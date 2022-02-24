@@ -7,6 +7,7 @@ import com.dingdongdeng.coinautotrading.common.model.CommonResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +25,7 @@ public class AuthController {
     private final KeyService keyService;
 
     @GetMapping("/user/{userId}/key")
-    public CommonResponse<List<KeyResponse>> get(@PathVariable String userId) {
+    public CommonResponse<List<KeyResponse>> getKeyList(@PathVariable String userId) {
         return CommonResponse.<List<KeyResponse>>builder()
             .body(keyService.getUserKeyList(userId))
             .message("key get success")
@@ -32,9 +33,17 @@ public class AuthController {
     }
 
     @PostMapping("/key")
-    public CommonResponse<List<KeyResponse>> register(@RequestBody KeyRegisterRequest request, @RequestHeader String userId) {
+    public CommonResponse<List<KeyResponse>> registerKey(@RequestBody KeyRegisterRequest request, @RequestHeader String userId) {
         return CommonResponse.<List<KeyResponse>>builder()
             .body(keyService.register(request, userId))
+            .message("key register success")
+            .build();
+    }
+
+    @DeleteMapping("/key/pair/{keyPairId}")
+    public CommonResponse<List<KeyResponse>> deleteKey(@PathVariable String keyPairId, @RequestHeader String userId) {
+        return CommonResponse.<List<KeyResponse>>builder()
+            .body(keyService.deleteKeyPair(keyPairId, userId))
             .message("key register success")
             .build();
     }

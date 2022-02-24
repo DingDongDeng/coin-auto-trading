@@ -46,6 +46,15 @@ public class KeyService {
         return makeKeyResponse(exchangeKeyService.findByUserId(userId));
     }
 
+    public List<KeyResponse> deleteKeyPair(String keyPairId, String userId) {
+        List<ExchangeKey> exchangeKeyList = exchangeKeyService.findByPairId(keyPairId);
+        if (exchangeKeyList.stream().noneMatch(key -> key.getUserId().equals(userId))) {
+            throw new RuntimeException("잘못된 접근입니다.");
+        }
+        exchangeKeyService.deleteAll(exchangeKeyList);
+        return makeKeyResponse(exchangeKeyList);
+    }
+
     private List<KeyResponse> makeKeyResponse(List<ExchangeKey> exchangeKeyList) {
         return exchangeKeyList.stream()
             .map(
