@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -31,8 +32,9 @@ public class RsiTradingStrategy extends Strategy {
 
     private final StrategyAssistant assistant;
 
-    public RsiTradingStrategy(CoinType coinType, TradingTerm tradingTerm, ExchangeService processor, StrategyAssistant assistant) {
-        super(coinType, tradingTerm, processor);
+    @Builder
+    public RsiTradingStrategy(CoinType coinType, TradingTerm tradingTerm, String keyPairId, ExchangeService processor, StrategyAssistant assistant) {
+        super(coinType, tradingTerm, keyPairId, processor);
         this.assistant = assistant;
     }
 

@@ -23,11 +23,12 @@ public abstract class Strategy {
 
     private final CoinType coinType;
     private final TradingTerm tradingTerm;
+    private final String keyPairId;
     private final ExchangeService exchangeService;
 
     public void execute() {
 
-        ExchangeTradingInfo exchangeTradingInfo = exchangeService.getTradingInformation(makeExchangeTradingInfoParam(coinType, tradingTerm));
+        ExchangeTradingInfo exchangeTradingInfo = exchangeService.getTradingInformation(makeExchangeTradingInfoParam(), keyPairId);
 
         List<TradingTask> tradingTaskList = this.makeTradingTask(exchangeTradingInfo);
         log.info("tradingTaskList : {}", tradingTaskList);
@@ -35,14 +36,14 @@ public abstract class Strategy {
         tradingTaskList.forEach(tradingTask -> {
             // 매수, 매도 주문
             if (isOrder(tradingTask)) {
-                ExchangeOrder order = exchangeService.order(makeExchangeOrderParam(tradingTask));
+                ExchangeOrder order = exchangeService.order(makeExchangeOrderParam(tradingTask), keyPairId);
                 this.handleOrderResult(order, makeTradingResult(tradingTask, order));
                 return;
             }
 
             // 주문 취소
             if (isOrderCancel(tradingTask)) {
-                ExchangeOrderCancel orderCancel = exchangeService.orderCancel(makeExchangeOrderCancelParam(tradingTask));
+                ExchangeOrderCancel orderCancel = exchangeService.orderCancel(makeExchangeOrderCancelParam(tradingTask), keyPairId);
                 this.handleOrderCancelResult(orderCancel, makeTradingResult(tradingTask, orderCancel));
             }
 
@@ -68,7 +69,7 @@ public abstract class Strategy {
         return orderType == OrderType.CANCEL;
     }
 
-    private ExchangeTradingInfoParam makeExchangeTradingInfoParam(CoinType coinType, TradingTerm tradingTerm) {
+    private ExchangeTradingInfoParam makeExchangeTradingInfoParam() {
         return ExchangeTradingInfoParam.builder()
             .coinType(coinType)
             .tradingTerm(tradingTerm)
