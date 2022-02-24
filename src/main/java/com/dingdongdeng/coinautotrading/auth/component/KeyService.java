@@ -38,7 +38,7 @@ public class KeyService {
         return makeKeyResponse(exchangeKeyList);
     }
 
-    public List<KeyResponse> getPairKeyList(String keyPairId) {
+    public List<KeyResponse> getKeyList(String keyPairId) {
         return makeKeyResponse(exchangeKeyService.findByPairId(keyPairId));
     }
 
