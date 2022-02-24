@@ -113,7 +113,6 @@ class AuthControllerTest {
                 .pairId(UUID.randomUUID().toString())
                 .coinExchangeType(coinExchangeType)
                 .name(p.getKeyName())
-                .value(p.getValue())
                 .build()).collect(Collectors.toList())
         )
             .when(keyService).register(Mockito.any(), Mockito.any());
@@ -143,7 +142,6 @@ class AuthControllerTest {
                         fieldWithPath("body[].pairId").type(JsonFieldType.STRING).description("키 페어 ID"),
                         fieldWithPath("body[].coinExchangeType").type(JsonFieldType.STRING).description("거래소 종류(upbit)"),
                         fieldWithPath("body[].name").type(JsonFieldType.STRING).description("키 이름"),
-                        fieldWithPath("body[].value").type(JsonFieldType.STRING).description("키 값"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("메세지").optional()
                     )
                 )
@@ -163,7 +161,6 @@ class AuthControllerTest {
                 .pairId(UUID.randomUUID().toString())
                 .coinExchangeType(coinExchangeType)
                 .name(p.getKeyName())
-                .value(p.getValue())
                 .build()).collect(Collectors.toList())
         )
             .when(keyService).getUserKeyList(Mockito.any());
@@ -189,7 +186,6 @@ class AuthControllerTest {
                         fieldWithPath("body[].pairId").type(JsonFieldType.STRING).description("키 페어 ID"),
                         fieldWithPath("body[].coinExchangeType").type(JsonFieldType.STRING).description("거래소 종류(upbit)"),
                         fieldWithPath("body[].name").type(JsonFieldType.STRING).description("키 이름"),
-                        fieldWithPath("body[].value").type(JsonFieldType.STRING).description("키 값"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("메세지").optional()
                     )
                 )
@@ -221,7 +217,6 @@ class AuthControllerTest {
                         fieldWithPath("body[].pairId").type(JsonFieldType.STRING).description("키 페어 ID"),
                         fieldWithPath("body[].coinExchangeType").type(JsonFieldType.STRING).description("거래소 종류(upbit)"),
                         fieldWithPath("body[].name").type(JsonFieldType.STRING).description("키 이름"),
-                        fieldWithPath("body[].value").type(JsonFieldType.STRING).description("키 값"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("메세지").optional()
                     )
                 )

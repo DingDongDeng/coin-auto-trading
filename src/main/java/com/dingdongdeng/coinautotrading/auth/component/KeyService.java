@@ -62,7 +62,6 @@ public class KeyService {
                     .pairId(k.getPairId())
                     .coinExchangeType(k.getCoinExchangeType())
                     .name(k.getName())
-                    .value(k.getValue())
                     .build()
             )
             .collect(Collectors.toList());

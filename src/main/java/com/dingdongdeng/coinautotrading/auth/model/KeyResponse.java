@@ -17,5 +17,4 @@ public class KeyResponse {
     private String pairId;
     private CoinExchangeType coinExchangeType;
     private String name;
-    private String value;
 }
