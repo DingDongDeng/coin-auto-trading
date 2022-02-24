@@ -35,55 +35,55 @@ public class UpbitClient extends Client {
         this.tokenGenerator = tokenGenerator;
     }
 
-    public List<AccountsResponse> getAccounts() {
+    public List<AccountsResponse> getAccounts(String keyPairId) {
         return get("/v1/accounts", new ParameterizedTypeReference<>() {
-        }, makeHeaders(null));
+        }, makeHeaders(null, keyPairId));
     }
 
-    public OrdersChanceResponse getOrdersChance(OrderChanceRequest request) {
-        return get("/v1/orders/chance", request, OrdersChanceResponse.class, makeHeaders(request));
+    public OrdersChanceResponse getOrdersChance(OrderChanceRequest request, String keyPairId) {
+        return get("/v1/orders/chance", request, OrdersChanceResponse.class, makeHeaders(request, keyPairId));
     }
 
-    public List<MarketCodeResponse> getMarketList(MarketCodeRequest request) {
+    public List<MarketCodeResponse> getMarketList(MarketCodeRequest request, String keyPairId) {
         return get("/v1/market/all", request, new ParameterizedTypeReference<>() {
-        }, makeHeaders(request));
+        }, makeHeaders(request, keyPairId));
     }
 
-    public OrderResponse getOrderInfo(OrderInfoRequest request) {
-        return get("/v1/order", request, OrderResponse.class, makeHeaders(request));
+    public OrderResponse getOrderInfo(OrderInfoRequest request, String keyPairId) {
+        return get("/v1/order", request, OrderResponse.class, makeHeaders(request, keyPairId));
     }
 
-    public List<OrderResponse> getOrderInfoList(OrderInfoListRequest request) {
+    public List<OrderResponse> getOrderInfoList(OrderInfoListRequest request, String keyPairId) {
         return get("/v1/orders", request, new ParameterizedTypeReference<>() {
-        }, makeHeaders(request));
+        }, makeHeaders(request, keyPairId));
     }
 
-    public OrderResponse order(OrderRequest request) {
-        return post("/v1/orders", request, OrderResponse.class, makeHeaders(request));
+    public OrderResponse order(OrderRequest request, String keyPairId) {
+        return post("/v1/orders", request, OrderResponse.class, makeHeaders(request, keyPairId));
     }
 
-    public OrderCancelResponse orderCancel(OrderCancelRequest request) {
-        return delete("/v1/order", request, OrderCancelResponse.class, makeHeaders(request));
+    public OrderCancelResponse orderCancel(OrderCancelRequest request, String keyPairId) {
+        return delete("/v1/order", request, OrderCancelResponse.class, makeHeaders(request, keyPairId));
     }
 
-    public List<CandleResponse> getMinuteCandle(CandleRequest request) {
+    public List<CandleResponse> getMinuteCandle(CandleRequest request, String keyPairId) {
         return get("/v1/candles/minutes/" + request.getUnit(), request, new ParameterizedTypeReference<>() {
-        }, makeHeaders(request));
+        }, makeHeaders(request, keyPairId));
     }
 
-    public List<OrderBookResponse> getOrderBook(OrderBookRequest request) {
+    public List<OrderBookResponse> getOrderBook(OrderBookRequest request, String keyPairId) {
         return get("/v1/orderbook", request, new ParameterizedTypeReference<>() {
-        }, makeHeaders(request));
+        }, makeHeaders(request, keyPairId));
     }
 
-    public List<TickerResponse> getTicker(TickerRequest request) {
+    public List<TickerResponse> getTicker(TickerRequest request, String keyPairId) {
         return get("/v1/ticker", request, new ParameterizedTypeReference<>() {
-        }, makeHeaders(request));
+        }, makeHeaders(request, keyPairId));
     }
 
-    private HttpHeaders makeHeaders(Object request) {
+    private HttpHeaders makeHeaders(Object request, String keyPairId) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", tokenGenerator.makeToken(request));
+        headers.add("Authorization", tokenGenerator.makeToken(request, keyPairId));
         return headers;
     }
 }
