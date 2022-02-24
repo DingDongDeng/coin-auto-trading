@@ -27,4 +27,5 @@ public class AutoTradingRegisterRequest {
     @NotNull
     private StrategyCode strategyCode;
     private TradingTerm tradingTerm;
+    private String keyPairId;
 }

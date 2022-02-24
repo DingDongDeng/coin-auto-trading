@@ -14,12 +14,16 @@ import com.dingdongdeng.coinautotrading.ApiDocumentUtils;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
+import com.dingdongdeng.coinautotrading.domain.entity.ExchangeKey;
+import com.dingdongdeng.coinautotrading.domain.repository.ExchangeKeyRepository;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingRegisterRequest;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingResponse;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.type.AutoTradingProcessStatus;
 import com.dingdongdeng.coinautotrading.trading.autotrading.service.AutoTradingService;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.UpbitClient;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.StrategyCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +31,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
@@ -52,11 +57,48 @@ class AutoTradingControllerTest {
     @SpyBean
     private AutoTradingService autoTradingService;
 
+    @Autowired
+    private ExchangeKeyRepository exchangeKeyRepository;
+    @Autowired
+    private UpbitClient upbitClient;
+    @Value("${upbit.client.accessKey}")
+    private String accessKey;
+    @Value("${upbit.client.secretKey}")
+    private String secretKey;
+
+    private String userId = "123456";
+    private String keyPairId;
+
+
     @BeforeEach
     public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
             .apply(documentationConfiguration(restDocumentation))
             .build();
+
+        //fixme 많은 테스트 코드에서 아래 코드가 중복됨
+        String keyPairId = UUID.randomUUID().toString();
+        exchangeKeyRepository.save(
+            ExchangeKey.builder()
+                .pairId(keyPairId)
+                .coinExchangeType(CoinExchangeType.UPBIT)
+                .name("ACCESS_KEY")
+                .value(accessKey)
+                .userId(userId)
+                .build()
+        );
+
+        exchangeKeyRepository.save(
+            ExchangeKey.builder()
+                .pairId(keyPairId)
+                .coinExchangeType(CoinExchangeType.UPBIT)
+                .name("SECRET_KEY")
+                .value(secretKey)
+                .userId(userId)
+                .build()
+        );
+
+        this.keyPairId = keyPairId;
     }
 
     @Test
@@ -65,7 +107,6 @@ class AutoTradingControllerTest {
         String processorId = "abawefawef-awefawefawe-awefawefwaef";
 
         String title = "RSI 30이하 매매";
-        String userId = "1234";
         CoinType coinType = CoinType.ETHEREUM;
         CoinExchangeType coinExchangeType = CoinExchangeType.UPBIT;
         StrategyCode strategyCode = StrategyCode.RSI;
@@ -76,6 +117,7 @@ class AutoTradingControllerTest {
             .coinExchangeType(CoinExchangeType.UPBIT)
             .tradingTerm(TradingTerm.SCALPING)
             .strategyCode(StrategyCode.RSI)
+            .keyPairId(keyPairId)
             .build();
 
         Mockito.doReturn(
@@ -136,7 +178,6 @@ class AutoTradingControllerTest {
         String autoTradingProcessorId = "abawefawef-awefawefawe-awefawefwaef";
 
         String title = "RSI 30이하 매매";
-        String userId = "1234";
         CoinType coinType = CoinType.ETHEREUM;
         CoinExchangeType coinExchangeType = CoinExchangeType.UPBIT;
         StrategyCode strategyCode = StrategyCode.RSI;
@@ -193,7 +234,6 @@ class AutoTradingControllerTest {
         String autoTradingProcessorId = "abawefawef-awefawefawe-awefawefwaef";
 
         String title = "RSI 30이하 매매";
-        String userId = "1234";
         CoinType coinType = CoinType.ETHEREUM;
         CoinExchangeType coinExchangeType = CoinExchangeType.UPBIT;
         StrategyCode strategyCode = StrategyCode.RSI;
@@ -250,7 +290,6 @@ class AutoTradingControllerTest {
         String autoTradingProcessorId = "abawefawef-awefawefawe-awefawefwaef";
 
         String title = "RSI 30이하 매매";
-        String userId = "1234";
         CoinType coinType = CoinType.ETHEREUM;
         CoinExchangeType coinExchangeType = CoinExchangeType.UPBIT;
         StrategyCode strategyCode = StrategyCode.RSI;
