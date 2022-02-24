@@ -16,6 +16,8 @@ import com.dingdongdeng.coinautotrading.auth.model.KeyRegisterRequest;
 import com.dingdongdeng.coinautotrading.auth.model.KeyRegisterRequest.KeyPair;
 import com.dingdongdeng.coinautotrading.auth.model.KeyResponse;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
+import com.dingdongdeng.coinautotrading.domain.entity.ExchangeKey;
+import com.dingdongdeng.coinautotrading.domain.repository.ExchangeKeyRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.UUID;
@@ -27,6 +29,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
@@ -51,12 +54,47 @@ class AuthControllerTest {
     private ObjectMapper objectMapper;
     @SpyBean
     private KeyService keyService;
+    @Autowired
+    private ExchangeKeyRepository exchangeKeyRepository;
+
+    @Value("${upbit.client.accessKey}")
+    private String accessKey;
+    @Value("${upbit.client.secretKey}")
+    private String secretKey;
+
+    private String userId = "123456";
+    private String keyPairId;
+
 
     @BeforeEach
     public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
             .apply(documentationConfiguration(restDocumentation))
             .build();
+
+        //fixme 많은 테스트 코드에서 아래 코드가 중복됨
+        String keyPairId = UUID.randomUUID().toString();
+        exchangeKeyRepository.save(
+            ExchangeKey.builder()
+                .pairId(keyPairId)
+                .coinExchangeType(CoinExchangeType.UPBIT)
+                .name("ACCESS_KEY")
+                .value(accessKey)
+                .userId(userId)
+                .build()
+        );
+
+        exchangeKeyRepository.save(
+            ExchangeKey.builder()
+                .pairId(keyPairId)
+                .coinExchangeType(CoinExchangeType.UPBIT)
+                .name("SECRET_KEY")
+                .value(secretKey)
+                .userId(userId)
+                .build()
+        );
+
+        this.keyPairId = keyPairId;
     }
 
     @Test
@@ -145,6 +183,38 @@ class AuthControllerTest {
                     ),
                     pathParameters(
                         RequestDocumentation.parameterWithName("userId").description("사용자 ID")
+                    ),
+                    responseFields(
+                        fieldWithPath("body[]").type(JsonFieldType.ARRAY).description("데이터").optional(),
+                        fieldWithPath("body[].pairId").type(JsonFieldType.STRING).description("키 페어 ID"),
+                        fieldWithPath("body[].coinExchangeType").type(JsonFieldType.STRING).description("거래소 종류(upbit)"),
+                        fieldWithPath("body[].name").type(JsonFieldType.STRING).description("키 이름"),
+                        fieldWithPath("body[].value").type(JsonFieldType.STRING).description("키 값"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("메세지").optional()
+                    )
+                )
+            )
+            .andReturn();
+    }
+
+    @Test
+    public void 거래소_키_삭제_테스트() throws Exception {
+
+        MvcResult result = this.mockMvc.perform(
+            RestDocumentationRequestBuilders.delete("/auth/key/pair/{pairKeyId}", keyPairId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("userId", userId)
+        )
+            .andExpect(status().isOk())
+            .andDo(
+                document("auth/key/pair",
+                    ApiDocumentUtils.getDocumentRequest(),
+                    ApiDocumentUtils.getDocumentResponse(),
+                    requestHeaders(
+                        headerWithName("userId").description("사용자ID")
+                    ),
+                    pathParameters(
+                        RequestDocumentation.parameterWithName("pairKeyId").description("키페어 ID")
                     ),
                     responseFields(
                         fieldWithPath("body[]").type(JsonFieldType.ARRAY).description("데이터").optional(),
