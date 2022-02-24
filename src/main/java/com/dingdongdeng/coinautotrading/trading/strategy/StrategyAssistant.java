@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class StrategyAssistant {
 
+    private final String keyPairId;
     private final ExchangeService exchangeService;
     private final TradingResultRepository tradingResultRepository;
 
@@ -65,7 +66,8 @@ public class StrategyAssistant {
             return new TradingResult();
         }
         ExchangeOrder exchangeOrder = exchangeService.getOrderInfo(
-            ExchangeOrderInfoParam.builder().orderId(tradingResult.getOrderId()).build()
+            ExchangeOrderInfoParam.builder().orderId(tradingResult.getOrderId()).build(),
+            keyPairId
         );
         return TradingResult.builder()
             .id(tradingResult.getId())
