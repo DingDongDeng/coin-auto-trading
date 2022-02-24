@@ -43,7 +43,7 @@ public class UpbitExchangeService implements ExchangeService {
     private final IndexCalculator indexCalculator;
 
     @Override
-    public ExchangeOrder order(ExchangeOrderParam param) {
+    public ExchangeOrder order(ExchangeOrderParam param, String keyPairId) {
         log.info("upbit process : order param = {}", param);
         OrderResponse response = upbitClient.order(
             OrderRequest.builder()
@@ -52,18 +52,20 @@ public class UpbitExchangeService implements ExchangeService {
                 .volume(param.getVolume())
                 .price(param.getPrice())
                 .ordType(OrdType.of(param.getPriceType()))
-                .build()
+                .build(),
+            keyPairId
         );
         return makeExchangeOrder(response);
     }
 
     @Override
-    public ExchangeOrderCancel orderCancel(ExchangeOrderCancelParam param) {
+    public ExchangeOrderCancel orderCancel(ExchangeOrderCancelParam param, String keyPairId) {
         log.info("upbit process : order cancel param = {}", param);
         OrderCancelResponse response = upbitClient.orderCancel(
             OrderCancelRequest.builder()
                 .uuid(param.getOrderId())
-                .build()
+                .build(),
+            keyPairId
         );
         return ExchangeOrderCancel.builder()
             .orderId(response.getUuid())
@@ -85,17 +87,17 @@ public class UpbitExchangeService implements ExchangeService {
     }
 
     @Override
-    public ExchangeTradingInfo getTradingInformation(ExchangeTradingInfoParam param) {
+    public ExchangeTradingInfo getTradingInformation(ExchangeTradingInfoParam param, String keyPairId) {
         log.info("upbit process : get trading information param = {}", param);
 
         // 캔들 정보 조회
-        ExchangeCandles candles = getExchangeCandles(param);
+        ExchangeCandles candles = getExchangeCandles(param, keyPairId);
 
         // 현재가 정보 조회
-        ExchangeTicker ticker = getExchangeTicker(param);
+        ExchangeTicker ticker = getExchangeTicker(param, keyPairId);
 
         // 계좌 정보 조회
-        AccountsResponse accounts = upbitClient.getAccounts().stream().findFirst().orElseThrow(() -> new NoSuchElementException("계좌를 찾지 못함"));
+        AccountsResponse accounts = upbitClient.getAccounts(keyPairId).stream().findFirst().orElseThrow(() -> new NoSuchElementException("계좌를 찾지 못함"));
 
         return ExchangeTradingInfo.builder()
             .coinType(param.getCoinType())
@@ -116,11 +118,13 @@ public class UpbitExchangeService implements ExchangeService {
     }
 
     @Override
-    public ExchangeOrder getOrderInfo(ExchangeOrderInfoParam param) {
+    public ExchangeOrder getOrderInfo(ExchangeOrderInfoParam param, String keyPairId) {
         return makeExchangeOrder(
             upbitClient.getOrderInfo(OrderInfoRequest.builder()
-                .uuid(param.getOrderId())
-                .build())
+                    .uuid(param.getOrderId())
+                    .build(),
+                keyPairId
+            )
         );
     }
 
@@ -129,7 +133,7 @@ public class UpbitExchangeService implements ExchangeService {
         return CoinExchangeType.UPBIT;
     }
 
-    private ExchangeCandles getExchangeCandles(ExchangeTradingInfoParam param) {
+    private ExchangeCandles getExchangeCandles(ExchangeTradingInfoParam param, String keyPairId) {
         TradingTerm tradingTerm = param.getTradingTerm();
         List<CandleResponse> response = upbitClient.getMinuteCandle(
             CandleRequest.builder()
@@ -137,7 +141,8 @@ public class UpbitExchangeService implements ExchangeService {
                 .market(MarketType.of(param.getCoinType()).getCode())
                 .toKst(LocalDateTime.now())
                 .count(200)
-                .build()
+                .build(),
+            keyPairId
         );
         return ExchangeCandles.builder()
             .coinExchangeType(getExchangeType())
@@ -183,11 +188,12 @@ public class UpbitExchangeService implements ExchangeService {
             .build();
     }
 
-    private ExchangeTicker getExchangeTicker(ExchangeTradingInfoParam param) {
+    private ExchangeTicker getExchangeTicker(ExchangeTradingInfoParam param, String keyPairId) {
         TickerResponse response = upbitClient.getTicker(
             TickerRequest.builder()
                 .marketList(List.of(MarketType.of(param.getCoinType()).getCode()))
                 .build()
+            , keyPairId
         ).stream().findFirst().orElseThrow(NoSuchElementException::new);
         return ExchangeTicker.builder()
             .market(response.getMarket())
