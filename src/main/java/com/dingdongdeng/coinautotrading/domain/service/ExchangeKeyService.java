@@ -17,8 +17,29 @@ public class ExchangeKeyService implements RepositoryService<ExchangeKey, Long> 
 
     private final ExchangeKeyRepository repository;
 
+    @Override
     public ExchangeKey findById(Long id) {
         return repository.findById(id).orElse(new ExchangeKey());
+    }
+
+    @Override
+    public ExchangeKey save(ExchangeKey entity) {
+        return repository.save(entity);
+    }
+
+    @Override
+    public List<ExchangeKey> saveAll(Iterable<ExchangeKey> iterable) {
+        return repository.saveAll(iterable);
+    }
+
+    @Override
+    public void delete(ExchangeKey entity) {
+        repository.delete(entity);
+    }
+
+    @Override
+    public void deleteAll(Iterable<ExchangeKey> iterable) {
+        repository.deleteAll(iterable);
     }
 
     public List<ExchangeKey> findByPairId(String pairId) {
@@ -28,13 +49,4 @@ public class ExchangeKeyService implements RepositoryService<ExchangeKey, Long> 
     public List<ExchangeKey> findByUserId(String userId) {
         return repository.findByUserId(userId);
     }
-
-    public ExchangeKey save(ExchangeKey entity) {
-        return repository.save(entity);
-    }
-
-    public List<ExchangeKey> saveAll(Iterable<ExchangeKey> iterable) {
-        return repository.saveAll(iterable);
-    }
-
 }
