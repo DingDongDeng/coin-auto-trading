@@ -114,7 +114,7 @@ class AuthControllerTest {
     }
 
     @Test
-    public void 유저_거래소_키_조_테스트() throws Exception {
+    public void 유저_거래소_키_조회_테스트() throws Exception {
 
         CoinExchangeType coinExchangeType = CoinExchangeType.UPBIT;
         String userId = "1234";
