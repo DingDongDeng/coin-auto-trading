@@ -10,12 +10,12 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.dingdongdeng.coinautotrading.ApiDocumentUtils;
 import com.dingdongdeng.coinautotrading.auth.model.KeyRegisterRequest;
 import com.dingdongdeng.coinautotrading.auth.model.KeyRegisterRequest.KeyPair;
 import com.dingdongdeng.coinautotrading.auth.model.KeyResponse;
 import com.dingdongdeng.coinautotrading.auth.service.KeyService;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
+import com.dingdongdeng.coinautotrading.doc.ApiDocumentUtils;
 import com.dingdongdeng.coinautotrading.domain.entity.ExchangeKey;
 import com.dingdongdeng.coinautotrading.domain.repository.ExchangeKeyRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;

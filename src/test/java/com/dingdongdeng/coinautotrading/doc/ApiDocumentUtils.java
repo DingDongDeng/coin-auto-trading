@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading;
+package com.dingdongdeng.coinautotrading.doc;
 
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyUris;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
