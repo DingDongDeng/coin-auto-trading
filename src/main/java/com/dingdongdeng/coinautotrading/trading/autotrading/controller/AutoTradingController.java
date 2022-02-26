@@ -5,6 +5,7 @@ import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingReg
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingResponse;
 import com.dingdongdeng.coinautotrading.trading.autotrading.service.AutoTradingService;
 import java.util.List;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +31,7 @@ public class AutoTradingController {
     }
 
     @PostMapping("/autotrading/register")
-    public CommonResponse<AutoTradingResponse> register(@RequestBody AutoTradingRegisterRequest request, @RequestHeader String userId) {
+    public CommonResponse<AutoTradingResponse> register(@Valid @RequestBody AutoTradingRegisterRequest request, @RequestHeader String userId) {
         return CommonResponse.<AutoTradingResponse>builder()
             .body(autoTradingService.register(request, userId))
             .message("autotrading register success")

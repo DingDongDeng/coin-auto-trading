@@ -26,6 +26,8 @@ public class AutoTradingRegisterRequest {
     private CoinExchangeType coinExchangeType;
     @NotNull
     private StrategyCode strategyCode;
+    @NotNull
     private TradingTerm tradingTerm;
+    @NotNull
     private String keyPairId;
 }
