@@ -79,16 +79,15 @@ operation::/autotrading/terminate[snippets='http-request,request-headers,path-pa
 operation::/autotrading/terminate[snippets='http-response,response-fields']
 
 
-
 === 거래소 키 등록 API
 ==== 설명
 ----
 거래소 키 등록 API
 ----
 ==== 요청
-operation::/key[snippets='http-request,request-headers,request-fields']
+operation::/key/pair[snippets='http-request,request-headers,request-fields']
 ==== 응답
-operation::/key[snippets='http-response,response-fields']
+operation::/key/pair[snippets='http-response,response-fields']
 
 
 === 사용자 거래소 키 조회 API
@@ -97,9 +96,9 @@ operation::/key[snippets='http-response,response-fields']
 사용자 거래소 키 조회 API
 ----
 ==== 요청
-operation::/user/key[snippets='http-request,request-headers,path-parameters']
+operation::/user/key/pair[snippets='http-request,request-headers,path-parameters']
 ==== 응답
-operation::/user/key[snippets='http-response,response-fields']
+operation::/user/key/pair[snippets='http-response,response-fields']
 
 
 
