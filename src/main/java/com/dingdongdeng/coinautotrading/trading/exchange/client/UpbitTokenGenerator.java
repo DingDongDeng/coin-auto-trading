@@ -32,7 +32,6 @@ public class UpbitTokenGenerator {
         List<ExchangeKey> exchangeKeyList = exchangeKeyService.findByPairId(keyPairId);
         String accessKey = getKey(exchangeKeyList, ACCESS_KEY_NAME);
         String secretKey = getKey(exchangeKeyList, SECRET_KEY_NAME);
-        log.info("accessKey : {} , secretKey : {}", accessKey, secretKey);
 
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
         JWTCreator.Builder jwtBuilder = JWT.create()
