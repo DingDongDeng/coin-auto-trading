@@ -30,9 +30,9 @@ endif::[]
 자동매매 등록 API
 ----
 ==== 요청
-operation::/trading/autotrading/register[snippets='http-request,request-headers,request-fields']
+operation::/autotrading/register[snippets='http-request,request-headers,request-fields']
 ==== 응답
-operation::/trading/autotrading/register[snippets='http-response,response-fields']
+operation::/autotrading/register[snippets='http-response,response-fields']
 
 
 === 자동매매 시작 API
@@ -41,9 +41,9 @@ operation::/trading/autotrading/register[snippets='http-response,response-fields
 자동매매 시작 API
 ----
 ==== 요청
-operation::/trading/autotrading/start[snippets='http-request,request-headers,path-parameters']
+operation::/autotrading/start[snippets='http-request,request-headers,path-parameters']
 ==== 응답
-operation::/trading/autotrading/start[snippets='http-response,response-fields']
+operation::/autotrading/start[snippets='http-response,response-fields']
 
 
 === 자동매매 정지 API
@@ -52,9 +52,9 @@ operation::/trading/autotrading/start[snippets='http-response,response-fields']
 자동매매 정지 API
 ----
 ==== 요청
-operation::/trading/autotrading/stop[snippets='http-request,request-headers,path-parameters']
+operation::/autotrading/stop[snippets='http-request,request-headers,path-parameters']
 ==== 응답
-operation::/trading/autotrading/stop[snippets='http-response,response-fields']
+operation::/autotrading/stop[snippets='http-response,response-fields']
 
 
 === 자동매매 제거 API
@@ -63,9 +63,9 @@ operation::/trading/autotrading/stop[snippets='http-response,response-fields']
 자동매매 제거 API
 ----
 ==== 요청
-operation::/trading/autotrading/terminate[snippets='http-request,request-headers,path-parameters']
+operation::/autotrading/terminate[snippets='http-request,request-headers,path-parameters']
 ==== 응답
-operation::/trading/autotrading/terminate[snippets='http-response,response-fields']
+operation::/autotrading/terminate[snippets='http-response,response-fields']
 
 
 
@@ -75,9 +75,9 @@ operation::/trading/autotrading/terminate[snippets='http-response,response-field
 거래소 키 등록 API
 ----
 ==== 요청
-operation::/auth/key[snippets='http-request,request-headers,request-fields']
+operation::/key[snippets='http-request,request-headers,request-fields']
 ==== 응답
-operation::/auth/key[snippets='http-response,response-fields']
+operation::/key[snippets='http-response,response-fields']
 
 
 === 사용자 거래소 키 조회 API
@@ -86,9 +86,9 @@ operation::/auth/key[snippets='http-response,response-fields']
 사용자 거래소 키 조회 API
 ----
 ==== 요청
-operation::/auth/user/key[snippets='http-request,request-headers,path-parameters']
+operation::/user/key[snippets='http-request,request-headers,path-parameters']
 ==== 응답
-operation::/auth/user/key[snippets='http-response,response-fields']
+operation::/user/key[snippets='http-response,response-fields']
 
 
 
@@ -98,6 +98,6 @@ operation::/auth/user/key[snippets='http-response,response-fields']
 사용자 거래소 키 삭제 API
 ----
 ==== 요청
-operation::/auth/key/pair[snippets='http-request,request-headers,path-parameters']
+operation::/key/pair[snippets='http-request,request-headers,path-parameters']
 ==== 응답
-operation::/auth/key/pair[snippets='http-response,response-fields']
+operation::/key/pair[snippets='http-response,response-fields']
