@@ -1,6 +1,7 @@
 package com.dingdongdeng.coinautotrading.auth.model;
 
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,9 +13,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class KeyResponse {
+public class KeyPairResponse {
 
     private String pairId;
     private CoinExchangeType coinExchangeType;
-    private String name;
+    private List<Key> keyList;
 }

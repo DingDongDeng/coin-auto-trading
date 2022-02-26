@@ -3,7 +3,6 @@ package com.dingdongdeng.coinautotrading.auth.model;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import java.util.List;
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,25 +15,12 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class KeyRegisterRequest {
+public class KeyPairRegisterRequest {
 
     @NotNull
     private CoinExchangeType coinExchangeType;
 
     @Valid
     @NotNull
-    private List<KeyPair> keyPairList;
-
-    @ToString
-    @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class KeyPair {
-
-        @NotBlank
-        private String keyName;
-        @NotBlank
-        private String value;
-    }
+    private List<Key> keyList;
 }
