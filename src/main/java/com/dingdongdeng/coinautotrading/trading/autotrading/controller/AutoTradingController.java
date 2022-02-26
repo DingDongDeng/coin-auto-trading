@@ -23,7 +23,10 @@ public class AutoTradingController {
 
     @GetMapping("/user/{userId}/autotrading")
     public CommonResponse<List<AutoTradingResponse>> getList(@PathVariable String userId) {
-        return null;
+        return CommonResponse.<List<AutoTradingResponse>>builder()
+            .body(autoTradingService.getList(userId))
+            .message("autotrading get list success")
+            .build();
     }
 
     @PostMapping("/autotrading/register")

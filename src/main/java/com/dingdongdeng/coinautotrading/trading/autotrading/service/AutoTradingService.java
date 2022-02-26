@@ -8,7 +8,9 @@ import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeService
 import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeServiceSelector;
 import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyFactory;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,11 @@ public class AutoTradingService {
     private final ExchangeServiceSelector processorSelector;
     private final StrategyFactory strategyFactory;
 
+    public List<AutoTradingResponse> getList(String userId){
+        return autoTradingManager.getUserProcessorList(userId).stream()
+            .map(this::makeResponse)
+            .collect(Collectors.toList());
+    }
     public AutoTradingResponse register(AutoTradingRegisterRequest request, String userId) {
         ExchangeService exchangeService = processorSelector.getTargetProcessor(request.getCoinExchangeType());
         Strategy strategy = strategyFactory.create(request.getStrategyCode(), exchangeService, request.getCoinType(), request.getTradingTerm(), request.getKeyPairId());

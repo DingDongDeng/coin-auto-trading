@@ -1,6 +1,7 @@
 package com.dingdongdeng.coinautotrading.trading.autotrading.service;
 
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingProcessor;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,9 @@ public class AutoTradingManager {
 
     private final AutoTradingProcessorMap processorMap; //fixme 분산환경을 고려해서 구성이 가능한 내용일까???
 
+    public List<AutoTradingProcessor> getUserProcessorList(String userId){
+        return processorMap.getListByUserId(userId);
+    }
     public AutoTradingProcessor register(AutoTradingProcessor processor) {
         processorMap.put(processor);
         return processor;
@@ -50,7 +54,7 @@ public class AutoTradingManager {
             throw new NoSuchElementException("not found processor");
         }
         if (!processor.getUserId().equals(userId)) {
-            throw new IllegalArgumentException("userId : " + userId);
+            throw new RuntimeException("잘못된 접근 입니다. \nuserId : " + userId);
         }
     }
 }

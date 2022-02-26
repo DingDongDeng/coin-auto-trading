@@ -2,7 +2,9 @@ package com.dingdongdeng.coinautotrading.trading.autotrading.service;
 
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingProcessor;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -17,6 +19,12 @@ public class AutoTradingProcessorMap {
 
     public AutoTradingProcessor get(String processorId) {
         return processorMap.get(processorId);
+    }
+
+    public List<AutoTradingProcessor> getListByUserId(String userId) { //fixme map을 이렇게 순회하지 않도록 수정 필요(db에서 읽던가)
+        return processorMap.values().stream()
+            .filter(processor -> processor.getUserId().equals(userId))
+            .collect(Collectors.toList());
     }
 
     public void put(AutoTradingProcessor processor) {

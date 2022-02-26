@@ -1,3 +1,8 @@
+GET localhost:8080/user/1234/autotrading
+Content-Type: application/json
+userId: 1234
+
+###
 POST localhost:8080/autotrading/register
 Content-Type: application/json
 userId: 1234
@@ -10,7 +15,6 @@ userId: 1234
   "strategyCode": "RSI",
   "keyPairId": "30a0cd03-7900-42ba-b87a-e84eeed11e90"
 }
-
 
 ###
 POST localhost:8080/autotrading/21667114-1889-4066-beba-e5a6f07e7110/start
