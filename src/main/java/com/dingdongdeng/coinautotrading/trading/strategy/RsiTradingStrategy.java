@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RsiTradingStrategy extends Strategy {
 
     private final String IDENTIFY_CODE = StrategyCode.RSI.name() + ":" + UUID.randomUUID().toString();
-    private final double STANDARD_OF_LOW_RSI = 0.30;
+    private final double STANDARD_OF_LOW_RSI = 0.25;
     private final double STANDARD_OF_PROFIT_RATE = 1.02;
     private final double STANDARD_OF_LOSS_RATE = 0.985;
     private final int STANDRD_OF_TOO_OLD_TIME = 1; //분(minuite)
