@@ -21,9 +21,6 @@ services:
     image: dingdongdeng/coinautotrading:latest
     ports:
       - 8080:8080
-    environment:
-      UPBIT_ACCESS_KEY: {액세스_키} 
-      UPBIT_SECRET_KEY: {시크릿_키}
     deploy:
       resources:
         limits:
@@ -40,5 +37,5 @@ services:
 docker-compose -f docker-compose.yml up -d
 ```
 ```
-브라우저로 localhost:8080/user/console 접속해주세요.
+브라우저로 localhost:8080/ 접속해주세요.
 ```
