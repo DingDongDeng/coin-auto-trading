@@ -59,7 +59,7 @@ public class AutoTradingService {
             .processDuration(processor.getDuration())
             .processStatus(processor.getStatus())
             .userId(processor.getUserId())
-            .strategyCode(processor.getStrategy().getCode())
+            .strategyIdentifyCode(processor.getStrategy().getIdentifyCode())
             .coinType(processor.getCoinType())
             .coinExchangeType(processor.getCoinExchangeType())
             .build();

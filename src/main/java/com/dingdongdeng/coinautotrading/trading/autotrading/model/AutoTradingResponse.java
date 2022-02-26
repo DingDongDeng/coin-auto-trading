@@ -3,7 +3,6 @@ package com.dingdongdeng.coinautotrading.trading.autotrading.model;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.type.AutoTradingProcessStatus;
-import com.dingdongdeng.coinautotrading.trading.strategy.model.type.StrategyCode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,7 +21,7 @@ public class AutoTradingResponse {
     private long processDuration;
     private AutoTradingProcessStatus processStatus;
     private String userId;
-    private StrategyCode strategyCode;
+    private String strategyIdentifyCode;
     private CoinType coinType;
     private CoinExchangeType coinExchangeType;
 }

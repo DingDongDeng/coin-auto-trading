@@ -109,7 +109,7 @@ class AutoTradingControllerTest {
         String title = "RSI 30이하 매매";
         CoinType coinType = CoinType.ETHEREUM;
         CoinExchangeType coinExchangeType = CoinExchangeType.UPBIT;
-        StrategyCode strategyCode = StrategyCode.RSI;
+        String strategyIdentifyCode = StrategyCode.RSI.name() + ":" + UUID.randomUUID().toString();
 
         AutoTradingRegisterRequest request = AutoTradingRegisterRequest.builder()
             .title(title)
@@ -127,7 +127,7 @@ class AutoTradingControllerTest {
                 .processDuration(1000)
                 .processStatus(AutoTradingProcessStatus.INIT)
                 .userId(userId)
-                .strategyCode(strategyCode)
+                .strategyIdentifyCode(strategyIdentifyCode)
                 .coinType(coinType)
                 .coinExchangeType(coinExchangeType)
                 .build()
@@ -163,7 +163,7 @@ class AutoTradingControllerTest {
                         fieldWithPath("body.processDuration").type(JsonFieldType.NUMBER).description("프로세스 동작 간격"),
                         fieldWithPath("body.processStatus").type(JsonFieldType.STRING).description("자동매매 프로세스 상태"),
                         fieldWithPath("body.userId").type(JsonFieldType.STRING).description("사용자ID"),
-                        fieldWithPath("body.strategyCode").type(JsonFieldType.STRING).description("매매 전략 코드 (RSI)"),
+                        fieldWithPath("body.strategyIdentifyCode").type(JsonFieldType.STRING).description("매매 전략 코드 (RSI)"),
                         fieldWithPath("body.coinType").type(JsonFieldType.STRING).description("자동매매 할 코인 종류 (ETHEREUM, DOGE ...)"),
                         fieldWithPath("body.coinExchangeType").type(JsonFieldType.STRING).description("자동거래에 사용할 거래소 종류(upbit)"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("메세지").optional()
@@ -181,7 +181,7 @@ class AutoTradingControllerTest {
         String title = "RSI 30이하 매매";
         CoinType coinType = CoinType.ETHEREUM;
         CoinExchangeType coinExchangeType = CoinExchangeType.UPBIT;
-        StrategyCode strategyCode = StrategyCode.RSI;
+        String strategyIdentifyCode = StrategyCode.RSI.name() + ":" + UUID.randomUUID().toString();
 
         Mockito.doReturn(
             AutoTradingResponse.builder()
@@ -190,7 +190,7 @@ class AutoTradingControllerTest {
                 .processDuration(1000)
                 .processStatus(AutoTradingProcessStatus.RUNNING)
                 .userId(userId)
-                .strategyCode(strategyCode)
+                .strategyIdentifyCode(strategyIdentifyCode)
                 .coinType(coinType)
                 .coinExchangeType(coinExchangeType)
                 .build()
@@ -220,7 +220,7 @@ class AutoTradingControllerTest {
                         fieldWithPath("body.processDuration").type(JsonFieldType.NUMBER).description("프로세스 동작 간격"),
                         fieldWithPath("body.processStatus").type(JsonFieldType.STRING).description("자동매매 프로세스 상태"),
                         fieldWithPath("body.userId").type(JsonFieldType.STRING).description("사용자ID"),
-                        fieldWithPath("body.strategyCode").type(JsonFieldType.STRING).description("매매 전략 코드 (RSI)"),
+                        fieldWithPath("body.strategyIdentifyCode").type(JsonFieldType.STRING).description("매매 전략 코드 (RSI)"),
                         fieldWithPath("body.coinType").type(JsonFieldType.STRING).description("자동매매 할 코인 종류 (ETHEREUM, DOGE ...)"),
                         fieldWithPath("body.coinExchangeType").type(JsonFieldType.STRING).description("자동거래에 사용할 거래소 종류(upbit)"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("메세지").optional()
@@ -237,7 +237,7 @@ class AutoTradingControllerTest {
         String title = "RSI 30이하 매매";
         CoinType coinType = CoinType.ETHEREUM;
         CoinExchangeType coinExchangeType = CoinExchangeType.UPBIT;
-        StrategyCode strategyCode = StrategyCode.RSI;
+        String strategyIdentifyCode = StrategyCode.RSI.name() + ":" + UUID.randomUUID().toString();
 
         Mockito.doReturn(
             AutoTradingResponse.builder()
@@ -246,7 +246,7 @@ class AutoTradingControllerTest {
                 .processDuration(1000)
                 .processStatus(AutoTradingProcessStatus.STOPPED)
                 .userId(userId)
-                .strategyCode(strategyCode)
+                .strategyIdentifyCode(strategyIdentifyCode)
                 .coinType(coinType)
                 .coinExchangeType(coinExchangeType)
                 .build()
@@ -276,7 +276,7 @@ class AutoTradingControllerTest {
                         fieldWithPath("body.processDuration").type(JsonFieldType.NUMBER).description("프로세스 동작 간격"),
                         fieldWithPath("body.processStatus").type(JsonFieldType.STRING).description("자동매매 프로세스 상태"),
                         fieldWithPath("body.userId").type(JsonFieldType.STRING).description("사용자ID"),
-                        fieldWithPath("body.strategyCode").type(JsonFieldType.STRING).description("매매 전략 코드 (RSI)"),
+                        fieldWithPath("body.strategyIdentifyCode").type(JsonFieldType.STRING).description("매매 전략 코드 (RSI)"),
                         fieldWithPath("body.coinType").type(JsonFieldType.STRING).description("자동매매 할 코인 종류 (ETHEREUM, DOGE ...)"),
                         fieldWithPath("body.coinExchangeType").type(JsonFieldType.STRING).description("자동거래에 사용할 거래소 종류(upbit)"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("메세지").optional()
@@ -293,7 +293,7 @@ class AutoTradingControllerTest {
         String title = "RSI 30이하 매매";
         CoinType coinType = CoinType.ETHEREUM;
         CoinExchangeType coinExchangeType = CoinExchangeType.UPBIT;
-        StrategyCode strategyCode = StrategyCode.RSI;
+        String strategyIdentifyCode = StrategyCode.RSI.name() + ":" + UUID.randomUUID().toString();
 
         Mockito.doReturn(
             AutoTradingResponse.builder()
@@ -302,7 +302,7 @@ class AutoTradingControllerTest {
                 .processDuration(1000)
                 .processStatus(AutoTradingProcessStatus.TERMINATED)
                 .userId(userId)
-                .strategyCode(strategyCode)
+                .strategyIdentifyCode(strategyIdentifyCode)
                 .coinType(coinType)
                 .coinExchangeType(coinExchangeType)
                 .build()
@@ -332,7 +332,7 @@ class AutoTradingControllerTest {
                         fieldWithPath("body.processDuration").type(JsonFieldType.NUMBER).description("프로세스 동작 간격"),
                         fieldWithPath("body.processStatus").type(JsonFieldType.STRING).description("자동매매 프로세스 상태"),
                         fieldWithPath("body.userId").type(JsonFieldType.STRING).description("사용자ID"),
-                        fieldWithPath("body.strategyCode").type(JsonFieldType.STRING).description("매매 전략 코드 (RSI)"),
+                        fieldWithPath("body.strategyIdentifyCode").type(JsonFieldType.STRING).description("매매 전략 코드 (RSI)"),
                         fieldWithPath("body.coinType").type(JsonFieldType.STRING).description("자동매매 할 코인 종류 (ETHEREUM, DOGE ...)"),
                         fieldWithPath("body.coinExchangeType").type(JsonFieldType.STRING).description("자동거래에 사용할 거래소 종류(upbit)"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("메세지").optional()

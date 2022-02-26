@@ -12,7 +12,6 @@ import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeT
 import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeTradingInfoParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
-import com.dingdongdeng.coinautotrading.trading.strategy.model.type.StrategyCode;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,7 +50,7 @@ public abstract class Strategy {
         });
     }
 
-    abstract public StrategyCode getCode();
+    abstract public String getIdentifyCode();
 
     abstract protected List<TradingTask> makeTradingTask(ExchangeTradingInfo tradingInfo);
 
@@ -94,7 +93,7 @@ public abstract class Strategy {
 
     private TradingResult makeTradingResult(TradingTask tradingTask, ExchangeOrder exchangeOrder) {
         return TradingResult.builder()
-            .strategyCode(tradingTask.getStrategyCode())
+            .identifyCode(tradingTask.getIdentifyCode())
             .coinType(tradingTask.getCoinType())
             .orderType(tradingTask.getOrderType())
             .orderState(exchangeOrder.getOrderState())
@@ -109,7 +108,7 @@ public abstract class Strategy {
 
     private TradingResult makeTradingResult(TradingTask tradingTask, ExchangeOrderCancel exchangeOrderCancel) {
         return TradingResult.builder()
-            .strategyCode(tradingTask.getStrategyCode())
+            .identifyCode(tradingTask.getIdentifyCode())
             .coinType(tradingTask.getCoinType())
             .orderType(tradingTask.getOrderType())
             .orderState(exchangeOrderCancel.getOrderState())
