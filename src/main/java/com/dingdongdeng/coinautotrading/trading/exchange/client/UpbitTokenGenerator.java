@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -60,6 +61,19 @@ public class UpbitTokenGenerator {
     }
 
     private String getKey(List<ExchangeKey> exchangeKeyList, String keyName) {
+        if (exchangeKeyList.size() != 2) {
+            throw new RuntimeException("업비트에서 사용할 키가 2개가 아닙니다. \n키 정보를 확인해주세요.");
+        }
+
+        List<String> keyNameList = exchangeKeyList.stream().map(ExchangeKey::getName).collect(Collectors.toList());
+        if (!keyNameList.contains(ACCESS_KEY_NAME)) {
+            throw new RuntimeException("ACCESS_KEY가 존재하지 않습니다.");
+        }
+
+        if (!keyNameList.contains(SECRET_KEY_NAME)) {
+            throw new RuntimeException("SECRET_KEY가 존재하지 않습니다.");
+        }
+
         return exchangeKeyList.stream()
             .filter(key -> key.getName().equalsIgnoreCase(keyName))
             .map(ExchangeKey::getValue)
