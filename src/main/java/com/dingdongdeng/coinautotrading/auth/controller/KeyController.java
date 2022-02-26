@@ -5,6 +5,7 @@ import com.dingdongdeng.coinautotrading.auth.model.KeyResponse;
 import com.dingdongdeng.coinautotrading.auth.service.KeyService;
 import com.dingdongdeng.coinautotrading.common.model.CommonResponse;
 import java.util.List;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,7 +32,7 @@ public class KeyController {
     }
 
     @PostMapping("/key")
-    public CommonResponse<List<KeyResponse>> registerKey(@RequestBody KeyRegisterRequest request, @RequestHeader String userId) {
+    public CommonResponse<List<KeyResponse>> registerKey(@Valid @RequestBody KeyRegisterRequest request, @RequestHeader String userId) {
         return CommonResponse.<List<KeyResponse>>builder()
             .body(keyService.register(request, userId))
             .message("key register success")
