@@ -1,8 +1,8 @@
 package com.dingdongdeng.coinautotrading.auth.controller;
 
-import com.dingdongdeng.coinautotrading.auth.component.KeyService;
 import com.dingdongdeng.coinautotrading.auth.model.KeyRegisterRequest;
 import com.dingdongdeng.coinautotrading.auth.model.KeyResponse;
+import com.dingdongdeng.coinautotrading.auth.service.KeyService;
 import com.dingdongdeng.coinautotrading.common.model.CommonResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

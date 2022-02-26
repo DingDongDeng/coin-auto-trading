@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading.auth.component;
+package com.dingdongdeng.coinautotrading.auth.service;
 
 import com.dingdongdeng.coinautotrading.auth.model.KeyRegisterRequest;
 import com.dingdongdeng.coinautotrading.auth.model.KeyRegisterRequest.KeyPair;

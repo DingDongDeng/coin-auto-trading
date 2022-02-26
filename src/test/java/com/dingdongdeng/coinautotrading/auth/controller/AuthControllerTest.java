@@ -11,10 +11,10 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.dingdongdeng.coinautotrading.ApiDocumentUtils;
-import com.dingdongdeng.coinautotrading.auth.component.KeyService;
 import com.dingdongdeng.coinautotrading.auth.model.KeyRegisterRequest;
 import com.dingdongdeng.coinautotrading.auth.model.KeyRegisterRequest.KeyPair;
 import com.dingdongdeng.coinautotrading.auth.model.KeyResponse;
+import com.dingdongdeng.coinautotrading.auth.service.KeyService;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.domain.entity.ExchangeKey;
 import com.dingdongdeng.coinautotrading.domain.repository.ExchangeKeyRepository;
