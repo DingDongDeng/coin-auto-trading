@@ -9,7 +9,7 @@ userId: 1234
 
 {
   "coinExchangeType": "UPBIT",
-  "keyPairList": [
+  "keyList": [
     {
       "name": "ACCESS_KEY",
       "value": "accessKey-12312321321"
