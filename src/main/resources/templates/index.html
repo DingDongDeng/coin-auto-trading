@@ -23,15 +23,15 @@
       <input type="button" value="키 등록" @click="toggleKeyRegisterUI">
       <input type="button" value="자동매매 등록" @click="toggleAutoTradingRegisterUI">
     </div>
-    <div v-if="register.key.isVisible">
+    <div v-if="register.keyPair.isVisible">
       <h3> 키 등록</h3>
-      <select v-model="register.key.coinExchangeType">
+      <select v-model="register.keyPair.coinExchangeType">
         <option disabled value="">거래소</option>
         <option v-for="(value,key) in type.coinExchangeTypeMap" :value="key">{{value}}</option>
       </select>
-      <div v-for="(keyPair, i) in register.key.keyPairList">
-        <input v-model="keyPair.keyName" type="text" placeholder="키 이름">
-        <input v-model="keyPair.value" type="text" placeholder="키 값">
+      <div v-for="(key, i) in register.keyPair.keyList">
+        <input v-model="key.name" type="text" placeholder="키 이름">
+        <input v-model="key.value" type="text" placeholder="키 값">
         <input type="button" value="x" @click="deleteKeyInputBox(i)">
       </div>
       <div>
@@ -80,19 +80,21 @@
   </div>
   <div>
     <h2> 키 리스트 </h2>
-    <div v-for="key in user.keyList">
+    <div v-for="keyPair in user.keyPairList">
       <div>
         <div>
-          키 페어 ID : {{key.pairId}}
+          키 페어 ID : {{keyPair.pairId}}
         </div>
         <div>
-          거래소 : {{key.coinExchangeType}}
+          거래소 : {{keyPair.coinExchangeType}}
+        </div>
+        <div v-for="key in keyPair.keyList">
+          <div>
+            키 이름 : {{key.name}}
+          </div>
         </div>
         <div>
-          키 이름 : {{key.name}}
-        </div>
-        <div>
-          <input type="button" value="삭제" @click="deleteUserPairKey(key.pairId, refresh)">
+          <input type="button" value="삭제" @click="deleteUserPairKey(keyPair.pairId, refresh)">
         </div>
       </div>
     </div>
@@ -145,18 +147,18 @@
       return {
         user: {
           id: "",
-          keyList: [],
+          keyPairList: [],
           autoTradingList: []
         },
         register: {
-          key: {},
+          keyPair: {},
           autoTrading: {}
         },
         type: {}
       }
     },
     async created() {
-      this.register.key = this.resetKeyRegister();
+      this.register.keyPair = this.resetKeyRegister();
       this.register.autoTrading = this.resetAutoTradingRegister();
       this.type = this.resetTypeInfo();
     },
@@ -166,17 +168,17 @@
       },
       async updateAllInformation() {
         const userId = this.user.id;
-        this.user.keyList = await this.getUserKeyList(userId);
+        this.user.keyPairList = await this.getUserKeyList(userId);
         this.user.autoTradingList = await this.getUserAutoTradingList(userId);
       },
       addKeyInputBox() {
-        this.register.key.keyPairList.push({keyName: "", value: ""});
+        this.register.keyPair.keyList.push({name: "", value: ""});
       },
       deleteKeyInputBox(index) {
-        this.register.key.keyPairList.splice(index, 1);
+        this.register.keyPair.keyList.splice(index, 1);
       },
       async getUserKeyList(userId) {
-        const response = await api.get("/user/" + userId + "/key", this.headers());
+        const response = await api.get("/user/" + userId + "/key/pair", this.headers());
         return response.data.body;
       },
       async getUserAutoTradingList(userId) {
@@ -208,12 +210,12 @@
       },
       async registerKeyPair(callback) {
         const body = {
-          coinExchangeType: this.register.key.coinExchangeType,
-          keyPairList: this.register.key.keyPairList
+          coinExchangeType: this.register.keyPair.coinExchangeType,
+          keyList: this.register.keyPair.keyList
         };
 
-        const response = await api.post("/key", body, this.headers());
-        this.register.key = this.resetKeyRegister();
+        const response = await api.post("/key/pair", body, this.headers());
+        this.register.keyPair = this.resetKeyRegister();
         callback();
         return response.data.body;
       },
@@ -232,7 +234,7 @@
         return response.data.body;
       },
       toggleKeyRegisterUI() {
-        this.register.key.isVisible = !this.register.key.isVisible;
+        this.register.keyPair.isVisible = !this.register.keyPair.isVisible;
       },
       toggleAutoTradingRegisterUI() {
         this.register.autoTrading.isVisible = !this.register.autoTrading.isVisible;
@@ -241,9 +243,9 @@
         return {
           isVisible: false,
           coinExchangeType: "",
-          keyPairList: [
+          keyList: [
             {
-              keyName: "",
+              name: "",
               value: ""
             }
           ]
