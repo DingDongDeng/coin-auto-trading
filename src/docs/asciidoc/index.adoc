@@ -24,14 +24,90 @@ endif::[]
 // 요청 : operation::/admin/command[snippets='curl-request,http-request,request-headers,path-parameters,request-parameters,request-fields']
 // 응답 : operation::/admin/command[snippets='http-response,response-fields']
 
-=== 자동매매 명령어 API
+=== 사용자 자동매매 리스트 조회 API
 ==== 설명
 ----
-자동매매 명령어 API 입니다.
-커맨드에 따라 매매를 시작,정지할 수 있고 관련 파라미터를 설정하여 커스텀하게 사용이 가능합니다.
+사용자 자동매매 리스트 조회 API
 ----
 ==== 요청
-operation::/admin/command[snippets='curl-request,http-request']
+operation::/user/autotrading[snippets='http-request,request-headers,path-parameters']
 ==== 응답
-operation::/admin/command[snippets='http-response,response-fields']
+operation::/user/autotrading[snippets='http-response,response-fields']
 
+
+=== 자동매매 등록 API
+==== 설명
+----
+자동매매 등록 API
+----
+==== 요청
+operation::/autotrading/register[snippets='http-request,request-headers,request-fields']
+==== 응답
+operation::/autotrading/register[snippets='http-response,response-fields']
+
+
+=== 자동매매 시작 API
+==== 설명
+----
+자동매매 시작 API
+----
+==== 요청
+operation::/autotrading/start[snippets='http-request,request-headers,path-parameters']
+==== 응답
+operation::/autotrading/start[snippets='http-response,response-fields']
+
+
+=== 자동매매 정지 API
+==== 설명
+----
+자동매매 정지 API
+----
+==== 요청
+operation::/autotrading/stop[snippets='http-request,request-headers,path-parameters']
+==== 응답
+operation::/autotrading/stop[snippets='http-response,response-fields']
+
+
+=== 자동매매 제거 API
+==== 설명
+----
+자동매매 제거 API
+----
+==== 요청
+operation::/autotrading/terminate[snippets='http-request,request-headers,path-parameters']
+==== 응답
+operation::/autotrading/terminate[snippets='http-response,response-fields']
+
+
+=== 거래소 키 등록 API
+==== 설명
+----
+거래소 키 등록 API
+----
+==== 요청
+operation::/key/pair[snippets='http-request,request-headers,request-fields']
+==== 응답
+operation::/key/pair[snippets='http-response,response-fields']
+
+
+=== 사용자 거래소 키 조회 API
+==== 설명
+----
+사용자 거래소 키 조회 API
+----
+==== 요청
+operation::/user/key/pair[snippets='http-request,request-headers,path-parameters']
+==== 응답
+operation::/user/key/pair[snippets='http-response,response-fields']
+
+
+
+=== 사용자 거래소 키 삭제 API
+==== 설명
+----
+사용자 거래소 키 삭제 API
+----
+==== 요청
+operation::/key/pair[snippets='http-request,request-headers,path-parameters']
+==== 응답
+operation::/key/pair[snippets='http-response,response-fields']

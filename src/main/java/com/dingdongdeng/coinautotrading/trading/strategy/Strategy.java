@@ -3,16 +3,15 @@ package com.dingdongdeng.coinautotrading.trading.strategy;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
-import com.dingdongdeng.coinautotrading.exchange.service.ExchangeService;
-import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrder;
-import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderCancel;
-import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderCancelParam;
-import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderParam;
-import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeTradingInfo;
-import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeTradingInfoParam;
+import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeService;
+import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrder;
+import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrderCancel;
+import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrderCancelParam;
+import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrderParam;
+import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeTradingInfo;
+import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeTradingInfoParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
-import com.dingdongdeng.coinautotrading.trading.strategy.model.type.StrategyCode;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,11 +22,12 @@ public abstract class Strategy {
 
     private final CoinType coinType;
     private final TradingTerm tradingTerm;
+    private final String keyPairId;
     private final ExchangeService exchangeService;
 
     public void execute() {
 
-        ExchangeTradingInfo exchangeTradingInfo = exchangeService.getTradingInformation(makeExchangeTradingInfoParam(coinType, tradingTerm));
+        ExchangeTradingInfo exchangeTradingInfo = exchangeService.getTradingInformation(makeExchangeTradingInfoParam(), keyPairId);
 
         List<TradingTask> tradingTaskList = this.makeTradingTask(exchangeTradingInfo);
         log.info("tradingTaskList : {}", tradingTaskList);
@@ -35,14 +35,14 @@ public abstract class Strategy {
         tradingTaskList.forEach(tradingTask -> {
             // 매수, 매도 주문
             if (isOrder(tradingTask)) {
-                ExchangeOrder order = exchangeService.order(makeExchangeOrderParam(tradingTask));
+                ExchangeOrder order = exchangeService.order(makeExchangeOrderParam(tradingTask), keyPairId);
                 this.handleOrderResult(order, makeTradingResult(tradingTask, order));
                 return;
             }
 
             // 주문 취소
             if (isOrderCancel(tradingTask)) {
-                ExchangeOrderCancel orderCancel = exchangeService.orderCancel(makeExchangeOrderCancelParam(tradingTask));
+                ExchangeOrderCancel orderCancel = exchangeService.orderCancel(makeExchangeOrderCancelParam(tradingTask), keyPairId);
                 this.handleOrderCancelResult(orderCancel, makeTradingResult(tradingTask, orderCancel));
             }
 
@@ -50,7 +50,7 @@ public abstract class Strategy {
         });
     }
 
-    abstract public StrategyCode getCode();
+    abstract public String getIdentifyCode();
 
     abstract protected List<TradingTask> makeTradingTask(ExchangeTradingInfo tradingInfo);
 
@@ -68,7 +68,7 @@ public abstract class Strategy {
         return orderType == OrderType.CANCEL;
     }
 
-    private ExchangeTradingInfoParam makeExchangeTradingInfoParam(CoinType coinType, TradingTerm tradingTerm) {
+    private ExchangeTradingInfoParam makeExchangeTradingInfoParam() {
         return ExchangeTradingInfoParam.builder()
             .coinType(coinType)
             .tradingTerm(tradingTerm)
@@ -93,7 +93,7 @@ public abstract class Strategy {
 
     private TradingResult makeTradingResult(TradingTask tradingTask, ExchangeOrder exchangeOrder) {
         return TradingResult.builder()
-            .strategyCode(tradingTask.getStrategyCode())
+            .identifyCode(tradingTask.getIdentifyCode())
             .coinType(tradingTask.getCoinType())
             .orderType(tradingTask.getOrderType())
             .orderState(exchangeOrder.getOrderState())
@@ -108,7 +108,7 @@ public abstract class Strategy {
 
     private TradingResult makeTradingResult(TradingTask tradingTask, ExchangeOrderCancel exchangeOrderCancel) {
         return TradingResult.builder()
-            .strategyCode(tradingTask.getStrategyCode())
+            .identifyCode(tradingTask.getIdentifyCode())
             .coinType(tradingTask.getCoinType())
             .orderType(tradingTask.getOrderType())
             .orderState(exchangeOrderCancel.getOrderState())

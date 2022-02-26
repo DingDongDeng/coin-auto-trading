@@ -1,11 +1,10 @@
 package com.dingdongdeng.coinautotrading.trading.strategy;
 
-import com.dingdongdeng.coinautotrading.exchange.service.ExchangeService;
-import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrder;
-import com.dingdongdeng.coinautotrading.exchange.service.model.ExchangeOrderInfoParam;
+import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeService;
+import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrder;
+import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrderInfoParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
-import com.dingdongdeng.coinautotrading.trading.strategy.model.type.StrategyCode;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.TradingTag;
 import com.dingdongdeng.coinautotrading.trading.strategy.repository.TradingResultRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,26 +12,27 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class StrategyAssistant {
 
+    private final String keyPairId;
     private final ExchangeService exchangeService;
     private final TradingResultRepository tradingResultRepository;
 
     public void storeTradingResult(TradingResult tradingResult) {
-        tradingResult.setId(getKey(tradingResult.getStrategyCode(), tradingResult.getTag()));
+        tradingResult.setId(getKey(tradingResult.getIdentifyCode(), tradingResult.getTag()));
         tradingResultRepository.save(tradingResult);
     }
 
-    public TradingResultPack syncedTradingResultPack(StrategyCode code) {
+    public TradingResultPack syncedTradingResultPack(String identifyCode) {
         return TradingResultPack.builder()
-            .buyTradingResult(updateTradingResult(findTradingResult(code, TradingTag.BUY)))
-            .profitTradingResult(updateTradingResult(findTradingResult(code, TradingTag.PROFIT)))
-            .lossTradingResult(updateTradingResult(findTradingResult(code, TradingTag.LOSS)))
+            .buyTradingResult(updateTradingResult(findTradingResult(identifyCode, TradingTag.BUY)))
+            .profitTradingResult(updateTradingResult(findTradingResult(identifyCode, TradingTag.PROFIT)))
+            .lossTradingResult(updateTradingResult(findTradingResult(identifyCode, TradingTag.LOSS)))
             .build();
     }
 
-    public void reset(StrategyCode code) {
-        TradingResult buyTradingResult = findTradingResult(code, TradingTag.BUY);
-        TradingResult profitTradingResult = findTradingResult(code, TradingTag.PROFIT);
-        TradingResult lossTradingResult = findTradingResult(code, TradingTag.LOSS);
+    public void reset(String identifyCode) {
+        TradingResult buyTradingResult = findTradingResult(identifyCode, TradingTag.BUY);
+        TradingResult profitTradingResult = findTradingResult(identifyCode, TradingTag.PROFIT);
+        TradingResult lossTradingResult = findTradingResult(identifyCode, TradingTag.LOSS);
 
         if (buyTradingResult.isExist()) {
             tradingResultRepository.delete(buyTradingResult);
@@ -46,18 +46,18 @@ public class StrategyAssistant {
     }
 
     public void reset(TradingResult tradingResult) {
-        StrategyCode code = tradingResult.getStrategyCode();
+        String identifyCode = tradingResult.getIdentifyCode();
         TradingTag tag = tradingResult.getTag();
-        TradingResult storedTradingResult = findTradingResult(code, tag);
+        TradingResult storedTradingResult = findTradingResult(identifyCode, tag);
         tradingResultRepository.delete(storedTradingResult);
     }
 
-    private TradingResult findTradingResult(StrategyCode code, TradingTag tag) {
-        return tradingResultRepository.findById(getKey(code, tag)).orElse(new TradingResult());
+    private TradingResult findTradingResult(String identifyCode, TradingTag tag) {
+        return tradingResultRepository.findById(getKey(identifyCode, tag)).orElse(new TradingResult());
     }
 
-    private String getKey(StrategyCode code, TradingTag tag) {
-        return code.name() + ":" + tag.name(); // RSI:BUY, RSI:PROFIT, RSI:LOSS
+    private String getKey(String identifyCode, TradingTag tag) {
+        return identifyCode + ":" + tag.name(); // RSI:BUY, RSI:PROFIT, RSI:LOSS
     }
 
     private TradingResult updateTradingResult(TradingResult tradingResult) {
@@ -65,11 +65,12 @@ public class StrategyAssistant {
             return new TradingResult();
         }
         ExchangeOrder exchangeOrder = exchangeService.getOrderInfo(
-            ExchangeOrderInfoParam.builder().orderId(tradingResult.getOrderId()).build()
+            ExchangeOrderInfoParam.builder().orderId(tradingResult.getOrderId()).build(),
+            keyPairId
         );
         return TradingResult.builder()
             .id(tradingResult.getId())
-            .strategyCode(tradingResult.getStrategyCode())
+            .identifyCode(tradingResult.getIdentifyCode())
             .coinType(tradingResult.getCoinType())
             .orderType(tradingResult.getOrderType())
             .orderState(exchangeOrder.getOrderState())

@@ -1,0 +1,30 @@
+GET localhost:8080/user/1234/key/pair
+Content-Type: application/json
+userId: 1234
+
+###
+POST localhost:8080/key/pair
+Content-Type: application/json
+userId: 1234
+
+{
+  "coinExchangeType": "UPBIT",
+  "keyList": [
+    {
+      "name": "ACCESS_KEY",
+      "value": "accessKey-12312321321"
+    },
+    {
+      "name": "SECRET_KEY",
+      "value": "secretKey-123213213"
+    }
+  ]
+}
+
+###
+DELETE localhost:8080/key/pair/9a441acb-cdb2-40a0-a5b4-974735e3c16d
+Content-Type: application/json
+userId: 1234
+
+
+###
