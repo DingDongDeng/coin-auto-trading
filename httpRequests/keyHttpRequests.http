@@ -1,9 +1,9 @@
-GET localhost:8080/auth/user/1234/key
+GET localhost:8080/user/1234/key
 Content-Type: application/json
 userId: 1234
 
 ###
-POST localhost:8080/auth/key
+POST localhost:8080/key
 Content-Type: application/json
 userId: 1234
 
@@ -22,7 +22,7 @@ userId: 1234
 }
 
 ###
-DELETE localhost:8080/auth/key/pair/9a441acb-cdb2-40a0-a5b4-974735e3c16d
+DELETE localhost:8080/key/pair/9a441acb-cdb2-40a0-a5b4-974735e3c16d
 Content-Type: application/json
 userId: 1234
 

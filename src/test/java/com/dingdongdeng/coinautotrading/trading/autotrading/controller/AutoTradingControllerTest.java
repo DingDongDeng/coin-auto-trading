@@ -135,14 +135,14 @@ class AutoTradingControllerTest {
             .when(autoTradingService).register(Mockito.any(), Mockito.any());
 
         MvcResult result = this.mockMvc.perform(
-            RestDocumentationRequestBuilders.post("/trading/autotrading/register")
+            RestDocumentationRequestBuilders.post("/autotrading/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("userId", userId)
                 .content(objectMapper.writeValueAsString(request))
         )
             .andExpect(status().isOk())
             .andDo(
-                document("trading/autotrading/register",
+                document("autotrading/register",
                     ApiDocumentUtils.getDocumentRequest(),
                     ApiDocumentUtils.getDocumentResponse(),
                     requestHeaders(
@@ -198,13 +198,13 @@ class AutoTradingControllerTest {
             .when(autoTradingService).start(Mockito.any(), Mockito.any());
 
         MvcResult result = this.mockMvc.perform(
-            RestDocumentationRequestBuilders.post("/trading/autotrading/{autoTradingProcessorId}/start", autoTradingProcessorId)
+            RestDocumentationRequestBuilders.post("/autotrading/{autoTradingProcessorId}/start", autoTradingProcessorId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("userId", userId)
         )
             .andExpect(status().isOk())
             .andDo(
-                document("trading/autotrading/start",
+                document("autotrading/start",
                     ApiDocumentUtils.getDocumentRequest(),
                     ApiDocumentUtils.getDocumentResponse(),
                     requestHeaders(
@@ -254,13 +254,13 @@ class AutoTradingControllerTest {
             .when(autoTradingService).stop(Mockito.any(), Mockito.any());
 
         MvcResult result = this.mockMvc.perform(
-            RestDocumentationRequestBuilders.post("/trading/autotrading/{autoTradingProcessorId}/stop", autoTradingProcessorId)
+            RestDocumentationRequestBuilders.post("/autotrading/{autoTradingProcessorId}/stop", autoTradingProcessorId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("userId", userId)
         )
             .andExpect(status().isOk())
             .andDo(
-                document("trading/autotrading/stop",
+                document("autotrading/stop",
                     ApiDocumentUtils.getDocumentRequest(),
                     ApiDocumentUtils.getDocumentResponse(),
                     requestHeaders(
@@ -310,13 +310,13 @@ class AutoTradingControllerTest {
             .when(autoTradingService).terminate(Mockito.any(), Mockito.any());
 
         MvcResult result = this.mockMvc.perform(
-            RestDocumentationRequestBuilders.post("/trading/autotrading/{autoTradingProcessorId}/terminate", autoTradingProcessorId)
+            RestDocumentationRequestBuilders.post("/autotrading/{autoTradingProcessorId}/terminate", autoTradingProcessorId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("userId", userId)
         )
             .andExpect(status().isOk())
             .andDo(
-                document("trading/autotrading/terminate",
+                document("autotrading/terminate",
                     ApiDocumentUtils.getDocumentRequest(),
                     ApiDocumentUtils.getDocumentResponse(),
                     requestHeaders(

@@ -47,7 +47,7 @@ import org.springframework.web.context.WebApplicationContext;
 @Slf4j
 @SpringBootTest
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class, MockitoExtension.class})
-class AuthControllerTest {
+class KeyControllerTest {
 
     private MockMvc mockMvc;
     @Autowired
@@ -118,14 +118,14 @@ class AuthControllerTest {
             .when(keyService).register(Mockito.any(), Mockito.any());
 
         MvcResult result = this.mockMvc.perform(
-            RestDocumentationRequestBuilders.post("/auth/key")
+            RestDocumentationRequestBuilders.post("/key")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("userId", userId)
                 .content(objectMapper.writeValueAsString(request))
         )
             .andExpect(status().isOk())
             .andDo(
-                document("auth/key",
+                document("key",
                     ApiDocumentUtils.getDocumentRequest(),
                     ApiDocumentUtils.getDocumentResponse(),
                     requestHeaders(
@@ -166,13 +166,13 @@ class AuthControllerTest {
             .when(keyService).getUserKeyList(Mockito.any());
 
         MvcResult result = this.mockMvc.perform(
-            RestDocumentationRequestBuilders.get("/auth/user/{userId}/key", userId)
+            RestDocumentationRequestBuilders.get("/user/{userId}/key", userId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("userId", userId)
         )
             .andExpect(status().isOk())
             .andDo(
-                document("auth/user/key",
+                document("user/key",
                     ApiDocumentUtils.getDocumentRequest(),
                     ApiDocumentUtils.getDocumentResponse(),
                     requestHeaders(
@@ -197,13 +197,13 @@ class AuthControllerTest {
     public void 거래소_키_삭제_테스트() throws Exception {
 
         MvcResult result = this.mockMvc.perform(
-            RestDocumentationRequestBuilders.delete("/auth/key/pair/{pairKeyId}", keyPairId)
+            RestDocumentationRequestBuilders.delete("/key/pair/{pairKeyId}", keyPairId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("userId", userId)
         )
             .andExpect(status().isOk())
             .andDo(
-                document("auth/key/pair",
+                document("key/pair",
                     ApiDocumentUtils.getDocumentRequest(),
                     ApiDocumentUtils.getDocumentResponse(),
                     requestHeaders(
