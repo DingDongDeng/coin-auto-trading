@@ -7,12 +7,13 @@ userId: 1234
   "coinType": "ETHEREUM",
   "coinExchangeType": "UPBIT",
   "tradingTerm": "SCALPING",
-  "strategyCode": "RSI"
+  "strategyCode": "RSI",
+  "keyPairId": "dbd10ffb-9b00-4c3e-9789-e034d1d3794b"
 }
 
 
 ###
-POST localhost:8080/trading/autotrading/50caaa98-d9e6-4abe-9702-9ebce1e8c6d4/start
+POST localhost:8080/trading/autotrading/c63950a1-3493-4c0d-9fc3-bf223eb9b426/start
 Content-Type: application/json
 userId: 1234
 

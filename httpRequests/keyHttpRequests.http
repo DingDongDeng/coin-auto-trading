@@ -11,12 +11,12 @@ userId: 1234
   "coinExchangeType": "UPBIT",
   "keyPairList": [
     {
-      "keyName": "accessKey",
-      "value": "accesskey-12312312321321321"
+      "keyName": "ACCESS_KEY",
+      "value": "accessKey-12312321321"
     },
     {
-      "keyName": "secretKey",
-      "value": "secretKey-12312312321321321"
+      "keyName": "SECRET_KEY",
+      "value": "secretKey-123213213"
     }
   ]
 }
