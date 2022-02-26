@@ -21,7 +21,7 @@ public class AutoTradingProcessorMap {
         return processorMap.get(processorId);
     }
 
-    public List<AutoTradingProcessor> getListByUserId(String userId) { //fixme map을 이렇게 순회하지 않도록 수정 필요(db에서 읽던가)
+    public List<AutoTradingProcessor> getList(String userId) { //fixme map을 이렇게 순회하지 않도록 수정 필요(db에서 읽던가)
         return processorMap.values().stream()
             .filter(processor -> processor.getUserId().equals(userId))
             .collect(Collectors.toList());

@@ -24,11 +24,12 @@ public class AutoTradingService {
     private final ExchangeServiceSelector processorSelector;
     private final StrategyFactory strategyFactory;
 
-    public List<AutoTradingResponse> getList(String userId){
-        return autoTradingManager.getUserProcessorList(userId).stream()
+    public List<AutoTradingResponse> getUserProcessorList(String userId) {
+        return autoTradingManager.getList(userId).stream()
             .map(this::makeResponse)
             .collect(Collectors.toList());
     }
+
     public AutoTradingResponse register(AutoTradingRegisterRequest request, String userId) {
         ExchangeService exchangeService = processorSelector.getTargetProcessor(request.getCoinExchangeType());
         Strategy strategy = strategyFactory.create(request.getStrategyCode(), exchangeService, request.getCoinType(), request.getTradingTerm(), request.getKeyPairId());

@@ -15,9 +15,10 @@ public class AutoTradingManager {
 
     private final AutoTradingProcessorMap processorMap; //fixme 분산환경을 고려해서 구성이 가능한 내용일까???
 
-    public List<AutoTradingProcessor> getUserProcessorList(String userId){
-        return processorMap.getListByUserId(userId);
+    public List<AutoTradingProcessor> getList(String userId) {
+        return processorMap.getList(userId);
     }
+
     public AutoTradingProcessor register(AutoTradingProcessor processor) {
         processorMap.put(processor);
         return processor;
