@@ -10,9 +10,9 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.dingdongdeng.coinautotrading.auth.model.KeyRegisterRequest;
-import com.dingdongdeng.coinautotrading.auth.model.KeyRegisterRequest.KeyPair;
-import com.dingdongdeng.coinautotrading.auth.model.KeyResponse;
+import com.dingdongdeng.coinautotrading.auth.model.Key;
+import com.dingdongdeng.coinautotrading.auth.model.KeyPairRegisterRequest;
+import com.dingdongdeng.coinautotrading.auth.model.KeyPairResponse;
 import com.dingdongdeng.coinautotrading.auth.service.KeyService;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.doc.ApiDocumentUtils;
@@ -21,7 +21,6 @@ import com.dingdongdeng.coinautotrading.domain.repository.ExchangeKeyRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -102,18 +101,20 @@ class KeyControllerTest {
 
         CoinExchangeType coinExchangeType = CoinExchangeType.UPBIT;
         String userId = "1234";
-        List<KeyPair> keyPairList = List.of(new KeyPair("accessKey", "accessKey-123123123"), new KeyPair("secretKey", "secretKey-1231231223"));
-        KeyRegisterRequest request = KeyRegisterRequest.builder()
+        List<Key> keyList = List.of(new Key("accessKey", "accessKey-123123123"), new Key("secretKey", "secretKey-1231231223"));
+        KeyPairRegisterRequest request = KeyPairRegisterRequest.builder()
             .coinExchangeType(coinExchangeType)
-            .keyPairList(keyPairList)
+            .keyList(keyList)
             .build();
 
         Mockito.doReturn(
-            keyPairList.stream().map(p -> KeyResponse.builder()
-                .pairId(UUID.randomUUID().toString())
-                .coinExchangeType(coinExchangeType)
-                .name(p.getKeyName())
-                .build()).collect(Collectors.toList())
+            List.of(
+                KeyPairResponse.builder()
+                    .pairId(UUID.randomUUID().toString())
+                    .coinExchangeType(coinExchangeType)
+                    .keyList(keyList)
+                    .build()
+            )
         )
             .when(keyService).register(Mockito.any(), Mockito.any());
 
@@ -133,15 +134,17 @@ class KeyControllerTest {
                     ),
                     requestFields(
                         fieldWithPath("coinExchangeType").type(JsonFieldType.STRING).description("거래소 종류(upbit)"),
-                        fieldWithPath("keyPairList[]").type(JsonFieldType.ARRAY).description("거래소 api 사용을 위한 키"),
-                        fieldWithPath("keyPairList[].keyName").type(JsonFieldType.STRING).description("키 이름"),
-                        fieldWithPath("keyPairList[].value").type(JsonFieldType.STRING).description("키 값")
+                        fieldWithPath("keyList[]").type(JsonFieldType.ARRAY).description("거래소 api 사용을 위한 키"),
+                        fieldWithPath("keyList[].name").type(JsonFieldType.STRING).description("키 이름"),
+                        fieldWithPath("keyList[].value").type(JsonFieldType.STRING).description("키 값")
                     ),
                     responseFields(
                         fieldWithPath("body[]").type(JsonFieldType.ARRAY).description("데이터").optional(),
                         fieldWithPath("body[].pairId").type(JsonFieldType.STRING).description("키 페어 ID"),
                         fieldWithPath("body[].coinExchangeType").type(JsonFieldType.STRING).description("거래소 종류(upbit)"),
-                        fieldWithPath("body[].name").type(JsonFieldType.STRING).description("키 이름"),
+                        fieldWithPath("body[].keyList[]").type(JsonFieldType.ARRAY).description("키 리스트"),
+                        fieldWithPath("body[].keyList[].name").type(JsonFieldType.STRING).description("키 이름"),
+                        fieldWithPath("body[].keyList[].value").type(JsonFieldType.STRING).description("키 값(마스킹)"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("메세지").optional()
                     )
                 )
@@ -154,14 +157,16 @@ class KeyControllerTest {
 
         CoinExchangeType coinExchangeType = CoinExchangeType.UPBIT;
         String userId = "1234";
-        List<KeyPair> keyPairList = List.of(new KeyPair("accessKey", "accessKey-123123123"), new KeyPair("secretKey", "secretKey-1231231223"));
+        List<Key> keyList = List.of(new Key("accessKey", "accessKey-123123123"), new Key("secretKey", "secretKey-1231231223"));
 
         Mockito.doReturn(
-            keyPairList.stream().map(p -> KeyResponse.builder()
-                .pairId(UUID.randomUUID().toString())
-                .coinExchangeType(coinExchangeType)
-                .name(p.getKeyName())
-                .build()).collect(Collectors.toList())
+            List.of(
+                KeyPairResponse.builder()
+                    .pairId(UUID.randomUUID().toString())
+                    .coinExchangeType(coinExchangeType)
+                    .keyList(keyList)
+                    .build()
+            )
         )
             .when(keyService).getUserKeyList(Mockito.any());
 
@@ -185,7 +190,9 @@ class KeyControllerTest {
                         fieldWithPath("body[]").type(JsonFieldType.ARRAY).description("데이터").optional(),
                         fieldWithPath("body[].pairId").type(JsonFieldType.STRING).description("키 페어 ID"),
                         fieldWithPath("body[].coinExchangeType").type(JsonFieldType.STRING).description("거래소 종류(upbit)"),
-                        fieldWithPath("body[].name").type(JsonFieldType.STRING).description("키 이름"),
+                        fieldWithPath("body[].keyList[]").type(JsonFieldType.ARRAY).description("키 리스트"),
+                        fieldWithPath("body[].keyList[].name").type(JsonFieldType.STRING).description("키 이름"),
+                        fieldWithPath("body[].keyList[].value").type(JsonFieldType.STRING).description("키 값(마스킹)"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("메세지").optional()
                     )
                 )
@@ -216,7 +223,9 @@ class KeyControllerTest {
                         fieldWithPath("body[]").type(JsonFieldType.ARRAY).description("데이터").optional(),
                         fieldWithPath("body[].pairId").type(JsonFieldType.STRING).description("키 페어 ID"),
                         fieldWithPath("body[].coinExchangeType").type(JsonFieldType.STRING).description("거래소 종류(upbit)"),
-                        fieldWithPath("body[].name").type(JsonFieldType.STRING).description("키 이름"),
+                        fieldWithPath("body[].keyList[]").type(JsonFieldType.ARRAY).description("키 리스트"),
+                        fieldWithPath("body[].keyList[].name").type(JsonFieldType.STRING).description("키 이름"),
+                        fieldWithPath("body[].keyList[].value").type(JsonFieldType.STRING).description("키 값(마스킹)"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("메세지").optional()
                     )
                 )

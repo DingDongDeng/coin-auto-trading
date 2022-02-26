@@ -597,7 +597,7 @@ Content-Length: 715
     "processDuration" : 1000,
     "processStatus" : "RUNNING",
     "userId" : "123456",
-    "strategyIdentifyCode" : "RSI:91425d23-30bb-4808-990b-eadf22278ba4",
+    "strategyIdentifyCode" : "RSI:2aeadcc5-21df-43be-9b6a-1e6addb2d39e",
     "coinType" : "ETHEREUM",
     "coinExchangeType" : "UPBIT"
   }, {
@@ -606,7 +606,7 @@ Content-Length: 715
     "processDuration" : 1000,
     "processStatus" : "RUNNING",
     "userId" : "123456",
-    "strategyIdentifyCode" : "RSI:91425d23-30bb-4808-990b-eadf22278ba4",
+    "strategyIdentifyCode" : "RSI:2aeadcc5-21df-43be-9b6a-1e6addb2d39e",
     "coinType" : "ETHEREUM",
     "coinExchangeType" : "UPBIT"
   } ],
@@ -714,7 +714,7 @@ Host: localhost:8080
   "coinExchangeType" : "UPBIT",
   "strategyCode" : "RSI",
   "tradingTerm" : "SCALPING",
-  "keyPairId" : "ce57a4a1-74b7-4c43-8fb9-b98fe470989a"
+  "keyPairId" : "353a2d5a-e113-49fb-9244-caddd85a37d2"
 }</code></pre>
 </div>
 </div>
@@ -807,7 +807,7 @@ Content-Length: 382
     "processDuration" : 1000,
     "processStatus" : "INIT",
     "userId" : "123456",
-    "strategyIdentifyCode" : "RSI:92fae280-1dd4-4c9d-a962-68797b6634b3",
+    "strategyIdentifyCode" : "RSI:70932756-bca5-48aa-b55b-89abfb8a2b04",
     "coinType" : "ETHEREUM",
     "coinExchangeType" : "UPBIT"
   },
@@ -971,7 +971,7 @@ Content-Length: 382
     "processDuration" : 1000,
     "processStatus" : "RUNNING",
     "userId" : "123456",
-    "strategyIdentifyCode" : "RSI:46dd8b78-d3fc-4c53-9ba0-b76bf7066a8b",
+    "strategyIdentifyCode" : "RSI:8c92cc9c-6175-42c6-b0af-c8ce98a6e272",
     "coinType" : "ETHEREUM",
     "coinExchangeType" : "UPBIT"
   },
@@ -1135,7 +1135,7 @@ Content-Length: 381
     "processDuration" : 1000,
     "processStatus" : "STOPPED",
     "userId" : "123456",
-    "strategyIdentifyCode" : "RSI:c5dc0376-9299-4962-bf71-e85f8231ca75",
+    "strategyIdentifyCode" : "RSI:7467d6f8-4f15-4c6f-abb9-b61aac087e78",
     "coinType" : "ETHEREUM",
     "coinExchangeType" : "UPBIT"
   },
@@ -1299,7 +1299,7 @@ Content-Length: 389
     "processDuration" : 1000,
     "processStatus" : "TERMINATED",
     "userId" : "123456",
-    "strategyIdentifyCode" : "RSI:827c2b15-26b2-4699-b396-b0022cdaa245",
+    "strategyIdentifyCode" : "RSI:fecf59d6-e193-4656-9324-ad01191623fa",
     "coinType" : "ETHEREUM",
     "coinExchangeType" : "UPBIT"
   },
@@ -1398,16 +1398,16 @@ Content-Length: 389
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /key HTTP/1.1
 Content-Type: application/json
 userId: 1234
-Content-Length: 201
+Content-Length: 191
 Host: localhost:8080
 
 {
   "coinExchangeType" : "UPBIT",
-  "keyPairList" : [ {
-    "keyName" : "accessKey",
+  "keyList" : [ {
+    "name" : "accessKey",
     "value" : "accessKey-123123123"
   }, {
-    "keyName" : "secretKey",
+    "name" : "secretKey",
     "value" : "secretKey-1231231223"
   } ]
 }</code></pre>
@@ -1457,17 +1457,17 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock">거래소 종류(upbit)</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>keyPairList[]</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>keyList[]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">거래소 api 사용을 위한 키</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>keyPairList[].keyName</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>keyList[].name</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">키 이름</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>keyPairList[].value</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>keyList[].value</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">키 값</p></td>
 </tr>
@@ -1483,17 +1483,19 @@ Host: localhost:8080
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 297
+Content-Length: 321
 
 {
   "body" : [ {
-    "pairId" : "99fb0ddf-c75b-4c73-91d2-4c9dd9f21324",
+    "pairId" : "d3b9b140-a615-495c-bfea-44f364e44bbc",
     "coinExchangeType" : "UPBIT",
-    "name" : "accessKey"
-  }, {
-    "pairId" : "c1dc1cb2-d81a-412e-811c-b9f60d332450",
-    "coinExchangeType" : "UPBIT",
-    "name" : "secretKey"
+    "keyList" : [ {
+      "name" : "accessKey",
+      "value" : "accessKey-123123123"
+    }, {
+      "name" : "secretKey",
+      "value" : "secretKey-1231231223"
+    } ]
   } ],
   "message" : "key register success"
 }</code></pre>
@@ -1522,24 +1524,34 @@ Content-Length: 297
 <td class="tableblock halign-left valign-top"><p class="tableblock">데이터</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>body[].pairId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">키 페어 ID</p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>body[].pairId</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock">키 페어 ID</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>body[].coinExchangeType</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">거래소 종류(upbit)</p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>body[].coinExchangeType</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock">거래소 종류(upbit)</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>body[].name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">키 이름</p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>body[].keyList[]</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock">키 리스트</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">메세지</p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>body[].keyList[].name</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock">키 이름</p></td>
+</tr>
+<tr>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>body[].keyList[].value</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock">키 값(마스킹)</p></td>
+</tr>
+<tr>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock">메세지</p></td>
 </tr>
 </tbody>
 </table>
@@ -1621,17 +1633,19 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 292
+Content-Length: 316
 
 {
   "body" : [ {
-    "pairId" : "1b20e40f-734a-4629-817a-1fa9ee7b2744",
+    "pairId" : "793e09b6-8f90-438d-94a4-7b98d89ba7c4",
     "coinExchangeType" : "UPBIT",
-    "name" : "accessKey"
-  }, {
-    "pairId" : "282c673c-e314-414e-a6d0-f845ef9c3aae",
-    "coinExchangeType" : "UPBIT",
-    "name" : "secretKey"
+    "keyList" : [ {
+      "name" : "accessKey",
+      "value" : "accessKey-123123123"
+    }, {
+      "name" : "secretKey",
+      "value" : "secretKey-1231231223"
+    } ]
   } ],
   "message" : "key get success"
 }</code></pre>
@@ -1660,24 +1674,34 @@ Content-Length: 292
 <td class="tableblock halign-left valign-top"><p class="tableblock">데이터</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>body[].pairId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">키 페어 ID</p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>body[].pairId</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock">키 페어 ID</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>body[].coinExchangeType</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">거래소 종류(upbit)</p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>body[].coinExchangeType</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock">거래소 종류(upbit)</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>body[].name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">키 이름</p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>body[].keyList[]</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock">키 리스트</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">메세지</p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>body[].keyList[].name</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock">키 이름</p></td>
+</tr>
+<tr>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>body[].keyList[].value</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock">키 값(마스킹)</p></td>
+</tr>
+<tr>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock">메세지</p></td>
 </tr>
 </tbody>
 </table>
@@ -1700,7 +1724,7 @@ Content-Length: 292
   <h5 id="_요청_8_http_request"><a class="link" href="#_요청_8_http_request">request http</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /key/pair/79b625a4-ef5a-4c0c-b1e2-656388c54b87 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /key/pair/70e491f9-264d-415d-b285-e1e1efdf4e21 HTTP/1.1
 Content-Type: application/json
 userId: 123456
 Host: localhost:8080</code></pre>
@@ -1759,17 +1783,19 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 299
+Content-Length: 312
 
 {
   "body" : [ {
-    "pairId" : "79b625a4-ef5a-4c0c-b1e2-656388c54b87",
+    "pairId" : "70e491f9-264d-415d-b285-e1e1efdf4e21",
     "coinExchangeType" : "UPBIT",
-    "name" : "ACCESS_KEY"
-  }, {
-    "pairId" : "79b625a4-ef5a-4c0c-b1e2-656388c54b87",
-    "coinExchangeType" : "UPBIT",
-    "name" : "SECRET_KEY"
+    "keyList" : [ {
+      "name" : "ACCESS_KEY",
+      "value" : "security value"
+    }, {
+      "name" : "SECRET_KEY",
+      "value" : "security value"
+    } ]
   } ],
   "message" : "key register success"
 }</code></pre>
@@ -1798,24 +1824,34 @@ Content-Length: 299
 <td class="tableblock halign-left valign-top"><p class="tableblock">데이터</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>body[].pairId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">키 페어 ID</p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>body[].pairId</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock">키 페어 ID</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>body[].coinExchangeType</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">거래소 종류(upbit)</p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>body[].coinExchangeType</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock">거래소 종류(upbit)</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>body[].name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">키 이름</p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>body[].keyList[]</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock">키 리스트</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">메세지</p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>body[].keyList[].name</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock">키 이름</p></td>
+</tr>
+<tr>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>body[].keyList[].value</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock">키 값(마스킹)</p></td>
+</tr>
+<tr>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock">메세지</p></td>
 </tr>
 </tbody>
 </table>
