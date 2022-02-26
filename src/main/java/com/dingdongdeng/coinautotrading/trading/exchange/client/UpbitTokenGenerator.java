@@ -65,7 +65,11 @@ public class UpbitTokenGenerator {
             throw new RuntimeException("업비트에서 사용할 키가 2개가 아닙니다. \n키 정보를 확인해주세요.");
         }
 
-        List<String> keyNameList = exchangeKeyList.stream().map(ExchangeKey::getName).collect(Collectors.toList());
+        List<String> keyNameList = exchangeKeyList.stream()
+            .map(ExchangeKey::getName)
+            .map(String::toUpperCase)
+            .collect(Collectors.toList());
+
         if (!keyNameList.contains(ACCESS_KEY_NAME)) {
             throw new RuntimeException("ACCESS_KEY가 존재하지 않습니다.");
         }
