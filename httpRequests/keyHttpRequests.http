@@ -1,9 +1,9 @@
-GET localhost:8080/user/1234/key
+GET localhost:8080/user/1234/key/pair
 Content-Type: application/json
 userId: 1234
 
 ###
-POST localhost:8080/key
+POST localhost:8080/key/pair
 Content-Type: application/json
 userId: 1234
 

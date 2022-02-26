@@ -23,7 +23,7 @@ public class KeyController {
 
     private final KeyService keyService;
 
-    @GetMapping("/user/{userId}/key")
+    @GetMapping("/user/{userId}/key/pair")
     public CommonResponse<List<KeyPairResponse>> getKeyList(@PathVariable String userId) {
         return CommonResponse.<List<KeyPairResponse>>builder()
             .body(keyService.getUserKeyList(userId))
@@ -31,7 +31,7 @@ public class KeyController {
             .build();
     }
 
-    @PostMapping("/key")
+    @PostMapping("/key/pair")
     public CommonResponse<List<KeyPairResponse>> registerKey(@Valid @RequestBody KeyPairRegisterRequest request, @RequestHeader String userId) {
         return CommonResponse.<List<KeyPairResponse>>builder()
             .body(keyService.register(request, userId))

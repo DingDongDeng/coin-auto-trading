@@ -597,7 +597,7 @@ Content-Length: 715
     "processDuration" : 1000,
     "processStatus" : "RUNNING",
     "userId" : "123456",
-    "strategyIdentifyCode" : "RSI:2aeadcc5-21df-43be-9b6a-1e6addb2d39e",
+    "strategyIdentifyCode" : "RSI:0efca9c3-3634-427f-92f7-b04e72c5e663",
     "coinType" : "ETHEREUM",
     "coinExchangeType" : "UPBIT"
   }, {
@@ -606,7 +606,7 @@ Content-Length: 715
     "processDuration" : 1000,
     "processStatus" : "RUNNING",
     "userId" : "123456",
-    "strategyIdentifyCode" : "RSI:2aeadcc5-21df-43be-9b6a-1e6addb2d39e",
+    "strategyIdentifyCode" : "RSI:0efca9c3-3634-427f-92f7-b04e72c5e663",
     "coinType" : "ETHEREUM",
     "coinExchangeType" : "UPBIT"
   } ],
@@ -714,7 +714,7 @@ Host: localhost:8080
   "coinExchangeType" : "UPBIT",
   "strategyCode" : "RSI",
   "tradingTerm" : "SCALPING",
-  "keyPairId" : "353a2d5a-e113-49fb-9244-caddd85a37d2"
+  "keyPairId" : "dffdfd24-f446-443e-8187-8105ba1d36c9"
 }</code></pre>
 </div>
 </div>
@@ -807,7 +807,7 @@ Content-Length: 382
     "processDuration" : 1000,
     "processStatus" : "INIT",
     "userId" : "123456",
-    "strategyIdentifyCode" : "RSI:70932756-bca5-48aa-b55b-89abfb8a2b04",
+    "strategyIdentifyCode" : "RSI:41112054-f081-4151-9cbd-f58f6cdc5177",
     "coinType" : "ETHEREUM",
     "coinExchangeType" : "UPBIT"
   },
@@ -971,7 +971,7 @@ Content-Length: 382
     "processDuration" : 1000,
     "processStatus" : "RUNNING",
     "userId" : "123456",
-    "strategyIdentifyCode" : "RSI:8c92cc9c-6175-42c6-b0af-c8ce98a6e272",
+    "strategyIdentifyCode" : "RSI:d5544553-465f-47e7-a7c0-dcbf50279ffb",
     "coinType" : "ETHEREUM",
     "coinExchangeType" : "UPBIT"
   },
@@ -1135,7 +1135,7 @@ Content-Length: 381
     "processDuration" : 1000,
     "processStatus" : "STOPPED",
     "userId" : "123456",
-    "strategyIdentifyCode" : "RSI:7467d6f8-4f15-4c6f-abb9-b61aac087e78",
+    "strategyIdentifyCode" : "RSI:0a626a7a-f842-4e4d-9923-764707a7747a",
     "coinType" : "ETHEREUM",
     "coinExchangeType" : "UPBIT"
   },
@@ -1299,7 +1299,7 @@ Content-Length: 389
     "processDuration" : 1000,
     "processStatus" : "TERMINATED",
     "userId" : "123456",
-    "strategyIdentifyCode" : "RSI:fecf59d6-e193-4656-9324-ad01191623fa",
+    "strategyIdentifyCode" : "RSI:06aa46d4-da83-420e-8753-367b8f3a1cb8",
     "coinType" : "ETHEREUM",
     "coinExchangeType" : "UPBIT"
   },
@@ -1395,7 +1395,7 @@ Content-Length: 389
   <h5 id="_요청_6_http_request"><a class="link" href="#_요청_6_http_request">request http</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /key HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /key/pair HTTP/1.1
 Content-Type: application/json
 userId: 1234
 Content-Length: 191
@@ -1487,7 +1487,7 @@ Content-Length: 321
 
 {
   "body" : [ {
-    "pairId" : "d3b9b140-a615-495c-bfea-44f364e44bbc",
+    "pairId" : "1b3351b4-7538-4cd4-8217-f6d22bc922f4",
     "coinExchangeType" : "UPBIT",
     "keyList" : [ {
       "name" : "accessKey",
@@ -1574,7 +1574,7 @@ Content-Length: 321
   <h5 id="_요청_7_http_request"><a class="link" href="#_요청_7_http_request">request http</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /user/1234/key HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /user/1234/key/pair HTTP/1.1
 Content-Type: application/json
 userId: 1234
 Host: localhost:8080</code></pre>
@@ -1605,7 +1605,7 @@ Host: localhost:8080</code></pre>
 <div class="sect4">
   <h5 id="_요청_7_path_parameters"><a class="link" href="#_요청_7_path_parameters">request path parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. /user/{userId}/key</caption>
+  <caption class="title">Table 1. /user/{userId}/key/pair</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1637,7 +1637,7 @@ Content-Length: 316
 
 {
   "body" : [ {
-    "pairId" : "793e09b6-8f90-438d-94a4-7b98d89ba7c4",
+    "pairId" : "63139394-fadc-4d59-8be6-42250fb29b4a",
     "coinExchangeType" : "UPBIT",
     "keyList" : [ {
       "name" : "accessKey",
@@ -1724,10 +1724,22 @@ Content-Length: 316
   <h5 id="_요청_8_http_request"><a class="link" href="#_요청_8_http_request">request http</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /key/pair/70e491f9-264d-415d-b285-e1e1efdf4e21 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /key/pair HTTP/1.1
 Content-Type: application/json
-userId: 123456
-Host: localhost:8080</code></pre>
+userId: 1234
+Content-Length: 191
+Host: localhost:8080
+
+{
+  "coinExchangeType" : "UPBIT",
+  "keyList" : [ {
+    "name" : "accessKey",
+    "value" : "accessKey-123123123"
+  }, {
+    "name" : "secretKey",
+    "value" : "secretKey-1231231223"
+  } ]
+}</code></pre>
 </div>
 </div>
 </div>
@@ -1783,18 +1795,18 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 312
+Content-Length: 321
 
 {
   "body" : [ {
-    "pairId" : "70e491f9-264d-415d-b285-e1e1efdf4e21",
+    "pairId" : "1b3351b4-7538-4cd4-8217-f6d22bc922f4",
     "coinExchangeType" : "UPBIT",
     "keyList" : [ {
-      "name" : "ACCESS_KEY",
-      "value" : "security value"
+      "name" : "accessKey",
+      "value" : "accessKey-123123123"
     }, {
-      "name" : "SECRET_KEY",
-      "value" : "security value"
+      "name" : "secretKey",
+      "value" : "secretKey-1231231223"
     } ]
   } ],
   "message" : "key register success"
@@ -1864,7 +1876,7 @@ Content-Length: 312
 <div id="footer">
 <div id="footer-text">
 Version 1.2.2-RELEASE<br>
-  Last updated 2022-02-26 16:42:13 +0900
+  Last updated 2022-02-27 02:03:48 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

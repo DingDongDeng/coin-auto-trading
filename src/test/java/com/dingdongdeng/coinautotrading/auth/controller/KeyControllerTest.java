@@ -119,14 +119,14 @@ class KeyControllerTest {
             .when(keyService).register(Mockito.any(), Mockito.any());
 
         MvcResult result = this.mockMvc.perform(
-            RestDocumentationRequestBuilders.post("/key")
+            RestDocumentationRequestBuilders.post("/key/pair")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("userId", userId)
                 .content(objectMapper.writeValueAsString(request))
         )
             .andExpect(status().isOk())
             .andDo(
-                document("key",
+                document("key/pair",
                     ApiDocumentUtils.getDocumentRequest(),
                     ApiDocumentUtils.getDocumentResponse(),
                     requestHeaders(
@@ -171,13 +171,13 @@ class KeyControllerTest {
             .when(keyService).getUserKeyList(Mockito.any());
 
         MvcResult result = this.mockMvc.perform(
-            RestDocumentationRequestBuilders.get("/user/{userId}/key", userId)
+            RestDocumentationRequestBuilders.get("/user/{userId}/key/pair", userId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("userId", userId)
         )
             .andExpect(status().isOk())
             .andDo(
-                document("user/key",
+                document("user/key/pair",
                     ApiDocumentUtils.getDocumentRequest(),
                     ApiDocumentUtils.getDocumentResponse(),
                     requestHeaders(
