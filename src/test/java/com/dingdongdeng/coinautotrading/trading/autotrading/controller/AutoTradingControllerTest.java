@@ -23,6 +23,7 @@ import com.dingdongdeng.coinautotrading.trading.autotrading.service.AutoTradingS
 import com.dingdongdeng.coinautotrading.trading.exchange.client.UpbitClient;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.StrategyCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -99,6 +100,75 @@ class AutoTradingControllerTest {
         );
 
         this.keyPairId = keyPairId;
+    }
+
+    @Test
+    public void 사용자_자동매매_리스트_조회_테스트() throws Exception {
+
+        String autoTradingProcessorId = "abawefawef-awefawefawe-awefawefwaef";
+
+        String title = "RSI 30이하 매매";
+        CoinType coinType = CoinType.ETHEREUM;
+        CoinExchangeType coinExchangeType = CoinExchangeType.UPBIT;
+        String strategyIdentifyCode = StrategyCode.RSI.name() + ":" + UUID.randomUUID().toString();
+
+        Mockito.doReturn(
+            List.of(
+                AutoTradingResponse.builder()
+                    .title(title)
+                    .processorId(autoTradingProcessorId)
+                    .processDuration(1000)
+                    .processStatus(AutoTradingProcessStatus.RUNNING)
+                    .userId(userId)
+                    .strategyIdentifyCode(strategyIdentifyCode)
+                    .coinType(coinType)
+                    .coinExchangeType(coinExchangeType)
+                    .build(),
+                AutoTradingResponse.builder()
+                    .title(title)
+                    .processorId(autoTradingProcessorId)
+                    .processDuration(1000)
+                    .processStatus(AutoTradingProcessStatus.RUNNING)
+                    .userId(userId)
+                    .strategyIdentifyCode(strategyIdentifyCode)
+                    .coinType(coinType)
+                    .coinExchangeType(coinExchangeType)
+                    .build()
+            )
+        )
+            .when(autoTradingService).getUserProcessorList(Mockito.any());
+
+        MvcResult result = this.mockMvc.perform(
+            RestDocumentationRequestBuilders.get("/user/{userId}/autotrading", userId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("userId", userId)
+        )
+            .andExpect(status().isOk())
+            .andDo(
+                document("user/autotrading",
+                    ApiDocumentUtils.getDocumentRequest(),
+                    ApiDocumentUtils.getDocumentResponse(),
+                    requestHeaders(
+                        headerWithName("userId").description("사용자ID")
+                    ),
+                    pathParameters(
+                        RequestDocumentation.parameterWithName("userId").description("사용자ID")
+                    ),
+                    responseFields(
+                        fieldWithPath("body[]").type(JsonFieldType.ARRAY).description("데이터").optional(),
+                        fieldWithPath("body[].title").type(JsonFieldType.STRING).description("사용자가 등록한 자동매매 이름"),
+                        fieldWithPath("body[].processorId").type(JsonFieldType.STRING).description("자동매매 프로세스 ID"),
+                        fieldWithPath("body[].processDuration").type(JsonFieldType.NUMBER).description("프로세스 동작 간격"),
+                        fieldWithPath("body[].processStatus").type(JsonFieldType.STRING).description("자동매매 프로세스 상태"),
+                        fieldWithPath("body[].userId").type(JsonFieldType.STRING).description("사용자ID"),
+                        fieldWithPath("body[].strategyIdentifyCode").type(JsonFieldType.STRING).description("매매 전략 코드 (RSI)"),
+                        fieldWithPath("body[].coinType").type(JsonFieldType.STRING).description("자동매매 할 코인 종류 (ETHEREUM, DOGE ...)"),
+                        fieldWithPath("body[].coinExchangeType").type(JsonFieldType.STRING).description("자동거래에 사용할 거래소 종류(upbit)"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("메세지").optional()
+                    )
+                )
+            )
+            .andReturn();
     }
 
     @Test
