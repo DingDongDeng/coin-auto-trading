@@ -9,4 +9,8 @@ public interface RepositoryService<T, ID> {
     T save(T entity);
 
     List<T> saveAll(Iterable<T> iterable);
+
+    void delete(T entity);
+
+    void deleteAll(Iterable<T> iterable);
 }

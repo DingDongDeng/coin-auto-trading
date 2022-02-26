@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" th:href="@{favicon.ico(v=2)}"/>
+  <title>Title</title>
+</head>
+<body>
+<div id="app">
+  <div>
+    <h1>임시 사용자 콘솔 화면</h1>
+  </div>
+  <div>
+    <div>
+      <span>사용자 ID : </span>
+      <input v-model="user.id" type="text">
+      <input type="button" value="업데이트" @click="updateAllInformation()">
+    </div>
+  </div>
+  <div>
+    <div>
+      <input type="button" value="키 등록" @click="toggleKeyRegisterUI">
+      <input type="button" value="자동매매 등록" @click="toggleAutoTradingRegisterUI">
+    </div>
+    <div v-if="register.keyPair.isVisible">
+      <h3> 키 등록</h3>
+      <select v-model="register.keyPair.coinExchangeType">
+        <option disabled value="">거래소</option>
+        <option v-for="(value,key) in type.coinExchangeTypeMap" :value="key">{{value}}</option>
+      </select>
+      <div v-for="(key, i) in register.keyPair.keyList">
+        <input v-model="key.name" type="text" placeholder="키 이름">
+        <input v-model="key.value" type="text" placeholder="키 값">
+        <input type="button" value="x" @click="deleteKeyInputBox(i)">
+      </div>
+      <div>
+        <input type="button" value="+" @click="addKeyInputBox()">
+      </div>
+      <div>
+        <input type="button" value="등록하기" @click="registerKeyPair(refresh)">
+      </div>
+    </div>
+    <div v-if="register.autoTrading.isVisible">
+      <h3> 자동 매매 등록</h3>
+      <div>
+        <input v-model="register.autoTrading.title" type="text" placeholder="제목">
+      </div>
+      <div>
+        <select v-model="register.autoTrading.coinType">
+          <option disabled value="">코인 종목</option>
+          <option v-for="(value,key) in type.coinTypeMap" :value="key">{{value}}</option>
+        </select>
+      </div>
+      <div>
+        <select v-model="register.autoTrading.coinExchangeType">
+          <option disabled value="">거래소</option>
+          <option v-for="(value,key) in type.coinExchangeTypeMap" :value="key">{{value}}</option>
+        </select>
+      </div>
+      <div>
+        <select v-model="register.autoTrading.tradingTerm">
+          <option disabled value="">매매 전략</option>
+          <option v-for="(value,key) in type.tradingTermMap" :value="key">{{value}}</option>
+        </select>
+      </div>
+      <div>
+        <select v-model="register.autoTrading.strategyCode">
+          <option disabled value="">전략 코드</option>
+          <option v-for="(value,key) in type.strategyCodeMap" :value="key">{{value}}</option>
+        </select>
+      </div>
+      <div>
+        <input v-model="register.autoTrading.keyPairId" type="text" placeholder="키 페어 ID">
+      </div>
+      <div>
+        <input type="button" value="등록하기" @click="registerAutoTrading(refresh)">
+      </div>
+    </div>
+  </div>
+  <div>
+    <h2> 키 리스트 </h2>
+    <div v-for="keyPair in user.keyPairList">
+      <div>
+        <div>
+          키 페어 ID : {{keyPair.pairId}}
+        </div>
+        <div>
+          거래소 : {{keyPair.coinExchangeType}}
+        </div>
+        <div v-for="key in keyPair.keyList">
+          <div>
+            키 이름 : {{key.name}}
+          </div>
+        </div>
+        <div>
+          <input type="button" value="삭제" @click="deleteUserPairKey(keyPair.pairId, refresh)">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <h2> 자동매매 리스트 </h2>
+    <div v-for="autoTrading in user.autoTradingList">
+      <div>
+        제목 : {{autoTrading.title}}
+      </div>
+      <div>
+        전략 코드 : {{autoTrading.strategyIdentifyCode}}
+      </div>
+      <div>
+        거래소 : {{autoTrading.coinExchangeType}}
+      </div>
+      <div>
+        코인 : {{autoTrading.coinType}}
+      </div>
+      <div>
+        프로세스ID : {{autoTrading.processorId}}
+      </div>
+      <div>
+        상태 : {{autoTrading.processStatus}}
+      </div>
+      <div>
+        <input type="button" value="시작" @click="startAutoTrading(autoTrading.processorId,refresh)">
+        <input type="button" value="정지" @click="stopAutoTrading(autoTrading.processorId,refresh)">
+        <input type="button" value="종료" @click="terminateAutoTrading(autoTrading.processorId,refresh)">
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script type="text/javascript"></script>
+<script>
+  var api = axios.create({
+    baseURL: "http://localhost:8080",
+    timeout: 5000,
+  });
+  api.interceptors.response.use((response) => response, (error) => {
+    alert(error);
+    throw error;
+  });
+  new Vue({
+    el: '#app',
+    data() {
+      return {
+        user: {
+          id: "",
+          keyPairList: [],
+          autoTradingList: []
+        },
+        register: {
+          keyPair: {},
+          autoTrading: {}
+        },
+        type: {}
+      }
+    },
+    async created() {
+      this.register.keyPair = this.resetKeyRegister();
+      this.register.autoTrading = this.resetAutoTradingRegister();
+      this.type = this.resetTypeInfo();
+    },
+    methods: {
+      async refresh() {
+        this.updateAllInformation();
+      },
+      async updateAllInformation() {
+        const userId = this.user.id;
+        this.user.keyPairList = await this.getUserKeyList(userId);
+        this.user.autoTradingList = await this.getUserAutoTradingList(userId);
+      },
+      addKeyInputBox() {
+        this.register.keyPair.keyList.push({name: "", value: ""});
+      },
+      deleteKeyInputBox(index) {
+        this.register.keyPair.keyList.splice(index, 1);
+      },
+      async getUserKeyList(userId) {
+        const response = await api.get("/user/" + userId + "/key/pair", this.headers());
+        return response.data.body;
+      },
+      async getUserAutoTradingList(userId) {
+        const response = await api.get("/user/" + userId + "/autotrading", this.headers());
+        return response.data.body;
+      },
+      async deleteUserPairKey(pairKeyId, callback) {
+        const response = await api.delete("/key/pair/" + pairKeyId, this.headers());
+        callback();
+        return response.data.body;
+      },
+      async startAutoTrading(autoTradingProcessorId, callback) {
+        const response = await api.post("/autotrading/" + autoTradingProcessorId + "/start", {}, this.headers());
+        callback();
+        return response.data.body;
+      },
+      async stopAutoTrading(autoTradingProcessorId, callback) {
+        const response = await api.post("/autotrading/" + autoTradingProcessorId + "/stop", {}, this.headers());
+        callback();
+        return response.data.body;
+      },
+      async terminateAutoTrading(autoTradingProcessorId, callback) {
+        if (!confirm("자동매매가 종료되고, 목록에서 제거됩니다. \n 종료하시겠습니까?")) {
+          return;
+        }
+        const response = await api.post("/autotrading/" + autoTradingProcessorId + "/terminate", {}, this.headers());
+        callback();
+        return response.data.body;
+      },
+      async registerKeyPair(callback) {
+        const body = {
+          coinExchangeType: this.register.keyPair.coinExchangeType,
+          keyList: this.register.keyPair.keyList
+        };
+
+        const response = await api.post("/key/pair", body, this.headers());
+        this.register.keyPair = this.resetKeyRegister();
+        callback();
+        return response.data.body;
+      },
+      async registerAutoTrading(callback) {
+        const body = {
+          title: this.register.autoTrading.title,
+          coinType: this.register.autoTrading.coinType,
+          coinExchangeType: this.register.autoTrading.coinExchangeType,
+          tradingTerm: this.register.autoTrading.tradingTerm,
+          strategyCode: this.register.autoTrading.strategyCode,
+          keyPairId: this.register.autoTrading.keyPairId
+        }
+        const response = await api.post("/autotrading/register", body, this.headers());
+        this.register.autoTrading = this.resetAutoTradingRegister();
+        callback();
+        return response.data.body;
+      },
+      toggleKeyRegisterUI() {
+        this.register.keyPair.isVisible = !this.register.keyPair.isVisible;
+      },
+      toggleAutoTradingRegisterUI() {
+        this.register.autoTrading.isVisible = !this.register.autoTrading.isVisible;
+      },
+      resetKeyRegister() {
+        return {
+          isVisible: false,
+          coinExchangeType: "",
+          keyList: [
+            {
+              name: "",
+              value: ""
+            }
+          ]
+        }
+      },
+      resetAutoTradingRegister() {
+        return {
+          isVisible: false,
+          title: "",
+          coinType: "",
+          coinExchangeType: "",
+          tradingTerm: "",
+          strategyCode: "",
+          keyPairId: "",
+        }
+      },
+      async resetTypeInfo() {
+        const response = await api.get("/type", this.headers());
+        this.type = response.data.body;
+      },
+      headers() {
+        const userId = this.user.id;
+        if (!userId) {
+          alert("사용자ID를 입력해주세요.");
+          return;
+        }
+        return {
+          headers: {
+            "userId": this.user.id
+          }
+        };
+      }
+    },
+  });
+</script>
+</body>
+</html>

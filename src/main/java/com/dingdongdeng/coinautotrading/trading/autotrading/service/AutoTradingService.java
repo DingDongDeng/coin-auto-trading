@@ -1,14 +1,18 @@
 package com.dingdongdeng.coinautotrading.trading.autotrading.service;
 
-import com.dingdongdeng.coinautotrading.exchange.service.ExchangeService;
-import com.dingdongdeng.coinautotrading.exchange.service.ExchangeServiceSelector;
-import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingStartParam;
-import com.dingdongdeng.coinautotrading.trading.autotrading.model.type.AutoTradingStatus;
+import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingProcessor;
+import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingRegisterRequest;
+import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingResponse;
+import com.dingdongdeng.coinautotrading.trading.autotrading.model.type.AutoTradingProcessStatus;
+import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeService;
+import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeServiceSelector;
 import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyFactory;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -16,50 +20,56 @@ import org.springframework.stereotype.Service;
 @Service
 public class AutoTradingService {
 
-    private AutoTradingStatus status = AutoTradingStatus.INIT;
+    private final AutoTradingManager autoTradingManager;
     private final ExchangeServiceSelector processorSelector;
     private final StrategyFactory strategyFactory;
 
-    @Async
-    public void start(AutoTradingStartParam param) {
-        if (isRunning()) {
-            return;
-        }
-
-        updateStatus(AutoTradingStatus.RUNNING);
-        ExchangeService exchangeService = processorSelector.getTargetProcessor(param.getCoinExchangeType());
-        Strategy strategy = strategyFactory.create(param.getStrategyCode(), exchangeService, param.getCoinType(), param.getTradingTerm());
-
-        while (isRunning()) {
-            log.info("\n------------------------------ beginning of autotrading cycle -----------------------------------------");
-            delay(1000);
-            try {
-                strategy.execute();
-            } catch (Exception e) {
-                log.error("strategy execute exception : {}", e.getMessage(), e); //fixme 슬랙(이메일은 에러 많이났을때 난사해서 문제될수도)
-            }
-            log.info("\n------------------------------ end of autotrading cycle -----------------------------------------");
-        }
+    public List<AutoTradingResponse> getUserProcessorList(String userId) {
+        return autoTradingManager.getList(userId).stream()
+            .map(this::makeResponse)
+            .collect(Collectors.toList());
     }
 
-    public void stop() {
-        updateStatus(AutoTradingStatus.STOPPED);
+    public AutoTradingResponse register(AutoTradingRegisterRequest request, String userId) {
+        ExchangeService exchangeService = processorSelector.getTargetProcessor(request.getCoinExchangeType());
+        Strategy strategy = strategyFactory.create(request.getStrategyCode(), exchangeService, request.getCoinType(), request.getTradingTerm(), request.getKeyPairId());
+        AutoTradingProcessor processor = autoTradingManager.register(
+            AutoTradingProcessor.builder()
+                .id(UUID.randomUUID().toString())
+                .title(request.getTitle())
+                .userId(userId)
+                .coinType(request.getCoinType())
+                .coinExchangeType(request.getCoinExchangeType())
+                .status(AutoTradingProcessStatus.INIT)
+                .strategy(strategy)
+                .duration(1000)
+                .build()
+        );
+        return makeResponse(processor);
     }
 
-    private void updateStatus(AutoTradingStatus status) {
-        this.status = status;
+    public AutoTradingResponse start(String processorId, String userId) {
+        return makeResponse(autoTradingManager.start(processorId, userId));
     }
 
-    private boolean isRunning() {
-        return this.status == AutoTradingStatus.RUNNING;
+    public AutoTradingResponse stop(String processorId, String userId) {
+        return makeResponse(autoTradingManager.stop(processorId, userId));
     }
 
-    private void delay(long milliseconds) {
-        try {
-            Thread.sleep(milliseconds);
-        } catch (InterruptedException e) {
-            log.error(e.getMessage(), e);
-        }
+    public AutoTradingResponse terminate(String processorId, String userId) {
+        return makeResponse(autoTradingManager.terminate(processorId, userId));
     }
 
+    private AutoTradingResponse makeResponse(AutoTradingProcessor processor) {
+        return AutoTradingResponse.builder()
+            .title(processor.getTitle())
+            .processorId(processor.getId())
+            .processDuration(processor.getDuration())
+            .processStatus(processor.getStatus())
+            .userId(processor.getUserId())
+            .strategyIdentifyCode(processor.getStrategy().getIdentifyCode())
+            .coinType(processor.getCoinType())
+            .coinExchangeType(processor.getCoinExchangeType())
+            .build();
+    }
 }
