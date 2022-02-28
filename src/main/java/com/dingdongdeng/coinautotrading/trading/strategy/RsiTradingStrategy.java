@@ -54,50 +54,24 @@ public class RsiTradingStrategy extends Strategy {
         TradingResult lossTradingResult = tradingResultPack.getLossTradingResult();
 
         /**
-         * 계좌 상태가 거래 가능한지 확인
-         */
-        if (!isEnoughBalance(tradingInfo.getBalance())) {
-            log.warn("{} :: 계좌가 거래 가능한 상태가 아님", getIdentifyCode());
-            return List.of(new TradingTask());
-        }
-
-        /**
          * 미체결 상태가 너무 오래되면, 주문을 취소
          */
-        //fixme 리팩토링 필요
-        if (!buyTradingResult.isDone() && isTooOld(buyTradingResult)) {
-            log.info("{} :: 미체결 상태의 오래된 주문을 취소", getIdentifyCode());
-            return List.of(
-                TradingTask.builder()
-                    .identifyCode(getIdentifyCode())
-                    .coinType(coinType)
-                    .orderId(buyTradingResult.getOrderId())
-                    .orderType(OrderType.CANCEL)
-                    .tag(TradingTag.BUY)
-                    .build()
-            );
-        }
-        if (!profitTradingResult.isDone() && isTooOld(profitTradingResult)) {
-            return List.of(
-                TradingTask.builder()
-                    .identifyCode(getIdentifyCode())
-                    .coinType(coinType)
-                    .orderId(profitTradingResult.getOrderId())
-                    .orderType(OrderType.CANCEL)
-                    .tag(TradingTag.PROFIT)
-                    .build()
-            );
-        }
-        if (!lossTradingResult.isDone() && isTooOld(lossTradingResult)) {
-            return List.of(
-                TradingTask.builder()
-                    .identifyCode(getIdentifyCode())
-                    .coinType(coinType)
-                    .orderId(lossTradingResult.getOrderId())
-                    .orderType(OrderType.CANCEL)
-                    .tag(TradingTag.LOSS)
-                    .build()
-            );
+        for (TradingResult tradingResult : List.of(buyTradingResult, profitTradingResult, lossTradingResult)) {
+            if (!tradingResult.isExist()) {
+                continue;
+            }
+            if (!tradingResult.isDone() && isTooOld(tradingResult)) {
+                log.info("{} :: 미체결 상태의 오래된 주문을 취소", getIdentifyCode());
+                return List.of(
+                    TradingTask.builder()
+                        .identifyCode(getIdentifyCode())
+                        .coinType(coinType)
+                        .orderId(buyTradingResult.getOrderId())
+                        .orderType(OrderType.CANCEL)
+                        .tag(tradingResult.getTag())
+                        .build()
+                );
+            }
         }
 
         /**
@@ -159,10 +133,14 @@ public class RsiTradingStrategy extends Strategy {
          * rsi가 조건을 만족하고, 매수주문을 한적이 없다면 매수주문을 함
          */
         if (isBuyTiming(rsi, buyTradingResult)) {
+            if (!isEnoughBalance(tradingInfo.getBalance())) {
+                log.warn("{} :: 계좌가 매수 가능한 상태가 아님", getIdentifyCode());
+                return List.of(new TradingTask());
+            }
+
             log.info("{} :: 매수 주문 요청", getIdentifyCode());
             double price = tradingInfo.getTicker().getTradePrice();
             double volume = ORDER_PRICE / price;
-
             return List.of(
                 TradingTask.builder()
                     .identifyCode(getIdentifyCode())
