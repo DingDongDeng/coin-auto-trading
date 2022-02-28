@@ -15,7 +15,7 @@ public class IndexCalculator {
     private final int RSI_STANDARD_PERIOD = 14;
 
     public double getRsi(ExchangeCandles candles, Double currentPrice) {
-        List<Candle> candleList = candles.getCandleList().subList(0, RSI_STANDARD_PERIOD);
+        List<Candle> candleList = candles.getCandleList().subList(0, RSI_STANDARD_PERIOD - 1);
         candleList.add(0, Candle.builder().tradePrice(currentPrice).build());
 
         double AU = 0d;
