@@ -16,7 +16,6 @@ import com.dingdongdeng.coinautotrading.trading.exchange.client.model.UpbitRespo
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.UpbitResponse.OrderCancelResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.UpbitResponse.OrderResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.UpbitResponse.TickerResponse;
-import com.dingdongdeng.coinautotrading.trading.exchange.component.IndexCalculator;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrder;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrderCancel;
@@ -26,6 +25,7 @@ import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeO
 import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeTicker;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeTradingInfo;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeTradingInfoParam;
+import com.dingdongdeng.coinautotrading.trading.index.IndexCalculator;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
