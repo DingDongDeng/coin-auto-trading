@@ -28,6 +28,8 @@ public class UpbitExchangeCandleService implements ExchangeCandleService {
 
     @Override
     public ExchangeCandles getCandleList(CoinType coinType, CandleUnit candleUnit, LocalDateTime start, LocalDateTime end, String keyPairId) {
+        //fixme 아래 두 메소드들에 대한 검증이 필요 candleUnitSize가 고려되어야함
+        // start < x < end 인지 start < x <= end 인지 등등 정책 확립해서 로직에 반영해야함
         LocalDateTime limitedEndDateTime = getlimitedEndDateTime(candleUnit, start, end);
         int candleCount = getCandleCount(candleUnit, start, limitedEndDateTime);
 
@@ -69,15 +71,16 @@ public class UpbitExchangeCandleService implements ExchangeCandleService {
 
     private LocalDateTime getlimitedEndDateTime(CandleUnit candleUnit, LocalDateTime start, LocalDateTime end) {
         LocalDateTime limitedEndDateTime;
+        int unitSize = candleUnit.getSize();
         switch (candleUnit.getUnitType()) {
             case WEEK:
-                limitedEndDateTime = start.plusWeeks(MAX_COUNT_SIZE);
+                limitedEndDateTime = start.plusWeeks(MAX_COUNT_SIZE * unitSize);
                 break;
             case DAY:
-                limitedEndDateTime = start.plusDays(MAX_COUNT_SIZE);
+                limitedEndDateTime = start.plusDays(MAX_COUNT_SIZE * unitSize);
                 break;
             case MIN:
-                limitedEndDateTime = start.plusMinutes(MAX_COUNT_SIZE);
+                limitedEndDateTime = start.plusMinutes(MAX_COUNT_SIZE * unitSize);
                 break;
             default:
                 throw new NoSuchElementException("fail make limitedEndDateTime");
@@ -90,13 +93,13 @@ public class UpbitExchangeCandleService implements ExchangeCandleService {
         Long diff = null;
         switch (candleUnit.getUnitType()) {
             case WEEK:
-                diff = ChronoUnit.WEEKS.between(start, limitedEndDateTime);
+                diff = ChronoUnit.WEEKS.between(start, limitedEndDateTime) / candleUnit.getSize();
                 break;
             case DAY:
-                diff = ChronoUnit.DAYS.between(start, limitedEndDateTime);
+                diff = ChronoUnit.DAYS.between(start, limitedEndDateTime) / candleUnit.getSize();
                 break;
             case MIN:
-                diff = ChronoUnit.MINUTES.between(start, limitedEndDateTime);
+                diff = ChronoUnit.MINUTES.between(start, limitedEndDateTime) / candleUnit.getSize();
                 if (limitedEndDateTime.getSecond() == 0) {
                     diff = diff - 1;
                 }
