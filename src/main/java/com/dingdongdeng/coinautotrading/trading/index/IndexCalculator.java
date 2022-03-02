@@ -15,9 +15,9 @@ public class IndexCalculator {
 
     private final int RSI_STANDARD_PERIOD = 14;
 
-    /**
-     * RSI(지수 가중 이동 평균) https://www.investopedia.com/terms/r/rsi.asp https://rebro.kr/139
-     */
+    // RSI(지수 가중 이동 평균)
+    // https://www.investopedia.com/terms/r/rsi.asp
+    // https://rebro.kr/139
     public double getRsi(ExchangeCandles candles) {
 
         List<Candle> candleList = candles.getCandleList();
