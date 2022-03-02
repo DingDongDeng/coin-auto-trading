@@ -16,12 +16,11 @@ public class IndexCalculator {
     private final int RSI_STANDARD_PERIOD = 14;
 
     /**
-     * RSI(지수 가중 이동 평균)
+     * RSI(지수 가중 이동 평균) https://www.investopedia.com/terms/r/rsi.asp https://rebro.kr/139
      */
-    public double getRsi(ExchangeCandles candles, Double currentPrice) {
+    public double getRsi(ExchangeCandles candles) {
 
-        List<Candle> candleList = candles.getCandleList().subList(0, RSI_STANDARD_PERIOD - 1);
-        candleList.add(0, Candle.builder().tradePrice(currentPrice).build());
+        List<Candle> candleList = candles.getCandleList();
         Collections.reverse(candleList);
 
         double U = 0d;

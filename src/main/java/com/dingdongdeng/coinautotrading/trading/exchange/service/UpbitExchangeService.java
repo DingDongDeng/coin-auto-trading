@@ -113,7 +113,7 @@ public class UpbitExchangeService implements ExchangeService {
             .candles(candles)
             .ticker(ticker)
 
-            .rsi(indexCalculator.getRsi(candles, ticker.getTradePrice()))
+            .rsi(indexCalculator.getRsi(candles))
             .build();
     }
 
