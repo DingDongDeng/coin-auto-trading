@@ -28,10 +28,15 @@ public class UpbitEnum {
     @Getter
     @AllArgsConstructor
     public enum MarketType {
-        KRW_ETH("원화 이더리움", "KRW-ETH", CoinType.ETHEREUM),
         KRW_ADA("원화 에이다", "KRW-ADA", CoinType.ADA),
+        KRW_SOL("원화 솔라나", "KRW-SOL", CoinType.SOLANA),
         KRW_XRP("원화 리플", "KRW-XRP", CoinType.XRP),
+        KRW_ETH("원화 이더리움", "KRW-ETH", CoinType.ETHEREUM),
+        KRW_AVAX("원화 아발란체", "KRW-AVAX", CoinType.AVALANCHE),
+        KRW_DOT("원화 폴카닷", "KRW-DOT", CoinType.POLKADOT),
         KRW_DOGE("원화 도지", "KRW-DOGE", CoinType.DOGE),
+        KRW_BTC("원화 비트코", "KRW-BTC", CoinType.BITCOIN),
+
         ;
         private String desc;
         private String code;
