@@ -41,7 +41,7 @@ jobs:
           -Djib.to.image=$DOCKERHUB_REPOSITORY_PATH
           -Djib.to.tags=latest
           -Djib.container.creationTime=USE_CURRENT_TIMESTAMP
-          -Djib.container.jvmFlags='-Duser.timezone=Asia/Seoul'
+          -Djib.container.jvmFlags=-Duser.timezone=Asia/Seoul
           -Djib.container.jvmFlags=-XX:MaxRAMPercentage=60.0,-XX:MinRAMPercentage=60.0
 
 
