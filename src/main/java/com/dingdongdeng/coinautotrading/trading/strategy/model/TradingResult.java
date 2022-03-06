@@ -4,6 +4,7 @@ import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.OrderState;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
+import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.TradingTag;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -29,6 +30,7 @@ public class TradingResult {
     private String id;
     private String identifyCode;
     private CoinType coinType;
+    private TradingTerm tradingTerm;
     private OrderType orderType;
     private OrderState orderState;
     private Double volume;
