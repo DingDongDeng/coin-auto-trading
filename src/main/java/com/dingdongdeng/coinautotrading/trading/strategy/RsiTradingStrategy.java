@@ -231,6 +231,4 @@ public class RsiTradingStrategy extends Strategy {
             log.error(e.getMessage(), e);
         }
     }
-
-
 }
