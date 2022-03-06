@@ -102,6 +102,7 @@ public class UpbitExchangeService implements ExchangeService {
         return ExchangeTradingInfo.builder()
             .coinType(param.getCoinType())
             .coinExchangeType(getExchangeType())
+            .tradingTerm(param.getTradingTerm())
             .currency(accounts.getCurrency())
             .balance(accounts.getBalance())
             .locked(accounts.getLocked())

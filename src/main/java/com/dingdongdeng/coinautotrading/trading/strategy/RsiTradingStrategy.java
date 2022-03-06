@@ -1,5 +1,7 @@
 package com.dingdongdeng.coinautotrading.trading.strategy;
 
+import com.dingdongdeng.coinautotrading.common.type.CandleUnit;
+import com.dingdongdeng.coinautotrading.common.type.CandleUnit.UnitType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
@@ -26,11 +28,11 @@ public class RsiTradingStrategy extends Strategy {
 
     private final String IDENTIFY_CODE = StrategyCode.RSI.name() + ":" + UUID.randomUUID().toString();
     private final double STANDARD_OF_LOW_RSI = 0.25;
-    private final double STANDARD_OF_PROFIT_RATE = 1.02;
-    private final double STANDARD_OF_LOSS_RATE = 0.985;
+    private final double STANDARD_OF_PROFIT_RATE = 0.02;
+    private final double STANDARD_OF_LOSS_RATE = 0.015;
     private final int STANDRD_OF_TOO_OLD_TIME = 1; //분(minuite)
-    private final double ORDER_PRICE = 5100;
-    private final double ACCOUNT_BALANCE_LIMIT = 3000000; //계좌 금액 안전 장치
+    private final double ORDER_PRICE = 10000;
+    private final double ACCOUNT_BALANCE_LIMIT = 307 * 10000; //계좌 금액 안전 장치
 
     private final StrategyAssistant assistant;
 
@@ -43,9 +45,13 @@ public class RsiTradingStrategy extends Strategy {
     @Override
     protected List<TradingTask> makeTradingTask(ExchangeTradingInfo tradingInfo) {
         log.info("{} :: ---------------------------------------", getIdentifyCode());
-        log.info("tradingInfo : {}", tradingInfo);
+
         CoinType coinType = tradingInfo.getCoinType();
+        TradingTerm tradingTerm = tradingInfo.getTradingTerm();
         double rsi = tradingInfo.getRsi();
+
+        log.info("tradingInfo : {}", tradingInfo);
+        log.info("{} :: coinType={}", getIdentifyCode(), coinType);
         log.info("{} :: rsi={}", getIdentifyCode(), rsi);
 
         // 자동매매 중 기억해야할 실시간 주문 정보(익절, 손절, 매수 주문 정보)
@@ -67,6 +73,7 @@ public class RsiTradingStrategy extends Strategy {
                     TradingTask.builder()
                         .identifyCode(getIdentifyCode())
                         .coinType(coinType)
+                        .tradingTerm(tradingTerm)
                         .orderId(buyTradingResult.getOrderId())
                         .orderType(OrderType.CANCEL)
                         .tag(tradingResult.getTag())
@@ -96,12 +103,13 @@ public class RsiTradingStrategy extends Strategy {
             }
 
             //익절 주문
-            if (currentPrice >= buyTradingResult.getPrice() * STANDARD_OF_PROFIT_RATE) {
+            if (isProfitOrderTiming(currentPrice, rsi, buyTradingResult)) {
                 log.info("{} :: 익절 주문 요청", getIdentifyCode());
                 return List.of(
                     TradingTask.builder()
                         .identifyCode(getIdentifyCode())
                         .coinType(coinType)
+                        .tradingTerm(tradingTerm)
                         .orderType(OrderType.SELL)
                         .volume(buyTradingResult.getVolume())
                         .price(currentPrice)
@@ -112,12 +120,13 @@ public class RsiTradingStrategy extends Strategy {
             }
 
             //손절 주문
-            if (currentPrice <= buyTradingResult.getPrice() * STANDARD_OF_LOSS_RATE) {
+            if (isLossOrderTiming(currentPrice, rsi, buyTradingResult)) {
                 log.info("{} :: 손절 주문 요청", getIdentifyCode());
                 return List.of(
                     TradingTask.builder()
                         .identifyCode(getIdentifyCode())
                         .coinType(coinType)
+                        .tradingTerm(tradingTerm)
                         .orderType(OrderType.SELL)
                         .volume(buyTradingResult.getVolume())
                         .price(currentPrice)
@@ -133,7 +142,7 @@ public class RsiTradingStrategy extends Strategy {
         /**
          * rsi가 조건을 만족하고, 매수주문을 한적이 없다면 매수주문을 함
          */
-        if (isBuyTiming(rsi, buyTradingResult)) {
+        if (isBuyOrderTiming(rsi, buyTradingResult)) {
             if (!isEnoughBalance(tradingInfo.getBalance())) {
                 log.warn("{} :: 계좌가 매수 가능한 상태가 아님", getIdentifyCode());
                 return List.of(new TradingTask());
@@ -146,6 +155,7 @@ public class RsiTradingStrategy extends Strategy {
                 TradingTask.builder()
                     .identifyCode(getIdentifyCode())
                     .coinType(coinType)
+                    .tradingTerm(tradingTerm)
                     .orderType(OrderType.BUY)
                     .volume(volume)
                     .price(price)
@@ -162,6 +172,12 @@ public class RsiTradingStrategy extends Strategy {
     @Override
     protected void handleOrderResult(ExchangeOrder order, TradingResult tradingResult) {
         assistant.storeTradingResult(tradingResult); // 주문 성공 건 정보 저장
+
+        // 급격한 하락장에서 연속적인 손절을 막기 위한 지연 로직
+        if (tradingResult.getTag() == TradingTag.LOSS) {
+            CandleUnit unit = tradingResult.getTradingTerm().getCandleUnit();
+            delay(unit.getSize(), unit.getUnitType());
+        }
     }
 
     @Override
@@ -178,8 +194,25 @@ public class RsiTradingStrategy extends Strategy {
         return balance > ACCOUNT_BALANCE_LIMIT;
     }
 
-    private boolean isBuyTiming(double rsi, TradingResult buyTradingResult) {
+    private boolean isBuyOrderTiming(double rsi, TradingResult buyTradingResult) {
         return !buyTradingResult.isExist() && rsi < STANDARD_OF_LOW_RSI;
+    }
+
+    private boolean isProfitOrderTiming(double currentPrice, double rsi, TradingResult buyTradingResult) {
+        if (currentPrice >= buyTradingResult.getPrice() * (1 + STANDARD_OF_PROFIT_RATE)) {
+            return true;
+        }
+        if (currentPrice > buyTradingResult.getPrice() && rsi >= 0.5) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isLossOrderTiming(double currentPrice, double rsi, TradingResult buyTradingResult) {
+        if (currentPrice <= buyTradingResult.getPrice() * (1 - STANDARD_OF_LOSS_RATE)) {
+            return true;
+        }
+        return false;
     }
 
     private boolean isTooOld(TradingResult tradingResult) {
@@ -189,5 +222,13 @@ public class RsiTradingStrategy extends Strategy {
         return ChronoUnit.MINUTES.between(tradingResult.getCreatedAt(), LocalDateTime.now()) >= STANDRD_OF_TOO_OLD_TIME;
     }
 
-
+    private void delay(int unitSize, UnitType unitType) {
+        try {
+            long delaySize = unitType == UnitType.MIN ? unitSize * 60 * 1000 : 10 * 60 * 1000;
+            log.info("{} :: {}ms 동안 대기 ", getIdentifyCode(), delaySize);
+            Thread.sleep(delaySize);
+        } catch (InterruptedException e) {
+            log.error(e.getMessage(), e);
+        }
+    }
 }
