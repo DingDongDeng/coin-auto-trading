@@ -45,10 +45,13 @@ public class RsiTradingStrategy extends Strategy {
     @Override
     protected List<TradingTask> makeTradingTask(ExchangeTradingInfo tradingInfo) {
         log.info("{} :: ---------------------------------------", getIdentifyCode());
-        log.info("tradingInfo : {}", tradingInfo);
+
         CoinType coinType = tradingInfo.getCoinType();
         TradingTerm tradingTerm = tradingInfo.getTradingTerm();
         double rsi = tradingInfo.getRsi();
+
+        log.info("tradingInfo : {}", tradingInfo);
+        log.info("{} :: coinType={}", getIdentifyCode(), coinType);
         log.info("{} :: rsi={}", getIdentifyCode(), rsi);
 
         // 자동매매 중 기억해야할 실시간 주문 정보(익절, 손절, 매수 주문 정보)
