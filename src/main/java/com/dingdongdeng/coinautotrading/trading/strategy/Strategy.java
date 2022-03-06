@@ -96,6 +96,7 @@ public abstract class Strategy {
             .identifyCode(tradingTask.getIdentifyCode())
             .coinType(tradingTask.getCoinType())
             .orderType(tradingTask.getOrderType())
+            .tradingTerm(tradingTask.getTradingTerm())
             .orderState(exchangeOrder.getOrderState())
             .volume(tradingTask.getVolume())
             .price(tradingTask.getPrice())
@@ -106,11 +107,12 @@ public abstract class Strategy {
             .build();
     }
 
-    private TradingResult makeTradingResult(TradingTask tradingTask, ExchangeOrderCancel exchangeOrderCancel) {
+    private TradingResult makeTradingResult(TradingTask tradingTask, ExchangeOrderCancel exchangeOrderCancel) { //fixme 중복 코드 개선
         return TradingResult.builder()
             .identifyCode(tradingTask.getIdentifyCode())
             .coinType(tradingTask.getCoinType())
             .orderType(tradingTask.getOrderType())
+            .tradingTerm(tradingTask.getTradingTerm())
             .orderState(exchangeOrderCancel.getOrderState())
             .volume(tradingTask.getVolume())
             .price(tradingTask.getPrice())

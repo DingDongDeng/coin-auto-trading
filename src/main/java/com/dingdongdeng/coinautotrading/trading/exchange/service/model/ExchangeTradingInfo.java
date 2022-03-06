@@ -2,6 +2,7 @@ package com.dingdongdeng.coinautotrading.trading.exchange.service.model;
 
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
+import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -13,6 +14,7 @@ public class ExchangeTradingInfo { //fixme 사용중인 모델만 남도록 리�
 
     private CoinExchangeType coinExchangeType;
     private CoinType coinType;
+    private TradingTerm tradingTerm;
     /**
      * 계좌
      **/

@@ -3,6 +3,7 @@ package com.dingdongdeng.coinautotrading.trading.strategy.model;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
+import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.TradingTag;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +20,7 @@ public class TradingTask {
 
     private String identifyCode;
     private CoinType coinType;
+    private TradingTerm tradingTerm;
     private OrderType orderType;
     private Double volume;
     private Double price;
