@@ -74,7 +74,7 @@ public class RsiTradingStrategy extends Strategy {
                         .identifyCode(getIdentifyCode())
                         .coinType(coinType)
                         .tradingTerm(tradingTerm)
-                        .orderId(buyTradingResult.getOrderId())
+                        .orderId(tradingResult.getOrderId())
                         .orderType(OrderType.CANCEL)
                         .tag(tradingResult.getTag())
                         .build()
