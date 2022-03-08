@@ -1,6 +1,11 @@
 server:
   port: 8080
   shutdown: graceful
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
 
 upbit:
   client:

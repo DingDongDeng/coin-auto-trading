@@ -36,5 +36,11 @@
 
 
 
+### referrence
+- gitlab actions에 대해 aws 보안 설정
+    - https://rusyasoft.github.io/github,%20actions,%20aws/2020/12/14/allow-github-actions-ip-addresses-at-aws/
+    - https://kamrul.dev/dynamically-add-github-actions-ip-to-aws-security-group/
+- aws 보안 설정
+    - https://perfectacle.github.io/2018/08/30/aws-security-group-reference-another-security-group/
 
 
