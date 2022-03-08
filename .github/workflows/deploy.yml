@@ -55,7 +55,7 @@ jobs:
           AWS_SECURITY_GROUP_NAME: ${{ secrets.AWS_SECURITY_GROUP_NAME }}
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
         run: |
-          aws ec2 authorize-security-group-ingress --group-name $AWS_SECURITY_GROUP_NAME --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+          aws ec2 authorize-security-group-ingress --group-name $AWS_SECURITY_GROUP_NAME --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32 > /dev/null
 
       - name: Deploy
         uses: appleboy/ssh-action@master
@@ -74,5 +74,5 @@ jobs:
           AWS_SECURITY_GROUP_NAME: ${{ secrets.AWS_SECURITY_GROUP_NAME }}
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
         run: |
-          aws ec2 revoke-security-group-ingress --group-name $AWS_SECURITY_GROUP_NAME --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+          aws ec2 revoke-security-group-ingress --group-name $AWS_SECURITY_GROUP_NAME --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32 > /dev/null
         if: always()
