@@ -1,46 +1,53 @@
-name: CI
+name: deploy
 
 on:
   push:
-    branches: [ master ]
+    branches: [ feature/CD_구성 ]
   #pull_request:
   #  branches: [ master ]
 
 jobs:
   depoly:
-    name: deploy release
+    name: CI/CD release
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Set up JDK 11
-        uses: actions/setup-java@v2
+      #      - name: Set up JDK 11
+      #        uses: actions/setup-java@v2
+      #        with:
+      #          java-version: '11'
+      #          distribution: 'temurin'
+      #
+      #      - name: Build
+      #        run: ./gradlew build -x test
+      #
+      #      - name: Test
+      #        #run: ./gradlew asciidoctor
+      #        run: echo 'empty test'
+      #
+      #      - name: Login to Docker Hub
+      #        uses: docker/login-action@v1
+      #        with:
+      #          username: ${{ secrets.DOCKERHUB_USERNAME }}
+      #          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      #
+      #      - name: Jib
+      #        env:
+      #          DOCKERHUB_REPOSITORY_PATH: ${{ secrets.DOCKERHUB_REPOSITORY_PATH }}
+      #        run: ./gradlew jib -x test
+      #          -Djib.to.image=$DOCKERHUB_REPOSITORY_PATH
+      #          -Djib.to.tags=latest
+      #          -Djib.container.creationTime=USE_CURRENT_TIMESTAMP
+      #          -Djib.container.jvmFlags=-XX:MaxRAMPercentage=60.0,-XX:MinRAMPercentage=60.0,-Duser.timezone=Asia/Seoul
+
+      - name: Deploy
+        uses: appleboy/ssh-action@master
         with:
-          java-version: '11'
-          distribution: 'temurin'
-
-      - name: Build
-        run: ./gradlew build -x test
-
-      - name: Test
-        #run: ./gradlew asciidoctor
-        run: echo 'empty test'
-
-      - name: Login to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Jib
-        env:
-          DOCKERHUB_REPOSITORY_PATH: ${{ secrets.DOCKERHUB_REPOSITORY_PATH }}
-        run: ./gradlew jib -x test
-          -Djib.to.image=$DOCKERHUB_REPOSITORY_PATH
-          -Djib.to.tags=latest
-          -Djib.container.creationTime=USE_CURRENT_TIMESTAMP
-          -Djib.container.jvmFlags=-XX:MaxRAMPercentage=60.0,-XX:MinRAMPercentage=60.0,-Duser.timezone=Asia/Seoul
-
-
+          host: ${{ secrets.REMOTE_IP }}
+          username: ${{ secrets.REMOTE_SSH_ID }}
+          key: ${{ secrets.REMOTE_SSH_KEY }}
+          script: |
+            whoami
