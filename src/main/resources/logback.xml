@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
   <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
-    <layout class="ch.qos.logback.classic.PatternLayout">
+    <encoder>
       <charset>UTF-8</charset>
-      <Pattern>
-        %black(%d{ISO8601}) %highlight(%-5level) [%blue(%t)] %yellow(%C{1.}) : {%mdc} - %msg%n%throwable
-      </Pattern>
-    </layout>
+      <Pattern>%black(%d{ISO8601}) %highlight(%-5level) [%blue(%t)] %yellow(%C{1.}) : {%mdc} - %msg%n%throwable</Pattern>
+    </encoder>
   </appender>
-
   <root level="INFO">
     <appender-ref ref="Console"/>
   </root>
