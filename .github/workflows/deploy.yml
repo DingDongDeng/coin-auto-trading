@@ -43,6 +43,23 @@ jobs:
       #          -Djib.container.creationTime=USE_CURRENT_TIMESTAMP
       #          -Djib.container.jvmFlags=-XX:MaxRAMPercentage=60.0,-XX:MinRAMPercentage=60.0,-Duser.timezone=Asia/Seoul
 
+
+      - name: Public IP
+        id: ip
+        uses: haythem/public-ip@v1.2
+
+      - name: Print Public IP
+        run: |
+          echo $
+
+      - name: Allow Security group rule to connect Github Actions to Mongo-port
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SECURITY_GROUP_NAME: ${{ secrets.AWS_SECURITY_GROUP_NAME }}
+        run: |
+          aws ec2 authorize-security-group-ingress --group-name $AWS_SECURITY_GROUP_NAME --protocol tcp --port 22 --cidr $/32
+
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:
@@ -52,3 +69,12 @@ jobs:
           passphrase: ${{ secrets.REMOTE_SSH_PASSPHRASE }}
           script: |
             whoami
+
+      - name: Deny Security group rule to connect Github Actions to Mongo-port
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SECURITY_GROUP_NAME: ${{ secrets.AWS_SECURITY_GROUP_NAME }}
+        run: |
+          aws ec2 revoke-security-group-ingress --group-name $AWS_SECURITY_GROUP_NAME --protocol tcp --port 22 --cidr $/32
+        if: always()
