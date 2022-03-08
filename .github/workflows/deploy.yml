@@ -67,6 +67,7 @@ jobs:
           key: ${{ secrets.REMOTE_SSH_KEY }}
           passphrase: ${{ secrets.REMOTE_SSH_PASSPHRASE }}
           script: |
+            cd ~/app
             docker-compose down --rmi all
             docker-compose up -d
 
