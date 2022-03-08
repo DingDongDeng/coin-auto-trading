@@ -2,7 +2,7 @@ name: deploy
 
 on:
   push:
-    branches: [ feature/CD_구성 ]
+    branches: [ master ]
   #pull_request:
   #  branches: [ master ]
 
