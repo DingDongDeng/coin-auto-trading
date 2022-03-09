@@ -2,7 +2,7 @@ name: deploy
 
 on:
   push:
-    branches: [ master ]
+    branches: [ feature/로깅_및_모니터링 ]
   #pull_request:
   #  branches: [ master ]
 
@@ -41,7 +41,7 @@ jobs:
           -Djib.to.image=$DOCKERHUB_REPOSITORY_PATH
           -Djib.to.tags=latest
           -Djib.container.creationTime=USE_CURRENT_TIMESTAMP
-          -Djib.container.jvmFlags=-XX:MaxRAMPercentage=60.0,-XX:MinRAMPercentage=60.0,-Duser.timezone=Asia/Seoul
+          -Djib.container.jvmFlags=-XX:MaxRAMPercentage=60.0,-XX:MinRAMPercentage=60.0,-Duser.timezone=Asia/Seoul,-Dspring.profiles.active=release
 
       - name: Get Github action IP
         id: ip
