@@ -42,7 +42,7 @@ jobs:
           -Djib.to.image=$DOCKERHUB_REPOSITORY_PATH
           -Djib.to.tags=latest
           -Djib.container.creationTime=USE_CURRENT_TIMESTAMP
-          -Djib.container.environment=SLACK_WEBHOOK_URL:$SLACK_WEBHOOK_URL
+          -Djib.container.environment=SLACK_WEBHOOK_URL=$SLACK_WEBHOOK_URL
           -Djib.container.jvmFlags=-XX:MaxRAMPercentage=60.0,-XX:MinRAMPercentage=60.0,-Duser.timezone=Asia/Seoul,-Dspring.profiles.active=release
 
       - name: Get Github action IP
