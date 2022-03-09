@@ -71,6 +71,7 @@ jobs:
             cd ~/app
             docker-compose down --rmi all
             docker-compose up -d
+          #여기에 서비스가 떴는지 확인하는 validate 스크립트가 추가되어야함
 
       - name: Remove Github Actions IP from security group
         env:
