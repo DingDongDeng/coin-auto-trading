@@ -11,7 +11,7 @@
   </appender>
 
   <!-- file -->
-  <property name="file.format" value="* (%d{ISO8601}) (%-5level) [(%t)] (%C{1.}) : {%mdc} - %msg%n"/>
+  <property name="file.format" value="* %date [%thread] %-5level %logger : {%mdc} - %msg%n"/>
   <property name="file.basedir" value="/logs"/>
   <property name="file.name" value="app"/>
   <appender name="File" class="ch.qos.logback.core.rolling.RollingFileAppender">
