@@ -42,7 +42,7 @@ public class AutoTradingService {
                 .coinExchangeType(request.getCoinExchangeType())
                 .status(AutoTradingProcessStatus.INIT)
                 .strategy(strategy)
-                .duration(1000)
+                .duration(2000)
                 .build()
         );
         return makeResponse(processor);
