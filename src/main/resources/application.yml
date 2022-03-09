@@ -39,3 +39,11 @@ spring:
     console:
       enabled: true
       path: /h2-console
+
+---
+spring:
+  profiles:
+    active: release
+
+slack:
+  webHookUrl: ${WEB_HOOK_URL}
