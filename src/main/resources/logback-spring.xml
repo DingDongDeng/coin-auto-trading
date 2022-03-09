@@ -10,27 +10,28 @@
     </encoder>
   </appender>
 
-  <!-- file -->
-  <property name="file.format" value="* %date [%thread] %-5level %logger : {%mdc} - %msg%n"/>
-  <property name="file.basedir" value="/logs"/>
-  <property name="file.name" value="app"/>
-  <appender name="File" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>${file.basedir}/${file.name}.log</file>
-    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-      <fileNamePattern>${file.basedir}/${file.name}.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
-      <maxHistory>10</maxHistory>
-      <maxFileSize>100MB</maxFileSize>
-      <totalSizeCap>1GB</totalSizeCap>
-    </rollingPolicy>
-    <append>true</append>
-    <encoder>
-      <charset>UTF-8</charset>
-      <pattern>${file.format}%ex</pattern>
-    </encoder>
-  </appender>
-
   <!-- release profile -->
   <springProfile name="release">
+
+    <!-- file -->
+    <property name="file.format" value="* %date [%thread] %-5level %logger : {%mdc} - %msg%n"/>
+    <property name="file.basedir" value="/logs"/>
+    <property name="file.name" value="app"/>
+    <appender name="File" class="ch.qos.logback.core.rolling.RollingFileAppender">
+      <file>${file.basedir}/${file.name}.log</file>
+      <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+        <fileNamePattern>${file.basedir}/${file.name}.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+        <maxHistory>10</maxHistory>
+        <maxFileSize>100MB</maxFileSize>
+        <totalSizeCap>1GB</totalSizeCap>
+      </rollingPolicy>
+      <append>true</append>
+      <encoder>
+        <charset>UTF-8</charset>
+        <pattern>${file.format}%ex</pattern>
+      </encoder>
+    </appender>
+
     <root level="INFO">
       <appender-ref ref="File"/>
     </root>
