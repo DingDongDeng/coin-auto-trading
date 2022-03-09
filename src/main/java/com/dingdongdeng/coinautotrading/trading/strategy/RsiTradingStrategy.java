@@ -32,7 +32,7 @@ public class RsiTradingStrategy extends Strategy {
     private final double STANDARD_OF_LOSS_RATE = 0.015;
     private final int STANDRD_OF_TOO_OLD_TIME = 1; //분(minuite)
     private final double ORDER_PRICE = 10000;
-    private final double ACCOUNT_BALANCE_LIMIT = 307 * 10000; //계좌 금액 안전 장치
+    private final double ACCOUNT_BALANCE_LIMIT = 300 * 10000; //계좌 금액 안전 장치
 
     private final StrategyAssistant assistant;
 

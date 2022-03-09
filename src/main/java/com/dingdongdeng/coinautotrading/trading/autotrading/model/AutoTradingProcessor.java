@@ -1,5 +1,6 @@
 package com.dingdongdeng.coinautotrading.trading.autotrading.model;
 
+import com.dingdongdeng.coinautotrading.common.slack.SlackSender;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.type.AutoTradingProcessStatus;
@@ -28,6 +29,7 @@ public class AutoTradingProcessor {
     private AutoTradingProcessStatus status;
     private Strategy strategy;
     private long duration;
+    private SlackSender slackSender;
 
     public void start() {
         //fixme 로그 추적을 위해 id, userId를 찍을 수 있어야함
@@ -47,32 +49,21 @@ public class AutoTradingProcessor {
     }
 
     private void process() {
-        while (isAvail()) {
+        while (isRunning()) {
             log.info("\n------------------------------ beginning of autotrading cycle -----------------------------------------");
-            while (isStoped()) {
-                log.info("stop");
-                delay();
-            }
             delay();
             try {
                 this.strategy.execute();
             } catch (Exception e) {
-                log.error("strategy execute exception : {}", e.getMessage(), e); //fixme 슬랙(이메일은 에러 많이났을때 난사해서 문제될수도)
+                log.error("strategy execute exception : {}", e.getMessage(), e);
+                slackSender.send("userId : " + userId + ", title : " + title + ", autoTradingProcessorId : " + id, e);
             }
             log.info("\n------------------------------ end of autotrading cycle -----------------------------------------");
         }
     }
 
-    private boolean isAvail() {
-        return this.status == AutoTradingProcessStatus.RUNNING || this.status == AutoTradingProcessStatus.STOPPED;
-    }
-
     private boolean isRunning() {
         return this.status == AutoTradingProcessStatus.RUNNING;
-    }
-
-    private boolean isStoped() {
-        return this.status == AutoTradingProcessStatus.STOPPED;
     }
 
     private void delay() {
