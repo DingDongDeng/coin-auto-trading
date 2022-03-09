@@ -19,16 +19,17 @@ public class SlackSender {
     private String webHookUrl;
     private final WebClient slackWebClient;
 
-    /**
-     * fixme processor의 에러 발생하면 슬랙보내게하기 health check 응답안오면 슬랙보내게하기
-     */
     public void send(Throwable throwable) {
+        send("occured error ::: ", throwable);
+    }
+
+    public void send(String message, Throwable throwable) {
         if (!profile.equalsIgnoreCase("release")) {
             return;
         }
         Map<String, String> body = new HashMap<>();
         body.put("username", "coinautotrading");
-        body.put("text", throwable.getMessage());
+        body.put("text", message + "\n" + throwable.getMessage());
         try {
             slackWebClient.post()
                 .uri(webHookUrl)
