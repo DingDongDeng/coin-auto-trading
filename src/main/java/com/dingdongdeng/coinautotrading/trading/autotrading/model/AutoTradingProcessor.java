@@ -47,12 +47,8 @@ public class AutoTradingProcessor {
     }
 
     private void process() {
-        while (isAvail()) {
+        while (isRunning()) {
             log.info("\n------------------------------ beginning of autotrading cycle -----------------------------------------");
-            while (isStoped()) {
-                log.info("stop");
-                delay();
-            }
             delay();
             try {
                 this.strategy.execute();
@@ -63,16 +59,8 @@ public class AutoTradingProcessor {
         }
     }
 
-    private boolean isAvail() {
-        return this.status == AutoTradingProcessStatus.RUNNING || this.status == AutoTradingProcessStatus.STOPPED;
-    }
-
     private boolean isRunning() {
         return this.status == AutoTradingProcessStatus.RUNNING;
-    }
-
-    private boolean isStoped() {
-        return this.status == AutoTradingProcessStatus.STOPPED;
     }
 
     private void delay() {
