@@ -15,9 +15,6 @@ upbit:
     readTimeout: 5000
     connectionTimeout: 5000
 
-slack:
-  webHookUrl: ${WEB_HOOK_URL:}
-
 spring:
   profiles:
     active: test
