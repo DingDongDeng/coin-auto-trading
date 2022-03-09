@@ -37,11 +37,12 @@ jobs:
       - name: Jib
         env:
           DOCKERHUB_REPOSITORY_PATH: ${{ secrets.DOCKERHUB_REPOSITORY_PATH }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: ./gradlew jib -x test
           -Djib.to.image=$DOCKERHUB_REPOSITORY_PATH
           -Djib.to.tags=latest
           -Djib.container.creationTime=USE_CURRENT_TIMESTAMP
-          -Djib.container.jvmFlags=-XX:MaxRAMPercentage=60.0,-XX:MinRAMPercentage=60.0,-Duser.timezone=Asia/Seoul,-Dspring.profiles.active=release
+          -Djib.container.jvmFlags=-XX:MaxRAMPercentage=60.0,-XX:MinRAMPercentage=60.0,-Duser.timezone=Asia/Seoul,-Dspring.profiles.active=release,-DSLACK_WEB_HOOK_URL=$SLACK_WEBHOOK_URL
 
       - name: Get Github action IP
         id: ip
