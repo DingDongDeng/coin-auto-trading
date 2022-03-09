@@ -12,7 +12,7 @@
 
   <!-- file -->
   <property name="file.format" value="%black(%d{ISO8601}) %highlight(%-5level) [%blue(%t)] %yellow(%C{1.}) : {%mdc} - %msg%n%throwable"/>
-  <property name="file.basedir" value="${user.home}/app/logs"/>
+  <property name="file.basedir" value="/logs"/>
   <property name="file.name" value="app"/>
   <appender name="File" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <file>${file.basedir}/${file.name}.log</file>
