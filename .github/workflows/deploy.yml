@@ -79,3 +79,13 @@ jobs:
         run: |
           aws ec2 revoke-security-group-ingress --group-name $AWS_SECURITY_GROUP_NAME --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32 > /dev/null
         if: always()
+
+      - name: Slack notification
+          uses: 8398a7/action-slack@v3
+          with:
+            status: ${{ job.status }}
+            author_name: Github Action
+            fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+          env:
+            SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          if: always()
