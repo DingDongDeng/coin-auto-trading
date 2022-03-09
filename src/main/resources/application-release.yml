@@ -1,0 +1,6 @@
+spring:
+  profiles:
+    active: release
+
+slack:
+  webHookUrl: ${SLACK_WEB_HOOK_URL}
