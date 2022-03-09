@@ -1,5 +1,6 @@
 package com.dingdongdeng.coinautotrading.trading.autotrading.service;
 
+import com.dingdongdeng.coinautotrading.common.slack.SlackSender;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingProcessor;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingRegisterRequest;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingResponse;
@@ -23,6 +24,7 @@ public class AutoTradingService {
     private final AutoTradingManager autoTradingManager;
     private final ExchangeServiceSelector processorSelector;
     private final StrategyFactory strategyFactory;
+    private final SlackSender slackSender;
 
     public List<AutoTradingResponse> getUserProcessorList(String userId) {
         return autoTradingManager.getList(userId).stream()
@@ -42,7 +44,8 @@ public class AutoTradingService {
                 .coinExchangeType(request.getCoinExchangeType())
                 .status(AutoTradingProcessStatus.INIT)
                 .strategy(strategy)
-                .duration(1000)
+                .duration(2000)
+                .slackSender(slackSender)
                 .build()
         );
         return makeResponse(processor);

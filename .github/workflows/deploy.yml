@@ -37,11 +37,13 @@ jobs:
       - name: Jib
         env:
           DOCKERHUB_REPOSITORY_PATH: ${{ secrets.DOCKERHUB_REPOSITORY_PATH }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: ./gradlew jib -x test
           -Djib.to.image=$DOCKERHUB_REPOSITORY_PATH
           -Djib.to.tags=latest
           -Djib.container.creationTime=USE_CURRENT_TIMESTAMP
-          -Djib.container.jvmFlags=-XX:MaxRAMPercentage=60.0,-XX:MinRAMPercentage=60.0,-Duser.timezone=Asia/Seoul
+          -Djib.container.environment=SLACK_WEB_HOOK_URL=$SLACK_WEBHOOK_URL
+          -Djib.container.jvmFlags=-XX:MaxRAMPercentage=60.0,-XX:MinRAMPercentage=60.0,-Duser.timezone=Asia/Seoul,-Dspring.profiles.active=release
 
       - name: Get Github action IP
         id: ip
@@ -69,6 +71,7 @@ jobs:
             cd ~/app
             docker-compose down --rmi all
             docker-compose up -d
+          #여기에 서비스가 떴는지 확인하는 validate 스크립트가 추가되어야함
 
       - name: Remove Github Actions IP from security group
         env:
@@ -78,4 +81,14 @@ jobs:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
         run: |
           aws ec2 revoke-security-group-ingress --group-name $AWS_SECURITY_GROUP_NAME --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32 > /dev/null
+        if: always()
+
+      - name: Slack notification
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          author_name: Github Action
+          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         if: always()
