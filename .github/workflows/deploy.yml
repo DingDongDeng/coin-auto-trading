@@ -43,7 +43,7 @@ jobs:
           -Djib.to.tags=latest
           -Djib.container.creationTime=USE_CURRENT_TIMESTAMP
           -Djib.container.environment=SLACK_WEB_HOOK_URL=$SLACK_WEBHOOK_URL
-          -Djib.container.jvmFlags=-XX:MaxRAMPercentage=60.0,-XX:MinRAMPercentage=60.0,-Duser.timezone=Asia/Seoul,-Dspring.profiles.active=release
+          -Djib.container.jvmFlags=-XX:MaxRAMPercentage=30.0,-XX:MinRAMPercentage=30.0,-Duser.timezone=Asia/Seoul,-Dspring.profiles.active=release
 
       - name: Get Github action IP
         id: ip
