@@ -27,10 +27,12 @@ import lombok.extern.slf4j.Slf4j;
 public class RsiTradingStrategy extends Strategy {
 
     private final String IDENTIFY_CODE = StrategyCode.RSI.name() + ":" + UUID.randomUUID().toString();
-    private final double STANDARD_OF_LOW_RSI = 0.25;
-    private final double STANDARD_OF_PROFIT_RATE = 0.02;
-    private final double STANDARD_OF_LOSS_RATE = 0.015;
-    private final int STANDRD_OF_TOO_OLD_TIME = 1; //분(minuite)
+    private final double BUY_RSI = 0.25; // 매수 주문을 할 rsi 기준
+    private final double PROFIT_RSI = 0.50; // 이익중일때 익절할 rsi 기준
+    private final double LOSS_RSI = 0.40; // 손실중일때 손절할 rsi 기준
+    private final double PROFIT_LIMIT_PRICE_RATE = 0.02; // 익절 이익율 상한
+    private final double LOSS_LIMIT_PRICE_RATE = 0.01; // 손절 손실율 상한
+    private final int TOO_OLD_ORDER_TIME_SECONDS = 30; // 초(second)
     private final double ORDER_PRICE = 10000;
     private final double ACCOUNT_BALANCE_LIMIT = 300 * 10000; //계좌 금액 안전 장치
 
@@ -195,21 +197,30 @@ public class RsiTradingStrategy extends Strategy {
     }
 
     private boolean isBuyOrderTiming(double rsi, TradingResult buyTradingResult) {
-        return !buyTradingResult.isExist() && rsi < STANDARD_OF_LOW_RSI;
+        return !buyTradingResult.isExist() && rsi < BUY_RSI;
     }
 
     private boolean isProfitOrderTiming(double currentPrice, double rsi, TradingResult buyTradingResult) {
-        if (currentPrice >= buyTradingResult.getPrice() * (1 + STANDARD_OF_PROFIT_RATE)) {
+        // 이익 중일때, 이익 한도에 다다르면 익절
+        if (currentPrice >= buyTradingResult.getPrice() * (1 + PROFIT_LIMIT_PRICE_RATE)) {
             return true;
         }
-        if (currentPrice > buyTradingResult.getPrice() && rsi >= 0.5) {
+
+        // 이익 중일때, RSI 이미 상승했다면 익절
+        if (currentPrice > buyTradingResult.getPrice() && rsi >= PROFIT_RSI) {
             return true;
         }
         return false;
     }
 
     private boolean isLossOrderTiming(double currentPrice, double rsi, TradingResult buyTradingResult) {
-        if (currentPrice <= buyTradingResult.getPrice() * (1 - STANDARD_OF_LOSS_RATE)) {
+        // 손실 중일때, 손실 한도에 다다르면 손절
+        if (currentPrice <= buyTradingResult.getPrice() * (1 - LOSS_LIMIT_PRICE_RATE)) {
+            return true;
+        }
+
+        // 손실 중일때, RSI가 이미 상승했다면 손절
+        if (currentPrice <= buyTradingResult.getPrice() && rsi >= LOSS_RSI) {
             return true;
         }
         return false;
@@ -219,12 +230,13 @@ public class RsiTradingStrategy extends Strategy {
         if (Objects.isNull(tradingResult.getCreatedAt())) {
             return false;
         }
-        return ChronoUnit.MINUTES.between(tradingResult.getCreatedAt(), LocalDateTime.now()) >= STANDRD_OF_TOO_OLD_TIME;
+        return ChronoUnit.SECONDS.between(tradingResult.getCreatedAt(), LocalDateTime.now()) >= TOO_OLD_ORDER_TIME_SECONDS;
     }
 
     private void delay(int unitSize, UnitType unitType) {
         try {
-            long delaySize = unitType == UnitType.MIN ? unitSize * 60 * 1000 : 10 * 60 * 1000;
+            // RSI14를 참조하기 때문에 새로운 캔들 14개가 생성된 이후에 다시 매매를 하도록함(하락흐름에서의 연속적인 손절을 방지하기 위함)
+            long delaySize = unitType == UnitType.MIN ? 14 * unitSize * 60 * 1000 : 14 * 10 * 60 * 1000;  //fixme 일봉, 주봉에 대한 고려
             log.info("{} :: {}ms 동안 대기 ", getIdentifyCode(), delaySize);
             Thread.sleep(delaySize);
         } catch (InterruptedException e) {
