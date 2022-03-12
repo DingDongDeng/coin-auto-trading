@@ -97,7 +97,10 @@
         </div>
       </div>
       <div>
-        <input v-model="register.autoTrading.keyPairId" type="text" placeholder="키 페어 ID">
+        <select v-model="register.autoTrading.keyPairId">
+          <option disabled value="">키 페어 ID</option>
+          <option v-for="(keyPair) in user.keyPairList" :value="keyPair.pairId">{{keyPair.pairId}}</option>
+        </select>
       </div>
       <div>
         <input type="button" value="등록하기" @click="registerAutoTrading(refresh)">
