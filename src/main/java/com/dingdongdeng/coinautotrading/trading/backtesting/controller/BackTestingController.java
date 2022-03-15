@@ -1,14 +1,15 @@
 package com.dingdongdeng.coinautotrading.trading.backtesting.controller;
 
 import com.dingdongdeng.coinautotrading.common.model.CommonResponse;
+import com.dingdongdeng.coinautotrading.trading.backtesting.aggregation.BackTestingAggregation;
 import com.dingdongdeng.coinautotrading.trading.backtesting.model.BackTestingRequest;
-import com.dingdongdeng.coinautotrading.trading.backtesting.service.BackTestingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -16,12 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class BackTestingController {
 
-    private final BackTestingService backTestingService;
+    private final BackTestingAggregation backTestingAggregation;
 
     @PostMapping("/backtesting")
-    public CommonResponse<String> register(@RequestBody BackTestingRequest.Register request) {
+    public CommonResponse<String> register(@RequestBody BackTestingRequest.Register request, @RequestHeader String userId) {
         return CommonResponse.<String>builder()
-            .body(backTestingService.doTest(request))
+            .body(backTestingAggregation.doTest(request, userId))
             .message("backtesting doTest success")
             .build();
     }
@@ -29,7 +30,7 @@ public class BackTestingController {
     @GetMapping("/backtesting/{backTestingId}")
     public CommonResponse<Object> getResult(@PathVariable String backTestingId) {
         return CommonResponse.builder()
-            .body(backTestingService.getResult(backTestingId))
+            .body(backTestingAggregation.getResult(backTestingId))
             .message("backtesting getResult success")
             .build();
     }
