@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @Slf4j
 @SpringBootTest
-class RsiTradingStrategyTest {
+class RsiTradingStrategyCoreTest {
 
     @Test
     public void RSI_높을때_테스트() {
