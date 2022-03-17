@@ -8,6 +8,7 @@ import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.StrategyCode;
 import java.util.List;
 import java.util.UUID;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class Strategy {
 
+    @Getter
     private final String identifyCode;
     private final StrategyCore strategyCore;
     private final StrategyService strategyService;
