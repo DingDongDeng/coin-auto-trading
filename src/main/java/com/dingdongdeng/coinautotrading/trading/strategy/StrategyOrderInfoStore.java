@@ -1,6 +1,7 @@
 package com.dingdongdeng.coinautotrading.trading.strategy;
 
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.TradingTag;
 import com.dingdongdeng.coinautotrading.trading.strategy.repository.TradingResultRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +11,15 @@ public class StrategyOrderInfoStore {
 
     private final TradingResultRepository tradingResultRepository;
 
-    public void storeTradingResult(TradingResult tradingResult) {
+    public TradingResultPack get(String identifyCode) {
+        return TradingResultPack.builder()
+            .buyTradingResult(findTradingResult(identifyCode, TradingTag.BUY))
+            .profitTradingResult(findTradingResult(identifyCode, TradingTag.PROFIT))
+            .lossTradingResult(findTradingResult(identifyCode, TradingTag.LOSS))
+            .build();
+    }
+
+    public void save(TradingResult tradingResult) {
         tradingResult.setId(getKey(tradingResult.getIdentifyCode(), tradingResult.getTag()));
         tradingResultRepository.save(tradingResult);
     }
@@ -43,7 +52,7 @@ public class StrategyOrderInfoStore {
     }
 
     private String getKey(String identifyCode, TradingTag tag) {
-        return identifyCode + ":" + tag.name(); // RSI:BUY, RSI:PROFIT, RSI:LOSS
+        return identifyCode + ":" + tag.name();
     }
 
 }
