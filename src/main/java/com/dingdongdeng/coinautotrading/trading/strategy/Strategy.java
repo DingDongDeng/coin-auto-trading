@@ -18,19 +18,18 @@ public class Strategy {
     private final String identifyCode;
     private final StrategyCore strategyCore;
     private final StrategyService strategyService;
-    private final StrategyOrderInfoStore strategyOrderInfoStore;
+    private final StrategyStore strategyStore;
 
-    //fixme 로컬테스트좀 하고 나중에 없애자
-    public Strategy(StrategyCode code, StrategyCore core, StrategyService service, StrategyOrderInfoStore orderInfoStore) {
+    public Strategy(StrategyCode code, StrategyCore core, StrategyService service, StrategyStore orderInfoStore) {
         this.identifyCode = code.name() + UUID.randomUUID().toString();
         this.strategyCore = core;
         this.strategyService = service;
-        this.strategyOrderInfoStore = orderInfoStore;
+        this.strategyStore = orderInfoStore;
     }
 
     public void execute() {
         // 주문 정보 갱신 및 생성
-        TradingResultPack tradingResultPack = strategyOrderInfoStore.get(identifyCode);
+        TradingResultPack tradingResultPack = strategyStore.get(identifyCode);
         TradingResultPack updatedTradingResultPack = strategyService.updateTradingResultPack(tradingResultPack);
         TradingInfo tradingInfo = strategyService.getTradingInformation(identifyCode, updatedTradingResultPack);
 
@@ -40,14 +39,14 @@ public class Strategy {
         tradingTaskList.forEach(tradingTask -> {
             // 모든 정보 초기화
             if (isReset(tradingTask)) {
-                strategyOrderInfoStore.reset(identifyCode);
+                strategyStore.reset(identifyCode);
                 return;
             }
 
             // 매수, 매도 주문
             if (isOrder(tradingTask)) {
                 TradingResult orderTradingResult = strategyService.order(tradingTask);
-                strategyOrderInfoStore.save(orderTradingResult); // 주문 성공 건 정보 저장
+                strategyStore.save(orderTradingResult); // 주문 성공 건 정보 저장
                 strategyCore.handleOrderResult(orderTradingResult);
                 return;
             }
@@ -55,7 +54,7 @@ public class Strategy {
             // 주문 취소
             if (isOrderCancel(tradingTask)) {
                 TradingResult cancelTradingResult = strategyService.orderCancel(tradingTask);
-                strategyOrderInfoStore.reset(cancelTradingResult); // 주문 취소 건 정보 제거
+                strategyStore.reset(cancelTradingResult); // 주문 취소 건 정보 제거
                 strategyCore.handleOrderCancelResult(cancelTradingResult);
                 return;
             }

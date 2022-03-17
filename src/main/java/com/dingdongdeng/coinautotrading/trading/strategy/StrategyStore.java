@@ -7,7 +7,7 @@ import com.dingdongdeng.coinautotrading.trading.strategy.repository.TradingResul
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class StrategyOrderInfoStore {
+public class StrategyStore {
 
     private final TradingResultRepository tradingResultRepository;
 
