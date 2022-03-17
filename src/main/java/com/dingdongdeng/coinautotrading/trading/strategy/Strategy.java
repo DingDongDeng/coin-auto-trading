@@ -14,7 +14,7 @@ public class Strategy {
 
     private final StrategyCore strategyCore;
     private final StrategyService strategyService;
-    private final StrategyOrderInfoStroe strategyOrderInfoStroe;
+    private final StrategyOrderInfoStore strategyOrderInfoStore;
 
     public void execute() {
 
@@ -27,7 +27,7 @@ public class Strategy {
             // 매수, 매도 주문
             if (isOrder(tradingTask)) {
                 TradingResult orderTradingResult = strategyService.order(tradingTask);
-                strategyOrderInfoStroe.storeTradingResult(orderTradingResult); // 주문 성공 건 정보 저장
+                strategyOrderInfoStore.storeTradingResult(orderTradingResult); // 주문 성공 건 정보 저장
                 strategyCore.handleOrderResult(orderTradingResult);
                 return;
             }
@@ -35,7 +35,7 @@ public class Strategy {
             // 주문 취소
             if (isOrderCancel(tradingTask)) {
                 TradingResult cancelTradingResult = strategyService.orderCancel(tradingTask);
-                strategyOrderInfoStroe.reset(cancelTradingResult); // 주문 취소 건 정보 제거
+                strategyOrderInfoStore.reset(cancelTradingResult); // 주문 취소 건 정보 제거
                 strategyCore.handleOrderCancelResult(cancelTradingResult);
             }
 
