@@ -1,8 +1,9 @@
 package com.dingdongdeng.coinautotrading.trading.strategy;
 
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeTradingInfo;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.StrategyCode;
 import java.util.List;
@@ -19,6 +20,7 @@ public class Strategy {
     private final StrategyService strategyService;
     private final StrategyOrderInfoStore strategyOrderInfoStore;
 
+    //fixme 로컬테스트좀 하고 나중에 없애자
     public Strategy(StrategyCode code, StrategyCore core, StrategyService service, StrategyOrderInfoStore orderInfoStore) {
         this.identifyCode = code.name() + UUID.randomUUID().toString();
         this.strategyCore = core;
@@ -27,8 +29,12 @@ public class Strategy {
     }
 
     public void execute() {
-        ExchangeTradingInfo exchangeTradingInfo = strategyService.getTradingInformation(identifyCode);
-        List<TradingTask> tradingTaskList = strategyCore.makeTradingTask(exchangeTradingInfo);
+        // 주문 정보 갱신 및 생성
+        TradingResultPack tradingResultPack = strategyOrderInfoStore.get(identifyCode);
+        TradingResultPack updatedTradingResultPack = strategyService.updateTradingResultPack(tradingResultPack);
+        TradingInfo tradingInfo = strategyService.getTradingInformation(identifyCode, updatedTradingResultPack);
+
+        List<TradingTask> tradingTaskList = strategyCore.makeTradingTask(tradingInfo);
         log.info("tradingTaskList : {}", tradingTaskList);
 
         tradingTaskList.forEach(tradingTask -> {
@@ -41,7 +47,7 @@ public class Strategy {
             // 매수, 매도 주문
             if (isOrder(tradingTask)) {
                 TradingResult orderTradingResult = strategyService.order(tradingTask);
-                strategyOrderInfoStore.storeTradingResult(orderTradingResult); // 주문 성공 건 정보 저장
+                strategyOrderInfoStore.save(orderTradingResult); // 주문 성공 건 정보 저장
                 strategyCore.handleOrderResult(orderTradingResult);
                 return;
             }
