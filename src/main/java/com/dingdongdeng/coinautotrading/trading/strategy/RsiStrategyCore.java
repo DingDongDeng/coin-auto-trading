@@ -16,7 +16,7 @@ import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class RsiTradingStrategyCore implements StrategyCore {
+public class RsiStrategyCore implements StrategyCore {
 
     private final double BUY_RSI = 0.25; // 매수 주문을 할 rsi 기준
     private final double PROFIT_RSI = 0.50; // 이익중일때 익절할 rsi 기준
