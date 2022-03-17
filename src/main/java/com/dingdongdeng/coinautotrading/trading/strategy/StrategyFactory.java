@@ -16,15 +16,15 @@ public class StrategyFactory {
     private final TradingResultRepository tradingResultRepository;
 
     public Strategy create(StrategyCode strategyCode, ExchangeService exchangeService, CoinType coinType, TradingTerm tradingTerm, String keyPairId) {
-        StrategyAssistant assistant = new StrategyAssistant(keyPairId, exchangeService, tradingResultRepository);
-        if (strategyCode == StrategyCode.RSI) { //fixme exchangeService랑 assistant를 같이 받는게 비효율적임
-            return RsiTradingStrategy.builder()
-                .coinType(coinType)
-                .tradingTerm(tradingTerm)
-                .keyPairId(keyPairId)
-                .processor(exchangeService)
-                .assistant(assistant)
-                .build();
+        StrategyService strategyService = new StrategyService(coinType, tradingTerm, keyPairId, exchangeService);
+        StrategyOrderInfoStore strategyOrderInfoStore = new StrategyOrderInfoStore(tradingResultRepository);
+        StrategyCore strategyCore = createStrategyCore(strategyCode);
+        return new Strategy(strategyCode, strategyCore, strategyService, strategyOrderInfoStore);
+    }
+
+    private StrategyCore createStrategyCore(StrategyCode strategyCode) {
+        if (strategyCode == StrategyCode.RSI) {
+            return new RsiStrategyCore();
         }
 
         throw new NoSuchElementException("not found strategy code : " + strategyCode);
