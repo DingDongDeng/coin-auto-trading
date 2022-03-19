@@ -2,7 +2,7 @@ package com.dingdongdeng.coinautotrading.trading.exchange.service;
 
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
-import com.dingdongdeng.coinautotrading.trading.backtesting.context.TradingTimeContext;
+import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.UpbitClient;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.UpbitEnum.MarketType;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.UpbitEnum.OrdType;
