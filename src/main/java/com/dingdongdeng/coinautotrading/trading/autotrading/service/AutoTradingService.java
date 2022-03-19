@@ -39,6 +39,7 @@ public class AutoTradingService {
                 .coinType(request.getCoinType())
                 .coinExchangeType(request.getCoinExchangeType())
                 .status(AutoTradingProcessStatus.INIT)
+                .tradingTerm(request.getTradingTerm())
                 .strategy(strategy)
                 .duration(4000)
                 .slackSender(slackSender)

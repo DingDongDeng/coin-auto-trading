@@ -24,4 +24,5 @@ public class AutoTradingResponse {
     private String strategyIdentifyCode;
     private CoinType coinType;
     private CoinExchangeType coinExchangeType;
+    //fixme TradingTerm 추가 필요
 }

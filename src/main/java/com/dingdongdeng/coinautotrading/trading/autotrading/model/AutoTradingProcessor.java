@@ -3,6 +3,7 @@ package com.dingdongdeng.coinautotrading.trading.autotrading.model;
 import com.dingdongdeng.coinautotrading.common.slack.SlackSender;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
+import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.type.AutoTradingProcessStatus;
 import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
 import java.util.concurrent.CompletableFuture;
@@ -27,6 +28,7 @@ public class AutoTradingProcessor {
     private CoinType coinType;
     private CoinExchangeType coinExchangeType;
     private AutoTradingProcessStatus status;
+    private TradingTerm tradingTerm;
     private Strategy strategy;
     private long duration;
     private SlackSender slackSender;
