@@ -29,7 +29,7 @@ public class AutoTradingService {
     }
 
     public AutoTradingProcessor register(AutoTradingRegisterRequest request, String userId) {
-        ExchangeService exchangeService = processorSelector.getTargetProcessor(request.getCoinExchangeType());
+        ExchangeService exchangeService = processorSelector.getTargetService(request.getCoinExchangeType());
         Strategy strategy = strategyFactory.create(request.getStrategyCode(), exchangeService, request.getCoinType(), request.getTradingTerm(), request.getKeyPairId());
         AutoTradingProcessor processor = autoTradingManager.register(
             AutoTradingProcessor.builder()

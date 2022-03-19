@@ -11,9 +11,9 @@ public class ExchangeServiceSelector {
 
     private final List<ExchangeService> processorList;
 
-    public ExchangeService getTargetProcessor(CoinExchangeType coinExchangeType) {
+    public ExchangeService getTargetService(CoinExchangeType coinExchangeType) {
         return processorList.stream()
-            .filter(processor -> processor.getExchangeType() == coinExchangeType)
+            .filter(processor -> processor.getCoinExchangeType() == coinExchangeType)
             .findFirst()
             .orElseThrow();
     }

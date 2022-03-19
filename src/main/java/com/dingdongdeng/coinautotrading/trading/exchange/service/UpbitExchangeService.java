@@ -101,7 +101,7 @@ public class UpbitExchangeService implements ExchangeService {
 
         return ExchangeTradingInfo.builder()
             .coinType(param.getCoinType())
-            .coinExchangeType(getExchangeType())
+            .coinExchangeType(getCoinExchangeType())
             .tradingTerm(param.getTradingTerm())
             .currency(accounts.getCurrency())
             .balance(accounts.getBalance())
@@ -130,7 +130,7 @@ public class UpbitExchangeService implements ExchangeService {
     }
 
     @Override
-    public CoinExchangeType getExchangeType() {
+    public CoinExchangeType getCoinExchangeType() {
         return CoinExchangeType.UPBIT;
     }
 
@@ -146,7 +146,7 @@ public class UpbitExchangeService implements ExchangeService {
             keyPairId
         );
         return ExchangeCandles.builder()
-            .coinExchangeType(getExchangeType())
+            .coinExchangeType(getCoinExchangeType())
             .candleUnit(tradingTerm.getCandleUnit())
             .coinType(param.getCoinType())
             .candleList(
