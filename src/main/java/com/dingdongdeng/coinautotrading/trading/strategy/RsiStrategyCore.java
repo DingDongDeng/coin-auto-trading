@@ -4,12 +4,12 @@ import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
+import com.dingdongdeng.coinautotrading.trading.backtesting.context.TradingTimeContext;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.TradingTag;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
@@ -204,6 +204,6 @@ public class RsiStrategyCore implements StrategyCore {
         if (Objects.isNull(tradingResult.getCreatedAt())) {
             return false;
         }
-        return ChronoUnit.SECONDS.between(tradingResult.getCreatedAt(), LocalDateTime.now()) >= TOO_OLD_ORDER_TIME_SECONDS;
+        return ChronoUnit.SECONDS.between(tradingResult.getCreatedAt(), TradingTimeContext.now()) >= TOO_OLD_ORDER_TIME_SECONDS;
     }
 }

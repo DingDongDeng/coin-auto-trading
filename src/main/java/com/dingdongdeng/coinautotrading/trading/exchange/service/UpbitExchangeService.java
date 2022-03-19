@@ -2,6 +2,7 @@ package com.dingdongdeng.coinautotrading.trading.exchange.service;
 
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
+import com.dingdongdeng.coinautotrading.trading.backtesting.context.TradingTimeContext;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.UpbitClient;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.UpbitEnum.MarketType;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.UpbitEnum.OrdType;
@@ -26,7 +27,6 @@ import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeT
 import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeTradingInfo;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeTradingInfoParam;
 import com.dingdongdeng.coinautotrading.trading.index.IndexCalculator;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -140,7 +140,7 @@ public class UpbitExchangeService implements ExchangeService {
             CandleRequest.builder()
                 .unit(tradingTerm.getCandleUnit().getSize())
                 .market(MarketType.of(param.getCoinType()).getCode())
-                .toKst(LocalDateTime.now())
+                .toKst(TradingTimeContext.now())
                 .count(200)
                 .build(),
             keyPairId
