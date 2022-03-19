@@ -6,9 +6,11 @@ import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.type.AutoTradingProcessStatus;
 import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -22,7 +24,8 @@ import lombok.extern.slf4j.Slf4j;
 @Builder
 public class AutoTradingProcessor {
 
-    private String id;
+    @Default
+    private String id = UUID.randomUUID().toString();
     private String title;
     private String userId;
     private CoinType coinType;
