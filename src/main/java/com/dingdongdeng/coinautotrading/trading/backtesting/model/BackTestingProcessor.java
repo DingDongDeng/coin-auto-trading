@@ -18,7 +18,7 @@ public class BackTestingProcessor {
 
     @Default
     private String id = UUID.randomUUID().toString();
-    private Strategy strategy;
+    private Strategy backTestingStrategy;
 
     public void start() {
 
