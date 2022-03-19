@@ -1,6 +1,7 @@
 package com.dingdongdeng.coinautotrading.trading.backtesting.model;
 
-import com.dingdongdeng.coinautotrading.trading.backtesting.service.BackTestingContextLoader;
+import com.dingdongdeng.coinautotrading.trading.backtesting.context.BackTestingContextLoader;
+import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
 import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -21,15 +22,24 @@ public class BackTestingProcessor {
     @Default
     private String id = UUID.randomUUID().toString();
     private Strategy backTestingStrategy;
-    private BackTestingContextLoader contextLoader;
+    private BackTestingContextLoader backTestingContextLoader;
 
     public void start() {
         CompletableFuture.runAsync(this::process);
     }
 
     private void process() {
-        while (contextLoader.hasNext()) {
-            backTestingStrategy.execute();
+        try {
+            while (backTestingContextLoader.hasNext()) {
+                // now를 백테스팅 시점인 과거로 재정의
+                TradingTimeContext.nowSupplier(() -> backTestingContextLoader.getCurrentContext().getNow());
+
+                // 백테스팅 사이클 실행
+                backTestingStrategy.execute();
+            }
+        } finally {
+            // 거래 관련 시간 컨텍스트 초기화
+            TradingTimeContext.clear();
         }
     }
 }
