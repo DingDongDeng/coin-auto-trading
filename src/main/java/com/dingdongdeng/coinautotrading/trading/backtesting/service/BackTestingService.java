@@ -42,7 +42,7 @@ public class BackTestingService {
             backTestingExchangeService,
             autoTradingProcessor.getCoinType(),
             autoTradingProcessor.getTradingTerm(),
-            null
+            autoTradingProcessor.getStrategy().getStrategyService().getKeyPairId()
         );
 
         BackTestingProcessor backTestingProcessor = BackTestingProcessor.builder()

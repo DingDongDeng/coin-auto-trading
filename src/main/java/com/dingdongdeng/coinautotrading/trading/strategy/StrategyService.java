@@ -14,10 +14,12 @@ import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Getter
 @RequiredArgsConstructor
 public class StrategyService {
 
