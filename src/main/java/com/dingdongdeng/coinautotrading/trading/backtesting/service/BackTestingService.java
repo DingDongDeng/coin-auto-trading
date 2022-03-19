@@ -4,6 +4,7 @@ import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingPro
 import com.dingdongdeng.coinautotrading.trading.backtesting.model.BackTestingProcessor;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeCandleService;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeCandleServiceSelector;
+import com.dingdongdeng.coinautotrading.trading.index.IndexCalculator;
 import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyFactory;
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ public class BackTestingService {
 
     private final StrategyFactory strategyFactory;
     private final ExchangeCandleServiceSelector candleServiceSelector;
+    private final IndexCalculator indexCalculator;
 
     public BackTestingProcessor doTest(AutoTradingProcessor autoTradingProcessor, LocalDateTime start, LocalDateTime end) {
 
@@ -27,7 +29,7 @@ public class BackTestingService {
 
         Strategy backTestingStrategy = strategyFactory.create(
             autoTradingProcessor.getStrategy().getStrategyCode(),
-            new BackTestingExchangeService(contextLoader),
+            new BackTestingExchangeService(contextLoader, indexCalculator),
             autoTradingProcessor.getCoinType(),
             autoTradingProcessor.getTradingTerm(),
             null
