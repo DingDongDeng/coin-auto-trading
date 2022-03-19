@@ -2,6 +2,7 @@ package com.dingdongdeng.coinautotrading.trading.backtesting.service;
 
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingProcessor;
+import com.dingdongdeng.coinautotrading.trading.backtesting.context.BackTestingContextLoader;
 import com.dingdongdeng.coinautotrading.trading.backtesting.model.BackTestingProcessor;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeCandleService;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeCandleServiceSelector;
@@ -51,7 +52,7 @@ public class BackTestingService {
         BackTestingProcessor backTestingProcessor = BackTestingProcessor.builder()
             .id(UUID.randomUUID().toString())
             .backTestingStrategy(backTestingStrategy)
-            .contextLoader(contextLoader)
+            .backTestingContextLoader(contextLoader)
             .build();
 
         backTestingProcessor.start();
