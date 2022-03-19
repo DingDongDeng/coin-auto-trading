@@ -9,20 +9,21 @@ import com.dingdongdeng.coinautotrading.trading.strategy.model.type.StrategyCode
 import java.util.List;
 import java.util.UUID;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@RequiredArgsConstructor
 public class Strategy {
 
     @Getter
     private final String identifyCode;
+    @Getter
+    private final StrategyCode strategyCode;
     private final StrategyCore strategyCore;
     private final StrategyService strategyService;
     private final StrategyStore strategyStore;
 
     public Strategy(StrategyCode code, StrategyCore core, StrategyService service, StrategyStore orderInfoStore) {
+        this.strategyCode = code;
         this.identifyCode = code.name() + UUID.randomUUID().toString();
         this.strategyCore = core;
         this.strategyService = service;
