@@ -1,15 +1,12 @@
 package com.dingdongdeng.coinautotrading.trading.backtesting.model;
 
+import java.time.LocalDateTime;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@ToString
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
 public class BackTestingRequest {
 
     @ToString
@@ -20,6 +17,10 @@ public class BackTestingRequest {
 
         @NotNull
         private String autoTradingProcessorId;
+        @NotNull
+        private LocalDateTime start;
+        @NotNull
+        private LocalDateTime end;
 
     }
 
