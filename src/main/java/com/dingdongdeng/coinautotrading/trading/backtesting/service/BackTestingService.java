@@ -49,6 +49,7 @@ public class BackTestingService {
             .id(UUID.randomUUID().toString())
             .backTestingStrategy(backTestingStrategy)
             .backTestingContextLoader(contextLoader)
+            .duration(10)
             .build();
 
         backTestingProcessor.start();

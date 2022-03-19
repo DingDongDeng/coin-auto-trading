@@ -23,6 +23,7 @@ public class BackTestingProcessor {
     private String id = UUID.randomUUID().toString();
     private Strategy backTestingStrategy;
     private BackTestingContextLoader backTestingContextLoader;
+    private long duration;
 
     public void start() {
         CompletableFuture.runAsync(this::process);
@@ -31,6 +32,7 @@ public class BackTestingProcessor {
     private void process() {
         try {
             while (backTestingContextLoader.hasNext()) {
+                delay();
                 // now를 백테스팅 시점인 과거로 재정의
                 TradingTimeContext.nowSupplier(() -> backTestingContextLoader.getCurrentContext().getNow());
 
@@ -40,6 +42,14 @@ public class BackTestingProcessor {
         } finally {
             // 거래 관련 시간 컨텍스트 초기화
             TradingTimeContext.clear();
+        }
+    }
+
+    private void delay() {
+        try {
+            Thread.sleep(duration);
+        } catch (InterruptedException e) {
+            log.error(e.getMessage(), e);
         }
     }
 }
