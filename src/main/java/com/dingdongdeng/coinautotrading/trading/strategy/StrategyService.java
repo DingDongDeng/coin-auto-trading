@@ -14,6 +14,7 @@ import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,6 +31,7 @@ public class StrategyService {
         ExchangeTradingInfoParam param = ExchangeTradingInfoParam.builder()
             .coinType(coinType)
             .tradingTerm(tradingTerm)
+            .now(LocalDateTime.now())
             .build();
         ExchangeTradingInfo exchangeTradingInfo = exchangeService.getTradingInformation(param, keyPairId);
 

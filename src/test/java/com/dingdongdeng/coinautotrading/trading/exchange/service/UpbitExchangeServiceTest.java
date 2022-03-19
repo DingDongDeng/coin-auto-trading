@@ -16,6 +16,7 @@ import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeO
 import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrderParam;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeTradingInfo;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeTradingInfoParam;
+import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -96,6 +97,7 @@ class UpbitExchangeServiceTest {
             ExchangeTradingInfoParam.builder()
                 .coinType(CoinType.ETHEREUM)
                 .tradingTerm(TradingTerm.SCALPING)
+                .now(LocalDateTime.now())
                 .build(),
             keyPairId
         );
