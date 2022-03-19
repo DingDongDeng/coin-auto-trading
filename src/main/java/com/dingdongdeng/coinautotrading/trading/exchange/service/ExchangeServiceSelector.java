@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class ExchangeServiceSelector {
 
-    private final List<ExchangeService> processorList;
+    private final List<ExchangeService> exchangeServiceList;
 
     public ExchangeService getTargetService(CoinExchangeType coinExchangeType) {
-        return processorList.stream()
+        return exchangeServiceList.stream()
             .filter(processor -> processor.getCoinExchangeType() == coinExchangeType)
             .findFirst()
             .orElseThrow();
