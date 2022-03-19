@@ -3,6 +3,7 @@ package com.dingdongdeng.coinautotrading.trading.backtesting.controller;
 import com.dingdongdeng.coinautotrading.common.model.CommonResponse;
 import com.dingdongdeng.coinautotrading.trading.backtesting.aggregation.BackTestingAggregation;
 import com.dingdongdeng.coinautotrading.trading.backtesting.model.BackTestingRequest;
+import com.dingdongdeng.coinautotrading.trading.backtesting.model.BackTestingResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +21,8 @@ public class BackTestingController {
     private final BackTestingAggregation backTestingAggregation;
 
     @PostMapping("/backtesting")
-    public CommonResponse<String> register(@RequestBody BackTestingRequest.Register request, @RequestHeader String userId) {
-        return CommonResponse.<String>builder()
+    public CommonResponse<BackTestingResponse> doTest(@RequestBody BackTestingRequest.Register request, @RequestHeader String userId) {
+        return CommonResponse.<BackTestingResponse>builder()
             .body(backTestingAggregation.doTest(request, userId))
             .message("backtesting doTest success")
             .build();
