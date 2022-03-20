@@ -111,7 +111,8 @@ public class BackTestingExchangeService implements ExchangeService {
     @Override
     public ExchangeTradingInfo getTradingInformation(ExchangeTradingInfoParam param, String keyPairId) {
         BackTestingContext context = contextLoader.getCurrentContext();
-        ExchangeCandles candles = exchangeCandleService.getCandleList(param.getCoinType(), param.getTradingTerm().getCandleUnit(), null, null, null);
+        double currentPrice = context.getCurrentPrice();
+        ExchangeCandles candles = context.getCandles();
 
         return ExchangeTradingInfo.builder()
             .coinType(param.getCoinType())
@@ -126,7 +127,7 @@ public class BackTestingExchangeService implements ExchangeService {
             .unitCurrency(null)
 
             .candles(candles)
-            .ticker(ExchangeTicker.builder().tradePrice(context.getCurrentPrice()).build())
+            .ticker(ExchangeTicker.builder().tradePrice(currentPrice).build())
 
             .rsi(indexCalculator.getRsi(candles))
             .build();
