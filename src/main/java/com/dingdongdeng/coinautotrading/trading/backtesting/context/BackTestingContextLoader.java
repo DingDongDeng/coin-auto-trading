@@ -8,10 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class BackTestingContextLoader {
 
-    private ExchangeCandleService exchangeCandleService;
+    private final ExchangeCandleService exchangeCandleService;
 
-    private LocalDateTime start;
-    private LocalDateTime end;
+    private final LocalDateTime start;
+    private final LocalDateTime end;
 
     private BackTestingContext currentContext;
 
@@ -32,10 +32,11 @@ public class BackTestingContextLoader {
     }
 
     public BackTestingContext getCurrentContext() {
-        return null;
+        return this.currentContext;
     }
 
     private BackTestingContext getNextContext() {
+        //fixme
         return null;
     }
 
