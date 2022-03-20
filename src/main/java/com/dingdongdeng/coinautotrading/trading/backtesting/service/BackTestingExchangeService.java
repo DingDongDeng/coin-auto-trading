@@ -4,6 +4,7 @@ import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.OrderState;
 import com.dingdongdeng.coinautotrading.trading.backtesting.context.BackTestingContext;
 import com.dingdongdeng.coinautotrading.trading.backtesting.context.BackTestingContextLoader;
+import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeCandleService;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeService;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeCandles;
@@ -16,7 +17,6 @@ import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeT
 import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeTradingInfo;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeTradingInfoParam;
 import com.dingdongdeng.coinautotrading.trading.index.IndexCalculator;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -46,7 +46,7 @@ public class BackTestingExchangeService implements ExchangeService {
             .avgPrice(null)
             .orderState(OrderState.DONE)
             .coinType(param.getCoinType())
-            .createdAt(LocalDateTime.now())
+            .createdAt(TradingTimeContext.now())
             .volume(param.getVolume())
             .remainingVolume(null)
             .reservedFee(null)
