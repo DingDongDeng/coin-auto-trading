@@ -1,25 +1,23 @@
 package com.dingdongdeng.coinautotrading.trading.backtesting.context;
 
-import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeCandleService;
-import java.time.LocalDateTime;
+import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
+import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeCandles.Candle;
 import java.util.Objects;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@RequiredArgsConstructor
 public class BackTestingContextLoader {
 
-    private final ExchangeCandleService exchangeCandleService;
-
-    private final LocalDateTime start;
-    private final LocalDateTime end;
-
+    private final BackTestingCandleLoader candleLoader;
+    private final TradingTerm tradingTerm;
+    @Getter
+    @Setter(AccessLevel.PRIVATE)
     private BackTestingContext currentContext;
-
-    public BackTestingContextLoader(ExchangeCandleService candleService, LocalDateTime start, LocalDateTime end) {
-        this.exchangeCandleService = candleService;
-        this.start = start;
-        this.end = end;
-    }
 
     public boolean hasNext() {
         BackTestingContext context = getNextContext();
@@ -31,17 +29,14 @@ public class BackTestingContextLoader {
         return false;
     }
 
-    public BackTestingContext getCurrentContext() {
-        return this.currentContext;
-    }
-
     private BackTestingContext getNextContext() {
-        //fixme
-        return null;
+        Candle candle = candleLoader.getNextCandle();
+        return BackTestingContext.builder()
+            .coinExchangeType(candleLoader.getCoinExchangeType())
+            .coinType(candleLoader.getCoinType())
+            .currentPrice(candle.getTradePrice())
+            .now(candle.getCandleDateTimeKst())
+            .candles(candleLoader.getCandles(tradingTerm.getCandleUnit(), candle.getCandleDateTimeKst()))
+            .build();
     }
-
-    private void setCurrentContext(BackTestingContext context) {
-        this.currentContext = context;
-    }
-
 }

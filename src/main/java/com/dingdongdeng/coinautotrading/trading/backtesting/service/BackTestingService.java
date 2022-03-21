@@ -1,8 +1,8 @@
 package com.dingdongdeng.coinautotrading.trading.backtesting.service;
 
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
-import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingProcessor;
+import com.dingdongdeng.coinautotrading.trading.backtesting.context.BackTestingCandleLoader;
 import com.dingdongdeng.coinautotrading.trading.backtesting.context.BackTestingContextLoader;
 import com.dingdongdeng.coinautotrading.trading.backtesting.model.BackTestingProcessor;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeCandleService;
@@ -28,11 +28,18 @@ public class BackTestingService {
     public BackTestingProcessor doTest(AutoTradingProcessor autoTradingProcessor, LocalDateTime start, LocalDateTime end) {
 
         String keyPairdId = autoTradingProcessor.getStrategy().getStrategyService().getKeyPairId();
-        CoinType coinType = autoTradingProcessor.getCoinType();
         CoinExchangeType coinExchangeType = autoTradingProcessor.getCoinExchangeType();
         ExchangeCandleService exchangeCandleService = exchangeCandleServiceSelector.getTargetService(coinExchangeType);
 
-        BackTestingContextLoader contextLoader = new BackTestingContextLoader(coinExchangeType, coinType, keyPairdId, exchangeCandleService, start, end);
+        BackTestingCandleLoader backTestingCandleLoader = BackTestingCandleLoader.builder()
+            .coinType(autoTradingProcessor.getCoinType())
+            .keyPairdId(keyPairdId)
+            .exchangeCandleService(exchangeCandleService)
+            .chunkSize(10)
+            .start(start)
+            .end(end)
+            .build();
+        BackTestingContextLoader contextLoader = new BackTestingContextLoader(backTestingCandleLoader, autoTradingProcessor.getTradingTerm());
 
         BackTestingExchangeService backTestingExchangeService = BackTestingExchangeService.builder()
             .contextLoader(contextLoader)
