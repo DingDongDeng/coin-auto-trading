@@ -17,6 +17,5 @@ public class BackTestingContext {
     private CoinType coinType;
     private Double currentPrice;
     private LocalDateTime now;
-    private Double balance;
     private ExchangeCandles candles;
 }
