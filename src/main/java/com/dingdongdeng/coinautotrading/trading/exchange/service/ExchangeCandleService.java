@@ -7,7 +7,8 @@ import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeC
 import java.time.LocalDateTime;
 
 public interface ExchangeCandleService {
-    ExchangeCandles getCandles(CoinType coinType, CandleUnit candleUnit, LocalDateTime start, int count, String keyPairId);
+
+    ExchangeCandles getCandles(CoinType coinType, CandleUnit candleUnit, LocalDateTime start, LocalDateTime end, String keyPairId);
 
     CoinExchangeType getCoinExchangeType();
 
