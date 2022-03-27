@@ -128,4 +128,43 @@ class UpbitExchangeCandleServiceTest {
         assertEquals(3778000, candles.getCandleList().get(199).getTradePrice());
     }
 
+    @Test
+    public void 캔들_1분봉_end_조회_테스트() {
+
+        //given
+        CoinType coinType = CoinType.ETHEREUM;
+        CandleUnit candleUnit = CandleUnit.UNIT_1M;
+        LocalDateTime start = null;
+        LocalDateTime end = LocalDateTime.of(2022, 03, 27, 10, 45, 0);
+        String keyPairId = UUID.randomUUID().toString();
+        String userId = "123456";
+        given(exchangeKeyService.findByPairId(keyPairId))
+            .willReturn(
+                List.of(
+                    ExchangeKey.builder()
+                        .pairId(keyPairId)
+                        .coinExchangeType(CoinExchangeType.UPBIT)
+                        .name("ACCESS_KEY")
+                        .value(accessKey)
+                        .userId(userId)
+                        .build(),
+                    ExchangeKey.builder()
+                        .pairId(keyPairId)
+                        .coinExchangeType(CoinExchangeType.UPBIT)
+                        .name("SECRET_KEY")
+                        .value(secretKey)
+                        .userId(userId)
+                        .build()
+                )
+            );
+
+        //when
+        ExchangeCandles candles = service.getCandles(coinType, candleUnit, start, end, keyPairId);
+
+        //then
+        assertEquals(200, candles.getCandleList().size());
+        assertEquals(end.withSecond(0), candles.getCandleList().get(199).getCandleDateTimeKst());
+    }
+
+
 }

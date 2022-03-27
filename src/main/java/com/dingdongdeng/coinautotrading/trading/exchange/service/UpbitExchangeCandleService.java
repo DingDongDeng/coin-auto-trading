@@ -13,6 +13,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,9 +31,14 @@ public class UpbitExchangeCandleService implements ExchangeCandleService {
     @Override //fixme 분봉만 지원
     public ExchangeCandles getCandles(CoinType coinType, CandleUnit candleUnit, LocalDateTime start, LocalDateTime end, String keyPairId) {
         /**
+         * start를 기준으로 최대 캔들 200개까지 조회 가능
          * start < 캔들 <= end 범위로 조회
          * start ~ end 순서로 정렬된 캔들 정보 반환
+         * start가 null이라면 end를 기준으로 캔들 200개까지 조회
          */
+        if (Objects.isNull(start)) {
+            start = getlimitedStartDateTime(candleUnit, end);
+        }
 
         LocalDateTime limitedEndDateTime = getlimitedEndDateTime(candleUnit, start, end);
         int candleCount = getCandleCount(candleUnit, start, limitedEndDateTime);
@@ -93,6 +99,24 @@ public class UpbitExchangeCandleService implements ExchangeCandleService {
         return (end.isAfter(limitedEndDateTime) ? limitedEndDateTime : end).withSecond(59);
     }
 
+    private LocalDateTime getlimitedStartDateTime(CandleUnit candleUnit, LocalDateTime end) {
+        LocalDateTime limitedStartDateTime;
+        int unitSize = candleUnit.getSize();
+        switch (candleUnit.getUnitType()) {
+            case WEEK:
+                limitedStartDateTime = end.minusWeeks(MAX_CHUNK_SIZE * unitSize);
+                break;
+            case DAY:
+                limitedStartDateTime = end.minusDays(MAX_CHUNK_SIZE * unitSize);
+                break;
+            case MIN:
+                limitedStartDateTime = end.minusMinutes(MAX_CHUNK_SIZE * unitSize);
+                break;
+            default:
+                throw new NoSuchElementException("fail make limitedStartDateTime");
+        }
+        return limitedStartDateTime;
+    }
 
     private int getCandleCount(CandleUnit candleUnit, LocalDateTime start, LocalDateTime limitedEndDateTime) {
         Long diff = null;
