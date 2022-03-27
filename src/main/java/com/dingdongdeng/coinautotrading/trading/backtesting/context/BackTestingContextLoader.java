@@ -36,7 +36,7 @@ public class BackTestingContextLoader {
             .coinType(candleLoader.getCoinType())
             .currentPrice(candle.getTradePrice())
             .now(candle.getCandleDateTimeKst())
-            .candles(candleLoader.getCandles(tradingTerm.getCandleUnit(), candle.getCandleDateTimeKst()))
+            .candles(candleLoader.getCandles(tradingTerm.getCandleUnit(), null, candle.getCandleDateTimeKst()))
             .build();
     }
 }
