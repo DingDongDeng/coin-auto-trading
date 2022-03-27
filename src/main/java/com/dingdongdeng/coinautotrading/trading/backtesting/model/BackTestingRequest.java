@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.format.annotation.DateTimeFormat;
 
 public class BackTestingRequest {
 
@@ -18,8 +19,10 @@ public class BackTestingRequest {
         @NotNull
         private String autoTradingProcessorId;
         @NotNull
+        @DateTimeFormat(pattern = "yyyy-MM-ddTHH:mm:ss")
         private LocalDateTime start;
         @NotNull
+        @DateTimeFormat(pattern = "yyyy-MM-ddTHH:mm:ss")
         private LocalDateTime end;
 
     }
