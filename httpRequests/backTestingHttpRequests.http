@@ -1,0 +1,9 @@
+POST http://localhost:8080/backtesting
+Content-Type: application/json
+userId: 1234
+
+{
+  "autoTradingProcessorId": "df29b5e7-7784-48c5-ae40-68ab92a9afcc",
+  "start": "2022-03-27T12:00:00",
+  "end": "2022-03-27T12:00:00"
+}
