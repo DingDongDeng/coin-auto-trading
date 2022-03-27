@@ -119,7 +119,7 @@ public class BackTestingExchangeService implements ExchangeService {
             .coinExchangeType(getCoinExchangeType())
             .tradingTerm(param.getTradingTerm())
             .currency(null)
-            .balance(100 * 10000d)
+            .balance(400 * 10000d)
             .locked(null)
 
             .avgBuyPrice(null)
