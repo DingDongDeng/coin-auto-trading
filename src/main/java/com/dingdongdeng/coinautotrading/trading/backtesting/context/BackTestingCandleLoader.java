@@ -8,6 +8,7 @@ import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeC
 import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeCandles.Candle;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Builder.Default;
@@ -23,18 +24,23 @@ public class BackTestingCandleLoader {
     private CoinType coinType;
     private String keyPairdId;
     private ExchangeCandleService exchangeCandleService;
-    private int chunkSize;
 
     @Default
     private CandleUnit BACK_TESTING_CANDLE_UNIT = CandleUnit.UNIT_1M;
     private LocalDateTime start;
     private LocalDateTime end;
-    @Default
-    private List<Candle> candleList = getCandles(BACK_TESTING_CANDLE_UNIT, start).getCandleList();
+
+    private List<Candle> candleList;
     @Default
     private int cursor = -1;
 
     public Candle getNextCandle() {
+
+        // candleList 초기화
+        if (Objects.isNull(candleList)) {
+            this.candleList = getCandles(BACK_TESTING_CANDLE_UNIT, start, end).getCandleList();
+        }
+
         // 다음 캔들을 얻기 위해 커서값을 1 증가 시키고 이를 인덱스로 사용
         int index = ++cursor;
 
@@ -43,20 +49,23 @@ public class BackTestingCandleLoader {
 
             //다음에 새로 읽어야할 캔들리스트가 있는지 확인
             Candle lastCandle = candleList.get(cursor - 1);
-            if (lastCandle.getCandleDateTimeKst().isBefore(end)) {
+            if (lastCandle.getCandleDateTimeKst().isBefore(end)) { //fixme 초 떄문에 한번 더 조회됨 해결좀
 
                 // 캔들 리스트를 새로 세팅하고, 커서를 초기화
-                candleList = getCandles(BACK_TESTING_CANDLE_UNIT, lastCandle.getCandleDateTimeKst()).getCandleList();
+                candleList = getCandles(BACK_TESTING_CANDLE_UNIT, lastCandle.getCandleDateTimeKst(), end).getCandleList();
                 cursor = -1;
 
                 // 새 캔들 리스트의 첫번째 캔들을 반환
                 return candleList.get(++cursor);
             }
+
+            // start, end 사이의 캔들을 모두 읽음
+            return null;
         }
 
         //현재 읽어온 캔들리스트를 다 읽지 않았다면
         Candle nextCandle = candleList.get(index);
-        if (nextCandle.getCandleDateTimeKst().isBefore(end)) {
+        if (nextCandle.getCandleDateTimeKst().isBefore(end) || nextCandle.getCandleDateTimeKst().equals(end)) {
             return nextCandle;
         }
 
@@ -64,14 +73,8 @@ public class BackTestingCandleLoader {
         return null;
     }
 
-    public ExchangeCandles getCandles(CandleUnit candleUnit, LocalDateTime start) {
-        return exchangeCandleService
-            .getCandles(
-                coinType,
-                candleUnit,
-                start,
-                chunkSize,
-                keyPairdId);
+    public ExchangeCandles getCandles(CandleUnit candleUnit, LocalDateTime start, LocalDateTime end) {
+        return exchangeCandleService.getCandles(coinType, candleUnit, start, end, keyPairdId);
     }
 
     public CoinExchangeType getCoinExchangeType() {

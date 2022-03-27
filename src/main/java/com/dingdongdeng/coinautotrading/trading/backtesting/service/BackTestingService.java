@@ -35,7 +35,6 @@ public class BackTestingService {
             .coinType(autoTradingProcessor.getCoinType())
             .keyPairdId(keyPairdId)
             .exchangeCandleService(exchangeCandleService)
-            .chunkSize(10)
             .start(start)
             .end(end)
             .build();
