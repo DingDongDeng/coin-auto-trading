@@ -64,7 +64,7 @@ public class BackTestingService {
             .autoTradingProcessorId(autoTradingProcessor.getId())
             .backTestingStrategy(backTestingStrategy)
             .backTestingContextLoader(contextLoader)
-            .duration(200)
+            .duration(1000)
             .build();
 
         backTestingProcessor.start();
