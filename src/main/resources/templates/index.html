@@ -130,7 +130,7 @@
         <div v-for="backTesting in user.backTestingList">
           <div v-if="backTesting.autoTradingProcessorId==autoTrading.processorId">
             <div>
-              상태 : {{backTesting.status}}
+              상태 : {{backTesting.result.status}}
             </div>
             <div>
               손익 : {{backTesting.result.marginPrice}}
