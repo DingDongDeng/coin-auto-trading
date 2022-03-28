@@ -46,6 +46,7 @@ public class BackTestingProcessor {
                 backTestingStrategy.execute();
             }
         } catch (Exception e) {
+            log.error("backTesting error : ", e); //fixme 여기서 로깅하지 않도록 수정
             this.status = BackTestingProcessStatus.FAILED;
             throw e;
         } finally {
