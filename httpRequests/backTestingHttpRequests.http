@@ -9,4 +9,6 @@ userId: 1234
 }
 
 ###
-GET http://localhost:8080/backtesting/27f8e641-9ba8-4041-ade8-0bbbaf41d29d
+GET http://localhost:8080/backtesting
+Content-Type: application/json
+userId: 1234

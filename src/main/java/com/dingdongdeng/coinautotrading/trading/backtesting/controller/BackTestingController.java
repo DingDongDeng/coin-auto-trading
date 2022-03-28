@@ -4,10 +4,10 @@ import com.dingdongdeng.coinautotrading.common.model.CommonResponse;
 import com.dingdongdeng.coinautotrading.trading.backtesting.aggregation.BackTestingAggregation;
 import com.dingdongdeng.coinautotrading.trading.backtesting.model.BackTestingRequest;
 import com.dingdongdeng.coinautotrading.trading.backtesting.model.BackTestingResponse;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -28,10 +28,10 @@ public class BackTestingController {
             .build();
     }
 
-    @GetMapping("/backtesting/{backTestingId}")
-    public CommonResponse<Object> getResult(@PathVariable String backTestingId) {
-        return CommonResponse.builder()
-            .body(backTestingAggregation.getResult(backTestingId))
+    @GetMapping("/backtesting")
+    public CommonResponse<List<BackTestingResponse>> getResult(@RequestHeader String userId) {
+        return CommonResponse.<List<BackTestingResponse>>builder()
+            .body(backTestingAggregation.getResult(userId))
             .message("backtesting getResult success")
             .build();
     }
