@@ -36,7 +36,7 @@ public class BackTestingContextLoader {
             .coinType(candleLoader.getCoinType())
             .currentPrice(candle.getTradePrice())
             .now(candle.getCandleDateTimeKst())
-            .candles(candleLoader.getCandles(tradingTerm.getCandleUnit(), null, candle.getCandleDateTimeKst()))
+            .candles(candleLoader.getCandles(tradingTerm.getCandleUnit(), null, candle.getCandleDateTimeKst())) //fixme 백테스팅 속도가 너무 느려져 개선필요
             .build();
     }
 }
