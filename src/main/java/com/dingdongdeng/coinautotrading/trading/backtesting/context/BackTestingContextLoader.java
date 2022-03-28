@@ -31,6 +31,9 @@ public class BackTestingContextLoader {
 
     private BackTestingContext getNextContext() {
         Candle candle = candleLoader.getNextCandle();
+        if (Objects.isNull(candle)) {
+            return null;
+        }
         return BackTestingContext.builder()
             .coinExchangeType(candleLoader.getCoinExchangeType())
             .coinType(candleLoader.getCoinType())
