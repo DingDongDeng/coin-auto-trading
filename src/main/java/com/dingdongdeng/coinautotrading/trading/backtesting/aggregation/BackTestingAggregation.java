@@ -5,8 +5,10 @@ import com.dingdongdeng.coinautotrading.trading.autotrading.service.AutoTradingS
 import com.dingdongdeng.coinautotrading.trading.backtesting.model.BackTestingProcessor;
 import com.dingdongdeng.coinautotrading.trading.backtesting.model.BackTestingRequest;
 import com.dingdongdeng.coinautotrading.trading.backtesting.model.BackTestingResponse;
+import com.dingdongdeng.coinautotrading.trading.backtesting.model.BackTestingResponse.Result;
 import com.dingdongdeng.coinautotrading.trading.backtesting.service.BackTestingService;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,10 +34,26 @@ public class BackTestingAggregation {
 
         return BackTestingResponse.builder()
             .backTestingId(backTestingProcessor.getId())
+            .userId(backTestingProcessor.getUserId())
+            .autoTradingProcessorId(backTestingProcessor.getAutoTradingProcessorId())
+            .result(null)
             .build();
     }
 
-    public Object getResult(String backTestingId) {
-        return null;
+    public List<BackTestingResponse> getResult(String userId) {
+        return backTestingService.getBackTestingProcessorList(userId).stream()
+            .map(b -> BackTestingResponse.builder()
+                .backTestingId(b.getId())
+                .userId(b.getUserId())
+                .autoTradingProcessorId(b.getAutoTradingProcessorId())
+                .result(
+                    Result.builder()
+                        .status(b.getStatus())
+                        .marginPrice(null)
+                        .marginRate(null)
+                        .build()
+                )
+                .build())
+            .collect(Collectors.toList());
     }
 }

@@ -11,7 +11,10 @@ import com.dingdongdeng.coinautotrading.trading.index.IndexCalculator;
 import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyFactory;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,6 +27,7 @@ public class BackTestingService {
     private final StrategyFactory strategyFactory;
     private final ExchangeCandleServiceSelector exchangeCandleServiceSelector;
     private final IndexCalculator indexCalculator;
+    private final Map<String, BackTestingProcessor> backTestingProcessorMap; //fixme 한번 래핑해서 다루기
 
     public BackTestingProcessor doTest(AutoTradingProcessor autoTradingProcessor, LocalDateTime start, LocalDateTime end) {
 
@@ -56,13 +60,23 @@ public class BackTestingService {
 
         BackTestingProcessor backTestingProcessor = BackTestingProcessor.builder()
             .id(UUID.randomUUID().toString())
+            .userId(autoTradingProcessor.getUserId())
+            .autoTradingProcessorId(autoTradingProcessor.getId())
             .backTestingStrategy(backTestingStrategy)
             .backTestingContextLoader(contextLoader)
             .duration(200)
             .build();
 
         backTestingProcessor.start();
+        backTestingProcessorMap.put(backTestingProcessor.getId(), backTestingProcessor);
+        //fixme processor(backteting, autotrading)안에 recorder라는 클래스 만들어서 필요한 상태들을 저장할수있도록 구조를 만들어보자, 언제 remove할지도 생각
 
         return backTestingProcessor;
+    }
+
+    public List<BackTestingProcessor> getBackTestingProcessorList(String userId) {
+        return backTestingProcessorMap.values().stream()
+            .filter(processor -> processor.getUserId().equals(userId))
+            .collect(Collectors.toList());
     }
 }
