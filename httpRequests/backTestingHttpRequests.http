@@ -9,6 +9,6 @@ userId: 1234
 }
 
 ###
-GET http://localhost:8080/backtesting
+GET http://localhost:8080/user/1234/backtesting
 Content-Type: application/json
 userId: 1234

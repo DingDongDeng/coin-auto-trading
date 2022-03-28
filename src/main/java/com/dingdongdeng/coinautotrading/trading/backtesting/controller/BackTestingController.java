@@ -8,6 +8,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -28,8 +29,8 @@ public class BackTestingController {
             .build();
     }
 
-    @GetMapping("/backtesting")
-    public CommonResponse<List<BackTestingResponse>> getResult(@RequestHeader String userId) {
+    @GetMapping("/user/{userId}/backtesting")
+    public CommonResponse<List<BackTestingResponse>> getResult(@PathVariable String userId) {
         return CommonResponse.<List<BackTestingResponse>>builder()
             .body(backTestingAggregation.getResult(userId))
             .message("backtesting getResult success")
