@@ -49,8 +49,8 @@ public class BackTestingAggregation {
                 .result(
                     Result.builder()
                         .status(b.getStatus())
-                        .marginPrice(null)
-                        .marginRate(null)
+                        .marginPrice(b.getStrategy().getStrategyRecorder().getMarginPrice())
+                        .marginRate(b.getStrategy().getStrategyRecorder().getMarginRate())
                         .build()
                 )
                 .build())

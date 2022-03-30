@@ -19,7 +19,8 @@ public class StrategyFactory {
         StrategyService strategyService = new StrategyService(coinType, tradingTerm, keyPairId, exchangeService);
         StrategyStore strategyStore = new StrategyStore(tradingResultRepository);
         StrategyCore strategyCore = createStrategyCore(strategyCode);
-        return new Strategy(strategyCode, strategyCore, strategyService, strategyStore);
+        StrategyRecorder strategyRecorder = new StrategyRecorder();
+        return new Strategy(strategyCode, strategyCore, strategyService, strategyStore, strategyRecorder);
     }
 
     private StrategyCore createStrategyCore(StrategyCode strategyCode) {

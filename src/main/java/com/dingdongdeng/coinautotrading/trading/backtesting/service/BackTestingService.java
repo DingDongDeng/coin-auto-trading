@@ -61,7 +61,7 @@ public class BackTestingService {
             .id("BACKTESTING-" + autoTradingProcessor.getId())
             .userId(autoTradingProcessor.getUserId())
             .autoTradingProcessorId(autoTradingProcessor.getId())
-            .backTestingStrategy(backTestingStrategy)
+            .strategy(backTestingStrategy)
             .backTestingContextLoader(contextLoader)
             .duration(1000)
             .build();

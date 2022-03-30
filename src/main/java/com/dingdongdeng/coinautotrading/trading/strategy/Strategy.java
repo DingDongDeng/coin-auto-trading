@@ -20,13 +20,15 @@ public class Strategy {
     private final StrategyCore strategyCore;
     private final StrategyService strategyService;
     private final StrategyStore strategyStore;
+    private final StrategyRecorder strategyRecorder;
 
-    public Strategy(StrategyCode code, StrategyCore core, StrategyService service, StrategyStore store) {
+    public Strategy(StrategyCode code, StrategyCore core, StrategyService service, StrategyStore store, StrategyRecorder recorder) {
         this.strategyCode = code;
         this.identifyCode = code.name() + UUID.randomUUID().toString();
         this.strategyCore = core;
         this.strategyService = service;
         this.strategyStore = store;
+        this.strategyRecorder = recorder;
     }
 
     public void execute() {
@@ -49,6 +51,7 @@ public class Strategy {
             if (isOrder(tradingTask)) {
                 TradingResult orderTradingResult = strategyService.order(tradingTask);
                 strategyStore.save(orderTradingResult); // 주문 성공 건 정보 저장
+                strategyRecorder.apply(orderTradingResult);
                 strategyCore.handleOrderResult(orderTradingResult);
                 return;
             }
@@ -57,6 +60,7 @@ public class Strategy {
             if (isOrderCancel(tradingTask)) {
                 TradingResult cancelTradingResult = strategyService.orderCancel(tradingTask);
                 strategyStore.reset(cancelTradingResult); // 주문 취소 건 정보 제거
+                strategyRecorder.apply(cancelTradingResult);
                 strategyCore.handleOrderCancelResult(cancelTradingResult);
                 return;
             }

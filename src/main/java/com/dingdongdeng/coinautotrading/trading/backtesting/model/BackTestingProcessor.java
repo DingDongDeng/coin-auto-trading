@@ -26,7 +26,7 @@ public class BackTestingProcessor {
     private String autoTradingProcessorId;
     @Default
     private BackTestingProcessStatus status = BackTestingProcessStatus.INIT;
-    private Strategy backTestingStrategy;
+    private Strategy strategy;
     private BackTestingContextLoader backTestingContextLoader;
     private long duration;
 
@@ -43,7 +43,7 @@ public class BackTestingProcessor {
                 TradingTimeContext.nowSupplier(() -> backTestingContextLoader.getCurrentContext().getNow());
 
                 // 백테스팅 사이클 실행
-                backTestingStrategy.execute();
+                strategy.execute();
             }
         } catch (Exception e) {
             log.error("backTesting error : ", e); //fixme 여기서 로깅하지 않도록 수정
