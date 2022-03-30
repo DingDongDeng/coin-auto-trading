@@ -189,12 +189,12 @@ public class RsiStrategyCore implements StrategyCore {
 
     private boolean isLossOrderTiming(double currentPrice, double rsi, TradingResult buyTradingResult) {
         // 손실 중일때, 손실 한도에 다다르면 손절
-        if (currentPrice <= buyTradingResult.getPrice() * (1 - LOSS_LIMIT_PRICE_RATE)) {
+        if (currentPrice < buyTradingResult.getPrice() * (1 - LOSS_LIMIT_PRICE_RATE)) {
             return true;
         }
 
         // 손실 중일때, RSI가 이미 상승했다면 손절
-        if (currentPrice <= buyTradingResult.getPrice() && rsi >= LOSS_RSI) {
+        if (currentPrice < buyTradingResult.getPrice() && rsi >= LOSS_RSI) {
             return true;
         }
         return false;
