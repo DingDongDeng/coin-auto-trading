@@ -19,6 +19,7 @@ public class StrategyRecorder {
         TradingTag tag = tradingResult.getTag();
         if (tag == TradingTag.BUY) {
             totalBuyPrice += tradingResult.getPrice() * tradingResult.getVolume();
+            return;
         }
         if (tag == TradingTag.PROFIT) {
             totalProfitPrice += tradingResult.getPrice() * tradingResult.getVolume();
@@ -33,6 +34,7 @@ public class StrategyRecorder {
         TradingTag tag = tradingResult.getTag();
         if (tag == TradingTag.BUY) {
             totalBuyPrice -= tradingResult.getPrice() * tradingResult.getVolume();
+            return;
         }
         if (tag == TradingTag.PROFIT) {
             totalProfitPrice -= tradingResult.getPrice() * tradingResult.getVolume();
