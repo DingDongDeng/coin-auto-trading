@@ -13,7 +13,6 @@ import com.dingdongdeng.coinautotrading.trading.strategy.StrategyFactory;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,7 +58,7 @@ public class BackTestingService {
         );
 
         BackTestingProcessor backTestingProcessor = BackTestingProcessor.builder()
-            .id(UUID.randomUUID().toString())
+            .id("BACKTESTING-" + autoTradingProcessor.getId())
             .userId(autoTradingProcessor.getUserId())
             .autoTradingProcessorId(autoTradingProcessor.getId())
             .backTestingStrategy(backTestingStrategy)
@@ -69,7 +68,6 @@ public class BackTestingService {
 
         backTestingProcessor.start();
         backTestingProcessorMap.put(backTestingProcessor.getId(), backTestingProcessor);
-        //fixme processor(backteting, autotrading)안에 recorder라는 클래스 만들어서 필요한 상태들을 저장할수있도록 구조를 만들어보자, 언제 remove할지도 생각
 
         return backTestingProcessor;
     }
