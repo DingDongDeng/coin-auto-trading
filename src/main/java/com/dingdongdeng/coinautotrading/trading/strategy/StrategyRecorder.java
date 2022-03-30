@@ -44,7 +44,7 @@ public class StrategyRecorder {
     }
 
     private void calcMargin() {
-        this.marginRate = (totalProfitPrice + totalLossPrice) / totalBuyPrice;
-        this.marginPrice = totalBuyPrice - (totalProfitPrice + totalLossPrice);
+        this.marginRate = ((totalProfitPrice + totalLossPrice) / totalBuyPrice) * 100d - 100d;
+        this.marginPrice = (totalProfitPrice + totalLossPrice) - totalBuyPrice;
     }
 }
