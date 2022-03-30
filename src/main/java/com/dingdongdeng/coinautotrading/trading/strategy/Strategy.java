@@ -21,12 +21,12 @@ public class Strategy {
     private final StrategyService strategyService;
     private final StrategyStore strategyStore;
 
-    public Strategy(StrategyCode code, StrategyCore core, StrategyService service, StrategyStore orderInfoStore) {
+    public Strategy(StrategyCode code, StrategyCore core, StrategyService service, StrategyStore store) {
         this.strategyCode = code;
         this.identifyCode = code.name() + UUID.randomUUID().toString();
         this.strategyCore = core;
         this.strategyService = service;
-        this.strategyStore = orderInfoStore;
+        this.strategyStore = store;
     }
 
     public void execute() {
