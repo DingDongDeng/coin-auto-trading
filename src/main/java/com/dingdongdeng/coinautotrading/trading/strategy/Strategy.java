@@ -60,7 +60,7 @@ public class Strategy {
             if (isOrderCancel(tradingTask)) {
                 TradingResult cancelTradingResult = strategyService.orderCancel(tradingTask);
                 strategyStore.reset(cancelTradingResult); // 주문 취소 건 정보 제거
-                strategyRecorder.apply(cancelTradingResult);
+                strategyRecorder.revert(cancelTradingResult);
                 strategyCore.handleOrderCancelResult(cancelTradingResult);
                 return;
             }
