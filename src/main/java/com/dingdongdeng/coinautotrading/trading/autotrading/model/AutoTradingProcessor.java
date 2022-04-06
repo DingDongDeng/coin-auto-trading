@@ -6,6 +6,7 @@ import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.type.AutoTradingProcessStatus;
 import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyUserParam;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import lombok.AllArgsConstructor;
@@ -33,6 +34,7 @@ public class AutoTradingProcessor {
     private AutoTradingProcessStatus status;
     private TradingTerm tradingTerm;
     private Strategy strategy;
+    private StrategyUserParam strategyUserParam;
     private long duration;
     private SlackSender slackSender;
 
