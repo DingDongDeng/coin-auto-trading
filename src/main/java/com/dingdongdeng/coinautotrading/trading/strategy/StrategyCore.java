@@ -1,5 +1,6 @@
 package com.dingdongdeng.coinautotrading.trading.strategy;
 
+import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
@@ -12,5 +13,7 @@ public interface StrategyCore {
     void handleOrderResult(TradingResult tradingResult);
 
     void handleOrderCancelResult(TradingResult tradingResult);
+
+    StrategyCoreParam getParam();
 
 }
