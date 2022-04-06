@@ -5,7 +5,7 @@ import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
-import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyUserParam;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
@@ -27,16 +27,18 @@ public class RsiStrategyCore implements StrategyCore {
     private final int TOO_OLD_ORDER_TIME_SECONDS; // 초(second)
     private final double ORDER_PRICE;
     private final double ACCOUNT_BALANCE_LIMIT; //계좌 금액 안전 장치
+    private final StrategyCoreParam coreParam;
 
-    public RsiStrategyCore(StrategyUserParam userParam) {
-        this.BUY_RSI = userParam.getBuyRsi();
-        this.PROFIT_RSI = userParam.getProfitRsi();
-        this.LOSS_RSI = userParam.getLossRsi();
-        this.PROFIT_LIMIT_PRICE_RATE = userParam.getProfitLimitPriceRate();
-        this.LOSS_LIMIT_PRICE_RATE = userParam.getLossLimitPriceRate();
-        this.TOO_OLD_ORDER_TIME_SECONDS = userParam.getTooOldOrderTimeSeconds();
-        this.ORDER_PRICE = userParam.getOrderPrice();
-        this.ACCOUNT_BALANCE_LIMIT = userParam.getAccountBalanceLimit();
+    public RsiStrategyCore(StrategyCoreParam coreParam) {
+        this.coreParam = coreParam;
+        this.BUY_RSI = coreParam.getBuyRsi();
+        this.PROFIT_RSI = coreParam.getProfitRsi();
+        this.LOSS_RSI = coreParam.getLossRsi();
+        this.PROFIT_LIMIT_PRICE_RATE = coreParam.getProfitLimitPriceRate();
+        this.LOSS_LIMIT_PRICE_RATE = coreParam.getLossLimitPriceRate();
+        this.TOO_OLD_ORDER_TIME_SECONDS = coreParam.getTooOldOrderTimeSeconds();
+        this.ORDER_PRICE = coreParam.getOrderPrice();
+        this.ACCOUNT_BALANCE_LIMIT = coreParam.getAccountBalanceLimit();
     }
 
     @Override
@@ -176,6 +178,11 @@ public class RsiStrategyCore implements StrategyCore {
     @Override
     public void handleOrderCancelResult(TradingResult tradingResult) {
 
+    }
+
+    @Override
+    public StrategyCoreParam getParam() {
+        return this.coreParam;
     }
 
     private boolean isEnoughBalance(double balance) {
