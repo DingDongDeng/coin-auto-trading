@@ -10,6 +10,7 @@ import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeCandleS
 import com.dingdongdeng.coinautotrading.trading.index.IndexCalculator;
 import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyFactory;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyFactoryParam;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -49,13 +50,16 @@ public class BackTestingService {
             .indexCalculator(indexCalculator)
             .build();
 
-        Strategy backTestingStrategy = strategyFactory.create(
-            autoTradingProcessor.getStrategy().getStrategyCode(),
-            backTestingExchangeService,
-            autoTradingProcessor.getCoinType(),
-            autoTradingProcessor.getTradingTerm(),
-            keyPairdId
-        );
+        StrategyFactoryParam factoryParam = StrategyFactoryParam.builder()
+            .strategyCode(autoTradingProcessor.getStrategy().getStrategyCode())
+            .exchangeService(backTestingExchangeService)
+            .coinType(autoTradingProcessor.getCoinType())
+            .tradingTerm(autoTradingProcessor.getTradingTerm())
+            .keyPairId(keyPairdId)
+            .strategyUserParam(autoTradingProcessor.getStrategyUserParam())
+            .build();
+
+        Strategy backTestingStrategy = strategyFactory.create(factoryParam);
 
         BackTestingProcessor backTestingProcessor = BackTestingProcessor.builder()
             .id("BACKTESTING-" + autoTradingProcessor.getId())
