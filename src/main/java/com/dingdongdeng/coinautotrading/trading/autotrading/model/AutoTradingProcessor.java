@@ -55,7 +55,7 @@ public class AutoTradingProcessor {
 
     private void process() {
         while (isRunning()) {
-            log.info("\n------------------------------ beginning of autotrading cycle -----------------------------------------");
+            log.info("running autoTradingProcessor...");
             delay();
             try {
                 this.strategy.execute();
@@ -63,7 +63,6 @@ public class AutoTradingProcessor {
                 log.error("strategy execute exception : {}", e.getMessage(), e);
                 slackSender.send("userId : " + userId + ", title : " + title + ", autoTradingProcessorId : " + id, e);
             }
-            log.info("\n------------------------------ end of autotrading cycle -----------------------------------------");
         }
     }
 
