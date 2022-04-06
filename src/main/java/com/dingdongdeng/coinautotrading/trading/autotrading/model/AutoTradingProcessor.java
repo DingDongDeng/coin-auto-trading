@@ -34,7 +34,7 @@ public class AutoTradingProcessor {
     private AutoTradingProcessStatus status;
     private TradingTerm tradingTerm;
     private Strategy strategy;
-    private StrategyUserParam strategyUserParam;
+    private StrategyUserParam strategyUserParam; //fixme processor에 이 필드를 둔 이유는 이것만 교체해서 기존 자동매매를 이어나가고 싶을수 있기때문임
     private long duration;
     private SlackSender slackSender;
 
