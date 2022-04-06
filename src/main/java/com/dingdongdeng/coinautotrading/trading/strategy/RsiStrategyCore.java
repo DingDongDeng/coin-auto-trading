@@ -5,6 +5,7 @@ import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyUserParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
@@ -18,14 +19,25 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RsiStrategyCore implements StrategyCore {
 
-    private final double BUY_RSI = 0.25; // 매수 주문을 할 rsi 기준
-    private final double PROFIT_RSI = 0.50; // 이익중일때 익절할 rsi 기준
-    private final double LOSS_RSI = 0.40; // 손실중일때 손절할 rsi 기준
-    private final double PROFIT_LIMIT_PRICE_RATE = 0.02; // 익절 이익율 상한
-    private final double LOSS_LIMIT_PRICE_RATE = 0.01; // 손절 손실율 상한
-    private final int TOO_OLD_ORDER_TIME_SECONDS = 30; // 초(second)
-    private final double ORDER_PRICE = 10000;
-    private final double ACCOUNT_BALANCE_LIMIT = 300 * 10000; //계좌 금액 안전 장치
+    private final double BUY_RSI; // 매수 주문을 할 rsi 기준
+    private final double PROFIT_RSI; // 이익중일때 익절할 rsi 기준
+    private final double LOSS_RSI; // 손실중일때 손절할 rsi 기준
+    private final double PROFIT_LIMIT_PRICE_RATE; // 익절 이익율 상한
+    private final double LOSS_LIMIT_PRICE_RATE; // 손절 손실율 상한
+    private final int TOO_OLD_ORDER_TIME_SECONDS; // 초(second)
+    private final double ORDER_PRICE;
+    private final double ACCOUNT_BALANCE_LIMIT; //계좌 금액 안전 장치
+
+    public RsiStrategyCore(StrategyUserParam userParam) {
+        this.BUY_RSI = userParam.getBuyRsi();
+        this.PROFIT_RSI = userParam.getProfitRsi();
+        this.LOSS_RSI = userParam.getLossRsi();
+        this.PROFIT_LIMIT_PRICE_RATE = userParam.getProfitLimitPriceRate();
+        this.LOSS_LIMIT_PRICE_RATE = userParam.getLossLimitPriceRate();
+        this.TOO_OLD_ORDER_TIME_SECONDS = userParam.getTooOldOrderTimeSeconds();
+        this.ORDER_PRICE = userParam.getOrderPrice();
+        this.ACCOUNT_BALANCE_LIMIT = userParam.getAccountBalanceLimit();
+    }
 
     @Override
     public List<TradingTask> makeTradingTask(TradingInfo tradingInfo) {
