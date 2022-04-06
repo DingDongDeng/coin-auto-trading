@@ -1,8 +1,7 @@
 package com.dingdongdeng.coinautotrading.trading.strategy;
 
-import com.dingdongdeng.coinautotrading.common.type.CoinType;
-import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeService;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreParam;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyServiceParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.StrategyCode;
 import com.dingdongdeng.coinautotrading.trading.strategy.repository.TradingResultRepository;
 import java.util.NoSuchElementException;
@@ -15,17 +14,22 @@ public class StrategyFactory {
 
     private final TradingResultRepository tradingResultRepository;
 
-    public Strategy create(StrategyCode strategyCode, ExchangeService exchangeService, CoinType coinType, TradingTerm tradingTerm, String keyPairId) {
-        StrategyService strategyService = new StrategyService(coinType, tradingTerm, keyPairId, exchangeService);
+    public Strategy create(StrategyServiceParam serviceParam, StrategyCoreParam coreParam) {
+        StrategyService strategyService = new StrategyService(
+            serviceParam.getCoinType(),
+            serviceParam.getTradingTerm(),
+            serviceParam.getKeyPairId(),
+            serviceParam.getExchangeService()
+        );
         StrategyStore strategyStore = new StrategyStore(tradingResultRepository);
-        StrategyCore strategyCore = createStrategyCore(strategyCode);
+        StrategyCore strategyCore = createStrategyCore(serviceParam.getStrategyCode(), coreParam);
         StrategyRecorder strategyRecorder = new StrategyRecorder();
-        return new Strategy(strategyCode, strategyCore, strategyService, strategyStore, strategyRecorder);
+        return new Strategy(serviceParam.getStrategyCode(), strategyCore, strategyService, strategyStore, strategyRecorder);
     }
 
-    private StrategyCore createStrategyCore(StrategyCode strategyCode) {
+    private StrategyCore createStrategyCore(StrategyCode strategyCode, StrategyCoreParam coreParam) {
         if (strategyCode == StrategyCode.RSI) {
-            return new RsiStrategyCore();
+            return new RsiStrategyCore(coreParam);
         }
 
         throw new NoSuchElementException("not found strategy code : " + strategyCode);

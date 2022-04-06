@@ -11,7 +11,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class StrategyUserParam {
+public class StrategyCoreParam {
 
     private double buyRsi; // 매수 주문을 할 rsi 기준
     private double profitRsi;  // 이익중일때 익절할 rsi 기준
