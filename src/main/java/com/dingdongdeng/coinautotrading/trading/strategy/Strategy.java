@@ -24,7 +24,7 @@ public class Strategy {
 
     public Strategy(StrategyCode code, StrategyCore core, StrategyService service, StrategyStore store, StrategyRecorder recorder) {
         this.strategyCode = code;
-        this.identifyCode = code.name() + UUID.randomUUID().toString();
+        this.identifyCode = code.name() + UUID.randomUUID();
         this.strategyCore = core;
         this.strategyService = service;
         this.strategyStore = store;
@@ -83,5 +83,4 @@ public class Strategy {
         OrderType orderType = tradingTask.getOrderType();
         return orderType == OrderType.CANCEL;
     }
-
 }
