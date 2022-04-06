@@ -11,7 +11,7 @@ import java.util.UUID;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-@Getter
+@Getter //fixme Strategy가 너무 외부에 많이 노출됨
 @Slf4j
 public class Strategy {
 
