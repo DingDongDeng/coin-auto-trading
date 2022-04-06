@@ -10,7 +10,7 @@ import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeCandleS
 import com.dingdongdeng.coinautotrading.trading.index.IndexCalculator;
 import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyFactory;
-import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyFactoryParam;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyServiceParam;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +31,8 @@ public class BackTestingService {
 
     public BackTestingProcessor doTest(AutoTradingProcessor autoTradingProcessor, LocalDateTime start, LocalDateTime end) {
 
-        String keyPairdId = autoTradingProcessor.getStrategy().getStrategyService().getKeyPairId();
+        Strategy strategy = autoTradingProcessor.getStrategy();
+        String keyPairdId = strategy.getStrategyService().getKeyPairId();
         CoinExchangeType coinExchangeType = autoTradingProcessor.getCoinExchangeType();
         ExchangeCandleService exchangeCandleService = exchangeCandleServiceSelector.getTargetService(coinExchangeType);
 
@@ -50,16 +51,15 @@ public class BackTestingService {
             .indexCalculator(indexCalculator)
             .build();
 
-        StrategyFactoryParam factoryParam = StrategyFactoryParam.builder()
-            .strategyCode(autoTradingProcessor.getStrategy().getStrategyCode())
+        StrategyServiceParam serviceParam = StrategyServiceParam.builder()
+            .strategyCode(strategy.getStrategyCode())
             .exchangeService(backTestingExchangeService)
             .coinType(autoTradingProcessor.getCoinType())
             .tradingTerm(autoTradingProcessor.getTradingTerm())
             .keyPairId(keyPairdId)
-            .strategyUserParam(autoTradingProcessor.getStrategyUserParam())
             .build();
 
-        Strategy backTestingStrategy = strategyFactory.create(factoryParam);
+        Strategy backTestingStrategy = strategyFactory.create(serviceParam, strategy.getStrategyCore().getParam());
 
         BackTestingProcessor backTestingProcessor = BackTestingProcessor.builder()
             .id("BACKTESTING-" + autoTradingProcessor.getId())
