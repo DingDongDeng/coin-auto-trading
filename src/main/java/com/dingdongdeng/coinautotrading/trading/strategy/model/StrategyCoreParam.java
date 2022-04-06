@@ -21,4 +21,17 @@ public class StrategyCoreParam {
     private int tooOldOrderTimeSeconds;  // 초(second)
     private double orderPrice; // 한번에 주문할 금액
     private double accountBalanceLimit;  //계좌 금액 안전 장치
+
+    public StrategyCoreParam copy() {
+        return StrategyCoreParam.builder()
+            .buyRsi(buyRsi)
+            .profitRsi(profitRsi)
+            .lossRsi(lossRsi)
+            .profitLimitPriceRate(profitLimitPriceRate)
+            .lossLimitPriceRate(lossLimitPriceRate)
+            .tooOldOrderTimeSeconds(tooOldOrderTimeSeconds)
+            .orderPrice(orderPrice)
+            .accountBalanceLimit(accountBalanceLimit)
+            .build();
+    }
 }
