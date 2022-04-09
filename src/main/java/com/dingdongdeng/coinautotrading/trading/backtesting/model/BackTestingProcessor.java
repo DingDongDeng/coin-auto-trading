@@ -38,7 +38,6 @@ public class BackTestingProcessor {
         try {
             this.status = BackTestingProcessStatus.RUNNING;
             while (backTestingContextLoader.hasNext()) {
-                delay();
                 // now를 백테스팅 시점인 과거로 재정의
                 TradingTimeContext.nowSupplier(() -> backTestingContextLoader.getCurrentContext().getNow());
 
@@ -56,14 +55,6 @@ public class BackTestingProcessor {
             if (this.status != BackTestingProcessStatus.FAILED) {
                 this.status = BackTestingProcessStatus.COMPLETED;
             }
-        }
-    }
-
-    private void delay() {
-        try {
-            Thread.sleep(duration);
-        } catch (InterruptedException e) {
-            log.error(e.getMessage(), e);
         }
     }
 }
