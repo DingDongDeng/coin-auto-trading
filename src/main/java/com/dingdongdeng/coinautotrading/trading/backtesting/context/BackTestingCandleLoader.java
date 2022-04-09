@@ -14,7 +14,9 @@ import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -74,6 +76,7 @@ public class BackTestingCandleLoader {
     }
 
     private ExchangeCandles getCandles(CandleUnit candleUnit, LocalDateTime start, LocalDateTime end) {
+        delay(); // candle 조회 api 호출 제한이 걸리지 않도록 하기 위함
         return exchangeCandleService.getCandles(coinType, candleUnit, start, end, keyPairdId);
     }
 
@@ -81,4 +84,11 @@ public class BackTestingCandleLoader {
         return this.exchangeCandleService.getCoinExchangeType();
     }
 
+    private void delay() {
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            log.error(e.getMessage(), e);
+        }
+    }
 }
