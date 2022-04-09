@@ -51,7 +51,7 @@ public class BackTestingService {
             .end(end)
             .candleUnit(autoTradingProcessor.getTradingTerm().getCandleUnit())
             .build();
-        BackTestingContextLoader contextLoader = new BackTestingContextLoader(currentCandleLoader, tradingTermCandleLoader, autoTradingProcessor.getTradingTerm());
+        BackTestingContextLoader contextLoader = new BackTestingContextLoader(currentCandleLoader, tradingTermCandleLoader);
 
         BackTestingExchangeService backTestingExchangeService = BackTestingExchangeService.builder()
             .contextLoader(contextLoader)
