@@ -5,7 +5,6 @@ import com.dingdongdeng.coinautotrading.common.type.OrderState;
 import com.dingdongdeng.coinautotrading.trading.backtesting.context.BackTestingContext;
 import com.dingdongdeng.coinautotrading.trading.backtesting.context.BackTestingContextLoader;
 import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeCandleService;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeService;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrder;
@@ -31,7 +30,6 @@ import lombok.extern.slf4j.Slf4j;
 public class BackTestingExchangeService implements ExchangeService {
 
     private BackTestingContextLoader contextLoader;
-    private ExchangeCandleService exchangeCandleService;
     private IndexCalculator indexCalculator;
     @Default
     private Map<String, ExchangeOrder> orderMap = new HashMap<>();
