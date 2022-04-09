@@ -36,14 +36,22 @@ public class BackTestingService {
         CoinExchangeType coinExchangeType = autoTradingProcessor.getCoinExchangeType();
         ExchangeCandleService exchangeCandleService = exchangeCandleServiceSelector.getTargetService(coinExchangeType);
 
-        BackTestingCandleLoader backTestingCandleLoader = BackTestingCandleLoader.builder()
+        BackTestingCandleLoader currentCandleLoader = BackTestingCandleLoader.builder()
             .coinType(autoTradingProcessor.getCoinType())
             .keyPairdId(keyPairdId)
             .exchangeCandleService(exchangeCandleService)
             .start(start)
             .end(end)
             .build();
-        BackTestingContextLoader contextLoader = new BackTestingContextLoader(backTestingCandleLoader, autoTradingProcessor.getTradingTerm());
+        BackTestingCandleLoader tradingTermCandleLoader = BackTestingCandleLoader.builder()
+            .coinType(autoTradingProcessor.getCoinType())
+            .keyPairdId(keyPairdId)
+            .exchangeCandleService(exchangeCandleService)
+            .start(start)
+            .end(end)
+            .candleUnit(autoTradingProcessor.getTradingTerm().getCandleUnit())
+            .build();
+        BackTestingContextLoader contextLoader = new BackTestingContextLoader(currentCandleLoader, tradingTermCandleLoader, autoTradingProcessor.getTradingTerm());
 
         BackTestingExchangeService backTestingExchangeService = BackTestingExchangeService.builder()
             .contextLoader(contextLoader)
