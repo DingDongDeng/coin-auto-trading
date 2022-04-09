@@ -281,14 +281,7 @@
         return response.data.body;
       },
       async registerAutoTrading(callback) {
-        const body = {
-          title: this.register.autoTrading.title,
-          coinType: this.register.autoTrading.coinType,
-          coinExchangeType: this.register.autoTrading.coinExchangeType,
-          tradingTerm: this.register.autoTrading.tradingTerm,
-          strategyCode: this.register.autoTrading.strategyCode,
-          keyPairId: this.register.autoTrading.keyPairId
-        }
+        const body = this.register.autoTrading;
         const response = await api.post("/autotrading/register", body, this.headers());
         this.register.autoTrading = this.resetAutoTradingRegister();
         callback();
