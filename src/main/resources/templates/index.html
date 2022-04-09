@@ -71,6 +71,32 @@
         </select>
       </div>
       <div>
+        <div>
+          <input v-model="register.autoTrading.buyRsi" type="text" placeholder="매수 주문을 할 rsi 기준">
+        </div>
+        <div>
+          <input v-model="register.autoTrading.profitRsi" type="text" placeholder="이익중일때 익절할 rsi 기준">
+        </div>
+        <div>
+          <input v-model="register.autoTrading.lossRsi" type="text" placeholder="손실중일때 손절할 rsi 기준">
+        </div>
+        <div>
+          <input v-model="register.autoTrading.profitLimitPriceRate" type="text" placeholder="익절 이익율 상한">
+        </div>
+        <div>
+          <input v-model="register.autoTrading.lossLimitPriceRate" type="text" placeholder="손절 손실율 상한">
+        </div>
+        <div>
+          <input v-model="register.autoTrading.tooOldOrderTimeSeconds" type="text" placeholder="초(second)">
+        </div>
+        <div>
+          <input v-model="register.autoTrading.orderPrice" type="text" placeholder="한번에 주문할 금액">
+        </div>
+        <div>
+          <input v-model="register.autoTrading.accountBalanceLimit" type="text" placeholder="계좌 금액 안전 장치">
+        </div>
+      </div>
+      <div>
         <input v-model="register.autoTrading.keyPairId" type="text" placeholder="키 페어 ID">
       </div>
       <div>
@@ -114,6 +140,9 @@
         전략 코드 : {{autoTrading.strategyIdentifyCode}}
       </div>
       <div>
+        매매 타입 : {{autoTrading.tradingTerm}}
+      </div>
+      <div>
         거래소 : {{autoTrading.coinExchangeType}}
       </div>
       <div>
@@ -124,6 +153,9 @@
       </div>
       <div>
         상태 : {{autoTrading.processStatus}}
+      </div>
+      <div>
+        세부설정 : {{autoTrading}}
       </div>
       <div>
         백테스팅 현황
@@ -308,6 +340,16 @@
           tradingTerm: "",
           strategyCode: "",
           keyPairId: "",
+
+          // 전략 세부 설정
+          buyRsi: "",
+          profitRsi: "",
+          lossRsi: "",
+          profitLimitPriceRate: "",
+          lossLimitPriceRate: "",
+          tooOldOrderTimeSeconds: "",
+          orderPrice: "",
+          accountBalanceLimit: ""
         }
       },
       resetBackTestingRegister() {
