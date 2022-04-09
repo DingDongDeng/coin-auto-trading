@@ -4,6 +4,7 @@ import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingPro
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingRegisterRequest;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingResponse;
 import com.dingdongdeng.coinautotrading.trading.autotrading.service.AutoTradingService;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreParam;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +41,7 @@ public class AutoTradingAggregation {
     }
 
     private AutoTradingResponse makeResponse(AutoTradingProcessor processor) {
+        StrategyCoreParam coreParam = processor.getStrategy().getStrategyCore().getParam();
         return AutoTradingResponse.builder()
             .title(processor.getTitle())
             .processorId(processor.getId())
@@ -49,6 +51,17 @@ public class AutoTradingAggregation {
             .strategyIdentifyCode(processor.getStrategy().getIdentifyCode())
             .coinType(processor.getCoinType())
             .coinExchangeType(processor.getCoinExchangeType())
+            .tradingTerm(processor.getTradingTerm())
+
+            .buyRsi(coreParam.getBuyRsi())
+            .profitRsi(coreParam.getProfitRsi())
+            .lossRsi(coreParam.getLossRsi())
+            .profitLimitPriceRate(coreParam.getProfitLimitPriceRate())
+            .lossLimitPriceRate(coreParam.getLossLimitPriceRate())
+            .tooOldOrderTimeSeconds(coreParam.getTooOldOrderTimeSeconds())
+            .orderPrice(coreParam.getOrderPrice())
+            .accountBalanceLimit(coreParam.getAccountBalanceLimit())
+
             .build();
     }
 }
