@@ -35,7 +35,7 @@ public class BackTestingContextLoaderFactory {
             .coinType(autoTradingProcessor.getCoinType())
             .keyPairdId(keyPairdId)
             .exchangeCandleService(exchangeCandleService)
-            .start(start)
+            .start(getTradingTermStartDateTime(tradingTerm, start))
             .end(end)
             .candleUnit(tradingTerm.getCandleUnit())
             .build();
@@ -44,6 +44,10 @@ public class BackTestingContextLoaderFactory {
 
     private ExchangeCandleService getExchangeCandleService(CoinExchangeType coinExchangeType) {
         return exchangeCandleServiceSelector.getTargetService(coinExchangeType);
+    }
+
+    private LocalDateTime getTradingTermStartDateTime(TradingTerm tradingTerm, LocalDateTime start) {
+        return null;
     }
 
 }
