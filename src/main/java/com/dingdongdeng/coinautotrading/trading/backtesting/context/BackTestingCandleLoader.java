@@ -26,7 +26,7 @@ public class BackTestingCandleLoader {
     private ExchangeCandleService exchangeCandleService;
 
     @Default
-    private CandleUnit BACK_TESTING_CANDLE_UNIT = CandleUnit.UNIT_1M;
+    private CandleUnit candleUnit = CandleUnit.UNIT_1M;
     private LocalDateTime start;
     private LocalDateTime end;
 
@@ -38,7 +38,7 @@ public class BackTestingCandleLoader {
 
         // candleList 초기화
         if (Objects.isNull(candleList)) {
-            this.candleList = getCandles(BACK_TESTING_CANDLE_UNIT, start, end).getCandleList();
+            this.candleList = getCandles(candleUnit, start, end).getCandleList();
         }
 
         // 다음 캔들을 얻기 위해 커서값을 1 증가 시키고 이를 인덱스로 사용
@@ -52,7 +52,7 @@ public class BackTestingCandleLoader {
             if (lastCandle.getCandleDateTimeKst().isBefore(end)) { //fixme 초 떄문에 한번 더 조회됨 해결좀
 
                 // 캔들 리스트를 새로 세팅하고, 커서를 초기화
-                candleList = getCandles(BACK_TESTING_CANDLE_UNIT, lastCandle.getCandleDateTimeKst(), end).getCandleList();
+                candleList = getCandles(candleUnit, lastCandle.getCandleDateTimeKst(), end).getCandleList();
                 cursor = -1;
 
                 // 새 캔들 리스트의 첫번째 캔들을 반환
