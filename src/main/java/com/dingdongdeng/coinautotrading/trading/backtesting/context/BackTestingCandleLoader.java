@@ -73,7 +73,7 @@ public class BackTestingCandleLoader {
         return null;
     }
 
-    public ExchangeCandles getCandles(CandleUnit candleUnit, LocalDateTime start, LocalDateTime end) {
+    private ExchangeCandles getCandles(CandleUnit candleUnit, LocalDateTime start, LocalDateTime end) {
         return exchangeCandleService.getCandles(coinType, candleUnit, start, end, keyPairdId);
     }
 
