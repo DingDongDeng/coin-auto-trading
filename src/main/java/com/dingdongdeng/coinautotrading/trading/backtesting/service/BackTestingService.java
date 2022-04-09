@@ -1,12 +1,10 @@
 package com.dingdongdeng.coinautotrading.trading.backtesting.service;
 
-import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
+import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingProcessor;
-import com.dingdongdeng.coinautotrading.trading.backtesting.context.BackTestingCandleLoader;
 import com.dingdongdeng.coinautotrading.trading.backtesting.context.BackTestingContextLoader;
+import com.dingdongdeng.coinautotrading.trading.backtesting.context.BackTestingContextLoaderFactory;
 import com.dingdongdeng.coinautotrading.trading.backtesting.model.BackTestingProcessor;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeCandleService;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeCandleServiceSelector;
 import com.dingdongdeng.coinautotrading.trading.index.IndexCalculator;
 import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyFactory;
@@ -25,7 +23,7 @@ import org.springframework.stereotype.Service;
 public class BackTestingService {
 
     private final StrategyFactory strategyFactory;
-    private final ExchangeCandleServiceSelector exchangeCandleServiceSelector;
+    private final BackTestingContextLoaderFactory backTestingContextLoaderFactory;
     private final IndexCalculator indexCalculator;
     private final Map<String, BackTestingProcessor> backTestingProcessorMap; //fixme 한번 래핑해서 다루기
 
@@ -33,29 +31,12 @@ public class BackTestingService {
 
         Strategy strategy = autoTradingProcessor.getStrategy();
         String keyPairdId = strategy.getStrategyService().getKeyPairId();
-        CoinExchangeType coinExchangeType = autoTradingProcessor.getCoinExchangeType();
-        ExchangeCandleService exchangeCandleService = exchangeCandleServiceSelector.getTargetService(coinExchangeType);
+        TradingTerm tradingTerm = autoTradingProcessor.getTradingTerm();
 
-        BackTestingCandleLoader currentCandleLoader = BackTestingCandleLoader.builder()
-            .coinType(autoTradingProcessor.getCoinType())
-            .keyPairdId(keyPairdId)
-            .exchangeCandleService(exchangeCandleService)
-            .start(start)
-            .end(end)
-            .build();
-        BackTestingCandleLoader tradingTermCandleLoader = BackTestingCandleLoader.builder()
-            .coinType(autoTradingProcessor.getCoinType())
-            .keyPairdId(keyPairdId)
-            .exchangeCandleService(exchangeCandleService)
-            .start(start)
-            .end(end)
-            .candleUnit(autoTradingProcessor.getTradingTerm().getCandleUnit())
-            .build();
-        BackTestingContextLoader contextLoader = new BackTestingContextLoader(currentCandleLoader, tradingTermCandleLoader);
+        BackTestingContextLoader contextLoader = backTestingContextLoaderFactory.create(autoTradingProcessor, start, end);
 
         BackTestingExchangeService backTestingExchangeService = BackTestingExchangeService.builder()
             .contextLoader(contextLoader)
-            .exchangeCandleService(exchangeCandleService)
             .indexCalculator(indexCalculator)
             .build();
 
@@ -63,7 +44,7 @@ public class BackTestingService {
             .strategyCode(strategy.getStrategyCode())
             .exchangeService(backTestingExchangeService)
             .coinType(autoTradingProcessor.getCoinType())
-            .tradingTerm(autoTradingProcessor.getTradingTerm())
+            .tradingTerm(tradingTerm)
             .keyPairId(keyPairdId)
             .build();
 
