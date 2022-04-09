@@ -1,5 +1,6 @@
 package com.dingdongdeng.coinautotrading.trading.backtesting.context;
 
+import com.dingdongdeng.coinautotrading.common.type.CandleUnit.UnitType;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingProcessor;
@@ -47,7 +48,19 @@ public class BackTestingContextLoaderFactory {
     }
 
     private LocalDateTime getTradingTermStartDateTime(TradingTerm tradingTerm, LocalDateTime start) {
-        return null;
+        long bufferSize = 200;
+        UnitType unitType = tradingTerm.getCandleUnit().getUnitType();
+        int unitSize = tradingTerm.getCandleUnit().getSize();
+
+        if (unitType == UnitType.MIN) {
+            return start.minusMinutes(unitSize * bufferSize);
+        } else if (unitType == UnitType.DAY) {
+            return start.minusDays(unitSize * bufferSize);
+        } else if (unitType == UnitType.WEEK) {
+            return start.minusWeeks(unitSize * bufferSize);
+        } else {
+            throw new RuntimeException("not found allow unitType");
+        }
     }
 
 }
