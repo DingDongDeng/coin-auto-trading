@@ -30,4 +30,14 @@ public class AutoTradingRegisterRequest {
     private TradingTerm tradingTerm;
     @NotNull
     private String keyPairId;
+
+    // 전략 세부 설정 값
+    private Double buyRsi;
+    private Double profitRsi;
+    private Double lossRsi;
+    private Double profitLimitPriceRate;
+    private Double lossLimitPriceRate;
+    private Integer tooOldOrderTimeSeconds;
+    private Double orderPrice;
+    private Double accountBalanceLimit;
 }
