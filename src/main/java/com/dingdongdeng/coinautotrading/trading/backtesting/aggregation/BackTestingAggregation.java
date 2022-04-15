@@ -7,6 +7,9 @@ import com.dingdongdeng.coinautotrading.trading.backtesting.model.BackTestingReq
 import com.dingdongdeng.coinautotrading.trading.backtesting.model.BackTestingResponse;
 import com.dingdongdeng.coinautotrading.trading.backtesting.model.BackTestingResponse.Result;
 import com.dingdongdeng.coinautotrading.trading.backtesting.service.BackTestingService;
+import com.dingdongdeng.coinautotrading.trading.strategy.StrategyRecorder;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -36,24 +39,37 @@ public class BackTestingAggregation {
             .backTestingId(backTestingProcessor.getId())
             .userId(backTestingProcessor.getUserId())
             .autoTradingProcessorId(backTestingProcessor.getAutoTradingProcessorId())
+            .start(backTestingProcessor.getStart())
+            .end(backTestingProcessor.getEnd())
             .result(null)
             .build();
     }
 
     public List<BackTestingResponse> getResult(String userId) {
         return backTestingService.getBackTestingProcessorList(userId).stream()
-            .map(b -> BackTestingResponse.builder()
-                .backTestingId(b.getId())
-                .userId(b.getUserId())
-                .autoTradingProcessorId(b.getAutoTradingProcessorId())
-                .result(
-                    Result.builder()
-                        .status(b.getStatus())
-                        .marginPrice(b.getStrategy().getStrategyRecorder().getMarginPrice())
-                        .marginRate(b.getStrategy().getStrategyRecorder().getMarginRate())
-                        .build()
-                )
-                .build())
+            .map(b -> {
+                StrategyRecorder recorder = b.getStrategy().getStrategyRecorder();
+                LocalDateTime start = b.getStart();
+                LocalDateTime end = b.getEnd();
+                double totalTime = ChronoUnit.MINUTES.between(start, end);
+                double executionTime = ChronoUnit.MINUTES.between(start, b.getNow());
+
+                return BackTestingResponse.builder()
+                    .backTestingId(b.getId())
+                    .userId(b.getUserId())
+                    .autoTradingProcessorId(b.getAutoTradingProcessorId())
+                    .start(start)
+                    .end(end)
+                    .result(
+                        Result.builder()
+                            .status(b.getStatus())
+                            .executionRate(executionTime / totalTime)
+                            .marginPrice(recorder.getMarginPrice())
+                            .marginRate(recorder.getMarginRate())
+                            .build()
+                    )
+                    .build();
+            })
             .collect(Collectors.toList());
     }
 }
