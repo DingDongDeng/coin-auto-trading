@@ -14,7 +14,7 @@ public class StrategyRecorder {
     private double totalLossPrice;
     private double marginPrice;
     private double marginRate;
-    private String eventMessage; //fixme 메모리 이슈 가능성이 있음
+    private String eventMessage = ""; //fixme 메모리 이슈 가능성이 있음
 
     public void apply(TradingResult tradingResult) {
         addEventMessage("주문", tradingResult);
