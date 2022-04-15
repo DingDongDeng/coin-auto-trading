@@ -11,6 +11,7 @@ import com.dingdongdeng.coinautotrading.trading.strategy.StrategyRecorder;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,10 +22,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class BackTestingAggregation {
 
-
     private final BackTestingService backTestingService;
     private final AutoTradingService autoTradingService;
-
 
     public BackTestingResponse doTest(BackTestingRequest.Register request, String userId) {
         List<AutoTradingProcessor> autoTradingProcessorList = autoTradingService.getUserProcessorList(userId);
@@ -52,7 +51,7 @@ public class BackTestingAggregation {
                 LocalDateTime start = b.getStart();
                 LocalDateTime end = b.getEnd();
                 double totalTime = ChronoUnit.MINUTES.between(start, end);
-                double executionTime = ChronoUnit.MINUTES.between(start, b.getNow());
+                double executionTime = ChronoUnit.MINUTES.between(start, Optional.ofNullable(b.getNow()).orElse(start));
 
                 return BackTestingResponse.builder()
                     .backTestingId(b.getId())

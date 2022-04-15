@@ -59,6 +59,6 @@ public class StrategyRecorder {
         String tagName = tradingResult.getTag().getDesc();
         double price = tradingResult.getPrice();
         double orderPrice = tradingResult.getPrice() * tradingResult.getVolume();
-        this.eventMessage += event + " / " + tagName + " / " + price + " / " + orderPrice + "</br>\n";
+        this.eventMessage += tradingResult.getCreatedAt() + "/" + event + " / " + tagName + " / " + price + " / " + orderPrice + "</br>\n";
     }
 }

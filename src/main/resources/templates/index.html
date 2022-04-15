@@ -162,6 +162,12 @@
         <div v-for="backTesting in user.backTestingList">
           <div v-if="backTesting.autoTradingProcessorId==autoTrading.processorId">
             <div>
+              기간 : {{backTesting.start}} ~ {{backTesting.end}}
+            </div>
+            <div>
+              실행율 : {{backTesting.result.executionRate}}
+            </div>
+            <div>
               상태 : {{backTesting.result.status}}
             </div>
             <div>
@@ -169,6 +175,14 @@
             </div>
             <div>
               손익율 : {{backTesting.result.marginRate}}
+            </div>
+            <div>
+              히스토리 :
+              <div v-html="backTesting.result.eventMessage">
+              </div>
+            </div>
+            <div>
+
             </div>
           </div>
         </div>
