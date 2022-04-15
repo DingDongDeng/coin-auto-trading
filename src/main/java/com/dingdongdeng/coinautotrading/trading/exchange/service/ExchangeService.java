@@ -19,5 +19,5 @@ public interface ExchangeService {
 
     ExchangeOrder getOrderInfo(ExchangeOrderInfoParam param, String keyPairId);
 
-    CoinExchangeType getExchangeType();
+    CoinExchangeType getCoinExchangeType();
 }

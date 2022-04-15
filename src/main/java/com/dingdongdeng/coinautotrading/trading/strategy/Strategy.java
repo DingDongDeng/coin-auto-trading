@@ -1,62 +1,78 @@
 package com.dingdongdeng.coinautotrading.trading.strategy;
 
-import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
-import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeService;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrder;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrderCancel;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrderCancelParam;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrderParam;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeTradingInfo;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeTradingInfoParam;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.type.StrategyCode;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
+import java.util.UUID;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+@Getter //fixme Strategy가 너무 외부에 많이 노출됨
 @Slf4j
-@RequiredArgsConstructor
-public abstract class Strategy {
+public class Strategy {
 
-    private final CoinType coinType;
-    private final TradingTerm tradingTerm;
-    private final String keyPairId;
-    private final ExchangeService exchangeService;
+    private final String identifyCode;
+    private final StrategyCode strategyCode;
+    private final StrategyCore strategyCore;
+    private final StrategyService strategyService;
+    private final StrategyStore strategyStore;
+    private final StrategyRecorder strategyRecorder;
+
+    public Strategy(StrategyCode code, StrategyCore core, StrategyService service, StrategyStore store, StrategyRecorder recorder) {
+        this.strategyCode = code;
+        this.identifyCode = code.name() + UUID.randomUUID();
+        this.strategyCore = core;
+        this.strategyService = service;
+        this.strategyStore = store;
+        this.strategyRecorder = recorder;
+    }
 
     public void execute() {
+        // 주문 정보 갱신 및 생성
+        TradingResultPack tradingResultPack = strategyStore.get(identifyCode);
+        TradingResultPack updatedTradingResultPack = strategyService.updateTradingResultPack(tradingResultPack);
+        TradingInfo tradingInfo = strategyService.getTradingInformation(identifyCode, updatedTradingResultPack);
 
-        ExchangeTradingInfo exchangeTradingInfo = exchangeService.getTradingInformation(makeExchangeTradingInfoParam(), keyPairId);
-
-        List<TradingTask> tradingTaskList = this.makeTradingTask(exchangeTradingInfo);
+        List<TradingTask> tradingTaskList = strategyCore.makeTradingTask(tradingInfo);
         log.info("tradingTaskList : {}", tradingTaskList);
 
         tradingTaskList.forEach(tradingTask -> {
+            // 모든 정보 초기화
+            if (isReset(tradingTask)) {
+                strategyStore.reset(identifyCode);
+                return;
+            }
+
             // 매수, 매도 주문
             if (isOrder(tradingTask)) {
-                ExchangeOrder order = exchangeService.order(makeExchangeOrderParam(tradingTask), keyPairId);
-                this.handleOrderResult(order, makeTradingResult(tradingTask, order));
+                TradingResult orderTradingResult = strategyService.order(tradingTask);
+                strategyStore.save(orderTradingResult); // 주문 성공 건 정보 저장
+                strategyRecorder.apply(orderTradingResult);
+                strategyCore.handleOrderResult(orderTradingResult);
                 return;
             }
 
             // 주문 취소
             if (isOrderCancel(tradingTask)) {
-                ExchangeOrderCancel orderCancel = exchangeService.orderCancel(makeExchangeOrderCancelParam(tradingTask), keyPairId);
-                this.handleOrderCancelResult(orderCancel, makeTradingResult(tradingTask, orderCancel));
+                TradingResult cancelTradingResult = strategyService.orderCancel(tradingTask);
+                strategyStore.reset(cancelTradingResult); // 주문 취소 건 정보 제거
+                strategyRecorder.revert(cancelTradingResult);
+                strategyCore.handleOrderCancelResult(cancelTradingResult);
+                return;
             }
 
             // 아무것도 하지 않음
+            log.info("do nothing");
         });
     }
 
-    abstract public String getIdentifyCode();
-
-    abstract protected List<TradingTask> makeTradingTask(ExchangeTradingInfo tradingInfo);
-
-    abstract protected void handleOrderResult(ExchangeOrder order, TradingResult tradingResult);
-
-    abstract protected void handleOrderCancelResult(ExchangeOrderCancel orderCancel, TradingResult tradingResult);
+    private boolean isReset(TradingTask tradingTask) {
+        return tradingTask.isReset();
+    }
 
     private boolean isOrder(TradingTask tradingTask) {
         OrderType orderType = tradingTask.getOrderType();
@@ -66,60 +82,5 @@ public abstract class Strategy {
     private boolean isOrderCancel(TradingTask tradingTask) {
         OrderType orderType = tradingTask.getOrderType();
         return orderType == OrderType.CANCEL;
-    }
-
-    private ExchangeTradingInfoParam makeExchangeTradingInfoParam() {
-        return ExchangeTradingInfoParam.builder()
-            .coinType(coinType)
-            .tradingTerm(tradingTerm)
-            .build();
-    }
-
-    private ExchangeOrderParam makeExchangeOrderParam(TradingTask tradingTask) {
-        return ExchangeOrderParam.builder()
-            .coinType(tradingTask.getCoinType())
-            .orderType(tradingTask.getOrderType())
-            .volume(tradingTask.getVolume())
-            .price(tradingTask.getPrice())
-            .priceType(tradingTask.getPriceType())
-            .build();
-    }
-
-    private ExchangeOrderCancelParam makeExchangeOrderCancelParam(TradingTask tradingTask) {
-        return ExchangeOrderCancelParam.builder()
-            .orderId(tradingTask.getOrderId())
-            .build();
-    }
-
-    private TradingResult makeTradingResult(TradingTask tradingTask, ExchangeOrder exchangeOrder) {
-        return TradingResult.builder()
-            .identifyCode(tradingTask.getIdentifyCode())
-            .coinType(tradingTask.getCoinType())
-            .orderType(tradingTask.getOrderType())
-            .tradingTerm(tradingTask.getTradingTerm())
-            .orderState(exchangeOrder.getOrderState())
-            .volume(tradingTask.getVolume())
-            .price(tradingTask.getPrice())
-            .priceType(tradingTask.getPriceType())
-            .orderId(exchangeOrder.getOrderId())
-            .tag(tradingTask.getTag())
-            .createdAt(exchangeOrder.getCreatedAt())
-            .build();
-    }
-
-    private TradingResult makeTradingResult(TradingTask tradingTask, ExchangeOrderCancel exchangeOrderCancel) { //fixme 중복 코드 개선
-        return TradingResult.builder()
-            .identifyCode(tradingTask.getIdentifyCode())
-            .coinType(tradingTask.getCoinType())
-            .orderType(tradingTask.getOrderType())
-            .tradingTerm(tradingTask.getTradingTerm())
-            .orderState(exchangeOrderCancel.getOrderState())
-            .volume(tradingTask.getVolume())
-            .price(tradingTask.getPrice())
-            .priceType(tradingTask.getPriceType())
-            .orderId(exchangeOrderCancel.getOrderId())
-            .tag(tradingTask.getTag())
-            .createdAt(exchangeOrderCancel.getCreatedAt())
-            .build();
     }
 }

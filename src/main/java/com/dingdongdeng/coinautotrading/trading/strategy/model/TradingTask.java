@@ -18,10 +18,12 @@ import lombok.ToString;
 @NoArgsConstructor
 public class TradingTask {
 
+    private boolean isReset;
+    private OrderType orderType;
+
     private String identifyCode;
     private CoinType coinType;
     private TradingTerm tradingTerm;
-    private OrderType orderType;
     private Double volume;
     private Double price;
     private PriceType priceType;

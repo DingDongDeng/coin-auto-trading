@@ -16,10 +16,10 @@ import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.doc.ApiDocumentUtils;
 import com.dingdongdeng.coinautotrading.domain.entity.ExchangeKey;
 import com.dingdongdeng.coinautotrading.domain.repository.ExchangeKeyRepository;
+import com.dingdongdeng.coinautotrading.trading.autotrading.aggregation.AutoTradingAggregation;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingRegisterRequest;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingResponse;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.type.AutoTradingProcessStatus;
-import com.dingdongdeng.coinautotrading.trading.autotrading.service.AutoTradingService;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.UpbitClient;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.StrategyCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -56,7 +56,7 @@ class AutoTradingControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
     @SpyBean
-    private AutoTradingService autoTradingService;
+    private AutoTradingAggregation autoTradingAggregation;
 
     @Autowired
     private ExchangeKeyRepository exchangeKeyRepository;
@@ -136,7 +136,7 @@ class AutoTradingControllerTest {
                     .build()
             )
         )
-            .when(autoTradingService).getUserProcessorList(Mockito.any());
+            .when(autoTradingAggregation).getUserProcessorList(Mockito.any());
 
         MvcResult result = this.mockMvc.perform(
             RestDocumentationRequestBuilders.get("/user/{userId}/autotrading", userId)
@@ -202,7 +202,7 @@ class AutoTradingControllerTest {
                 .coinExchangeType(coinExchangeType)
                 .build()
         )
-            .when(autoTradingService).register(Mockito.any(), Mockito.any());
+            .when(autoTradingAggregation).register(Mockito.any(), Mockito.any());
 
         MvcResult result = this.mockMvc.perform(
             RestDocumentationRequestBuilders.post("/autotrading/register")
@@ -265,7 +265,7 @@ class AutoTradingControllerTest {
                 .coinExchangeType(coinExchangeType)
                 .build()
         )
-            .when(autoTradingService).start(Mockito.any(), Mockito.any());
+            .when(autoTradingAggregation).start(Mockito.any(), Mockito.any());
 
         MvcResult result = this.mockMvc.perform(
             RestDocumentationRequestBuilders.post("/autotrading/{autoTradingProcessorId}/start", autoTradingProcessorId)
@@ -321,7 +321,7 @@ class AutoTradingControllerTest {
                 .coinExchangeType(coinExchangeType)
                 .build()
         )
-            .when(autoTradingService).stop(Mockito.any(), Mockito.any());
+            .when(autoTradingAggregation).stop(Mockito.any(), Mockito.any());
 
         MvcResult result = this.mockMvc.perform(
             RestDocumentationRequestBuilders.post("/autotrading/{autoTradingProcessorId}/stop", autoTradingProcessorId)
@@ -377,7 +377,7 @@ class AutoTradingControllerTest {
                 .coinExchangeType(coinExchangeType)
                 .build()
         )
-            .when(autoTradingService).terminate(Mockito.any(), Mockito.any());
+            .when(autoTradingAggregation).terminate(Mockito.any(), Mockito.any());
 
         MvcResult result = this.mockMvc.perform(
             RestDocumentationRequestBuilders.post("/autotrading/{autoTradingProcessorId}/terminate", autoTradingProcessorId)

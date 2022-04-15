@@ -7,12 +7,12 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class ExchangeServiceSelector {
+public class ExchangeCandleServiceSelector {
 
-    private final List<ExchangeService> exchangeServiceList;
+    private final List<ExchangeCandleService> candleServiceList;
 
-    public ExchangeService getTargetService(CoinExchangeType coinExchangeType) {
-        return exchangeServiceList.stream()
+    public ExchangeCandleService getTargetService(CoinExchangeType coinExchangeType) {
+        return candleServiceList.stream()
             .filter(processor -> processor.getCoinExchangeType() == coinExchangeType)
             .findFirst()
             .orElseThrow();
