@@ -75,6 +75,9 @@ public class RsiStrategyCore implements StrategyCore {
                         .tradingTerm(tradingTerm)
                         .orderId(tradingResult.getOrderId())
                         .orderType(OrderType.CANCEL)
+                        .volume(tradingResult.getVolume())
+                        .price(tradingResult.getPrice())
+                        .priceType(tradingResult.getPriceType())
                         .tag(tradingResult.getTag())
                         .build()
                 );
