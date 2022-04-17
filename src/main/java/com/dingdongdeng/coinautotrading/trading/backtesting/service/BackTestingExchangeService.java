@@ -31,6 +31,7 @@ public class BackTestingExchangeService implements ExchangeService {
 
     private BackTestingContextLoader contextLoader;
     private IndexCalculator indexCalculator;
+    private double exchangeFeeRate;
     @Default
     private Map<String, ExchangeOrder> orderMap = new HashMap<>();
 
@@ -48,8 +49,8 @@ public class BackTestingExchangeService implements ExchangeService {
             .volume(param.getVolume())
             .remainingVolume(null)
             .reservedFee(null)
-            .remainingFee(null)
-            .paidFee(null)
+            .remainingFee(0d)
+            .paidFee(param.getVolume() * param.getPrice() * exchangeFeeRate / 100)
             .locked(null)
             .executedVolume(null)
             .tradeCount(null)

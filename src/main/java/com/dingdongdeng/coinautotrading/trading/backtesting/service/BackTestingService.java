@@ -5,6 +5,7 @@ import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingPro
 import com.dingdongdeng.coinautotrading.trading.backtesting.context.BackTestingContextLoader;
 import com.dingdongdeng.coinautotrading.trading.backtesting.context.BackTestingContextLoaderFactory;
 import com.dingdongdeng.coinautotrading.trading.backtesting.model.BackTestingProcessor;
+import com.dingdongdeng.coinautotrading.trading.backtesting.model.type.BackTestingExchangeFeeType;
 import com.dingdongdeng.coinautotrading.trading.index.IndexCalculator;
 import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyFactory;
@@ -25,7 +26,7 @@ public class BackTestingService {
     private final StrategyFactory strategyFactory;
     private final BackTestingContextLoaderFactory backTestingContextLoaderFactory;
     private final IndexCalculator indexCalculator;
-    private final Map<String, BackTestingProcessor> backTestingProcessorMap; //fixme 한번 래핑해서 다루기
+    private final Map<String, BackTestingProcessor> backTestingProcessorMap; //fixme 한번 래핑해서 다루기, 자동매매 삭제됐을때 얘도 삭제좀;
 
     public BackTestingProcessor doTest(AutoTradingProcessor autoTradingProcessor, LocalDateTime start, LocalDateTime end) {
 
@@ -38,6 +39,7 @@ public class BackTestingService {
         BackTestingExchangeService backTestingExchangeService = BackTestingExchangeService.builder()
             .contextLoader(contextLoader)
             .indexCalculator(indexCalculator)
+            .exchangeFeeRate(BackTestingExchangeFeeType.of(autoTradingProcessor.getCoinExchangeType()).getFeeRate())
             .build();
 
         StrategyServiceParam serviceParam = StrategyServiceParam.builder()

@@ -9,6 +9,7 @@ import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.domain.entity.ExchangeKey;
 import com.dingdongdeng.coinautotrading.domain.repository.ExchangeKeyRepository;
+import com.dingdongdeng.coinautotrading.trading.exchange.service.impl.UpbitExchangeService;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrder;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrderCancel;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrderCancelParam;

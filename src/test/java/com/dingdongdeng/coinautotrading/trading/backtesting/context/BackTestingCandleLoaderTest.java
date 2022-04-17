@@ -7,7 +7,7 @@ import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.domain.entity.ExchangeKey;
 import com.dingdongdeng.coinautotrading.domain.service.ExchangeKeyService;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.UpbitExchangeCandleService;
+import com.dingdongdeng.coinautotrading.trading.exchange.service.impl.UpbitExchangeCandleService;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeCandles.Candle;
 import java.time.LocalDateTime;
 import java.util.List;
