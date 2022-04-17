@@ -5,7 +5,7 @@ import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingPro
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingRegisterRequest;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.type.AutoTradingProcessStatus;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeService;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeServiceSelector;
+import com.dingdongdeng.coinautotrading.trading.exchange.service.selector.ExchangeServiceSelector;
 import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyFactory;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreParam;
