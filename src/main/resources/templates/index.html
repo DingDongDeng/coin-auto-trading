@@ -10,7 +10,7 @@
   <title>Title</title>
 </head>
 <body>
-<div id="app">
+<v-app id="app">
   <div>
     <h1>임시 사용자 콘솔 화면</h1>
   </div>
@@ -18,7 +18,13 @@
     <div>
       <span>사용자 ID : </span>
       <input v-model="user.id" type="text">
-      <input type="button" value="업데이트" @click="updateAllInformation()">
+      <v-btn
+          color="primary"
+          elevation="2"
+          small
+          @click="updateAllInformation()"
+      > LOGIN
+      </v-btn>
     </div>
   </div>
   <div>
@@ -204,7 +210,7 @@
       </div>
     </div>
   </div>
-</div>
+</v-app>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
