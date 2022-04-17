@@ -65,6 +65,7 @@ public class BackTestingAggregation {
                             .executionRate(executionTime / totalTime)
                             .marginPrice(recorder.getMarginPrice())
                             .marginRate(recorder.getMarginRate())
+                            .totalFee(recorder.getTotalFee())
                             .eventMessage(recorder.getEventMessage())
                             .build()
                     )
