@@ -35,6 +35,7 @@ public class TradingResult {
     private OrderState orderState;
     private Double volume;
     private Double price;
+    private Double fee;
     private PriceType priceType;
     private String orderId;
     private TradingTag tag;

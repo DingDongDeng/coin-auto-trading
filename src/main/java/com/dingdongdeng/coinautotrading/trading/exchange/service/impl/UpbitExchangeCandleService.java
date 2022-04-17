@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading.trading.exchange.service;
+package com.dingdongdeng.coinautotrading.trading.exchange.service.impl;
 
 import com.dingdongdeng.coinautotrading.common.type.CandleUnit;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
@@ -7,6 +7,7 @@ import com.dingdongdeng.coinautotrading.trading.exchange.client.UpbitClient;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.UpbitEnum.MarketType;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.UpbitRequest.CandleRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.UpbitResponse.CandleResponse;
+import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeCandleService;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeCandles;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;

@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading.trading.exchange.service;
+package com.dingdongdeng.coinautotrading.trading.exchange.service.impl;
 
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
@@ -17,6 +17,7 @@ import com.dingdongdeng.coinautotrading.trading.exchange.client.model.UpbitRespo
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.UpbitResponse.OrderCancelResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.UpbitResponse.OrderResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.UpbitResponse.TickerResponse;
+import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeService;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrder;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrderCancel;
