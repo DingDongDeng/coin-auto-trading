@@ -19,11 +19,6 @@ public class ConsoleController {
         return "index";
     }
 
-    @RequestMapping("/login")
-    public String login() {
-        return "login";
-    }
-
     @GetMapping("/type")
     @ResponseBody
     public CommonResponse<TypeInfoResponse> getTypeInfo() {
