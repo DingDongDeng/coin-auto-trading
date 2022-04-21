@@ -214,8 +214,6 @@
     data() {
       return {
         user: {
-          id: "",
-          password: "",
           keyPairList: [],
           autoTradingList: [],
           backTestingList: []
@@ -251,29 +249,29 @@
         this.register.keyPair.keyList.splice(index, 1);
       },
       async getUserKeyList(userId) {
-        const response = await api.get("/user/" + userId + "/key/pair", this.headers());
+        const response = await api.get("/user/" + userId + "/key/pair");
         return response.data.body;
       },
       async getUserAutoTradingList(userId) {
-        const response = await api.get("/user/" + userId + "/autotrading", this.headers());
+        const response = await api.get("/user/" + userId + "/autotrading");
         return response.data.body;
       },
       async getUserBackTestingList(userId) {
-        const response = await api.get("/user/" + userId + "/backtesting", this.headers());
+        const response = await api.get("/user/" + userId + "/backtesting");
         return response.data.body;
       },
       async deleteUserPairKey(pairKeyId, callback) {
-        const response = await api.delete("/key/pair/" + pairKeyId, this.headers());
+        const response = await api.delete("/key/pair/" + pairKeyId);
         callback();
         return response.data.body;
       },
       async startAutoTrading(autoTradingProcessorId, callback) {
-        const response = await api.post("/autotrading/" + autoTradingProcessorId + "/start", {}, this.headers());
+        const response = await api.post("/autotrading/" + autoTradingProcessorId + "/start", {});
         callback();
         return response.data.body;
       },
       async stopAutoTrading(autoTradingProcessorId, callback) {
-        const response = await api.post("/autotrading/" + autoTradingProcessorId + "/stop", {}, this.headers());
+        const response = await api.post("/autotrading/" + autoTradingProcessorId + "/stop", {});
         callback();
         return response.data.body;
       },
@@ -281,7 +279,7 @@
         if (!confirm("자동매매가 종료되고, 목록에서 제거됩니다. \n 종료하시겠습니까?")) {
           return;
         }
-        const response = await api.post("/autotrading/" + autoTradingProcessorId + "/terminate", {}, this.headers());
+        const response = await api.post("/autotrading/" + autoTradingProcessorId + "/terminate", {});
         callback();
         return response.data.body;
       },
@@ -291,14 +289,14 @@
           keyList: this.register.keyPair.keyList
         };
 
-        const response = await api.post("/key/pair", body, this.headers());
+        const response = await api.post("/key/pair", body);
         this.register.keyPair = this.resetKeyRegister();
         callback();
         return response.data.body;
       },
       async registerAutoTrading(callback) {
         const body = this.register.autoTrading;
-        const response = await api.post("/autotrading/register", body, this.headers());
+        const response = await api.post("/autotrading/register", body);
         this.register.autoTrading = this.resetAutoTradingRegister();
         callback();
         return response.data.body;
@@ -313,7 +311,7 @@
           end: end
         };
 
-        const response = await api.post("/backtesting", body, this.headers());
+        const response = await api.post("/backtesting", body);
         this.register.backTesting = this.resetBackTestingRegister();
         callback();
         return response.data.body;
@@ -370,21 +368,9 @@
         }
       },
       async resetTypeInfo() {
-        const response = await api.get("/type", this.headers());
+        const response = await api.get("/type");
         this.type = response.data.body;
       },
-      headers() {
-        const userId = this.user.id;
-        if (!userId) {
-          alert("사용자ID를 입력해주세요.");
-          return;
-        }
-        return {
-          headers: {
-            "userId": this.user.id
-          }
-        };
-      }
     },
   });
 </script>
