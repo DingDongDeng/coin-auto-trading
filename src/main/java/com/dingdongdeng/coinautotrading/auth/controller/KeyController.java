@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -24,7 +24,7 @@ public class KeyController {
     private final KeyService keyService;
 
     @GetMapping("/user/{userId}/key/pair")
-    public CommonResponse<List<KeyPairResponse>> getKeyList(@PathVariable String userId) {
+    public CommonResponse<List<KeyPairResponse>> getKeyList(@SessionAttribute String userId) {
         return CommonResponse.<List<KeyPairResponse>>builder()
             .body(keyService.getUserKeyList(userId))
             .message("key get success")
@@ -32,7 +32,7 @@ public class KeyController {
     }
 
     @PostMapping("/key/pair")
-    public CommonResponse<List<KeyPairResponse>> registerKey(@Valid @RequestBody KeyPairRegisterRequest request, @RequestHeader String userId) {
+    public CommonResponse<List<KeyPairResponse>> registerKey(@Valid @RequestBody KeyPairRegisterRequest request, @SessionAttribute String userId) {
         return CommonResponse.<List<KeyPairResponse>>builder()
             .body(keyService.register(request, userId))
             .message("key register success")
@@ -40,7 +40,7 @@ public class KeyController {
     }
 
     @DeleteMapping("/key/pair/{keyPairId}")
-    public CommonResponse<List<KeyPairResponse>> deleteKey(@PathVariable String keyPairId, @RequestHeader String userId) {
+    public CommonResponse<List<KeyPairResponse>> deleteKey(@PathVariable String keyPairId, @SessionAttribute String userId) {
         return CommonResponse.<List<KeyPairResponse>>builder()
             .body(keyService.deleteKeyPair(keyPairId, userId))
             .message("key register success")
