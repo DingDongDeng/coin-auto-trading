@@ -14,13 +14,13 @@ import org.springframework.stereotype.Service;
 public class UserService implements UserDetailsService {
 
     @Override
-    public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         //fixme 고도화 필요
-        String adminId = "admin";
+        String adminName = "admin";
         String password = new BCryptPasswordEncoder().encode("1234");
-        if (!userId.equals(adminId)) {
+        if (!username.equals(adminName)) {
             throw new UsernameNotFoundException("User not authorized.");
         }
-        return new User(userId, password, List.of());
+        return new User(username, password, List.of());
     }
 }
