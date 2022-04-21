@@ -21,13 +21,12 @@
               <v-toolbar-title>Login form</v-toolbar-title>
             </v-toolbar>
             <v-card-text>
-              <v-form>
+              <v-form ref='form' action="/login" method="post">
                 <v-text-field
                     prepend-icon="person"
-                    name="login"
+                    name="id"
                     label="Login"
                     type="text"
-                    v-model="user.id"
                     @keyup.enter="login()"
                 ></v-text-field>
                 <v-text-field
@@ -36,7 +35,6 @@
                     name="password"
                     label="Password"
                     type="password"
-                    v-model="user.password"
                     @keyup.enter="login()"
                 ></v-text-field>
               </v-form>
@@ -56,22 +54,20 @@
 <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
 <script type="text/javascript"></script>
 <script>
+  var api = axios.create({
+    timeout: 5000,
+  });
   new Vue({
     el: '#app',
     vuetify: new Vuetify(),
     data() {
-      return {
-        user: {
-          id: "",
-          password: ""
-        }
-      }
+      return {}
     },
     async created() {
     },
     methods: {
       async login() {
-        console.log("try login");
+        this.$refs.form.$el.submit();
       },
     },
   });
