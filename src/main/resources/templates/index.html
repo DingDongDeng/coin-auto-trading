@@ -420,9 +420,6 @@
         callback();
         return response.data.body;
       },
-      toggleAutoTradingRegisterUI() {
-        this.register.autoTrading.isVisible = !this.register.autoTrading.isVisible;
-      },
       toggleBackTestingRegisterUI(autoTradingProcessorId) {
         this.register.backTesting.autoTradingProcessorId = autoTradingProcessorId;
         this.register.backTesting.isVisible = !this.register.backTesting.isVisible;
@@ -440,7 +437,6 @@
       },
       resetAutoTradingRegister() {
         return {
-          isVisible: false,
           title: "",
           coinType: "",
           coinExchangeType: "",
