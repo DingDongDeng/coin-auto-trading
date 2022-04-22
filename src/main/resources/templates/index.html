@@ -12,6 +12,7 @@
 </head>
 <body>
 <v-app id="app">
+
   <!-- 헤더 -->
   <v-container>
     <v-toolbar dark color="#162130" style="height:5vh;">
@@ -39,255 +40,261 @@
       <input type="button" value="실행" @click="registerBackTesting(register.backTesting.autoTradingProcessorId, register.backTesting.start, register.backTesting.end, refresh)">
     </div>
   </div>
+
   <!-- 키 리스트 -->
   <v-container>
     <h2> 키 리스트 </h2>
-    <v-layout wrap>
-      <v-card
-          class="ma-3"
-          v-for="keyPair in user.keyPairList"
-      >
-        <v-card-text>
-          <div>
-            키 페어 ID : {{keyPair.pairId}}
-          </div>
-          <div>
-            거래소 : {{keyPair.coinExchangeType}}
-          </div>
-          <div v-for="key in keyPair.keyList">
+    <v-row
+        justify="start"
+    >
+      <v-col cols="3">
+        <v-card
+            class="ma-3"
+            v-for="keyPair in user.keyPairList"
+        >
+          <v-card-text>
             <div>
-              키 이름 : {{key.name}}
+              키 페어 ID : {{keyPair.pairId}}
             </div>
-          </div>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-              color="primary"
-              @click="deleteUserPairKey(keyPair.pairId, refresh)"
-          > 삭제
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-      <v-card class="ma-3">
-        <v-card-text>
-          <div>
-            <v-row>
-              <v-col cols="12">
-                <v-select
-                    label="거래소를 선택해주세요."
-                    solo
-                    :items="type.coinExchangeTypeList"
-                    item-text="name"
-                    item-value="value"
-                    v-model="register.keyPair.coinExchangeType"
-                ></v-select>
-              </v-col>
-            </v-row>
-            <v-row
-                align="center"
-                justify="center"
-                v-for="(key, i) in register.keyPair.keyList"
-            >
-              <v-col cols="4">
-                <v-text-field
-                    label="키 이름"
-                    v-model="key.name"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="6">
-                <v-text-field
-                    label="키 값"
-                    v-model="key.value"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="2">
-                <v-icon @click="deleteKeyInputBox(i)">delete</v-icon>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="12">
-                <v-icon
-                    x-large
-                    @click="addKeyInputBox()"
-                >add_circle
-                </v-icon>
-              </v-col>
-            </v-row>
-          </div>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn value="" @click="registerKeyPair(refresh)">키 등록</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-layout>
+            <div>
+              거래소 : {{keyPair.coinExchangeType}}
+            </div>
+            <div v-for="key in keyPair.keyList">
+              <div>
+                키 이름 : {{key.name}}
+              </div>
+            </div>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+                color="primary"
+                @click="deleteUserPairKey(keyPair.pairId, refresh)"
+            > 삭제
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+      <v-col cols="3">
+        <v-card class="ma-3">
+          <v-card-text>
+            <div>
+              <v-select
+                  label="거래소를 선택해주세요."
+                  solo
+                  :items="type.coinExchangeTypeList"
+                  item-text="name"
+                  item-value="value"
+                  v-model="register.keyPair.coinExchangeType"
+              ></v-select>
+              <v-row
+                  align="center"
+                  justify="center"
+                  v-for="(key, i) in register.keyPair.keyList"
+              >
+                <v-col cols="4">
+                  <v-text-field
+                      label="키 이름"
+                      v-model="key.name"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="6">
+                  <v-text-field
+                      label="키 값"
+                      v-model="key.value"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="2">
+                  <v-icon @click="deleteKeyInputBox(i)">delete</v-icon>
+                </v-col>
+              </v-row>
+              <v-icon
+                  x-large
+                  @click="addKeyInputBox()"
+              >add_circle
+              </v-icon>
+            </div>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn value="" @click="registerKeyPair(refresh)">키 등록</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
+
   <!-- 자동매매 리스트 -->
   <v-container>
     <h2> 자동매매 리스트 </h2>
-    <v-layout wrap>
-      <v-card
-          class="ma-3"
-          v-for="autoTrading in user.autoTradingList"
-      >
-        <v-card-text>
-          <div>
-            제목 : {{autoTrading.title}}
-          </div>
-          <div>
-            전략 코드 : {{autoTrading.strategyIdentifyCode}}
-          </div>
-          <div>
-            매매 타입 : {{autoTrading.tradingTerm}}
-          </div>
-          <div>
-            거래소 : {{autoTrading.coinExchangeType}}
-          </div>
-          <div>
-            코인 : {{autoTrading.coinType}}
-          </div>
-          <div>
-            프로세스ID : {{autoTrading.processorId}}
-          </div>
-          <div>
-            상태 : {{autoTrading.processStatus}}
-          </div>
-          <div>
-            세부설정 : {{autoTrading}}
-          </div>
-          <div>
-            백테스팅 현황
-            <div v-for="backTesting in user.backTestingList">
-              <div v-if="backTesting.autoTradingProcessorId==autoTrading.processorId">
-                <div>
-                  기간 : {{backTesting.start}} ~ {{backTesting.end}}
-                </div>
-                <div>
-                  실행율 : {{backTesting.result.executionRate}}
-                </div>
-                <div>
-                  상태 : {{backTesting.result.status}}
-                </div>
-                <div>
-                  손익 : {{backTesting.result.marginPrice}}
-                </div>
-                <div>
-                  손익율 : {{backTesting.result.marginRate}}
-                </div>
-                <div>
-                  수수료 : {{backTesting.result.totalFee}}
-                </div>
-                <div>
-                  히스토리 :
-                  <div v-html="backTesting.result.eventMessage">
+    <v-row
+        justify="start"
+    >
+      <v-col cols="4">
+        <v-card
+            class="ma-3"
+            v-for="autoTrading in user.autoTradingList"
+        >
+          <v-card-text>
+            <div>
+              제목 : {{autoTrading.title}}
+            </div>
+            <div>
+              전략 코드 : {{autoTrading.strategyIdentifyCode}}
+            </div>
+            <div>
+              매매 타입 : {{autoTrading.tradingTerm}}
+            </div>
+            <div>
+              거래소 : {{autoTrading.coinExchangeType}}
+            </div>
+            <div>
+              코인 : {{autoTrading.coinType}}
+            </div>
+            <div>
+              프로세스ID : {{autoTrading.processorId}}
+            </div>
+            <div>
+              상태 : {{autoTrading.processStatus}}
+            </div>
+            <div>
+              세부설정 : {{autoTrading}}
+            </div>
+            <div>
+              백테스팅 현황
+              <div v-for="backTesting in user.backTestingList">
+                <div v-if="backTesting.autoTradingProcessorId==autoTrading.processorId">
+                  <div>
+                    기간 : {{backTesting.start}} ~ {{backTesting.end}}
                   </div>
-                </div>
-                <div>
+                  <div>
+                    실행율 : {{backTesting.result.executionRate}}
+                  </div>
+                  <div>
+                    상태 : {{backTesting.result.status}}
+                  </div>
+                  <div>
+                    손익 : {{backTesting.result.marginPrice}}
+                  </div>
+                  <div>
+                    손익율 : {{backTesting.result.marginRate}}
+                  </div>
+                  <div>
+                    수수료 : {{backTesting.result.totalFee}}
+                  </div>
+                  <div>
+                    히스토리 :
+                    <div v-html="backTesting.result.eventMessage">
+                    </div>
+                  </div>
+                  <div>
 
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </v-card-text>
-        <v-card_actions>
-          <v-spacer></v-spacer>
-          <v-btn @click="startAutoTrading(autoTrading.processorId,refresh)"> 시작</v-btn>
-          <v-btn @click="stopAutoTrading(autoTrading.processorId,refresh)"> 정지</v-btn>
-          <v-btn @click="terminateAutoTrading(autoTrading.processorId,refresh)"> 종료</v-btn>
-          <v-btn @click="toggleBackTestingRegisterUI(autoTrading.processorId)"> 백테스팅</v-btn>
-        </v-card_actions>
-      </v-card>
-      <v-card>
-        <v-card-text>
-          <v-text-field
-              label="자동 매매 이름을 입력해주세요."
-              v-model="register.autoTrading.title"
-          ></v-text-field>
-          <v-select
-              label="코인 종목을 선택해주세요."
-              solo
-              :items="type.coinTypeList"
-              item-text="name"
-              item-value="value"
-              v-model="register.autoTrading.coinType"
-          ></v-select>
-          <v-select
-              label="거래소를 선택해주세요."
-              solo
-              :items="type.coinExchangeTypeList"
-              item-text="name"
-              item-value="value"
-              v-model="register.autoTrading.coinExchangeType"
-          ></v-select>
-          <v-select
-              label="매매 전략을 선택해주세요."
-              solo
-              :items="type.tradingTermList"
-              item-text="name"
-              item-value="value"
-              v-model="register.autoTrading.tradingTerm"
-          ></v-select>
-          <v-select
-              label="전략 코드를 선택해주세요."
-              solo
-              :items="type.strategyCodeList"
-              item-text="name"
-              item-value="value"
-              v-model="register.autoTrading.strategyCode"
-          ></v-select>
-          <v-text-field
-              label="매수 주문을 할 rsi 기준을 입력해주세요."
-              v-model="register.autoTrading.buyRsi"
-          ></v-text-field>
-          <v-text-field
-              label="이익중일때 익절할 rsi 기준을 입력해주세요."
-              v-model="register.autoTrading.profitRsi"
-          ></v-text-field>
-          <v-text-field
-              label="손실중일때 손절할 rsi 기준을 입력해주세요."
-              v-model="register.autoTrading.lossRsi"
-          ></v-text-field>
-          <v-text-field
-              label="익절 이익율 상한을 입력해주세요."
-              v-model="register.autoTrading.profitLimitPriceRate"
-          ></v-text-field>
-          <v-text-field
-              label="손절 손실율 상한을 입력해주세요."
-              v-model="register.autoTrading.lossLimitPriceRate"
-          ></v-text-field>
-          <v-text-field
-              label="지연 시간(second)을 입력해주세요."
-              v-model="register.autoTrading.tooOldOrderTimeSeconds"
-          ></v-text-field>
-          <v-text-field
-              label="한번에 주문할 금액을 입력해주세요."
-              v-model="register.autoTrading.orderPrice"
-          ></v-text-field>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn @click="startAutoTrading(autoTrading.processorId,refresh)"> 시작</v-btn>
+            <v-btn @click="stopAutoTrading(autoTrading.processorId,refresh)"> 정지</v-btn>
+            <v-btn @click="terminateAutoTrading(autoTrading.processorId,refresh)"> 종료</v-btn>
+            <v-btn @click="toggleBackTestingRegisterUI(autoTrading.processorId)"> 백테스팅</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+      <v-col cols="4">
+        <v-card class="ma-3">
+          <v-card-text>
+            <v-text-field
+                label="자동 매매 이름을 입력해주세요."
+                v-model="register.autoTrading.title"
+            ></v-text-field>
+            <v-select
+                label="코인 종목을 선택해주세요."
+                solo
+                :items="type.coinTypeList"
+                item-text="name"
+                item-value="value"
+                v-model="register.autoTrading.coinType"
+            ></v-select>
+            <v-select
+                label="거래소를 선택해주세요."
+                solo
+                :items="type.coinExchangeTypeList"
+                item-text="name"
+                item-value="value"
+                v-model="register.autoTrading.coinExchangeType"
+            ></v-select>
+            <v-select
+                label="매매 전략을 선택해주세요."
+                solo
+                :items="type.tradingTermList"
+                item-text="name"
+                item-value="value"
+                v-model="register.autoTrading.tradingTerm"
+            ></v-select>
+            <v-select
+                label="전략 코드를 선택해주세요."
+                solo
+                :items="type.strategyCodeList"
+                item-text="name"
+                item-value="value"
+                v-model="register.autoTrading.strategyCode"
+            ></v-select>
+            <v-text-field
+                label="매수 주문을 할 rsi 기준을 입력해주세요."
+                v-model="register.autoTrading.buyRsi"
+            ></v-text-field>
+            <v-text-field
+                label="이익중일때 익절할 rsi 기준을 입력해주세요."
+                v-model="register.autoTrading.profitRsi"
+            ></v-text-field>
+            <v-text-field
+                label="손실중일때 손절할 rsi 기준을 입력해주세요."
+                v-model="register.autoTrading.lossRsi"
+            ></v-text-field>
+            <v-text-field
+                label="익절 이익율 상한을 입력해주세요."
+                v-model="register.autoTrading.profitLimitPriceRate"
+            ></v-text-field>
+            <v-text-field
+                label="손절 손실율 상한을 입력해주세요."
+                v-model="register.autoTrading.lossLimitPriceRate"
+            ></v-text-field>
+            <v-text-field
+                label="지연 시간(second)을 입력해주세요."
+                v-model="register.autoTrading.tooOldOrderTimeSeconds"
+            ></v-text-field>
+            <v-text-field
+                label="한번에 주문할 금액을 입력해주세요."
+                v-model="register.autoTrading.orderPrice"
+            ></v-text-field>
 
-          <v-text-field
-              label="계좌 안전 금액을 입력해주세요."
-              v-model="register.autoTrading.accountBalanceLimit"
-          ></v-text-field>
-          <v-select
-              label="키 페어 ID를 선택해주세요."
-              solo
-              :items="user.keyPairList"
-              item-text="pairId"
-              item-value="pairId"
-              v-model="register.autoTrading.keyPairId"
-          ></v-select>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-              color="primary"
-              @click="registerAutoTrading(refresh)"
-          > 자동매매 등록
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-layout>
+            <v-text-field
+                label="계좌 안전 금액을 입력해주세요."
+                v-model="register.autoTrading.accountBalanceLimit"
+            ></v-text-field>
+            <v-select
+                label="키 페어 ID를 선택해주세요."
+                solo
+                :items="user.keyPairList"
+                item-text="pairId"
+                item-value="pairId"
+                v-model="register.autoTrading.keyPairId"
+            ></v-select>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+                color="primary"
+                @click="registerAutoTrading(refresh)"
+            > 자동매매 등록
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </v-app>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
