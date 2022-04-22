@@ -135,92 +135,111 @@
   </div>
   <v-container>
     <h2> 키 리스트 </h2>
-    <div v-for="keyPair in user.keyPairList">
-      <div>
-        <div>
-          키 페어 ID : {{keyPair.pairId}}
-        </div>
-        <div>
-          거래소 : {{keyPair.coinExchangeType}}
-        </div>
-        <div v-for="key in keyPair.keyList">
+    <v-layout wrap>
+      <v-card
+          class="ma-3"
+          v-for="keyPair in user.keyPairList"
+      >
+        <v-card-text>
           <div>
-            키 이름 : {{key.name}}
+            키 페어 ID : {{keyPair.pairId}}
           </div>
-        </div>
-        <div>
-          <input type="button" value="삭제" @click="deleteUserPairKey(keyPair.pairId, refresh)">
-        </div>
-      </div>
-    </div>
+          <div>
+            거래소 : {{keyPair.coinExchangeType}}
+          </div>
+          <div v-for="key in keyPair.keyList">
+            <div>
+              키 이름 : {{key.name}}
+            </div>
+          </div>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+              color="primary"
+              @click="deleteUserPairKey(keyPair.pairId, refresh)"
+          > 삭제
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-layout>
+
   </v-container>
   <v-container>
     <h2> 자동매매 리스트 </h2>
-    <div v-for="autoTrading in user.autoTradingList">
-      <div>
-        제목 : {{autoTrading.title}}
-      </div>
-      <div>
-        전략 코드 : {{autoTrading.strategyIdentifyCode}}
-      </div>
-      <div>
-        매매 타입 : {{autoTrading.tradingTerm}}
-      </div>
-      <div>
-        거래소 : {{autoTrading.coinExchangeType}}
-      </div>
-      <div>
-        코인 : {{autoTrading.coinType}}
-      </div>
-      <div>
-        프로세스ID : {{autoTrading.processorId}}
-      </div>
-      <div>
-        상태 : {{autoTrading.processStatus}}
-      </div>
-      <div>
-        세부설정 : {{autoTrading}}
-      </div>
-      <div>
-        백테스팅 현황
-        <div v-for="backTesting in user.backTestingList">
-          <div v-if="backTesting.autoTradingProcessorId==autoTrading.processorId">
-            <div>
-              기간 : {{backTesting.start}} ~ {{backTesting.end}}
-            </div>
-            <div>
-              실행율 : {{backTesting.result.executionRate}}
-            </div>
-            <div>
-              상태 : {{backTesting.result.status}}
-            </div>
-            <div>
-              손익 : {{backTesting.result.marginPrice}}
-            </div>
-            <div>
-              손익율 : {{backTesting.result.marginRate}}
-            </div>
-            <div>
-              수수료 : {{backTesting.result.totalFee}}
-            </div>
-            <div>
-              히스토리 :
-              <div v-html="backTesting.result.eventMessage">
+    <v-layout wrap>
+      <v-card
+          class="ma-3"
+          v-for="autoTrading in user.autoTradingList"
+      >
+        <v-card-text>
+          <div>
+            제목 : {{autoTrading.title}}
+          </div>
+          <div>
+            전략 코드 : {{autoTrading.strategyIdentifyCode}}
+          </div>
+          <div>
+            매매 타입 : {{autoTrading.tradingTerm}}
+          </div>
+          <div>
+            거래소 : {{autoTrading.coinExchangeType}}
+          </div>
+          <div>
+            코인 : {{autoTrading.coinType}}
+          </div>
+          <div>
+            프로세스ID : {{autoTrading.processorId}}
+          </div>
+          <div>
+            상태 : {{autoTrading.processStatus}}
+          </div>
+          <div>
+            세부설정 : {{autoTrading}}
+          </div>
+          <div>
+            백테스팅 현황
+            <div v-for="backTesting in user.backTestingList">
+              <div v-if="backTesting.autoTradingProcessorId==autoTrading.processorId">
+                <div>
+                  기간 : {{backTesting.start}} ~ {{backTesting.end}}
+                </div>
+                <div>
+                  실행율 : {{backTesting.result.executionRate}}
+                </div>
+                <div>
+                  상태 : {{backTesting.result.status}}
+                </div>
+                <div>
+                  손익 : {{backTesting.result.marginPrice}}
+                </div>
+                <div>
+                  손익율 : {{backTesting.result.marginRate}}
+                </div>
+                <div>
+                  수수료 : {{backTesting.result.totalFee}}
+                </div>
+                <div>
+                  히스토리 :
+                  <div v-html="backTesting.result.eventMessage">
+                  </div>
+                </div>
+                <div>
+
+                </div>
               </div>
             </div>
-            <div>
-
-            </div>
           </div>
-        </div>
-      </div>
-      <div>
-        <input type="button" value="시작" @click="startAutoTrading(autoTrading.processorId,refresh)">
-        <input type="button" value="정지" @click="stopAutoTrading(autoTrading.processorId,refresh)">
-        <input type="button" value="종료" @click="terminateAutoTrading(autoTrading.processorId,refresh)">
-        <input type="button" value="백테스팅" @click="toggleBackTestingRegisterUI(autoTrading.processorId)">
-      </div>
-    </div>
+        </v-card-text>
+        <v-card_actions>
+          <v-spacer></v-spacer>
+          <v-btn @click="startAutoTrading(autoTrading.processorId,refresh)"> 시작</v-btn>
+          <v-btn @click="stopAutoTrading(autoTrading.processorId,refresh)"> 정지</v-btn>
+          <v-btn @click="terminateAutoTrading(autoTrading.processorId,refresh)"> 종료</v-btn>
+          <v-btn @click="toggleBackTestingRegisterUI(autoTrading.processorId)"> 백테스팅</v-btn>
+        </v-card_actions>
+      </v-card>
+    </v-layout>
   </v-container>
 </v-app>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
