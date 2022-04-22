@@ -17,16 +17,7 @@
       <v-toolbar-title class="white--text"></v-toolbar-title>
 
       <v-toolbar-items>
-        <v-btn
-            text
-            @click="toggleKeyRegisterUI()"
-        > 키 등록
-        </v-btn>
-        <v-btn
-            text
-            @click="toggleAutoTradingRegisterUI()"
-        > 자동매매 등록
-        </v-btn>
+        <v-icon @click="refresh()">cached</v-icon>
       </v-toolbar-items>
 
       <v-spacer></v-spacer>
@@ -43,25 +34,6 @@
     </v-toolbar>
   </v-container>
   <div>
-
-    <div v-if="register.keyPair.isVisible">
-      <h3> 키 등록</h3>
-      <select v-model="register.keyPair.coinExchangeType">
-        <option disabled value="">거래소</option>
-        <option v-for="(value,key) in type.coinExchangeTypeMap" :value="key">{{value}}</option>
-      </select>
-      <div v-for="(key, i) in register.keyPair.keyList">
-        <input v-model="key.name" type="text" placeholder="키 이름">
-        <input v-model="key.value" type="text" placeholder="키 값">
-        <input type="button" value="x" @click="deleteKeyInputBox(i)">
-      </div>
-      <div>
-        <input type="button" value="+" @click="addKeyInputBox()">
-      </div>
-      <div>
-        <input type="button" value="등록하기" @click="registerKeyPair(refresh)">
-      </div>
-    </div>
     <div v-if="register.autoTrading.isVisible">
       <h3> 자동 매매 등록</h3>
       <div>
@@ -160,6 +132,59 @@
               @click="deleteUserPairKey(keyPair.pairId, refresh)"
           > 삭제
           </v-btn>
+        </v-card-actions>
+      </v-card>
+      <v-card class="ma-3">
+        <v-card-text>
+          <h3> 키 등록</h3>
+          <div>
+            <v-row>
+              <v-col cols="12">
+                <v-select
+                    label="거래소를 선택해주세요."
+                    solo
+                    :items="type.coinExchangeTypeList"
+                    item-text="name"
+                    item-value="value"
+                    v-model="register.keyPair.coinExchangeType"
+                ></v-select>
+              </v-col>
+            </v-row>
+            <v-row
+                align="center"
+                justify="center"
+                v-for="(key, i) in register.keyPair.keyList"
+            >
+              <v-col cols="4">
+                <v-text-field
+                    label="키 이름"
+                    v-model="key.name"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="6">
+                <v-text-field
+                    label="키 값"
+                    v-model="key.value"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="2">
+                <v-icon @click="deleteKeyInputBox(i)">delete</v-icon>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="12">
+                <v-icon
+                    x-large
+                    @click="addKeyInputBox()"
+                >add_circle
+                </v-icon>
+              </v-col>
+            </v-row>
+          </div>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn value="" @click="registerKeyPair(refresh)">추가</v-btn>
         </v-card-actions>
       </v-card>
     </v-layout>
@@ -277,6 +302,7 @@
       this.register.autoTrading = this.resetAutoTradingRegister();
       this.register.backTesting = this.resetBackTestingRegister();
       this.type = this.resetTypeInfo();
+      this.refresh();
     },
     methods: {
       async refresh() {
@@ -287,6 +313,7 @@
         this.user.keyPairList = await this.getUserKeyList(userId);
         this.user.autoTradingList = await this.getUserAutoTradingList(userId);
         this.user.backTestingList = await this.getUserBackTestingList(userId);
+        this.type = this.resetTypeInfo();
       },
       addKeyInputBox() {
         this.register.keyPair.keyList.push({name: "", value: ""});
@@ -362,9 +389,6 @@
         callback();
         return response.data.body;
       },
-      toggleKeyRegisterUI() {
-        this.register.keyPair.isVisible = !this.register.keyPair.isVisible;
-      },
       toggleAutoTradingRegisterUI() {
         this.register.autoTrading.isVisible = !this.register.autoTrading.isVisible;
       },
@@ -374,7 +398,6 @@
       },
       resetKeyRegister() {
         return {
-          isVisible: false,
           coinExchangeType: "",
           keyList: [
             {
