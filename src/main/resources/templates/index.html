@@ -8,15 +8,38 @@
   <link href="https://fonts.googleapis.com/css?family=Material+Icons" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
-  <title>Title</title>
+  <title>Dashboard</title>
 </head>
 <body>
 <v-app id="app">
+  <v-container>
+    <v-toolbar dark color="#162130" style="height:5vh;">
+      <v-toolbar-title class="white--text"></v-toolbar-title>
+
+      <v-toolbar-items>
+        <v-btn
+            text
+            @click="toggleKeyRegisterUI()"
+        > 키 등록
+        </v-btn>
+        <v-btn
+            text
+            @click="toggleAutoTradingRegisterUI()"
+        > 자동매매 등록
+        </v-btn>
+      </v-toolbar-items>
+
+      <v-spacer></v-spacer>
+
+      <v-layout row align-center style="max-width: 10vw; min-width:1vw;">
+        <v-form action="/logout" method="post">
+          <v-btn type="submit" color="primary">Logout</v-btn>
+        </v-form>
+      </v-layout>
+    </v-toolbar>
+  </v-container>
   <div>
-    <div>
-      <input type="button" value="키 등록" @click="toggleKeyRegisterUI()">
-      <input type="button" value="자동매매 등록" @click="toggleAutoTradingRegisterUI()">
-    </div>
+
     <div v-if="register.keyPair.isVisible">
       <h3> 키 등록</h3>
       <select v-model="register.keyPair.coinExchangeType">
@@ -106,7 +129,7 @@
       <input type="button" value="실행" @click="registerBackTesting(register.backTesting.autoTradingProcessorId, register.backTesting.start, register.backTesting.end, refresh)">
     </div>
   </div>
-  <div>
+  <v-container>
     <h2> 키 리스트 </h2>
     <div v-for="keyPair in user.keyPairList">
       <div>
@@ -126,8 +149,8 @@
         </div>
       </div>
     </div>
-  </div>
-  <div>
+  </v-container>
+  <v-container>
     <h2> 자동매매 리스트 </h2>
     <div v-for="autoTrading in user.autoTradingList">
       <div>
@@ -194,7 +217,7 @@
         <input type="button" value="백테스팅" @click="toggleBackTestingRegisterUI(autoTrading.processorId)">
       </div>
     </div>
-  </div>
+  </v-container>
 </v-app>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
