@@ -12,6 +12,7 @@
 </head>
 <body>
 <v-app id="app">
+  <!-- 헤더 -->
   <v-container>
     <v-toolbar dark color="#162130" style="height:5vh;">
       <v-toolbar-title class="white--text"></v-toolbar-title>
@@ -34,77 +35,13 @@
     </v-toolbar>
   </v-container>
   <div>
-    <div v-if="register.autoTrading.isVisible">
-      <h3> 자동 매매 등록</h3>
-      <div>
-        <input v-model="register.autoTrading.title" type="text" placeholder="제목">
-      </div>
-      <div>
-        <select v-model="register.autoTrading.coinType">
-          <option disabled value="">코인 종목</option>
-          <option v-for="(value,key) in type.coinTypeMap" :value="key">{{value}}</option>
-        </select>
-      </div>
-      <div>
-        <select v-model="register.autoTrading.coinExchangeType">
-          <option disabled value="">거래소</option>
-          <option v-for="(value,key) in type.coinExchangeTypeMap" :value="key">{{value}}</option>
-        </select>
-      </div>
-      <div>
-        <select v-model="register.autoTrading.tradingTerm">
-          <option disabled value="">매매 전략</option>
-          <option v-for="(value,key) in type.tradingTermMap" :value="key">{{value}}</option>
-        </select>
-      </div>
-      <div>
-        <select v-model="register.autoTrading.strategyCode">
-          <option disabled value="">전략 코드</option>
-          <option v-for="(value,key) in type.strategyCodeMap" :value="key">{{value}}</option>
-        </select>
-      </div>
-      <div>
-        <div>
-          <input v-model="register.autoTrading.buyRsi" type="text" placeholder="매수 주문을 할 rsi 기준">
-        </div>
-        <div>
-          <input v-model="register.autoTrading.profitRsi" type="text" placeholder="이익중일때 익절할 rsi 기준">
-        </div>
-        <div>
-          <input v-model="register.autoTrading.lossRsi" type="text" placeholder="손실중일때 손절할 rsi 기준">
-        </div>
-        <div>
-          <input v-model="register.autoTrading.profitLimitPriceRate" type="text" placeholder="익절 이익율 상한">
-        </div>
-        <div>
-          <input v-model="register.autoTrading.lossLimitPriceRate" type="text" placeholder="손절 손실율 상한">
-        </div>
-        <div>
-          <input v-model="register.autoTrading.tooOldOrderTimeSeconds" type="text" placeholder="초(second)">
-        </div>
-        <div>
-          <input v-model="register.autoTrading.orderPrice" type="text" placeholder="한번에 주문할 금액">
-        </div>
-        <div>
-          <input v-model="register.autoTrading.accountBalanceLimit" type="text" placeholder="계좌 금액 안전 장치">
-        </div>
-      </div>
-      <div>
-        <select v-model="register.autoTrading.keyPairId">
-          <option disabled value="">키 페어 ID</option>
-          <option v-for="(keyPair) in user.keyPairList" :value="keyPair.pairId">{{keyPair.pairId}}</option>
-        </select>
-      </div>
-      <div>
-        <input type="button" value="등록하기" @click="registerAutoTrading(refresh)">
-      </div>
-    </div>
     <div v-if="register.backTesting.isVisible">
       <input type="datetime-local" v-model="register.backTesting.start">
       <input type="datetime-local" v-model="register.backTesting.end">
       <input type="button" value="실행" @click="registerBackTesting(register.backTesting.autoTradingProcessorId, register.backTesting.start, register.backTesting.end, refresh)">
     </div>
   </div>
+  <!-- 키 리스트 -->
   <v-container>
     <h2> 키 리스트 </h2>
     <v-layout wrap>
@@ -188,8 +125,8 @@
         </v-card-actions>
       </v-card>
     </v-layout>
-
   </v-container>
+  <!-- 자동매매 리스트 -->
   <v-container>
     <h2> 자동매매 리스트 </h2>
     <v-layout wrap>
@@ -263,6 +200,72 @@
           <v-btn @click="terminateAutoTrading(autoTrading.processorId,refresh)"> 종료</v-btn>
           <v-btn @click="toggleBackTestingRegisterUI(autoTrading.processorId)"> 백테스팅</v-btn>
         </v-card_actions>
+      </v-card>
+      <v-card>
+        <h3> 자동 매매 등록</h3>
+        <div>
+          <input v-model="register.autoTrading.title" type="text" placeholder="제목">
+        </div>
+        <div>
+          <select v-model="register.autoTrading.coinType">
+            <option disabled value="">코인 종목</option>
+            <option v-for="(value,key) in type.coinTypeList" :value="key">{{value}}</option>
+          </select>
+        </div>
+        <div>
+          <select v-model="register.autoTrading.coinExchangeType">
+            <option disabled value="">거래소</option>
+            <option v-for="(value,key) in type.coinExchangeTypeList" :value="key">{{value}}</option>
+          </select>
+        </div>
+        <div>
+          <select v-model="register.autoTrading.tradingTerm">
+            <option disabled value="">매매 전략</option>
+            <option v-for="(value,key) in type.tradingTermList" :value="key">{{value}}</option>
+          </select>
+        </div>
+        <div>
+          <select v-model="register.autoTrading.strategyCode">
+            <option disabled value="">전략 코드</option>
+            <option v-for="(value,key) in type.strategyCodeList" :value="key">{{value}}</option>
+          </select>
+        </div>
+        <div>
+          <div>
+            <input v-model="register.autoTrading.buyRsi" type="text" placeholder="매수 주문을 할 rsi 기준">
+          </div>
+          <div>
+            <input v-model="register.autoTrading.profitRsi" type="text" placeholder="이익중일때 익절할 rsi 기준">
+          </div>
+          <div>
+            <input v-model="register.autoTrading.lossRsi" type="text" placeholder="손실중일때 손절할 rsi 기준">
+          </div>
+          <div>
+            <input v-model="register.autoTrading.profitLimitPriceRate" type="text" placeholder="익절 이익율 상한">
+          </div>
+          <div>
+            <input v-model="register.autoTrading.lossLimitPriceRate" type="text" placeholder="손절 손실율 상한">
+          </div>
+          <div>
+            <input v-model="register.autoTrading.tooOldOrderTimeSeconds" type="text" placeholder="초(second)">
+          </div>
+          <div>
+            <input v-model="register.autoTrading.orderPrice" type="text" placeholder="한번에 주문할 금액">
+          </div>
+          <div>
+            <input v-model="register.autoTrading.accountBalanceLimit" type="text" placeholder="계좌 금액 안전 장치">
+          </div>
+        </div>
+        <div>
+          <select v-model="register.autoTrading.keyPairId">
+            <option disabled value="">키 페어 ID</option>
+            <option v-for="(keyPair) in user.keyPairList" :value="keyPair.pairId">{{keyPair.pairId}}</option>
+          </select>
+        </div>
+        <div>
+          <input type="button" value="등록하기" @click="registerAutoTrading(refresh)">
+        </div>
+
       </v-card>
     </v-layout>
   </v-container>
