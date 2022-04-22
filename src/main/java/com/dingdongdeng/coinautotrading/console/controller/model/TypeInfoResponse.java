@@ -1,10 +1,8 @@
 package com.dingdongdeng.coinautotrading.console.controller.model;
 
-import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
-import com.dingdongdeng.coinautotrading.common.type.CoinType;
-import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
-import com.dingdongdeng.coinautotrading.trading.strategy.model.type.StrategyCode;
-import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,8 +16,25 @@ import lombok.ToString;
 @Builder
 public class TypeInfoResponse {
 
-    private EnumMap<CoinType, String> coinTypeMap;
-    private EnumMap<CoinExchangeType, String> coinExchangeTypeMap;
-    private EnumMap<TradingTerm, String> tradingTermMap;
-    private EnumMap<StrategyCode, String> strategyCodeMap;
+    private List<TypeInfoTemplate> coinTypeList;
+    private List<TypeInfoTemplate> coinExchangeTypeList;
+    private List<TypeInfoTemplate> tradingTermList;
+    private List<TypeInfoTemplate> strategyCodeList;
+
+    @ToString
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class TypeInfoTemplate {
+
+        private String name;
+        private Object value;
+
+        public static List<TypeInfoTemplate> listOf(Map<?, String> enumMap) {
+            return enumMap.entrySet().stream()
+                .map(entry -> new TypeInfoTemplate(entry.getValue(), entry.getKey()))
+                .collect(Collectors.toList());
+        }
+    }
 }
