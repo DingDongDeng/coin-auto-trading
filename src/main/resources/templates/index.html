@@ -23,15 +23,13 @@
 
       <v-spacer></v-spacer>
 
-      <v-layout row align-center style="max-width: 10vw; min-width:1vw;">
-        <v-form action="/logout" method="post">
-          <v-btn
-              type="submit"
-              text
-          >Logout
-          </v-btn>
-        </v-form>
-      </v-layout>
+      <v-form action="/logout" method="post">
+        <v-btn
+            type="submit"
+            text
+        >Logout
+        </v-btn>
+      </v-form>
     </v-toolbar>
   </v-container>
   <div>
@@ -72,9 +70,6 @@
         </v-card-actions>
       </v-card>
       <v-card class="ma-3">
-        <v-toolbar-title>
-          키 등록
-        </v-toolbar-title>
         <v-card-text>
           <div>
             <v-row>
@@ -123,7 +118,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn value="" @click="registerKeyPair(refresh)">추가</v-btn>
+          <v-btn value="" @click="registerKeyPair(refresh)">키 등록</v-btn>
         </v-card-actions>
       </v-card>
     </v-layout>
@@ -204,9 +199,6 @@
         </v-card_actions>
       </v-card>
       <v-card>
-        <v-toolbar-title>
-          자동 매매 등록
-        </v-toolbar-title>
         <v-card-text>
           <v-text-field
               label="자동 매매 이름을 입력해주세요."
@@ -291,7 +283,7 @@
           <v-btn
               color="primary"
               @click="registerAutoTrading(refresh)"
-          > 등록
+          > 자동매매 등록
           </v-btn>
         </v-card-actions>
       </v-card>
