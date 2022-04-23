@@ -1,5 +1,6 @@
 package com.dingdongdeng.coinautotrading.trading.strategy.model;
 
+import com.dingdongdeng.coinautotrading.trading.strategy.model.type.TradingTag;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -23,5 +24,18 @@ public class TradingResultPack {
         buyTradingResultList.clear();
         profitTradingResultList.clear();
         lossTradingResultList.clear();
+    }
+
+    public void add(TradingResult tradingResult) {
+        TradingTag tag = tradingResult.getTag();
+        if (tag == TradingTag.BUY) {
+            buyTradingResultList.add(tradingResult);
+        }
+        if (tag == TradingTag.LOSS) {
+            lossTradingResultList.add(tradingResult);
+        }
+        if (tag == TradingTag.PROFIT) {
+            profitTradingResultList.add(tradingResult);
+        }
     }
 }
