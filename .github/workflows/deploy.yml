@@ -86,9 +86,10 @@ jobs:
       - name: Slack notification
         uses: 8398a7/action-slack@v3
         with:
+          username: github action
           status: ${{ job.status }}
           author_name: Github Action
-          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+          fields: repo,message,commit # repo,message,commit,author,action,eventName,ref,workflow,job,took
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         if: always()
