@@ -30,12 +30,48 @@ public class TradingResultPack {
         TradingTag tag = tradingResult.getTag();
         if (tag == TradingTag.BUY) {
             buyTradingResultList.add(tradingResult);
+            return;
         }
         if (tag == TradingTag.LOSS) {
             lossTradingResultList.add(tradingResult);
+            return;
         }
         if (tag == TradingTag.PROFIT) {
             profitTradingResultList.add(tradingResult);
+            return;
         }
+        throw new RuntimeException("Not found tag");
     }
+
+    public void delete(TradingResult tradingResult) {
+        String orderId = tradingResult.getOrderId();
+        TradingTag tag = tradingResult.getTag();
+
+        if (tag == TradingTag.BUY) {
+            TradingResult targetTradingResult = findTradingResult(buyTradingResultList, orderId);
+            buyTradingResultList.remove(targetTradingResult);
+            return;
+        }
+        if (tag == TradingTag.LOSS) {
+            TradingResult targetTradingResult = findTradingResult(lossTradingResultList, orderId);
+            lossTradingResultList.remove(targetTradingResult);
+            return;
+        }
+        if (tag == TradingTag.PROFIT) {
+            TradingResult targetTradingResult = findTradingResult(profitTradingResultList, orderId);
+            profitTradingResultList.remove(targetTradingResult);
+            return;
+        }
+        throw new RuntimeException("Not found tag");
+    }
+
+    private TradingResult findTradingResult(List<TradingResult> tradingResultList, String orderId) {
+        for (TradingResult tradingResult : tradingResultList) {
+            if (tradingResult.getOrderId().equals(orderId)) {
+                return tradingResult;
+            }
+        }
+        throw new RuntimeException("Not found TradingResult by orderId");
+    }
+
 }
