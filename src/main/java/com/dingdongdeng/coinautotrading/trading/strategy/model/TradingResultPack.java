@@ -6,31 +6,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @ToString
 @Getter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class TradingResultPack {
 
-    @Default
     private List<TradingResult> buyTradingResultList = new ArrayList<>(); // 매수 주문
-    @Default
     private List<TradingResult> profitTradingResultList = new ArrayList<>(); // 익절 주문
-    @Default
     private List<TradingResult> lossTradingResultList = new ArrayList<>(); // 손절 주문
-    @Default
-    private final Map<TradingTag, List<TradingResult>> tradingResultListMap = Map.of(
-        TradingTag.BUY, buyTradingResultList,
-        TradingTag.PROFIT, profitTradingResultList,
-        TradingTag.LOSS, lossTradingResultList
-    );
 
     public void reset() {
         buyTradingResultList.clear();
@@ -50,12 +38,15 @@ public class TradingResultPack {
     }
 
     private List<TradingResult> findTargetTradingResultList(TradingTag tag) {
-        List<TradingResult> tradingResultList = tradingResultListMap.get(tag);
+        List<TradingResult> tradingResultList = Map.of(
+            TradingTag.BUY, buyTradingResultList,
+            TradingTag.PROFIT, profitTradingResultList,
+            TradingTag.LOSS, lossTradingResultList
+        ).get(tag);
         if (Objects.isNull(tradingResultList)) {
             throw new RuntimeException("Not found tradingResultList");
         }
         return tradingResultList;
-
     }
 
     private TradingResult findTradingResult(List<TradingResult> tradingResultList, String orderId) {
@@ -66,6 +57,4 @@ public class TradingResultPack {
         }
         throw new RuntimeException("Not found TradingResult by orderId");
     }
-
-
 }

@@ -74,11 +74,11 @@ public class StrategyService {
     }
 
     public TradingResultPack updateTradingResultPack(TradingResultPack tradingResultPack) {
-        return TradingResultPack.builder()
-            .buyTradingResultList(updateTradingResultList(tradingResultPack.getBuyTradingResultList()))
-            .profitTradingResultList(updateTradingResultList(tradingResultPack.getProfitTradingResultList()))
-            .lossTradingResultList(updateTradingResultList(tradingResultPack.getLossTradingResultList()))
-            .build();
+        return new TradingResultPack(
+            updateTradingResultList(tradingResultPack.getBuyTradingResultList()),
+            updateTradingResultList(tradingResultPack.getProfitTradingResultList()),
+            updateTradingResultList(tradingResultPack.getLossTradingResultList())
+        );
     }
 
     private List<TradingResult> updateTradingResultList(List<TradingResult> tradingResultList) {
