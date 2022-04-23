@@ -41,6 +41,19 @@ public class RsiStrategyCore implements StrategyCore {
         this.ACCOUNT_BALANCE_LIMIT = coreParam.getAccountBalanceLimit();
     }
 
+    /*
+       RSI 기반 매매 전략
+
+       매수 시점
+       - RSI가 낮아졌을때
+
+       익절 시점
+       - RSI가 높아졌을때
+       - 목표한 이익금에 도달했을때
+
+       손절 시점
+       - RSI가 높아졌지만 손실 중일때
+     */
     @Override
     public List<TradingTask> makeTradingTask(TradingInfo tradingInfo) {
         String identifyCode = tradingInfo.getIdentifyCode();
@@ -55,9 +68,9 @@ public class RsiStrategyCore implements StrategyCore {
 
         // 자동매매 중 기억해야할 실시간 주문 정보(익절, 손절, 매수 주문 정보)
         TradingResultPack tradingResultPack = tradingInfo.getTradingResultPack();
-        TradingResult buyTradingResult = tradingResultPack.getBuyTradingResult();
-        TradingResult profitTradingResult = tradingResultPack.getProfitTradingResult();
-        TradingResult lossTradingResult = tradingResultPack.getLossTradingResult();
+        TradingResult buyTradingResult = tradingResultPack.getBuyTradingResultList().isEmpty() ? new TradingResult() : tradingResultPack.getBuyTradingResultList().get(0);
+        TradingResult profitTradingResult = tradingResultPack.getProfitTradingResultList().isEmpty() ? new TradingResult() : tradingResultPack.getProfitTradingResultList().get(0);
+        TradingResult lossTradingResult = tradingResultPack.getLossTradingResultList().isEmpty() ? new TradingResult() : tradingResultPack.getLossTradingResultList().get(0);
 
         /**
          * 미체결 상태가 너무 오래되면, 주문을 취소
