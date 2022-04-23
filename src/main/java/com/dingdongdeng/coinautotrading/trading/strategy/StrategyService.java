@@ -14,6 +14,8 @@ import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -73,10 +75,16 @@ public class StrategyService {
 
     public TradingResultPack updateTradingResultPack(TradingResultPack tradingResultPack) {
         return TradingResultPack.builder()
-            .buyTradingResult(updateTradingResult(tradingResultPack.getBuyTradingResult()))
-            .profitTradingResult(updateTradingResult(tradingResultPack.getProfitTradingResult()))
-            .lossTradingResult(updateTradingResult(tradingResultPack.getLossTradingResult()))
+            .buyTradingResultList(updateTradingResultList(tradingResultPack.getBuyTradingResultList()))
+            .profitTradingResultList(updateTradingResultList(tradingResultPack.getProfitTradingResultList()))
+            .lossTradingResultList(updateTradingResultList(tradingResultPack.getLossTradingResultList()))
             .build();
+    }
+
+    private List<TradingResult> updateTradingResultList(List<TradingResult> tradingResultList) {
+        return tradingResultList.stream()
+            .map(this::updateTradingResult)
+            .collect(Collectors.toList());
     }
 
     private TradingResult updateTradingResult(TradingResult tradingResult) {
