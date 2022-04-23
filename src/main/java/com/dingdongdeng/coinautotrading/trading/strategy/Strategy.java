@@ -33,8 +33,9 @@ public class Strategy {
 
     public void execute() {
         // 주문 정보 갱신 및 생성
-        TradingResultPack tradingResultPack = strategyStore.get(identifyCode);
+        TradingResultPack tradingResultPack = strategyStore.get();
         TradingResultPack updatedTradingResultPack = strategyService.updateTradingResultPack(tradingResultPack);
+        strategyStore.saveAll(updatedTradingResultPack);
         TradingInfo tradingInfo = strategyService.getTradingInformation(identifyCode, updatedTradingResultPack);
 
         List<TradingTask> tradingTaskList = strategyCore.makeTradingTask(tradingInfo);
@@ -43,7 +44,7 @@ public class Strategy {
         tradingTaskList.forEach(tradingTask -> {
             // 모든 정보 초기화
             if (isReset(tradingTask)) {
-                strategyStore.reset(identifyCode);
+                strategyStore.resetAll();
                 return;
             }
 
