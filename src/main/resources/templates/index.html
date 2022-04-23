@@ -157,41 +157,58 @@
             <div>
               상태 : {{autoTrading.processStatus}}
             </div>
-            <div>
-              세부설정 : {{autoTrading}}
-            </div>
-            <div>
-              백테스팅 현황
-              <div v-for="backTesting in user.backTestingList">
-                <div v-if="backTesting.autoTradingProcessorId==autoTrading.processorId">
-                  <div>
-                    기간 : {{backTesting.start}} ~ {{backTesting.end}}
-                  </div>
-                  <div>
-                    실행율 : {{backTesting.result.executionRate}}
-                  </div>
-                  <div>
-                    상태 : {{backTesting.result.status}}
-                  </div>
-                  <div>
-                    손익 : {{backTesting.result.marginPrice}}
-                  </div>
-                  <div>
-                    손익율 : {{backTesting.result.marginRate}}
-                  </div>
-                  <div>
-                    수수료 : {{backTesting.result.totalFee}}
-                  </div>
-                  <div>
-                    히스토리 :
-                    <div v-html="backTesting.result.eventMessage">
-                    </div>
-                  </div>
-                  <div>
 
-                  </div>
-                </div>
-              </div>
+            <div>
+              <v-expansion-panels>
+                <v-expansion-panel>
+                  <v-expansion-panel-header>
+                    세부설정
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    {{autoTrading}}
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+                <v-expansion-panel
+                    v-for="backTesting in user.backTestingList"
+                >
+                  <v-expansion-panel-header>
+                    백테스팅 현황
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <div>
+                      <div v-if="backTesting.autoTradingProcessorId==autoTrading.processorId">
+                        <div>
+                          기간 : {{backTesting.start}} ~ {{backTesting.end}}
+                        </div>
+                        <div>
+                          실행율 : {{backTesting.result.executionRate}}
+                        </div>
+                        <div>
+                          상태 : {{backTesting.result.status}}
+                        </div>
+                        <div>
+                          손익 : {{backTesting.result.marginPrice}}
+                        </div>
+                        <div>
+                          손익율 : {{backTesting.result.marginRate}}
+                        </div>
+                        <div>
+                          수수료 : {{backTesting.result.totalFee}}
+                        </div>
+                        <div>
+                          히스토리 :
+                          <div v-html="backTesting.result.eventMessage">
+                          </div>
+                        </div>
+                        <div>
+
+                        </div>
+                      </div>
+                    </div>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </v-expansion-panels>
+
             </div>
           </v-card-text>
           <v-card-actions>
