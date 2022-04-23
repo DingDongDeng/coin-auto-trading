@@ -3,8 +3,11 @@ package com.dingdongdeng.coinautotrading.trading.strategy.model;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.TradingTag;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -16,9 +19,18 @@ import lombok.ToString;
 @NoArgsConstructor
 public class TradingResultPack {
 
+    @Default
     private List<TradingResult> buyTradingResultList = new ArrayList<>(); // 매수 주문
+    @Default
     private List<TradingResult> profitTradingResultList = new ArrayList<>(); // 익절 주문
+    @Default
     private List<TradingResult> lossTradingResultList = new ArrayList<>(); // 손절 주문
+    @Default
+    private final Map<TradingTag, List<TradingResult>> tradingResultListMap = Map.of(
+        TradingTag.BUY, buyTradingResultList,
+        TradingTag.PROFIT, profitTradingResultList,
+        TradingTag.LOSS, lossTradingResultList
+    );
 
     public void reset() {
         buyTradingResultList.clear();
@@ -28,41 +40,22 @@ public class TradingResultPack {
 
     public void add(TradingResult tradingResult) {
         TradingTag tag = tradingResult.getTag();
-        if (tag == TradingTag.BUY) {
-            buyTradingResultList.add(tradingResult);
-            return;
-        }
-        if (tag == TradingTag.LOSS) {
-            lossTradingResultList.add(tradingResult);
-            return;
-        }
-        if (tag == TradingTag.PROFIT) {
-            profitTradingResultList.add(tradingResult);
-            return;
-        }
-        throw new RuntimeException("Not found tag");
+        findTargetTradingResultList(tag).add(tradingResult);
     }
 
     public void delete(TradingResult tradingResult) {
-        String orderId = tradingResult.getOrderId();
-        TradingTag tag = tradingResult.getTag();
+        List<TradingResult> tradingResultList = findTargetTradingResultList(tradingResult.getTag());
+        TradingResult targetTradingResult = findTradingResult(tradingResultList, tradingResult.getOrderId());
+        tradingResultList.remove(targetTradingResult);
+    }
 
-        if (tag == TradingTag.BUY) {
-            TradingResult targetTradingResult = findTradingResult(buyTradingResultList, orderId);
-            buyTradingResultList.remove(targetTradingResult);
-            return;
+    private List<TradingResult> findTargetTradingResultList(TradingTag tag) {
+        List<TradingResult> tradingResultList = tradingResultListMap.get(tag);
+        if (Objects.isNull(tradingResultList)) {
+            throw new RuntimeException("Not found tradingResultList");
         }
-        if (tag == TradingTag.LOSS) {
-            TradingResult targetTradingResult = findTradingResult(lossTradingResultList, orderId);
-            lossTradingResultList.remove(targetTradingResult);
-            return;
-        }
-        if (tag == TradingTag.PROFIT) {
-            TradingResult targetTradingResult = findTradingResult(profitTradingResultList, orderId);
-            profitTradingResultList.remove(targetTradingResult);
-            return;
-        }
-        throw new RuntimeException("Not found tag");
+        return tradingResultList;
+
     }
 
     private TradingResult findTradingResult(List<TradingResult> tradingResultList, String orderId) {
@@ -73,5 +66,6 @@ public class TradingResultPack {
         }
         throw new RuntimeException("Not found TradingResult by orderId");
     }
+
 
 }
