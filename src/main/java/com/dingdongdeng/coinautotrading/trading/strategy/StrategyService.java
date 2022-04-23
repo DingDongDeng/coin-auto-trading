@@ -88,13 +88,9 @@ public class StrategyService {
     }
 
     private TradingResult updateTradingResult(TradingResult tradingResult) {
-        if (!tradingResult.isExist()) {
-            return new TradingResult();
-        }
         ExchangeOrder exchangeOrder =
             exchangeService.getOrderInfo(ExchangeOrderInfoParam.builder().orderId(tradingResult.getOrderId()).build(), keyPairId);
         return TradingResult.builder()
-            .id(tradingResult.getId())
             .identifyCode(tradingResult.getIdentifyCode())
             .coinType(tradingResult.getCoinType())
             .orderType(tradingResult.getOrderType())
