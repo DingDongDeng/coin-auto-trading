@@ -93,6 +93,7 @@ public class StrategyService {
         return TradingResult.builder()
             .identifyCode(tradingResult.getIdentifyCode())
             .coinType(tradingResult.getCoinType())
+            .tradingTerm(tradingResult.getTradingTerm())
             .orderType(tradingResult.getOrderType())
             .orderState(exchangeOrder.getOrderState())
             .volume(tradingResult.getVolume())
