@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -23,7 +23,7 @@ public class AutoTradingController {
     private final AutoTradingAggregation autoTradingAggregation;
 
     @GetMapping("/user/{userId}/autotrading")
-    public CommonResponse<List<AutoTradingResponse>> getList(@PathVariable String userId) {
+    public CommonResponse<List<AutoTradingResponse>> getList(@SessionAttribute String userId) {
         return CommonResponse.<List<AutoTradingResponse>>builder()
             .body(autoTradingAggregation.getUserProcessorList(userId))
             .message("autotrading get list success")
@@ -31,7 +31,7 @@ public class AutoTradingController {
     }
 
     @PostMapping("/autotrading/register")
-    public CommonResponse<AutoTradingResponse> register(@Valid @RequestBody AutoTradingRegisterRequest request, @RequestHeader String userId) {
+    public CommonResponse<AutoTradingResponse> register(@Valid @RequestBody AutoTradingRegisterRequest request, @SessionAttribute String userId) {
         return CommonResponse.<AutoTradingResponse>builder()
             .body(autoTradingAggregation.register(request, userId))
             .message("autotrading register success")
@@ -39,7 +39,7 @@ public class AutoTradingController {
     }
 
     @PostMapping("/autotrading/{autoTradingProcessorId}/start")
-    public CommonResponse<AutoTradingResponse> start(@PathVariable String autoTradingProcessorId, @RequestHeader String userId) {
+    public CommonResponse<AutoTradingResponse> start(@PathVariable String autoTradingProcessorId, @SessionAttribute String userId) {
         return CommonResponse.<AutoTradingResponse>builder()
             .body(autoTradingAggregation.start(autoTradingProcessorId, userId))
             .message("autotrading start success")
@@ -47,7 +47,7 @@ public class AutoTradingController {
     }
 
     @PostMapping("/autotrading/{autoTradingProcessorId}/stop")
-    public CommonResponse<AutoTradingResponse> stop(@PathVariable String autoTradingProcessorId, @RequestHeader String userId) {
+    public CommonResponse<AutoTradingResponse> stop(@PathVariable String autoTradingProcessorId, @SessionAttribute String userId) {
         return CommonResponse.<AutoTradingResponse>builder()
             .body(autoTradingAggregation.stop(autoTradingProcessorId, userId))
             .message("autotrading stop success")
@@ -55,7 +55,7 @@ public class AutoTradingController {
     }
 
     @PostMapping("/autotrading/{autoTradingProcessorId}/terminate")
-    public CommonResponse<AutoTradingResponse> terminate(@PathVariable String autoTradingProcessorId, @RequestHeader String userId) {
+    public CommonResponse<AutoTradingResponse> terminate(@PathVariable String autoTradingProcessorId, @SessionAttribute String userId) {
         return CommonResponse.<AutoTradingResponse>builder()
             .body(autoTradingAggregation.terminate(autoTradingProcessorId, userId))
             .message("autotrading terminate success")
