@@ -165,7 +165,9 @@
                     세부설정
                   </v-expansion-panel-header>
                   <v-expansion-panel-content>
-                    {{autoTrading}}
+                    <pre style="white-space: pre-wrap">
+                      {{JSON.stringify(autoTrading, null, 4)}}
+                    </pre>
                   </v-expansion-panel-content>
                 </v-expansion-panel>
                 <v-expansion-panel
@@ -197,11 +199,7 @@
                         </div>
                         <div>
                           히스토리 :
-                          <div v-html="backTesting.result.eventMessage">
-                          </div>
-                        </div>
-                        <div>
-
+                          <div v-html="backTesting.result.eventMessage"></div>
                         </div>
                       </div>
                     </div>
