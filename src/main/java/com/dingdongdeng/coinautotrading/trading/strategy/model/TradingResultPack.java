@@ -1,5 +1,6 @@
 package com.dingdongdeng.coinautotrading.trading.strategy.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,8 +15,13 @@ import lombok.ToString;
 @NoArgsConstructor
 public class TradingResultPack {
 
-    private List<TradingResult> buyTradingResultList; // 매수 주문
-    private List<TradingResult> profitTradingResultList; // 익절 주문
-    private List<TradingResult> lossTradingResultList; // 손절 주문
+    private List<TradingResult> buyTradingResultList = new ArrayList<>(); // 매수 주문
+    private List<TradingResult> profitTradingResultList = new ArrayList<>(); // 익절 주문
+    private List<TradingResult> lossTradingResultList = new ArrayList<>(); // 손절 주문
 
+    public void reset() {
+        buyTradingResultList.clear();
+        profitTradingResultList.clear();
+        lossTradingResultList.clear();
+    }
 }
