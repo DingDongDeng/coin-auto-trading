@@ -280,6 +280,7 @@
                 item-text="name"
                 item-value="value"
                 v-model="register.autoTrading.strategyCode"
+                @input="resetStrategyMeta"
             ></v-select>
             <v-select
                 label="키 페어 ID를 선택해주세요."
@@ -290,37 +291,9 @@
                 v-model="register.autoTrading.keyPairId"
             ></v-select>
             <v-text-field
-                label="매수 주문을 할 rsi 기준을 입력해주세요."
-                v-model="register.autoTrading.strategyCoreParamMap.buyRsi"
-            ></v-text-field>
-            <v-text-field
-                label="이익중일때 익절할 rsi 기준을 입력해주세요."
-                v-model="register.autoTrading.strategyCoreParamMap.profitRsi"
-            ></v-text-field>
-            <v-text-field
-                label="손실중일때 손절할 rsi 기준을 입력해주세요."
-                v-model="register.autoTrading.strategyCoreParamMap.lossRsi"
-            ></v-text-field>
-            <v-text-field
-                label="익절 이익율 상한을 입력해주세요."
-                v-model="register.autoTrading.strategyCoreParamMap.profitLimitPriceRate"
-            ></v-text-field>
-            <v-text-field
-                label="손절 손실율 상한을 입력해주세요."
-                v-model="register.autoTrading.strategyCoreParamMap.lossLimitPriceRate"
-            ></v-text-field>
-            <v-text-field
-                label="지연 시간(second)을 입력해주세요."
-                v-model="register.autoTrading.strategyCoreParamMap.tooOldOrderTimeSeconds"
-            ></v-text-field>
-            <v-text-field
-                label="한번에 주문할 금액을 입력해주세요."
-                v-model="register.autoTrading.strategyCoreParamMap.orderPrice"
-            ></v-text-field>
-
-            <v-text-field
-                label="계좌 안전 금액을 입력해주세요."
-                v-model="register.autoTrading.strategyCoreParamMap.accountBalanceLimit"
+                v-for="(value,key) in register.autoTrading.strategyCoreParamMap"
+                :label="value.guideMessage"
+                v-model="register.autoTrading.strategyCoreParamMap.a"
             ></v-text-field>
           </v-card-text>
           <v-card-actions>
@@ -368,7 +341,7 @@
     },
     async created() {
       this.register.keyPair = this.resetKeyRegister();
-      this.register.autoTrading = this.resetAutoTradingRegister();
+      this.register.autoTrading = await this.resetAutoTradingRegister();
       this.register.backTesting = this.resetBackTestingRegister();
       this.type = this.resetTypeInfo();
       this.refresh();
@@ -439,7 +412,7 @@
       async registerAutoTrading(callback) {
         const body = this.register.autoTrading;
         const response = await api.post("/autotrading/register", body);
-        this.register.autoTrading = this.resetAutoTradingRegister();
+        this.register.autoTrading = await this.resetAutoTradingRegister();
         callback();
         return response.data.body;
       },
@@ -471,15 +444,7 @@
         }
       },
       async resetAutoTradingRegister() {
-        let strategyCoreParamMap = {}
-        const strategyCode = this.register.autoTrading.strategyCode;
-        if (strategyCode) {
-          const meta = await api.get("/" + strategyCode + "/meta").data.body;
-          for (let prop in meta) {
-            strategyCoreParamMap[prop] = meta[prop];
-          }
-        }
-
+        const strategyCoreParamMap = await this.resetStrategyMeta(null);
         return {
           title: "",
           coinType: "",
@@ -487,9 +452,8 @@
           tradingTerm: "",
           strategyCode: "",
           keyPairId: "",
-
-          // 전략 세부 설정
-          strategyCoreParamMap: strategyCoreParamMap
+          strategyCoreParamMap: strategyCoreParamMap,
+          strategyCoreParamMetaList: [],
         }
       },
       resetBackTestingRegister() {
@@ -504,6 +468,20 @@
         const response = await api.get("/type");
         this.type = response.data.body;
       },
+      async resetStrategyMeta(strategyCode) {
+        let strategyCoreParamMap = {}
+        if (strategyCode) {
+          const response = await api.get("/" + strategyCode + "/meta");
+          const paramMetaList = response.data.body.paramMetaList;
+          for (const paramMeta of paramMetaList) {
+            for (let prop in paramMeta) {
+              strategyCoreParamMap[prop] = paramMeta[prop];
+            }
+          }
+        }
+        console.log("response {}", strategyCoreParamMap);
+        return strategyCoreParamMap;
+      }
     },
   });
 </script>
