@@ -280,7 +280,7 @@
                 item-text="name"
                 item-value="value"
                 v-model="register.autoTrading.strategyCode"
-                @input="resetStrategyMeta"
+                @input="refresh"
             ></v-select>
             <v-select
                 label="키 페어 ID를 선택해주세요."
@@ -291,9 +291,9 @@
                 v-model="register.autoTrading.keyPairId"
             ></v-select>
             <v-text-field
-                v-for="(value,key) in register.autoTrading.strategyCoreParamMap"
+                v-for="(value,key) in register.autoTrading.strategyCoreParamMetaList"
                 :label="value.guideMessage"
-                v-model="register.autoTrading.strategyCoreParamMap.a"
+
             ></v-text-field>
           </v-card-text>
           <v-card-actions>
@@ -356,6 +356,7 @@
         this.user.autoTradingList = await this.getUserAutoTradingList(userId);
         this.user.backTestingList = await this.getUserBackTestingList(userId);
         this.type = this.resetTypeInfo();
+        this.register.autoTrading.strategyCoreParamMetaList = await this.resetStrategyMeta(this.register.autoTrading.strategyCode);
       },
       addKeyInputBox() {
         this.register.keyPair.keyList.push({name: "", value: ""});
@@ -412,7 +413,7 @@
       async registerAutoTrading(callback) {
         const body = this.register.autoTrading;
         const response = await api.post("/autotrading/register", body);
-        this.register.autoTrading = await this.resetAutoTradingRegister();
+        this.register.autoTrading = this.resetAutoTradingRegister();
         callback();
         return response.data.body;
       },
@@ -444,7 +445,6 @@
         }
       },
       async resetAutoTradingRegister() {
-        const strategyCoreParamMap = await this.resetStrategyMeta(null);
         return {
           title: "",
           coinType: "",
@@ -452,7 +452,7 @@
           tradingTerm: "",
           strategyCode: "",
           keyPairId: "",
-          strategyCoreParamMap: strategyCoreParamMap,
+          strategyCoreParamMap: [],
           strategyCoreParamMetaList: [],
         }
       },
@@ -469,19 +469,12 @@
         this.type = response.data.body;
       },
       async resetStrategyMeta(strategyCode) {
-        let strategyCoreParamMap = {}
         if (strategyCode) {
           const response = await api.get("/" + strategyCode + "/meta");
-          const paramMetaList = response.data.body.paramMetaList;
-          for (const paramMeta of paramMetaList) {
-            for (let prop in paramMeta) {
-              strategyCoreParamMap[prop] = paramMeta[prop];
-            }
-          }
+          return response.data.body.paramMetaList;
         }
-        console.log("response {}", strategyCoreParamMap);
-        return strategyCoreParamMap;
-      }
+        return [];
+      },
     },
   });
 </script>
