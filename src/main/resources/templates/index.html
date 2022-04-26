@@ -470,7 +470,16 @@
           ]
         }
       },
-      resetAutoTradingRegister() {
+      async resetAutoTradingRegister() {
+        let strategyCoreParamMap = {}
+        const strategyCode = this.register.autoTrading.strategyCode;
+        if (strategyCode) {
+          const meta = await api.get("/" + strategyCode + "/meta").data.body;
+          for (let prop in meta) {
+            strategyCoreParamMap[prop] = meta[prop];
+          }
+        }
+
         return {
           title: "",
           coinType: "",
@@ -480,16 +489,7 @@
           keyPairId: "",
 
           // 전략 세부 설정
-          strategyCoreParamMap: {
-            buyRsi: "",
-            profitRsi: "",
-            lossRsi: "",
-            profitLimitPriceRate: "",
-            lossLimitPriceRate: "",
-            tooOldOrderTimeSeconds: "",
-            orderPrice: "",
-            accountBalanceLimit: ""
-          }
+          strategyCoreParamMap: strategyCoreParamMap
         }
       },
       resetBackTestingRegister() {
