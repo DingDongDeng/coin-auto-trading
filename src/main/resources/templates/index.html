@@ -293,7 +293,7 @@
             <v-text-field
                 v-for="(value,key) in register.autoTrading.strategyCoreParamMetaList"
                 :label="value.guideMessage"
-
+                v-model="register.autoTrading.strategyCoreParamMap[value.name]"
             ></v-text-field>
           </v-card-text>
           <v-card-actions>
@@ -452,7 +452,7 @@
           tradingTerm: "",
           strategyCode: "",
           keyPairId: "",
-          strategyCoreParamMap: [],
+          strategyCoreParamMap: {},
           strategyCoreParamMetaList: [],
         }
       },
