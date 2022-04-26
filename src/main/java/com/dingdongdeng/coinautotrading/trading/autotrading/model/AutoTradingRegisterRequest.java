@@ -4,6 +4,7 @@ import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.StrategyCode;
+import java.util.Map;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,13 +32,5 @@ public class AutoTradingRegisterRequest {
     @NotNull
     private String keyPairId;
 
-    // 전략 세부 설정 값
-    private Double buyRsi;
-    private Double profitRsi;
-    private Double lossRsi;
-    private Double profitLimitPriceRate;
-    private Double lossLimitPriceRate;
-    private Integer tooOldOrderTimeSeconds;
-    private Double orderPrice;
-    private Double accountBalanceLimit;
+    private Map<String, Object> strategyCoreParamMap;
 }

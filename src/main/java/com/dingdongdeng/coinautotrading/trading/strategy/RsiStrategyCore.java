@@ -14,32 +14,14 @@ import com.dingdongdeng.coinautotrading.trading.strategy.model.type.TradingTag;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@RequiredArgsConstructor
 public class RsiStrategyCore implements StrategyCore {
 
-    private final double BUY_RSI; // 매수 주문을 할 rsi 기준
-    private final double PROFIT_RSI; // 이익중일때 익절할 rsi 기준
-    private final double LOSS_RSI; // 손실중일때 손절할 rsi 기준
-    private final double PROFIT_LIMIT_PRICE_RATE; // 익절 이익율 상한
-    private final double LOSS_LIMIT_PRICE_RATE; // 손절 손실율 상한
-    private final int TOO_OLD_ORDER_TIME_SECONDS; // 초(second)
-    private final double ORDER_PRICE;
-    private final double ACCOUNT_BALANCE_LIMIT; //계좌 금액 안전 장치
-    private final StrategyCoreParam coreParam;
-
-    public RsiStrategyCore(StrategyCoreParam coreParam) {
-        this.coreParam = coreParam;
-        this.BUY_RSI = coreParam.getBuyRsi();
-        this.PROFIT_RSI = coreParam.getProfitRsi();
-        this.LOSS_RSI = coreParam.getLossRsi();
-        this.PROFIT_LIMIT_PRICE_RATE = coreParam.getProfitLimitPriceRate();
-        this.LOSS_LIMIT_PRICE_RATE = coreParam.getLossLimitPriceRate();
-        this.TOO_OLD_ORDER_TIME_SECONDS = coreParam.getTooOldOrderTimeSeconds();
-        this.ORDER_PRICE = coreParam.getOrderPrice();
-        this.ACCOUNT_BALANCE_LIMIT = coreParam.getAccountBalanceLimit();
-    }
+    private final RsiStrategyCoreParam param;
 
     /*
        RSI 기반 매매 전략
@@ -167,7 +149,7 @@ public class RsiStrategyCore implements StrategyCore {
 
             log.info("{} :: 매수 주문 요청", identifyCode);
             double currentPrice = tradingInfo.getCurrentPrice();
-            double volume = ORDER_PRICE / currentPrice;
+            double volume = param.getOrderPrice() / currentPrice;
             return List.of(
                 TradingTask.builder()
                     .identifyCode(identifyCode)
@@ -198,25 +180,25 @@ public class RsiStrategyCore implements StrategyCore {
 
     @Override
     public StrategyCoreParam getParam() {
-        return this.coreParam;
+        return this.param;
     }
 
     private boolean isEnoughBalance(double balance) {
-        return balance > ACCOUNT_BALANCE_LIMIT;
+        return balance > param.getAccountBalanceLimit();
     }
 
     private boolean isBuyOrderTiming(double rsi, TradingResult buyTradingResult) {
-        return !buyTradingResult.isExist() && rsi < BUY_RSI;
+        return !buyTradingResult.isExist() && rsi < param.getBuyRsi();
     }
 
     private boolean isProfitOrderTiming(double currentPrice, double rsi, TradingResult buyTradingResult) {
         // 이익 중일때, 이익 한도에 다다르면 익절
-        if (currentPrice >= buyTradingResult.getPrice() * (1 + PROFIT_LIMIT_PRICE_RATE)) {
+        if (currentPrice >= buyTradingResult.getPrice() * (1 + param.getProfitLimitPriceRate())) {
             return true;
         }
 
         // 이익 중일때, RSI 이미 상승했다면 익절
-        if (currentPrice > buyTradingResult.getPrice() && rsi >= PROFIT_RSI) {
+        if (currentPrice > buyTradingResult.getPrice() && rsi >= param.getProfitRsi()) {
             return true;
         }
         return false;
@@ -224,12 +206,12 @@ public class RsiStrategyCore implements StrategyCore {
 
     private boolean isLossOrderTiming(double currentPrice, double rsi, TradingResult buyTradingResult) {
         // 손실 중일때, 손실 한도에 다다르면 손절
-        if (currentPrice < buyTradingResult.getPrice() * (1 - LOSS_LIMIT_PRICE_RATE)) {
+        if (currentPrice < buyTradingResult.getPrice() * (1 - param.getLossLimitPriceRate())) {
             return true;
         }
 
         // 손실 중일때, RSI가 이미 상승했다면 손절
-        if (currentPrice < buyTradingResult.getPrice() && rsi >= LOSS_RSI) {
+        if (currentPrice < buyTradingResult.getPrice() && rsi >= param.getLossRsi()) {
             return true;
         }
         return false;
@@ -239,6 +221,6 @@ public class RsiStrategyCore implements StrategyCore {
         if (Objects.isNull(tradingResult.getCreatedAt())) {
             return false;
         }
-        return ChronoUnit.SECONDS.between(tradingResult.getCreatedAt(), TradingTimeContext.now()) >= TOO_OLD_ORDER_TIME_SECONDS;
+        return ChronoUnit.SECONDS.between(tradingResult.getCreatedAt(), TradingTimeContext.now()) >= param.getTooOldOrderTimeSeconds();
     }
 }

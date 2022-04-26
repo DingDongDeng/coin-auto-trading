@@ -281,39 +281,6 @@
                 item-value="value"
                 v-model="register.autoTrading.strategyCode"
             ></v-select>
-            <v-text-field
-                label="매수 주문을 할 rsi 기준을 입력해주세요."
-                v-model="register.autoTrading.buyRsi"
-            ></v-text-field>
-            <v-text-field
-                label="이익중일때 익절할 rsi 기준을 입력해주세요."
-                v-model="register.autoTrading.profitRsi"
-            ></v-text-field>
-            <v-text-field
-                label="손실중일때 손절할 rsi 기준을 입력해주세요."
-                v-model="register.autoTrading.lossRsi"
-            ></v-text-field>
-            <v-text-field
-                label="익절 이익율 상한을 입력해주세요."
-                v-model="register.autoTrading.profitLimitPriceRate"
-            ></v-text-field>
-            <v-text-field
-                label="손절 손실율 상한을 입력해주세요."
-                v-model="register.autoTrading.lossLimitPriceRate"
-            ></v-text-field>
-            <v-text-field
-                label="지연 시간(second)을 입력해주세요."
-                v-model="register.autoTrading.tooOldOrderTimeSeconds"
-            ></v-text-field>
-            <v-text-field
-                label="한번에 주문할 금액을 입력해주세요."
-                v-model="register.autoTrading.orderPrice"
-            ></v-text-field>
-
-            <v-text-field
-                label="계좌 안전 금액을 입력해주세요."
-                v-model="register.autoTrading.accountBalanceLimit"
-            ></v-text-field>
             <v-select
                 label="키 페어 ID를 선택해주세요."
                 solo
@@ -322,6 +289,39 @@
                 item-value="pairId"
                 v-model="register.autoTrading.keyPairId"
             ></v-select>
+            <v-text-field
+                label="매수 주문을 할 rsi 기준을 입력해주세요."
+                v-model="register.autoTrading.strategyCoreParamMap.buyRsi"
+            ></v-text-field>
+            <v-text-field
+                label="이익중일때 익절할 rsi 기준을 입력해주세요."
+                v-model="register.autoTrading.strategyCoreParamMap.profitRsi"
+            ></v-text-field>
+            <v-text-field
+                label="손실중일때 손절할 rsi 기준을 입력해주세요."
+                v-model="register.autoTrading.strategyCoreParamMap.lossRsi"
+            ></v-text-field>
+            <v-text-field
+                label="익절 이익율 상한을 입력해주세요."
+                v-model="register.autoTrading.strategyCoreParamMap.profitLimitPriceRate"
+            ></v-text-field>
+            <v-text-field
+                label="손절 손실율 상한을 입력해주세요."
+                v-model="register.autoTrading.strategyCoreParamMap.lossLimitPriceRate"
+            ></v-text-field>
+            <v-text-field
+                label="지연 시간(second)을 입력해주세요."
+                v-model="register.autoTrading.strategyCoreParamMap.tooOldOrderTimeSeconds"
+            ></v-text-field>
+            <v-text-field
+                label="한번에 주문할 금액을 입력해주세요."
+                v-model="register.autoTrading.strategyCoreParamMap.orderPrice"
+            ></v-text-field>
+
+            <v-text-field
+                label="계좌 안전 금액을 입력해주세요."
+                v-model="register.autoTrading.strategyCoreParamMap.accountBalanceLimit"
+            ></v-text-field>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -480,14 +480,16 @@
           keyPairId: "",
 
           // 전략 세부 설정
-          buyRsi: "",
-          profitRsi: "",
-          lossRsi: "",
-          profitLimitPriceRate: "",
-          lossLimitPriceRate: "",
-          tooOldOrderTimeSeconds: "",
-          orderPrice: "",
-          accountBalanceLimit: ""
+          strategyCoreParamMap: {
+            buyRsi: "",
+            profitRsi: "",
+            lossRsi: "",
+            profitLimitPriceRate: "",
+            lossLimitPriceRate: "",
+            tooOldOrderTimeSeconds: "",
+            orderPrice: "",
+            accountBalanceLimit: ""
+          }
         }
       },
       resetBackTestingRegister() {
