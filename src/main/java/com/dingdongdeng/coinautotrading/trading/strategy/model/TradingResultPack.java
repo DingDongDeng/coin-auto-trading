@@ -37,6 +37,14 @@ public class TradingResultPack {
         tradingResultList.remove(targetTradingResult);
     }
 
+    public List<TradingResult> getAll() {
+        List<TradingResult> list = new ArrayList<>();
+        list.addAll(buyTradingResultList);
+        list.addAll(profitTradingResultList);
+        list.addAll(lossTradingResultList);
+        return list;
+    }
+
     private List<TradingResult> findTargetTradingResultList(TradingTag tag) {
         List<TradingResult> tradingResultList = Map.of(
             TradingTag.BUY, buyTradingResultList,
