@@ -24,17 +24,17 @@ public class RsiStrategyCore implements StrategyCore {
     private final RsiStrategyCoreParam param;
 
     /*
-       RSI 기반 매매 전략
-
-       매수 시점
-       - RSI가 낮아졌을때
-
-       익절 시점
-       - RSI가 높아졌을때
-       - 목표한 이익금에 도달했을때
-
-       손절 시점
-       - RSI가 높아졌지만 손실 중일때
+     *  RSI 기반 매매 전략
+     *
+     *  매수 시점
+     *  - RSI가 낮아졌을때
+     *
+     *  익절 시점
+     *  - RSI가 높아졌을때
+     *  - 목표한 이익금에 도달했을때
+     *
+     *  손절 시점
+     *  - RSI가 높아졌지만 손실 중일때
      */
     @Override
     public List<TradingTask> makeTradingTask(TradingInfo tradingInfo) {
