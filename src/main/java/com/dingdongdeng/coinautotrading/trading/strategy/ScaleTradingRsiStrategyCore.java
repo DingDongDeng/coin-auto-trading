@@ -51,14 +51,14 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
 
         // 자동매매 중 기억해야할 실시간 주문 정보(익절, 손절, 매수 주문 정보)
         TradingResultPack tradingResultPack = tradingInfo.getTradingResultPack();
-        TradingResult buyTradingResult = tradingResultPack.getBuyTradingResultList().isEmpty() ? new TradingResult() : tradingResultPack.getBuyTradingResultList().get(0);
-        TradingResult profitTradingResult = tradingResultPack.getProfitTradingResultList().isEmpty() ? new TradingResult() : tradingResultPack.getProfitTradingResultList().get(0);
-        TradingResult lossTradingResult = tradingResultPack.getLossTradingResultList().isEmpty() ? new TradingResult() : tradingResultPack.getLossTradingResultList().get(0);
+        List<TradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
+        List<TradingResult> profitTradingResultList = tradingResultPack.getProfitTradingResultList();
+        List<TradingResult> lossTradingResultList = tradingResultPack.getLossTradingResultList();
 
         /*
          * 미체결 상태가 너무 오래되면, 주문을 취소
          */
-        for (TradingResult tradingResult : List.of(buyTradingResult, profitTradingResult, lossTradingResult)) {
+        for (TradingResult tradingResult : tradingResultPack.getAll()) {
             if (!tradingResult.isExist()) {
                 continue;
             }
