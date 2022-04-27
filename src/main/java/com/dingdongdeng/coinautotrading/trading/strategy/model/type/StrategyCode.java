@@ -1,10 +1,10 @@
 package com.dingdongdeng.coinautotrading.trading.strategy.model.type;
 
-import com.dingdongdeng.coinautotrading.trading.strategy.RsiStrategyCore;
-import com.dingdongdeng.coinautotrading.trading.strategy.RsiStrategyCoreParam;
-import com.dingdongdeng.coinautotrading.trading.strategy.ScaleTradingRsiStrategyCore;
-import com.dingdongdeng.coinautotrading.trading.strategy.ScaleTradingRsiStrategyCoreParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyCore;
+import com.dingdongdeng.coinautotrading.trading.strategy.core.RsiStrategyCore;
+import com.dingdongdeng.coinautotrading.trading.strategy.core.RsiStrategyCoreParam;
+import com.dingdongdeng.coinautotrading.trading.strategy.core.ScaleTradingRsiStrategyCore;
+import com.dingdongdeng.coinautotrading.trading.strategy.core.ScaleTradingRsiStrategyCoreParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreParam;
 import java.util.Arrays;
 import java.util.EnumMap;

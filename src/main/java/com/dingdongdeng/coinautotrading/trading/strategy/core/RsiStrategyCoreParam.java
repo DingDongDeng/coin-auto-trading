@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading.trading.strategy;
+package com.dingdongdeng.coinautotrading.trading.strategy.core;
 
 import com.dingdongdeng.coinautotrading.trading.strategy.annotation.GuideMessage;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreParam;
