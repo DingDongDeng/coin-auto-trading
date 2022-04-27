@@ -2,6 +2,8 @@ package com.dingdongdeng.coinautotrading.trading.strategy.model.type;
 
 import com.dingdongdeng.coinautotrading.trading.strategy.RsiStrategyCore;
 import com.dingdongdeng.coinautotrading.trading.strategy.RsiStrategyCoreParam;
+import com.dingdongdeng.coinautotrading.trading.strategy.ScaleTradingRsiStrategyCore;
+import com.dingdongdeng.coinautotrading.trading.strategy.ScaleTradingRsiStrategyCoreParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyCore;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreParam;
 import java.util.Arrays;
@@ -14,6 +16,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum StrategyCode {
     RSI("RSI 지표 기반 매매", RsiStrategyCore.class, RsiStrategyCoreParam.class),
+    SCALE_TRADING_RSI("RSI 지표 기반 물타기 매매", ScaleTradingRsiStrategyCore.class, ScaleTradingRsiStrategyCoreParam.class),
     ;
 
     private String desc;
