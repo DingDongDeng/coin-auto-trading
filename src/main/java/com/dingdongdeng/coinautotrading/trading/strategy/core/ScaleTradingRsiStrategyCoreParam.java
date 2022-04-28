@@ -33,7 +33,7 @@ public class ScaleTradingRsiStrategyCoreParam implements StrategyCoreParam {
     @GuideMessage("지연 시간(second)을 입력해주세요. ex) 5")
     private int tooOldOrderTimeSeconds;  // 초(second)
 
-    @GuideMessage("한번에 주문할 금액을 입력해주세요.")
+    @GuideMessage("최초 주문할 금액을 입력해주세요.")
     private double orderPrice; // 한번에 주문할 금액
 
     @GuideMessage("계좌 안전 금액을 입력해주세요.")
@@ -42,5 +42,9 @@ public class ScaleTradingRsiStrategyCoreParam implements StrategyCoreParam {
     @GuideMessage("최대 매수 분할 횟수")
     private double buyCountLimit;  //최대 매수 분할 횟수
 
+    @GuideMessage("분할 매수를 할 손실율(0.01을 설정하면 손실율이 1%가 될때마다 매수)")
+    private double buyLossRate;
 
+    @GuideMessage("분할 매수를 할때 수량 비율(1.2를 설정하면 분할 매수할때마다 기존 물량의 1.2배를 매수)")
+    private double buyVolumeRate;
 }
