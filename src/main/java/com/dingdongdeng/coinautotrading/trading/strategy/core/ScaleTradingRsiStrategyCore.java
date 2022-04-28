@@ -88,27 +88,21 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
         /*
          * 매수 주문이 체결된 후 현재 가격을 모니터링하다가 익절/손절 주문을 요청함
          */
-        if (buyTradingResult.isDone()) {
+        if (!buyTradingResultList.isEmpty()) {
             log.info("{} :: 매수 주문이 체결된 상태임", identifyCode);
             double currentPrice = tradingInfo.getCurrentPrice();
 
             // 익절/손절 중복 요청 방지
-            if (profitTradingResult.isExist() || lossTradingResult.isExist()) {
-                log.info("{} :: 익절, 손절 주문을 했었음", identifyCode);
-
-                // 익절/손절 체결된 경우 정보 초기화
-                if (profitTradingResult.isDone() || lossTradingResult.isDone()) {
-                    log.info("{} :: 익절, 손절 주문이 체결되었음", identifyCode);
-                    //매수, 익절, 손절에 대한 정보를 모두 초기화
-                    return List.of(
-                        TradingTask.builder().isReset(true).build()
-                    );
-                }
-                return List.of(new TradingTask());
+            if (!profitTradingResultList.isEmpty() || !lossTradingResultList.isEmpty()) {
+                log.info("{} :: 익절, 손절 주문이 체결되었음", identifyCode);
+                //매수, 익절, 손절에 대한 정보를 모두 초기화
+                return List.of(
+                    TradingTask.builder().isReset(true).build()
+                );
             }
 
             //익절 주문
-            if (isProfitOrderTiming(currentPrice, rsi, buyTradingResult)) {
+            if (isProfitOrderTiming(currentPrice, rsi, tradingResultPack)) {
                 log.info("{} :: 익절 주문 요청", identifyCode);
                 return List.of(
                     TradingTask.builder()
@@ -116,7 +110,7 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
                         .coinType(coinType)
                         .tradingTerm(tradingTerm)
                         .orderType(OrderType.SELL)
-                        .volume(buyTradingResult.getVolume())
+                        .volume(tradingResultPack.getVolume())
                         .price(currentPrice)
                         .priceType(PriceType.LIMIT_PRICE)
                         .tag(TradingTag.PROFIT)
@@ -125,7 +119,7 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
             }
 
             //손절 주문
-            if (isLossOrderTiming(currentPrice, rsi, buyTradingResult)) {
+            if (isLossOrderTiming(currentPrice, rsi, tradingResultPack)) {
                 log.info("{} :: 손절 주문 요청", identifyCode);
                 return List.of(
                     TradingTask.builder()
@@ -133,7 +127,7 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
                         .coinType(coinType)
                         .tradingTerm(tradingTerm)
                         .orderType(OrderType.SELL)
-                        .volume(buyTradingResult.getVolume())
+                        .volume(tradingResultPack.getVolume())
                         .price(currentPrice)
                         .priceType(PriceType.LIMIT_PRICE)
                         .tag(TradingTag.LOSS)
@@ -214,27 +208,27 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
         return false;
     }
 
-    private boolean isProfitOrderTiming(double currentPrice, double rsi, TradingResult buyTradingResult) {
+    private boolean isProfitOrderTiming(double currentPrice, double rsi, TradingResultPack tradingResultPack) {
         // 이익 중일때, 이익 한도에 다다르면 익절
-        if (currentPrice >= buyTradingResult.getPrice() * (1 + param.getProfitLimitPriceRate())) {
+        if (currentPrice >= tradingResultPack.getAveragePrice() * (1 + param.getProfitLimitPriceRate())) {
             return true;
         }
 
         // 이익 중일때, RSI 이미 상승했다면 익절
-        if (currentPrice > buyTradingResult.getPrice() && rsi >= param.getProfitRsi()) {
+        if (currentPrice > tradingResultPack.getAveragePrice() && rsi >= param.getProfitRsi()) {
             return true;
         }
         return false;
     }
 
-    private boolean isLossOrderTiming(double currentPrice, double rsi, TradingResult buyTradingResult) {
+    private boolean isLossOrderTiming(double currentPrice, double rsi, TradingResultPack tradingResultPack) {
         // 손실 중일때, 손실 한도에 다다르면 손절
-        if (currentPrice < buyTradingResult.getPrice() * (1 - param.getLossLimitPriceRate())) {
+        if (currentPrice < tradingResultPack.getAveragePrice() * (1 - param.getLossLimitPriceRate())) {
             return true;
         }
 
         // 손실 중일때, RSI가 이미 상승했다면 손절
-        if (currentPrice < buyTradingResult.getPrice() && rsi >= param.getLossRsi()) {
+        if (currentPrice < tradingResultPack.getAveragePrice() && rsi >= param.getLossRsi()) {
             return true;
         }
         return false;
