@@ -60,24 +60,28 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
          * 미체결 상태가 너무 오래되면, 주문을 취소
          */
         for (TradingResult tradingResult : tradingResultPack.getAll()) {
-            if (!tradingResult.isExist()) {
-                continue;
-            }
-            if (!tradingResult.isDone() && isTooOld(tradingResult)) {
-                log.info("{} :: 미체결 상태의 오래된 주문을 취소", identifyCode);
-                return List.of(
-                    TradingTask.builder()
-                        .identifyCode(identifyCode)
-                        .coinType(coinType)
-                        .tradingTerm(tradingTerm)
-                        .orderId(tradingResult.getOrderId())
-                        .orderType(OrderType.CANCEL)
-                        .volume(tradingResult.getVolume())
-                        .price(tradingResult.getPrice())
-                        .priceType(tradingResult.getPriceType())
-                        .tag(tradingResult.getTag())
-                        .build()
-                );
+            // 미체결 건이 존재
+            if (!tradingResult.isDone()) {
+                // 오래된 주문 건이 존재
+                if (isTooOld(tradingResult)) {
+                    log.info("{} :: 미체결 상태의 오래된 주문을 취소", identifyCode);
+                    return List.of(
+                        TradingTask.builder()
+                            .identifyCode(identifyCode)
+                            .coinType(coinType)
+                            .tradingTerm(tradingTerm)
+                            .orderId(tradingResult.getOrderId())
+                            .orderType(OrderType.CANCEL)
+                            .volume(tradingResult.getVolume())
+                            .price(tradingResult.getPrice())
+                            .priceType(tradingResult.getPriceType())
+                            .tag(tradingResult.getTag())
+                            .build()
+                    );
+                }
+                // 체결이 될때까지 기다리기 위해 아무것도 하지 않음
+                log.info("{} :: 미체결 건을 기다림", identifyCode);
+                return List.of();
             }
         }
 
@@ -143,7 +147,7 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
         /*
          * rsi가 조건을 만족하고, 매수주문을 한적이 없다면 매수주문을 함
          */
-        if (isBuyOrderTiming(rsi, buyTradingResult)) {
+        if (isBuyOrderTiming(rsi, tradingInfo.getCurrentPrice(), tradingResultPack)) {
             if (!isEnoughBalance(tradingInfo.getBalance())) {
                 log.warn("{} :: 계좌가 매수 가능한 상태가 아님", identifyCode);
                 return List.of(new TradingTask());
@@ -151,7 +155,7 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
 
             log.info("{} :: 매수 주문 요청", identifyCode);
             double currentPrice = tradingInfo.getCurrentPrice();
-            double volume = param.getOrderPrice() / currentPrice;
+            double volume = buyTradingResultList.isEmpty() ? param.getOrderPrice() / currentPrice : tradingResultPack.getVolume() * param.getBuyVolumeRate();
             return List.of(
                 TradingTask.builder()
                     .identifyCode(identifyCode)
@@ -166,8 +170,7 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
             );
         }
 
-        log.info("{} :: 아무것도 하지 않음", identifyCode);
-        return List.of(new TradingTask());
+        return List.of();
     }
 
     @Override
@@ -189,8 +192,26 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
         return balance > param.getAccountBalanceLimit();
     }
 
-    private boolean isBuyOrderTiming(double rsi, TradingResult buyTradingResult) {
-        return !buyTradingResult.isExist() && rsi < param.getBuyRsi();
+    private boolean isBuyOrderTiming(double rsi, double currentPrice, TradingResultPack tradingResultPack) {
+        List<TradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
+
+        if (param.getBuyCountLimit() <= buyTradingResultList.size()) {
+            return false;
+        }
+
+        if (rsi < param.getBuyRsi()) {
+            if (buyTradingResultList.isEmpty()) {
+                return true;
+            }
+
+            // 손익율 계산
+            double averagePrice = tradingResultPack.getAveragePrice();
+            if ((averagePrice - currentPrice) / averagePrice > param.getBuyLossRate()) {
+                return true;
+            }
+            return false;
+        }
+        return false;
     }
 
     private boolean isProfitOrderTiming(double currentPrice, double rsi, TradingResult buyTradingResult) {
