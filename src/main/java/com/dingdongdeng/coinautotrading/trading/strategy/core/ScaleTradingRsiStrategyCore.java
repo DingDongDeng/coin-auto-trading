@@ -187,6 +187,7 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
     private boolean isBuyOrderTiming(double rsi, double currentPrice, TradingResultPack tradingResultPack) {
         List<TradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
 
+        // 추가 매수가 가능한지 확인
         if (param.getBuyCountLimit() <= buyTradingResultList.size()) {
             return false;
         }
@@ -220,6 +221,13 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
     }
 
     private boolean isLossOrderTiming(double currentPrice, double rsi, TradingResultPack tradingResultPack) {
+        List<TradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
+
+        // 아직 추가 매수가 가능하다면 손절하지 않음
+        if (param.getBuyCountLimit() > buyTradingResultList.size()) {
+            return false;
+        }
+
         // 손실 중일때, 손실 한도에 다다르면 손절
         if (currentPrice < tradingResultPack.getAveragePrice() * (1 - param.getLossLimitPriceRate())) {
             return true;
