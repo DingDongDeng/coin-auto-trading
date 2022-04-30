@@ -65,6 +65,17 @@ public class TradingResultPack {
         return buyVolume - profitVolume - lossVolume;
     }
 
+    public double getBuyVolume() {
+        return buyTradingResultList.stream().mapToDouble(TradingResult::getVolume).sum();
+    }
+
+    public double getProfitVolume() {
+        return profitTradingResultList.stream().mapToDouble(TradingResult::getVolume).sum();
+    }
+
+    public double getLossVolume() {
+        return lossTradingResultList.stream().mapToDouble(TradingResult::getVolume).sum();
+    }
 
     private List<TradingResult> findTargetTradingResultList(TradingTag tag) {
         List<TradingResult> tradingResultList = Map.of(
@@ -87,15 +98,4 @@ public class TradingResultPack {
         throw new RuntimeException("Not found TradingResult by orderId");
     }
 
-    private double getBuyVolume() {
-        return buyTradingResultList.stream().mapToDouble(TradingResult::getVolume).sum();
-    }
-
-    private double getProfitVolume() {
-        return profitTradingResultList.stream().mapToDouble(TradingResult::getVolume).sum();
-    }
-
-    private double getLossVolume() {
-        return lossTradingResultList.stream().mapToDouble(TradingResult::getVolume).sum();
-    }
 }
