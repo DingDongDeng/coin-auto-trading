@@ -42,7 +42,7 @@ public class ScaleTradingRsiStrategyCoreParam implements StrategyCoreParam {
     @GuideMessage("최대 매수 분할 횟수")
     private double buyCountLimit;  //최대 매수 분할 횟수
 
-    @GuideMessage("분할 매수를 할 손실율(0.001을 설정하면 손실율이 0.1%가 될때마다 매수)")
+    @GuideMessage("분할 매수를 할 손실율(0.01을 설정하면 손실율이 1%가 될때마다 매수)")
     private double buyLossRate;
 
     @GuideMessage("분할 매수를 할때 수량 비율(1.2를 설정하면 분할 매수할때마다 기존 물량의 1.2배를 매수)")
