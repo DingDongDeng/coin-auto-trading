@@ -60,29 +60,29 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
          * 미체결 상태가 너무 오래되면, 주문을 취소
          */
         for (TradingResult tradingResult : tradingResultPack.getAll()) {
-            // 미체결 건이 존재
-            if (!tradingResult.isDone()) {
-                // 오래된 주문 건이 존재
-                if (isTooOld(tradingResult)) {
-                    log.info("{} :: 미체결 상태의 오래된 주문을 취소", identifyCode);
-                    return List.of(
-                        TradingTask.builder()
-                            .identifyCode(identifyCode)
-                            .coinType(coinType)
-                            .tradingTerm(tradingTerm)
-                            .orderId(tradingResult.getOrderId())
-                            .orderType(OrderType.CANCEL)
-                            .volume(tradingResult.getVolume())
-                            .price(tradingResult.getPrice())
-                            .priceType(tradingResult.getPriceType())
-                            .tag(tradingResult.getTag())
-                            .build()
-                    );
-                }
-                // 체결이 될때까지 기다리기 위해 아무것도 하지 않음
-                log.info("{} :: 미체결 건을 기다림", identifyCode);
-                return List.of();
+            if (tradingResult.isDone()) {
+                continue;
             }
+            // 오래된 주문 건이 존재
+            if (isTooOld(tradingResult)) {
+                log.info("{} :: 미체결 상태의 오래된 주문을 취소", identifyCode);
+                return List.of(
+                    TradingTask.builder()
+                        .identifyCode(identifyCode)
+                        .coinType(coinType)
+                        .tradingTerm(tradingTerm)
+                        .orderId(tradingResult.getOrderId())
+                        .orderType(OrderType.CANCEL)
+                        .volume(tradingResult.getVolume())
+                        .price(tradingResult.getPrice())
+                        .priceType(tradingResult.getPriceType())
+                        .tag(tradingResult.getTag())
+                        .build()
+                );
+            }
+            // 체결이 될때까지 기다리기 위해 아무것도 하지 않음
+            log.info("{} :: 미체결 건을 기다림", identifyCode);
+            return List.of();
         }
 
         /*
