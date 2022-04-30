@@ -27,7 +27,7 @@ public class ScaleTradingRsiStrategyCoreParam implements StrategyCoreParam {
     @GuideMessage("익절 이익율 상한을 입력해주세요. ex) 0.1 <== 10% 제한 의미")
     private double profitLimitPriceRate; // 익절 이익율 상한
 
-    @GuideMessage("손절 손실율 상한을 입력해주세요. ex) 0.1 <== 10% 제한을 의미")
+    @GuideMessage("손절 손실율 상한을 입력해주세요. ex) 0.05 <== 5% 제한을 의미")
     private double lossLimitPriceRate;  // 손절 손실율 상한
 
     @GuideMessage("미체결 주문 취소를 위한 대기 시간(second)을 입력해주세요. ex) 30")
