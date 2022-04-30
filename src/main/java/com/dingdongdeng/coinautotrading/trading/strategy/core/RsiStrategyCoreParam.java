@@ -30,7 +30,7 @@ public class RsiStrategyCoreParam implements StrategyCoreParam {
     @GuideMessage("손절 손실율 상한을 입력해주세요.")
     private double lossLimitPriceRate;  // 손절 손실율 상한
 
-    @GuideMessage("지연 시간(second)을 입력해주세요.")
+    @GuideMessage("미체결 주문 취소를 위한 대기 시간(second)을 입력해주세요. ex) 30")
     private int tooOldOrderTimeSeconds;  // 초(second)
 
     @GuideMessage("한번에 주문할 금액을 입력해주세요.")
