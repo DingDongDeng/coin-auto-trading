@@ -134,8 +134,6 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
                         .build()
                 );
             }
-
-            return List.of(new TradingTask());
         }
 
         /*
