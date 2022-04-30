@@ -201,7 +201,6 @@
                     백테스팅 현황
                   </v-expansion-panel-header>
                   <v-expansion-panel-content>
-                    <div>
                       <div v-if="backTesting.autoTradingProcessorId==autoTrading.processorId">
                         <div>
                           기간 : {{backTesting.start}} ~ {{backTesting.end}}
@@ -226,7 +225,6 @@
                           <div v-html="backTesting.result.eventMessage"></div>
                         </div>
                       </div>
-                    </div>
                   </v-expansion-panel-content>
                 </v-expansion-panel>
               </v-expansion-panels>
@@ -413,7 +411,7 @@
       async registerAutoTrading(callback) {
         const body = this.register.autoTrading;
         const response = await api.post("/autotrading/register", body);
-        this.register.autoTrading = this.resetAutoTradingRegister();
+        this.register.autoTrading = await this.resetAutoTradingRegister();
         callback();
         return response.data.body;
       },
