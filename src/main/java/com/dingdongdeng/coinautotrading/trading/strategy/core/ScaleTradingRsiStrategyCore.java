@@ -92,9 +92,9 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
             log.info("{} :: 매수 주문이 체결된 상태임", identifyCode);
             double currentPrice = tradingInfo.getCurrentPrice();
 
-            // 익절/손절 중복 요청 방지
-            if (!profitTradingResultList.isEmpty() || !lossTradingResultList.isEmpty()) {
-                log.info("{} :: 익절, 손절 주문이 체결되었음", identifyCode);
+            // 익절/손절이 체결되어 보유한 물량이 없음
+            if (!tradingResultPack.getProfitTradingResultList().isEmpty()) { //fixme 부동소주점 때문에 조건을 이렇게 바꿈...원래는 getVolume() 0인지 봐야함
+                log.info("{} :: 익절, 손절 주문이 체결되고 남은 물량이 없음", identifyCode);
                 //매수, 익절, 손절에 대한 정보를 모두 초기화
                 return List.of(
                     TradingTask.builder().isReset(true).build()
@@ -120,14 +120,14 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
 
             //손절 주문
             if (isLossOrderTiming(currentPrice, rsi, tradingResultPack)) {
-                log.info("{} :: 손절 주문 요청", identifyCode);
+                log.info("{} :: 부분 또는 전부 손절 주문 요청", identifyCode);
                 return List.of(
                     TradingTask.builder()
                         .identifyCode(identifyCode)
                         .coinType(coinType)
                         .tradingTerm(tradingTerm)
                         .orderType(OrderType.SELL)
-                        .volume(tradingResultPack.getVolume())
+                        .volume(tradingResultPack.getBuyVolume() / param.getBuyCountLimit())
                         .price(currentPrice)
                         .priceType(PriceType.LIMIT_PRICE)
                         .tag(TradingTag.LOSS)
@@ -186,9 +186,10 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
 
     private boolean isBuyOrderTiming(double rsi, double currentPrice, TradingResultPack tradingResultPack) {
         List<TradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
+        List<TradingResult> lossTradingResultList = tradingResultPack.getLossTradingResultList();
 
         // 추가 매수가 가능한지 확인
-        if (param.getBuyCountLimit() <= buyTradingResultList.size()) {
+        if (param.getBuyCountLimit() <= buyTradingResultList.size() - lossTradingResultList.size()) {
             return false;
         }
 
@@ -222,9 +223,10 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
 
     private boolean isLossOrderTiming(double currentPrice, double rsi, TradingResultPack tradingResultPack) {
         List<TradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
+        List<TradingResult> lossTradingResultList = tradingResultPack.getLossTradingResultList();
 
         // 아직 추가 매수가 가능하다면 손절하지 않음
-        if (param.getBuyCountLimit() > buyTradingResultList.size()) {
+        if (param.getBuyCountLimit() > buyTradingResultList.size() - lossTradingResultList.size()) {
             return false;
         }
 
