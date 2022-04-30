@@ -8,6 +8,7 @@
   <link href="https://fonts.googleapis.com/css?family=Material+Icons" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard</title>
 </head>
 <body>
@@ -70,7 +71,7 @@
     <h2> 키 리스트 </h2>
     <v-row justify="start">
       <v-col
-          cols="3"
+          xs="12" sm="8" md="4" lg="3"
           v-for="keyPair in user.keyPairList"
       >
         <v-card
@@ -99,7 +100,7 @@
           </v-card-actions>
         </v-card>
       </v-col>
-      <v-col cols="3">
+      <v-col xs="12" sm="8" md="4" lg="3">
         <v-card class="ma-3">
           <v-card-text>
             <div>
@@ -153,7 +154,7 @@
     <h2> 자동매매 리스트 </h2>
     <v-row justify="start">
       <v-col
-          cols="4"
+          xs="12" sm="8" md="4" lg="4"
           v-for="autoTrading in user.autoTradingList"
       >
         <v-card
@@ -239,7 +240,7 @@
           </v-card-actions>
         </v-card>
       </v-col>
-      <v-col cols="4">
+      <v-col xs="12" sm="8" md="4" lg="4">
         <v-card class="ma-3">
           <v-card-text>
             <v-text-field
