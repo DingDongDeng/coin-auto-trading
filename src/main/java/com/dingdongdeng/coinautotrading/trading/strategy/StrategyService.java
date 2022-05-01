@@ -43,6 +43,7 @@ public class StrategyService {
             .coinType(exchangeTradingInfo.getCoinType())
             .tradingTerm(exchangeTradingInfo.getTradingTerm())
             .currency(exchangeTradingInfo.getCurrency())
+            .candles(exchangeTradingInfo.getCandles())
             .balance(exchangeTradingInfo.getBalance())
             .locked(exchangeTradingInfo.getLocked())
             .avgBuyPrice(exchangeTradingInfo.getAvgBuyPrice())
