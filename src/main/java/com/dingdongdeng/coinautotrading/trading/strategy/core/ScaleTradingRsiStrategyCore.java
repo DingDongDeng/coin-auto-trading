@@ -6,7 +6,6 @@ import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeCandles;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeCandles.Candle;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyCore;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
@@ -189,7 +188,7 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
     private boolean isBuyOrderTiming(double rsi, double currentPrice, TradingResultPack tradingResultPack, ExchangeCandles candles) {
 
         // 추가 매수가 가능한지 확인
-        if (!isPossibleAdditionalOrder(currentPrice, tradingResultPack, candles)) {
+        if (isMaxBuyOrder(tradingResultPack)) {
             return false;
         }
 
@@ -223,8 +222,8 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
 
     private boolean isLossOrderTiming(double currentPrice, double rsi, TradingResultPack tradingResultPack, ExchangeCandles candles) {
 
-        // 아직 추가 매수가 가능하다면 손절하지 않음
-        if (isPossibleAdditionalOrder(currentPrice, tradingResultPack, candles)) {
+        // 최대 매수 개수를 초과하지 않았다면 손절하지 않음
+        if (!isMaxBuyOrder(tradingResultPack)) {
             return false;
         }
 
@@ -240,15 +239,10 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
         return false;
     }
 
-    private boolean isPossibleAdditionalOrder(double currentPrice, TradingResultPack tradingResultPack, ExchangeCandles candles) {
+    private boolean isMaxBuyOrder(TradingResultPack tradingResultPack) {
         List<TradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
         List<TradingResult> lossTradingResultList = tradingResultPack.getLossTradingResultList();
-        // 현재로부터 3번째 이전 캔들
-        Candle pastCandle = candles.getLatest(3);
-        boolean isMaxCount = param.getBuyCountLimit() <= buyTradingResultList.size() - lossTradingResultList.size();
-        // n퍼센트 이상 하락
-        boolean isPanicSell = (pastCandle.getOpeningPrice() - currentPrice) / pastCandle.getOpeningPrice() > param.getPanicSellPriceRate();
-        return !isMaxCount && !isPanicSell;
+        return param.getBuyCountLimit() <= buyTradingResultList.size() - lossTradingResultList.size();
     }
 
     private boolean isTooOld(TradingResult tradingResult) {
