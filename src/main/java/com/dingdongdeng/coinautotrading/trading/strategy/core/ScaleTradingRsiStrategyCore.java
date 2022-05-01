@@ -245,7 +245,7 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
         List<TradingResult> lossTradingResultList = tradingResultPack.getLossTradingResultList();
         // 현재로부터 3번째 이전 캔들
         Candle pastCandle = candles.getLatest(3);
-        boolean isMaxCount = param.getBuyCountLimit() > buyTradingResultList.size() - lossTradingResultList.size();
+        boolean isMaxCount = param.getBuyCountLimit() <= buyTradingResultList.size() - lossTradingResultList.size();
         // n퍼센트 이상 하락
         boolean isPanicSell = (pastCandle.getOpeningPrice() - currentPrice) / pastCandle.getOpeningPrice() > param.getPanicSellPriceRate();
         return !isMaxCount && !isPanicSell;
