@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class ScaleTradingRsiStrategyCore2 implements StrategyCore {
 
-    private final ScaleTradingRsiStrategyCoreParam param;
+    private final ScaleTradingRsiStrategyCoreParam2 param;
 
     @Override
     public List<TradingTask> makeTradingTask(TradingInfo tradingInfo) {
