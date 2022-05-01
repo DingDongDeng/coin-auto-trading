@@ -8,14 +8,15 @@
   <link href="https://fonts.googleapis.com/css?family=Material+Icons" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login</title>
 </head>
 <body>
 <v-app id="app">
   <v-main>
     <v-container fluid fill-height>
-      <v-layout align-center justify-center>
-        <v-flex xs12 sm8 md4>
+      <v-row align="center" justify="center">
+        <v-col xs="12" sm="8" md="4">
           <v-card class="elevation-12">
             <v-toolbar dark color="primary">
               <v-toolbar-title>Login form</v-toolbar-title>
@@ -44,8 +45,8 @@
               <v-btn color="primary" @click="login()">Login</v-btn>
             </v-card-actions>
           </v-card>
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
     </v-container>
   </v-main>
 </v-app>

@@ -14,6 +14,8 @@ import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +43,7 @@ public class StrategyService {
             .coinType(exchangeTradingInfo.getCoinType())
             .tradingTerm(exchangeTradingInfo.getTradingTerm())
             .currency(exchangeTradingInfo.getCurrency())
+            .candles(exchangeTradingInfo.getCandles())
             .balance(exchangeTradingInfo.getBalance())
             .locked(exchangeTradingInfo.getLocked())
             .avgBuyPrice(exchangeTradingInfo.getAvgBuyPrice())
@@ -72,23 +75,26 @@ public class StrategyService {
     }
 
     public TradingResultPack updateTradingResultPack(TradingResultPack tradingResultPack) {
-        return TradingResultPack.builder()
-            .buyTradingResult(updateTradingResult(tradingResultPack.getBuyTradingResult()))
-            .profitTradingResult(updateTradingResult(tradingResultPack.getProfitTradingResult()))
-            .lossTradingResult(updateTradingResult(tradingResultPack.getLossTradingResult()))
-            .build();
+        return new TradingResultPack(
+            updateTradingResultList(tradingResultPack.getBuyTradingResultList()),
+            updateTradingResultList(tradingResultPack.getProfitTradingResultList()),
+            updateTradingResultList(tradingResultPack.getLossTradingResultList())
+        );
+    }
+
+    private List<TradingResult> updateTradingResultList(List<TradingResult> tradingResultList) {
+        return tradingResultList.stream()
+            .map(this::updateTradingResult)
+            .collect(Collectors.toList());
     }
 
     private TradingResult updateTradingResult(TradingResult tradingResult) {
-        if (!tradingResult.isExist()) {
-            return new TradingResult();
-        }
         ExchangeOrder exchangeOrder =
             exchangeService.getOrderInfo(ExchangeOrderInfoParam.builder().orderId(tradingResult.getOrderId()).build(), keyPairId);
         return TradingResult.builder()
-            .id(tradingResult.getId())
             .identifyCode(tradingResult.getIdentifyCode())
             .coinType(tradingResult.getCoinType())
+            .tradingTerm(tradingResult.getTradingTerm())
             .orderType(tradingResult.getOrderType())
             .orderState(exchangeOrder.getOrderState())
             .volume(tradingResult.getVolume())

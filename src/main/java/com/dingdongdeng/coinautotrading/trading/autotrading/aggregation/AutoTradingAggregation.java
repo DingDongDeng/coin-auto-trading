@@ -52,16 +52,7 @@ public class AutoTradingAggregation {
             .coinType(processor.getCoinType())
             .coinExchangeType(processor.getCoinExchangeType())
             .tradingTerm(processor.getTradingTerm())
-
-            .buyRsi(coreParam.getBuyRsi())
-            .profitRsi(coreParam.getProfitRsi())
-            .lossRsi(coreParam.getLossRsi())
-            .profitLimitPriceRate(coreParam.getProfitLimitPriceRate())
-            .lossLimitPriceRate(coreParam.getLossLimitPriceRate())
-            .tooOldOrderTimeSeconds(coreParam.getTooOldOrderTimeSeconds())
-            .orderPrice(coreParam.getOrderPrice())
-            .accountBalanceLimit(coreParam.getAccountBalanceLimit())
-
+            .strategyCoreParam(coreParam)
             .build();
     }
 }

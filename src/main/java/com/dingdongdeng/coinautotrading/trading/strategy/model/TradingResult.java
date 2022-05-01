@@ -12,22 +12,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
 
 @ToString
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@RedisHash("tradingResult")
 public class TradingResult {
 
-    @Id
-    @Setter
-    private String id;
     private String identifyCode;
     private CoinType coinType;
     private TradingTerm tradingTerm;
@@ -46,7 +39,6 @@ public class TradingResult {
     }
 
     public boolean isExist() {
-        return Objects.nonNull(this.id);
+        return Objects.nonNull(identifyCode);
     }
-
 }
