@@ -92,9 +92,8 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
             log.info("{} :: 매수 주문이 체결된 상태임", identifyCode);
             double currentPrice = tradingInfo.getCurrentPrice();
 
-            // 익절/손절이 체결되어 보유한 물량이 없음
-            if (!tradingResultPack.getProfitTradingResultList().isEmpty()) { //fixme 부동소주점 때문에 조건을 이렇게 바꿈...원래는 getVolume() 0인지 봐야함
-                log.info("{} :: 익절, 손절 주문이 체결되고 남은 물량이 없음", identifyCode);
+            if (!profitTradingResultList.isEmpty() || !lossTradingResultList.isEmpty()) {
+                log.info("{} :: 익절, 손절 주문이 체결되었음", identifyCode);
                 //매수, 익절, 손절에 대한 정보를 모두 초기화
                 return List.of(
                     TradingTask.builder().isReset(true).build()
@@ -127,7 +126,7 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
                         .coinType(coinType)
                         .tradingTerm(tradingTerm)
                         .orderType(OrderType.SELL)
-                        .volume(tradingResultPack.getBuyVolume() / param.getBuyCountLimit())
+                        .volume(tradingResultPack.getVolume())
                         .price(currentPrice)
                         .priceType(PriceType.LIMIT_PRICE)
                         .tag(TradingTag.LOSS)
