@@ -4,6 +4,7 @@ import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.type.AutoTradingProcessStatus;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreParam;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,13 +28,5 @@ public class AutoTradingResponse {
     private CoinExchangeType coinExchangeType;
     private TradingTerm tradingTerm;
 
-    // 전략 세부 설정 값
-    private Double buyRsi;
-    private Double profitRsi;
-    private Double lossRsi;
-    private Double profitLimitPriceRate;
-    private Double lossLimitPriceRate;
-    private Integer tooOldOrderTimeSeconds;
-    private Double orderPrice;
-    private Double accountBalanceLimit;
+    private StrategyCoreParam strategyCoreParam;
 }

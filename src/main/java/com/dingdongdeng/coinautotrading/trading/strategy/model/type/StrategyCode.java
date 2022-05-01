@@ -1,5 +1,9 @@
 package com.dingdongdeng.coinautotrading.trading.strategy.model.type;
 
+import com.dingdongdeng.coinautotrading.trading.strategy.StrategyCore;
+import com.dingdongdeng.coinautotrading.trading.strategy.core.ScaleTradingRsiStrategyCore;
+import com.dingdongdeng.coinautotrading.trading.strategy.core.ScaleTradingRsiStrategyCoreParam;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreParam;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.NoSuchElementException;
@@ -9,10 +13,12 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum StrategyCode {
-    RSI("RSI 지표 기반 매매"),
+    SCALE_TRADING_RSI("RSI 지표 기반 물타기 매매", ScaleTradingRsiStrategyCore.class, ScaleTradingRsiStrategyCoreParam.class),
     ;
 
     private String desc;
+    private Class<? extends StrategyCore> strategyCoreClazz;
+    private Class<? extends StrategyCoreParam> strategyCoreParamClazz;
 
     public static StrategyCode of(String name) {
         return Arrays.stream(StrategyCode.values())
@@ -27,5 +33,13 @@ public enum StrategyCode {
             map.put(value, value.getDesc());
         }
         return map;
+    }
+
+    public StrategyCore getStrategyCore(StrategyCoreParam param) {
+        try {
+            return strategyCoreClazz.getDeclaredConstructor(strategyCoreParamClazz).newInstance(param);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

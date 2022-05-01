@@ -50,7 +50,7 @@ public class BackTestingService {
             .keyPairId(keyPairdId)
             .build();
 
-        Strategy backTestingStrategy = strategyFactory.create(serviceParam, strategy.getStrategyCore().getParam().copy());
+        Strategy backTestingStrategy = strategyFactory.create(serviceParam, strategy.getStrategyCore().getParam());
 
         BackTestingProcessor backTestingProcessor = BackTestingProcessor.builder()
             .id("BACKTESTING-" + autoTradingProcessor.getId())
