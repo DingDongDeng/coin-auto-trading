@@ -35,4 +35,12 @@ public class ExchangeCandles {
         private Double candleAccTradePrice; // 누적 거래 금액
         private Double candleAccTradeVolume; // 누적 거래량
     }
+
+    // 현재 시점으로부터 n번째 과거 캔들을 조회
+    public Candle getLatest(int index) {
+        if (candleList.size() < index + 1) {
+            throw new RuntimeException("Not found candle");
+        }
+        return candleList.get(candleList.size() - 1 - index);
+    }
 }

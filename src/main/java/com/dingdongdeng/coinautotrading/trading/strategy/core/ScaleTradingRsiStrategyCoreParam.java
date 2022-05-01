@@ -47,4 +47,7 @@ public class ScaleTradingRsiStrategyCoreParam implements StrategyCoreParam {
 
     @GuideMessage("분할 매수를 할때 수량 비율(1를 설정하면 분할 매수할때마다 보유 물량의 1배를 매수)")
     private double buyVolumeRate;
+
+    @GuideMessage("급락 판단을 위한 하락 퍼센트 기준(0.01을 입력하면 최근 1퍼센트 하락을 했을때 급락으로 판단)")
+    private double panicSellPriceRate;
 }
