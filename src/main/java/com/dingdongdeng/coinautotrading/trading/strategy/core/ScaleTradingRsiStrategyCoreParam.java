@@ -39,15 +39,12 @@ public class ScaleTradingRsiStrategyCoreParam implements StrategyCoreParam {
     @GuideMessage("계좌 안전 금액을 입력해주세요.")
     private double accountBalanceLimit;  //계좌 금액 안전 장치
 
-    @GuideMessage("최대 매수 분할 횟수 ex) 4")
+    @GuideMessage("최대 매수 분할 횟수 ex) 7")
     private double buyCountLimit;  //최대 매수 분할 횟수
 
-    @GuideMessage("분할 매수를 할 손실율(0.03을 설정하면 손실율이 3%가 될때마다 매수)")
+    @GuideMessage("분할 매수를 할 손실율(0.05을 설정하면 손실율이 5%가 될때마다 매수)")
     private double buyLossRate;
 
     @GuideMessage("분할 매수를 할때 수량 비율(1를 설정하면 분할 매수할때마다 보유 물량의 1배를 매수)")
     private double buyVolumeRate;
-
-    @GuideMessage("급락 판단을 위한 하락 퍼센트 기준(0.01을 입력하면 최근 1퍼센트 하락을 했을때 급락으로 판단)")
-    private double panicSellPriceRate;
 }
