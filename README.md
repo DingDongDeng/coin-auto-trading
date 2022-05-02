@@ -18,7 +18,27 @@ jdk 11
 spring boot 2.6.2
 gradle 7.3.2
 ```
+#### 브렌치 전략
+```
+master
+ - 상용에 대한 브렌치(protect)
 
+develop
+ - 개발에 대한 브렌치
+ - PR(master <- develop)는 merge commit 사용
+ 
+hotfix/**
+ - 상용에 대한 핫픽스 브렌치
+ - master 베이스로 생성
+ - PR(master <- hotfix/**)는 merge commit을 사용
+ - PR(develop <- hotfix/**)는 merge commit을 사용
+
+feature/** 
+ - 새 기능에 대한 피쳐 브렌치
+ - develop 베이스로 생성
+ - 브렌치를 생성할때는 github issue 베이스로 생성
+ - PR(develop <- feature/**)는 squash merge를 사용
+```
 #### 인프라
 
 ```
