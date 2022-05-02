@@ -110,7 +110,7 @@ class AutoTradingControllerTest {
         String title = "RSI 30이하 매매";
         CoinType coinType = CoinType.ETHEREUM;
         CoinExchangeType coinExchangeType = CoinExchangeType.UPBIT;
-        String strategyIdentifyCode = StrategyCode.RSI.name() + ":" + UUID.randomUUID().toString();
+        String strategyIdentifyCode = StrategyCode.SCALE_TRADING_RSI.name() + ":" + UUID.randomUUID().toString();
 
         Mockito.doReturn(
             List.of(
@@ -179,14 +179,14 @@ class AutoTradingControllerTest {
         String title = "RSI 30이하 매매";
         CoinType coinType = CoinType.ETHEREUM;
         CoinExchangeType coinExchangeType = CoinExchangeType.UPBIT;
-        String strategyIdentifyCode = StrategyCode.RSI.name() + ":" + UUID.randomUUID().toString();
+        String strategyIdentifyCode = StrategyCode.SCALE_TRADING_RSI.name() + ":" + UUID.randomUUID().toString();
 
         AutoTradingRegisterRequest request = AutoTradingRegisterRequest.builder()
             .title(title)
             .coinType(CoinType.ETHEREUM)
             .coinExchangeType(CoinExchangeType.UPBIT)
             .tradingTerm(TradingTerm.SCALPING)
-            .strategyCode(StrategyCode.RSI)
+            .strategyCode(StrategyCode.SCALE_TRADING_RSI)
             .keyPairId(keyPairId)
             .build();
 
@@ -251,7 +251,7 @@ class AutoTradingControllerTest {
         String title = "RSI 30이하 매매";
         CoinType coinType = CoinType.ETHEREUM;
         CoinExchangeType coinExchangeType = CoinExchangeType.UPBIT;
-        String strategyIdentifyCode = StrategyCode.RSI.name() + ":" + UUID.randomUUID().toString();
+        String strategyIdentifyCode = StrategyCode.SCALE_TRADING_RSI.name() + ":" + UUID.randomUUID().toString();
 
         Mockito.doReturn(
             AutoTradingResponse.builder()
@@ -307,7 +307,7 @@ class AutoTradingControllerTest {
         String title = "RSI 30이하 매매";
         CoinType coinType = CoinType.ETHEREUM;
         CoinExchangeType coinExchangeType = CoinExchangeType.UPBIT;
-        String strategyIdentifyCode = StrategyCode.RSI.name() + ":" + UUID.randomUUID().toString();
+        String strategyIdentifyCode = StrategyCode.SCALE_TRADING_RSI.name() + ":" + UUID.randomUUID().toString();
 
         Mockito.doReturn(
             AutoTradingResponse.builder()
@@ -363,7 +363,7 @@ class AutoTradingControllerTest {
         String title = "RSI 30이하 매매";
         CoinType coinType = CoinType.ETHEREUM;
         CoinExchangeType coinExchangeType = CoinExchangeType.UPBIT;
-        String strategyIdentifyCode = StrategyCode.RSI.name() + ":" + UUID.randomUUID().toString();
+        String strategyIdentifyCode = StrategyCode.SCALE_TRADING_RSI.name() + ":" + UUID.randomUUID().toString();
 
         Mockito.doReturn(
             AutoTradingResponse.builder()
