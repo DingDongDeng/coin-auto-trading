@@ -143,7 +143,7 @@ public class UpbitExchangeService implements ExchangeService {
                 .unit(tradingTerm.getCandleUnit().getSize())
                 .market(MarketType.of(param.getCoinType()).getCode())
                 .toKst(TradingTimeContext.now())
-                .count(200)
+                .count(60)
                 .build(),
             keyPairId
         );
