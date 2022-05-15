@@ -30,14 +30,14 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
      *
      *  매수 시점
      *  - RSI가 낮아졌을때
-     *  - 손실금액이 일정비율 이상 커질때 마다
+     *  - RSI가 낮으면서 손실율이 커졌을때
      *
      *  익절 시점
-     *  - RSI가 높아졌을때
+     *  - 이익중이면서 RSI가 높아졌을때
      *  - 목표한 이익금에 도달했을때
      *
      *  손절 시점
-     *  - RSI가 높아졌지만 손실 중일때
+     *  - 손절하지 않음
      */
     @Override
     public List<TradingTask> makeTradingTask(TradingInfo tradingInfo) {
@@ -138,10 +138,10 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
         }
 
         /*
-         * rsi가 조건을 만족하고, 매수주문을 한적이 없다면 매수주문을 함
+         * 조건을 만족하면 매수 주문
          */
         if (isBuyOrderTiming(rsi, tradingInfo.getCurrentPrice(), tradingResultPack, candles)) {
-            if (!isEnoughBalance(tradingInfo.getBalance())) {
+            if (!isEnoughBalance(tradingInfo.getCurrentPrice(), tradingResultPack, tradingInfo.getBalance())) {
                 log.warn("{} :: 계좌가 매수 가능한 상태가 아님", identifyCode);
                 return List.of(new TradingTask());
             }
@@ -181,16 +181,18 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
         return this.param;
     }
 
-    private boolean isEnoughBalance(double balance) {
-        return balance > param.getAccountBalanceLimit();
+    private boolean isEnoughBalance(double currentPrice, TradingResultPack tradingResultPack, double balance) {
+        if (balance < param.getAccountBalanceLimit()) {
+            return false;
+        }
+
+        if (tradingResultPack.getVolume() * currentPrice > balance) {
+            return false;
+        }
+        return true;
     }
 
     private boolean isBuyOrderTiming(double rsi, double currentPrice, TradingResultPack tradingResultPack, ExchangeCandles candles) {
-
-        // 추가 매수가 가능한지 확인
-        if (isMaxBuyOrder(tradingResultPack)) {
-            return false;
-        }
 
         if (rsi < param.getBuyRsi()) {
             if (tradingResultPack.getBuyTradingResultList().isEmpty()) {
@@ -221,28 +223,8 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
     }
 
     private boolean isLossOrderTiming(double currentPrice, double rsi, TradingResultPack tradingResultPack, ExchangeCandles candles) {
-
-        // 최대 매수 개수를 초과하지 않았다면 손절하지 않음
-        if (!isMaxBuyOrder(tradingResultPack)) {
-            return false;
-        }
-
-        // 손실 중일때, 손실 한도에 다다르면 손절
-        if (currentPrice < tradingResultPack.getAveragePrice() * (1 - param.getLossLimitPriceRate())) {
-            return true;
-        }
-
-        // 손실 중일때, RSI가 이미 상승했다면 손절
-        if (currentPrice < tradingResultPack.getAveragePrice() && rsi >= param.getLossRsi()) {
-            return true;
-        }
+        // 손절하지 않음
         return false;
-    }
-
-    private boolean isMaxBuyOrder(TradingResultPack tradingResultPack) {
-        List<TradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
-        List<TradingResult> lossTradingResultList = tradingResultPack.getLossTradingResultList();
-        return param.getBuyCountLimit() <= buyTradingResultList.size() - lossTradingResultList.size();
     }
 
     private boolean isTooOld(TradingResult tradingResult) {
