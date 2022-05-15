@@ -216,7 +216,7 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
         }
 
         // 이익 중일때, RSI 이미 상승했다면 익절
-        if (currentPrice > tradingResultPack.getAveragePrice() && rsi >= param.getProfitRsi()) {
+        if (currentPrice > tradingResultPack.getAveragePrice() + param.getOrderPrice() * 0.0005 && rsi >= param.getProfitRsi()) {
             return true;
         }
         return false;
