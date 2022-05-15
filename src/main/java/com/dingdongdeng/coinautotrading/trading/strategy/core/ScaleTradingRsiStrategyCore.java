@@ -29,7 +29,7 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
      *  RSI 기반 물타기 매매 전략
      *
      *  매수 시점
-     *  - RSI가 낮아졌을때
+     *  - RSI가 낮아면서 매수주문한적이 없을때
      *  - RSI가 낮으면서 손실율이 커졌을때
      *
      *  익절 시점
