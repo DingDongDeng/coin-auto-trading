@@ -36,6 +36,6 @@ public class ScaleTradingRsiStrategyCoreParam implements StrategyCoreParam {
     @GuideMessage("분할 매수를 할 손실율(0.05을 설정하면 손실율이 5%가 될때마다 매수)")
     private double buyLossRate;
 
-    @GuideMessage("분할 매수를 할때 수량 비율(1를 설정하면 분할 매수할때마다 보유 물량의 1배를 매수)")
+    @GuideMessage("분할 매수를 할때 수량 비율(2를 설정하면 분할 매수할때마다 보유 물량의 2배를 매수)")
     private double buyVolumeRate;
 }
