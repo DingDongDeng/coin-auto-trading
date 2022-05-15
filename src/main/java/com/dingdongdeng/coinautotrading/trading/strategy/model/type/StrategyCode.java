@@ -13,7 +13,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum StrategyCode {
-    SCALE_TRADING_RSI("RSI 지표 기반 물타기 매매", ScaleTradingRsiStrategyCore.class, ScaleTradingRsiStrategyCoreParam.class),
+    SCALE_TRADING_RSI("분할 매수(RSI기반, 손절없음)", ScaleTradingRsiStrategyCore.class, ScaleTradingRsiStrategyCoreParam.class),
     ;
 
     private String desc;
