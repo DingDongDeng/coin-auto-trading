@@ -13,6 +13,13 @@ upbit:
     readTimeout: 5000
     connectionTimeout: 5000
 
+binance:
+  future:
+    client:
+      baseUrl: https://fapi.binance.com
+      readTimeout: 5000
+      connectionTimeout: 5000
+
 spring:
   jpa:
     open-in-view: false
