@@ -15,6 +15,15 @@ upbit:
     readTimeout: 5000
     connectionTimeout: 5000
 
+binance:
+  future:
+    client:
+      accessKey: ${BINANCE_ACCESS_KEY}
+      secretKey: ${BINANCE_SECRET_KEY}
+      baseUrl: https://fapi.binance.com
+      readTimeout: 5000
+      connectionTimeout: 5000
+
 spring:
   profiles:
     active: test
