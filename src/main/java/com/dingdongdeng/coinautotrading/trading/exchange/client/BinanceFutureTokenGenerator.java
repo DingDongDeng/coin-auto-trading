@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class BinanceFutureTokenGenerator {
     // https://github.com/binance/binance-signature-examples/tree/master/java
 
-    final String HMAC_SHA256 = "HmacSHA256";
+    private final String HMAC_SHA256 = "HmacSHA256";
 
     private final String ACCESS_KEY_NAME = "ACCESS_KEY";
     private final String SECRET_KEY_NAME = "SECRET_KEY";
