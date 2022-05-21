@@ -9,7 +9,7 @@ public class BinanceFutureResponse {
 
     @ToString
     @Getter
-    public static class FuturesAccountBalanceResponse {
+    public static class FutureAccountBalanceResponse {
 
         @JsonProperty("accountAlias")
         private String accountAlias; // 고유 계정 코드

@@ -73,8 +73,8 @@ class BinanceFutureClientTest {
         FuturesAccountBalanceRequest request = FuturesAccountBalanceRequest.builder()
                 .timestamp(nowTime)
                 .build();
-        List<FuturesAccountBalanceResponse> response = binanceFutureClient.getFuturesAccountBalance(request, keyPairId);
-        for (FuturesAccountBalanceResponse balanceResponse: response) {
+        List<FutureAccountBalanceResponse> response = binanceFutureClient.getFuturesAccountBalance(request, keyPairId);
+        for (FutureAccountBalanceResponse balanceResponse: response) {
             if (balanceResponse.getBalance().equals("0.00000000")){
                 continue;
             } else {

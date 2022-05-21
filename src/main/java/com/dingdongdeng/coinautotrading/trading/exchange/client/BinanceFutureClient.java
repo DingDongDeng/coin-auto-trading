@@ -27,7 +27,7 @@ public class BinanceFutureClient extends Client {
         }, new HttpHeaders());
     }
 
-    public List<FuturesAccountBalanceResponse> getFuturesAccountBalance(FuturesAccountBalanceRequest request, String keyPairId) {
+    public List<FutureAccountBalanceResponse> getFuturesAccountBalance(FuturesAccountBalanceRequest request, String keyPairId) {
         request.setSignature(tokenGenerator.getSignature(request, keyPairId));
         return get("/fapi/v2/balance", request, new ParameterizedTypeReference<>() {
         }, makeHeaders(keyPairId));
