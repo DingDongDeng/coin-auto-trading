@@ -10,16 +10,19 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
+import java.util.Map;
 
 
 @Component
 public class BinanceFutureClient extends Client {
 
     private final BinanceFutureTokenGenerator tokenGenerator;
+    private final BinanceFutureSignatureWrapper signatureWrapper;
 
-    public BinanceFutureClient(WebClient binanceFutureWebClient, BinanceFutureTokenGenerator tokenGenerator, QueryParamsConverter queryParamsConverter) {
+    public BinanceFutureClient(WebClient binanceFutureWebClient, BinanceFutureTokenGenerator tokenGenerator, BinanceFutureSignatureWrapper signatureWrapper, QueryParamsConverter queryParamsConverter) {
         super(binanceFutureWebClient, queryParamsConverter);
         this.tokenGenerator = tokenGenerator;
+        this.signatureWrapper = signatureWrapper;
     }
 
     public String getServerTime() {
@@ -28,16 +31,19 @@ public class BinanceFutureClient extends Client {
     }
 
     public List<FutureAccountBalanceResponse> getFuturesAccountBalance(FuturesAccountBalanceRequest request, String keyPairId) {
-        request.setSignature(tokenGenerator.getSignature(request, keyPairId));
-        return get("/fapi/v2/balance", request, new ParameterizedTypeReference<>() {
+        return get("/fapi/v2/balance", makeSignatureWrapper(request, keyPairId), new ParameterizedTypeReference<>() {
         }, makeHeaders(keyPairId));
     }
-
 
     private HttpHeaders makeHeaders(String keyPairId) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-MBX-APIKEY", tokenGenerator.getAccessKey(keyPairId));
         return headers;
+    }
+
+    private Map<String, Object> makeSignatureWrapper(Object request, String keyPairId){
+        String token = tokenGenerator.getSignature(request, keyPairId);
+        return signatureWrapper.getSignatureRequest(request, token);
     }
 
 }

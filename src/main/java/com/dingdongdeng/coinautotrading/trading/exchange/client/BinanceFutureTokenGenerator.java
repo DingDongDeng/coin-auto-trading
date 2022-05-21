@@ -31,8 +31,7 @@ public class BinanceFutureTokenGenerator {
     public String getSignature(Object request, String keyPairId) {
         byte[] hmacSha256 = null;
         try {
-            String params = queryParamsConverter.convertStr(request).substring(1); //?name=aaa&age=12 형태에서 ? 제거
-            String paramUrl = params.replaceAll("&signature=null","");
+            String paramUrl = queryParamsConverter.convertStr(request).substring(1); //?name=aaa&age=12 형태에서 ? 제거
             log.info("binance make for signature url : {}",paramUrl);
             List<ExchangeKey> exchangeKeyList = exchangeKeyService.findByPairId(keyPairId);
             String key = getKey(exchangeKeyList, SECRET_KEY_NAME);
