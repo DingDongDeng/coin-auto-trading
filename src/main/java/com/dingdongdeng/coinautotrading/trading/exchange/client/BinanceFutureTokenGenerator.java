@@ -33,7 +33,7 @@ public class BinanceFutureTokenGenerator {
         try {
             String params = queryParamsConverter.convertStr(request).substring(1); //?name=aaa&age=12 형태에서 ? 제거
             String paramUrl = params.replaceAll("&signature=null","");
-            System.out.println(paramUrl);
+            log.info("binance make for signature url : {}",paramUrl);
             List<ExchangeKey> exchangeKeyList = exchangeKeyService.findByPairId(keyPairId);
             String key = getKey(exchangeKeyList, SECRET_KEY_NAME);
             SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(), HMAC_SHA256);
@@ -65,7 +65,7 @@ public class BinanceFutureTokenGenerator {
 
     private String getKey(List<ExchangeKey> exchangeKeyList, String keyName) {
         if (exchangeKeyList.size() != 2) {
-            throw new RuntimeException("업비트에서 사용할 키가 2개가 아닙니다. \n키 정보를 확인해주세요.");
+            throw new RuntimeException("바이낸스 선물에서 사용할 키가 2개가 아닙니다. \n키 정보를 확인해주세요.");
         }
 
         List<String> keyNameList = exchangeKeyList.stream()
