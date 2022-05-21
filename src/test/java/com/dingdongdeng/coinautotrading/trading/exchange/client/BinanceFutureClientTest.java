@@ -24,9 +24,9 @@ class BinanceFutureClientTest {
     @Autowired
     private BinanceFutureClient binanceFutureClient;
 
-    @Value("{accessKey}")
+    @Value("${binance.future.client.accessKey}")
     private String accessKey;
-    @Value("{secretKey}")
+    @Value("${binance.future.client.secretKey}")
     private String secretKey;
 
     private String userId = "123456";
@@ -73,15 +73,15 @@ class BinanceFutureClientTest {
         FuturesAccountBalanceRequest request = FuturesAccountBalanceRequest.builder()
                 .timestamp(nowTime)
                 .build();
-        List<FutureAccountBalanceResponse> response = binanceFutureClient.getFuturesAccountBalance(request, keyPairId);
-        for (FutureAccountBalanceResponse balanceResponse: response) {
+        List<FutureAccountBalanceResponse> responseList = binanceFutureClient.getFuturesAccountBalance(request, keyPairId);
+        for (FutureAccountBalanceResponse balanceResponse: responseList) {
             if (balanceResponse.getBalance().equals("0.00000000")){
                 continue;
             } else {
-                System.out.println(balanceResponse.toString());
+                log.info("내 계좌: {}", balanceResponse);
             }
         }
-        log.info("result : {}", response);
+        log.info("result : {}", responseList);
     }
 
 }
