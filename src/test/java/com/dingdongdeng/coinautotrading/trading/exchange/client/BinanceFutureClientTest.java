@@ -1,19 +1,28 @@
 package com.dingdongdeng.coinautotrading.trading.exchange.client;
 
+import com.dingdongdeng.coinautotrading.common.client.util.QueryParamsConverter;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.domain.entity.ExchangeKey;
 import com.dingdongdeng.coinautotrading.domain.repository.ExchangeKeyRepository;
-import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureRequest.*;
-import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.*;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureRequest.FutureChangeLeverageRequest;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureRequest.FutureChangePositionModeRequest;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureRequest.FuturesAccountBalanceRequest;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.BinanceServerTimeResponse;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.FutureAccountBalanceResponse;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.FutureChangeLeverageResponse;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.FutureChangePositionModeResponse;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.List;
-import java.util.UUID;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Slf4j
 @SpringBootTest
@@ -37,23 +46,23 @@ class BinanceFutureClientTest {
         String keyPairId = UUID.randomUUID().toString();
 
         exchangeKeyRepository.save(
-                ExchangeKey.builder()
-                        .pairId(keyPairId)
-                        .coinExchangeType(CoinExchangeType.UPBIT)
-                        .name("ACCESS_KEY")
-                        .value(accessKey)
-                        .userId(userId)
-                        .build()
+            ExchangeKey.builder()
+                .pairId(keyPairId)
+                .coinExchangeType(CoinExchangeType.UPBIT)
+                .name("ACCESS_KEY")
+                .value(accessKey)
+                .userId(userId)
+                .build()
         );
 
         exchangeKeyRepository.save(
-                ExchangeKey.builder()
-                        .pairId(keyPairId)
-                        .coinExchangeType(CoinExchangeType.UPBIT)
-                        .name("SECRET_KEY")
-                        .value(secretKey)
-                        .userId(userId)
-                        .build()
+            ExchangeKey.builder()
+                .pairId(keyPairId)
+                .coinExchangeType(CoinExchangeType.UPBIT)
+                .name("SECRET_KEY")
+                .value(secretKey)
+                .userId(userId)
+                .build()
         );
 
         this.keyPairId = keyPairId;
@@ -72,11 +81,12 @@ class BinanceFutureClientTest {
         BinanceServerTimeResponse timeResponse = binanceFutureClient.getServerTime();
         Long time = timeResponse.getServerTime();
         FuturesAccountBalanceRequest request = FuturesAccountBalanceRequest.builder()
-                .timestamp(time)
-                .build();
-        List<FutureAccountBalanceResponse> responseList = binanceFutureClient.getFuturesAccountBalance(request, keyPairId);
-        for (FutureAccountBalanceResponse balanceResponse: responseList) {
-            if (balanceResponse.getBalance().equals("0.00000000")){
+            .timestamp(time)
+            .build();
+        List<FutureAccountBalanceResponse> responseList = binanceFutureClient.getFuturesAccountBalance(
+            request, keyPairId);
+        for (FutureAccountBalanceResponse balanceResponse : responseList) {
+            if (balanceResponse.getBalance().equals("0.00000000")) {
                 continue;
             } else {
                 log.info("내 계좌: {}", balanceResponse);
@@ -90,12 +100,13 @@ class BinanceFutureClientTest {
         BinanceServerTimeResponse timeResponse = binanceFutureClient.getServerTime();
         Long time = timeResponse.getServerTime();
         FutureChangeLeverageRequest request = FutureChangeLeverageRequest.builder()
-                .symbol("BTCUSDT")
-                .leverage(10)
-                .timestamp(time)
-                .build();
+            .symbol("BTCUSDT")
+            .leverage(10)
+            .timestamp(time)
+            .build();
 
-        FutureChangeLeverageResponse leverageResponse = binanceFutureClient.changeLeverage(request, keyPairId);
+        FutureChangeLeverageResponse leverageResponse = binanceFutureClient.changeLeverage(request,
+            keyPairId);
         log.info("result : {}", leverageResponse);
     }
 
@@ -104,11 +115,54 @@ class BinanceFutureClientTest {
         BinanceServerTimeResponse timeResponse = binanceFutureClient.getServerTime();
         Long time = timeResponse.getServerTime();
         FutureChangePositionModeRequest request = FutureChangePositionModeRequest.builder()
-                .dualSidePosition("true")
-                .timestamp(time)
-                .build();
+            .dualSidePosition("true")
+            .timestamp(time)
+            .build();
 
-        FutureChangePositionModeResponse positionModeResponse = binanceFutureClient.changePositionMode(request, keyPairId);
+        FutureChangePositionModeResponse positionModeResponse = binanceFutureClient.changePositionMode(
+            request, keyPairId);
         log.info("result : {}", positionModeResponse);
+    }
+
+    @Autowired
+    private WebClient binanceFutureWebClient;
+    @Autowired
+    private BinanceFutureTokenGenerator tokenGenerator;
+    @Autowired
+    private BinanceFutureSignatureWrapper signatureWrapper;
+
+    @Autowired
+    private QueryParamsConverter queryParamsConverter;
+
+    @Test
+    public void test() {
+        BinanceServerTimeResponse timeResponse = binanceFutureClient.getServerTime();
+        FutureChangeLeverageRequest request = FutureChangeLeverageRequest.builder()
+            .symbol("BTCUSDT")
+            .leverage(10)
+            .timestamp(timeResponse.getServerTime())
+            .build();
+        makeSignatureWrapper(request, keyPairId);
+        String response = binanceFutureWebClient
+            .post()
+            .uri("/fapi/v1/leverage")
+            .headers(headers_ -> headers_.addAll(makeHeaders(keyPairId)))
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .bodyValue(queryParamsConverter.convertStr(request).substring(1) + "&signature="
+                + tokenGenerator.getSignature(request, keyPairId))
+            .retrieve()
+            .bodyToMono(String.class)
+            .block();
+    }
+
+    private HttpHeaders makeHeaders(String keyPairId) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-MBX-APIKEY", tokenGenerator.getAccessKey(keyPairId));
+        return headers;
+    }
+
+    private Map<String, Object> makeSignatureWrapper(Object request, String keyPairId) {
+        String token = tokenGenerator.getSignature(request, keyPairId);
+        return signatureWrapper.getSignatureRequest(request, token);
     }
 }
