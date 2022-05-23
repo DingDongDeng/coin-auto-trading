@@ -48,7 +48,7 @@ class BinanceFutureClientTest {
         exchangeKeyRepository.save(
             ExchangeKey.builder()
                 .pairId(keyPairId)
-                .coinExchangeType(CoinExchangeType.UPBIT)
+                .coinExchangeType(CoinExchangeType.BINANCE_FUTURE)
                 .name("ACCESS_KEY")
                 .value(accessKey)
                 .userId(userId)
@@ -58,7 +58,7 @@ class BinanceFutureClientTest {
         exchangeKeyRepository.save(
             ExchangeKey.builder()
                 .pairId(keyPairId)
-                .coinExchangeType(CoinExchangeType.UPBIT)
+                .coinExchangeType(CoinExchangeType.BINANCE_FUTURE)
                 .name("SECRET_KEY")
                 .value(secretKey)
                 .userId(userId)
