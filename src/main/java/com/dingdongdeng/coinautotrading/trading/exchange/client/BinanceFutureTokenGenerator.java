@@ -35,6 +35,7 @@ public class BinanceFutureTokenGenerator {
             log.info("binance make for signature url : {}",paramUrl);
             List<ExchangeKey> exchangeKeyList = exchangeKeyService.findByPairId(keyPairId);
             String key = getKey(exchangeKeyList, SECRET_KEY_NAME);
+            log.info("사크릿키 : {}", key);
             SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(), HMAC_SHA256);
             Mac mac = Mac.getInstance(HMAC_SHA256);
             mac.init(secretKeySpec);
@@ -44,6 +45,7 @@ public class BinanceFutureTokenGenerator {
         }
         return bytesToHex(hmacSha256);
     }
+
 
     public String getAccessKey(String keyPairId) {
         List<ExchangeKey> exchangeKeyList = exchangeKeyService.findByPairId(keyPairId);

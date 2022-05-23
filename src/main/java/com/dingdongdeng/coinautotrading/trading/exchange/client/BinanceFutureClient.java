@@ -2,8 +2,8 @@ package com.dingdongdeng.coinautotrading.trading.exchange.client;
 
 import com.dingdongdeng.coinautotrading.common.client.Client;
 import com.dingdongdeng.coinautotrading.common.client.util.QueryParamsConverter;
-import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureRequest.FuturesAccountBalanceRequest;
-import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.FutureAccountBalanceResponse;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureRequest.*;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.*;
 import java.util.List;
 import java.util.Map;
 import org.springframework.core.ParameterizedTypeReference;
@@ -24,7 +24,7 @@ public class BinanceFutureClient extends Client {
         this.signatureWrapper = signatureWrapper;
     }
 
-    public String getServerTime() {
+    public BinanceServerTimeResponse getServerTime() {
         return get("/fapi/v1/time", new ParameterizedTypeReference<>() {
         }, new HttpHeaders());
     }
@@ -32,6 +32,18 @@ public class BinanceFutureClient extends Client {
     public List<FutureAccountBalanceResponse> getFuturesAccountBalance(FuturesAccountBalanceRequest request, String keyPairId) {
         return get("/fapi/v2/balance", makeSignatureWrapper(request, keyPairId), new ParameterizedTypeReference<>() {
         }, makeHeaders(keyPairId));
+    }
+
+    public FutureChangeLeverageResponse changeLeverage(FutureChangeLeverageRequest request, String keyPairId) {
+        return post("/fapi/v1/leverage?timestamp=" + request.getTimestamp() + "&signature=" + tokenGenerator.getSignature(request,keyPairId), request, FutureChangeLeverageResponse.class, makeHeaders(keyPairId));
+    }
+
+    public FutureChangePositionModeResponse changePositionMode(FutureChangePositionModeRequest request, String keyPairId){
+        return post("/fapi/v1/positionSide/dual?timestamp=" + request.getTimestamp() + "&signature=" + tokenGenerator.getSignature(request,keyPairId), makeSignatureWrapper(request, keyPairId), FutureChangePositionModeResponse.class, makeHeaders(keyPairId));
+    }
+
+    public FutureNewOrderResponse order(FuturesNewOrderRequest request, String keyPairId) {
+        return post("/fapi/v1/order", makeSignatureWrapper(request, keyPairId), FutureNewOrderResponse.class, makeHeaders(keyPairId));
     }
 
     private HttpHeaders makeHeaders(String keyPairId) {
