@@ -4,11 +4,14 @@ import com.dingdongdeng.coinautotrading.common.client.ResponseHandler;
 import com.dingdongdeng.coinautotrading.common.client.util.QueryParamsConverter;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureRequest.*;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.*;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.UpbitRequest.OrderRequest;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.UpbitResponse.OrderResponse;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -24,12 +27,12 @@ public class BinanceFutureClient {
     private final QueryParamsConverter queryParamsConverter;
     private final ResponseHandler responseHandler;
 
-    public String getServerTime() {
+    public BinanceServerTimeResponse getServerTime() {
         return responseHandler.handle(
             () -> binanceFutureWebClient.get()
                 .uri("/fapi/v1/time")
                 .retrieve()
-                .bodyToMono(String.class)
+                .bodyToMono(BinanceServerTimeResponse.class)
                 .block()
         );
     }
@@ -50,15 +53,42 @@ public class BinanceFutureClient {
     }
 
     public FutureChangeLeverageResponse changeLeverage(FutureChangeLeverageRequest request, String keyPairId) {
-        return post("/fapi/v1/leverage?timestamp=" + request.getTimestamp() + "&signature=" + tokenGenerator.getSignature(request,keyPairId), request, FutureChangeLeverageResponse.class, makeHeaders(keyPairId));
+        return responseHandler.handle(
+            () -> binanceFutureWebClient.post()
+                .uri("/fapi/v1/leverage")
+                .headers(headers -> headers.addAll(makeHeaders(keyPairId)))
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .bodyValue(queryParamsConverter.convertStr(makeSignatureWrapper(request, keyPairId)).substring(1))
+                .retrieve()
+                .bodyToMono(FutureChangeLeverageResponse.class)
+                .block()
+        );
     }
 
-    public FutureChangePositionModeResponse changePositionMode(FutureChangePositionModeRequest request, String keyPairId){
-        return post("/fapi/v1/positionSide/dual?timestamp=" + request.getTimestamp() + "&signature=" + tokenGenerator.getSignature(request,keyPairId), makeSignatureWrapper(request, keyPairId), FutureChangePositionModeResponse.class, makeHeaders(keyPairId));
+    public FutureChangePositionModeResponse changePositionMode(FutureChangePositionModeRequest request, String keyPairId) {
+        return responseHandler.handle(
+            () -> binanceFutureWebClient.post()
+                .uri("/fapi/v1/positionSide/dual")
+                .headers(headers -> headers.addAll(makeHeaders(keyPairId)))
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .bodyValue(queryParamsConverter.convertStr(makeSignatureWrapper(request, keyPairId)).substring(1))
+                .retrieve()
+                .bodyToMono(FutureChangePositionModeResponse.class)
+                .block()
+        );
     }
 
     public FutureNewOrderResponse order(FuturesNewOrderRequest request, String keyPairId) {
-        return post("/fapi/v1/order", makeSignatureWrapper(request, keyPairId), FutureNewOrderResponse.class, makeHeaders(keyPairId));
+        return responseHandler.handle(
+            () -> binanceFutureWebClient.post()
+                .uri("/fapi/v1/order")
+                .headers(headers -> headers.addAll(makeHeaders(keyPairId)))
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .bodyValue(queryParamsConverter.convertStr(makeSignatureWrapper(request, keyPairId)).substring(1))
+                .retrieve()
+                .bodyToMono(FutureNewOrderResponse.class)
+                .block()
+        );
     }
 
     private HttpHeaders makeHeaders(String keyPairId) {

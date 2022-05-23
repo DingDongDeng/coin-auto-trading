@@ -101,7 +101,7 @@ class BinanceFutureClientTest {
         Long time = timeResponse.getServerTime();
         FutureChangeLeverageRequest request = FutureChangeLeverageRequest.builder()
             .symbol("BTCUSDT")
-            .leverage(10)
+            .leverage(30)
             .timestamp(time)
             .build();
 
@@ -124,45 +124,4 @@ class BinanceFutureClientTest {
         log.info("result : {}", positionModeResponse);
     }
 
-    @Autowired
-    private WebClient binanceFutureWebClient;
-    @Autowired
-    private BinanceFutureTokenGenerator tokenGenerator;
-    @Autowired
-    private BinanceFutureSignatureWrapper signatureWrapper;
-
-    @Autowired
-    private QueryParamsConverter queryParamsConverter;
-
-    @Test
-    public void test() {
-        BinanceServerTimeResponse timeResponse = binanceFutureClient.getServerTime();
-        FutureChangeLeverageRequest request = FutureChangeLeverageRequest.builder()
-            .symbol("BTCUSDT")
-            .leverage(10)
-            .timestamp(timeResponse.getServerTime())
-            .build();
-        makeSignatureWrapper(request, keyPairId);
-        String response = binanceFutureWebClient
-            .post()
-            .uri("/fapi/v1/leverage")
-            .headers(headers_ -> headers_.addAll(makeHeaders(keyPairId)))
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .bodyValue(queryParamsConverter.convertStr(request).substring(1) + "&signature="
-                + tokenGenerator.getSignature(request, keyPairId))
-            .retrieve()
-            .bodyToMono(String.class)
-            .block();
-    }
-
-    private HttpHeaders makeHeaders(String keyPairId) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("X-MBX-APIKEY", tokenGenerator.getAccessKey(keyPairId));
-        return headers;
-    }
-
-    private Map<String, Object> makeSignatureWrapper(Object request, String keyPairId) {
-        String token = tokenGenerator.getSignature(request, keyPairId);
-        return signatureWrapper.getSignatureRequest(request, token);
-    }
 }
