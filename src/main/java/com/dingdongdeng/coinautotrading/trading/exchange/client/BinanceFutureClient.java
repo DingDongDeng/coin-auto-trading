@@ -2,8 +2,15 @@ package com.dingdongdeng.coinautotrading.trading.exchange.client;
 
 import com.dingdongdeng.coinautotrading.common.client.ResponseHandler;
 import com.dingdongdeng.coinautotrading.common.client.util.QueryParamsConverter;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureRequest.FutureChangeLeverageRequest;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureRequest.FutureChangePositionModeRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureRequest.FuturesAccountBalanceRequest;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureRequest.FuturesNewOrderRequest;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.BinanceServerTimeResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.FutureAccountBalanceResponse;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.FutureChangeLeverageResponse;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.FutureChangePositionModeResponse;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.FutureNewOrderResponse;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -63,7 +70,8 @@ public class BinanceFutureClient {
         );
     }
 
-    public FutureChangePositionModeResponse changePositionMode(FutureChangePositionModeRequest request, String keyPairId) {
+    public FutureChangePositionModeResponse changePositionMode(
+        FutureChangePositionModeRequest request, String keyPairId) {
         return responseHandler.handle(
             () -> binanceFutureWebClient.post()
                 .uri("/fapi/v1/positionSide/dual")
@@ -87,18 +95,6 @@ public class BinanceFutureClient {
                 .bodyToMono(FutureNewOrderResponse.class)
                 .block()
         );
-    }
-
-    public FutureChangeLeverageResponse changeLeverage(FutureChangeLeverageRequest request, String keyPairId) {
-        return post("/fapi/v1/leverage?timestamp=" + request.getTimestamp() + "&signature=" + tokenGenerator.getSignature(request,keyPairId), request, FutureChangeLeverageResponse.class, makeHeaders(keyPairId));
-    }
-
-    public FutureChangePositionModeResponse changePositionMode(FutureChangePositionModeRequest request, String keyPairId){
-        return post("/fapi/v1/positionSide/dual?timestamp=" + request.getTimestamp() + "&signature=" + tokenGenerator.getSignature(request,keyPairId), makeSignatureWrapper(request, keyPairId), FutureChangePositionModeResponse.class, makeHeaders(keyPairId));
-    }
-
-    public FutureNewOrderResponse order(FuturesNewOrderRequest request, String keyPairId) {
-        return post("/fapi/v1/order", makeSignatureWrapper(request, keyPairId), FutureNewOrderResponse.class, makeHeaders(keyPairId));
     }
 
     private HttpHeaders makeHeaders(String keyPairId) {
