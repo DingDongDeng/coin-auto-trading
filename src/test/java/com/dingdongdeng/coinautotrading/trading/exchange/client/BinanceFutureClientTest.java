@@ -63,15 +63,16 @@ class BinanceFutureClientTest {
 
     @Test
     public void 서버_시간_조회_테스트() {
-        String time = binanceFutureClient.getServerTime();
-        log.info("result : {}", time);
+        BinanceServerTimeResponse timeResponse = binanceFutureClient.getServerTime();
+        log.info("result : {}", timeResponse);
     }
 
     @Test
     public void 전체_계좌_조회_테스트() {
-        Long nowTime = System.currentTimeMillis();
+        BinanceServerTimeResponse timeResponse = binanceFutureClient.getServerTime();
+        Long time = timeResponse.getServerTime();
         FuturesAccountBalanceRequest request = FuturesAccountBalanceRequest.builder()
-                .timestamp(nowTime)
+                .timestamp(time)
                 .build();
         List<FutureAccountBalanceResponse> responseList = binanceFutureClient.getFuturesAccountBalance(request, keyPairId);
         for (FutureAccountBalanceResponse balanceResponse: responseList) {
@@ -84,4 +85,30 @@ class BinanceFutureClientTest {
         log.info("result : {}", responseList);
     }
 
+    @Test
+    public void 레버리지_바꾸기() {
+        BinanceServerTimeResponse timeResponse = binanceFutureClient.getServerTime();
+        Long time = timeResponse.getServerTime();
+        FutureChangeLeverageRequest request = FutureChangeLeverageRequest.builder()
+                .symbol("BTCUSDT")
+                .leverage(10)
+                .timestamp(time)
+                .build();
+
+        FutureChangeLeverageResponse leverageResponse = binanceFutureClient.changeLeverage(request, keyPairId);
+        log.info("result : {}", leverageResponse);
+    }
+
+    @Test
+    public void 포지션모드_바꾸기() {
+        BinanceServerTimeResponse timeResponse = binanceFutureClient.getServerTime();
+        Long time = timeResponse.getServerTime();
+        FutureChangePositionModeRequest request = FutureChangePositionModeRequest.builder()
+                .dualSidePosition("true")
+                .timestamp(time)
+                .build();
+
+        FutureChangePositionModeResponse positionModeResponse = binanceFutureClient.changePositionMode(request, keyPairId);
+        log.info("result : {}", positionModeResponse);
+    }
 }
