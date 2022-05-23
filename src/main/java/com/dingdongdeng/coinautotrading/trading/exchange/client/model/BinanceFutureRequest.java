@@ -63,4 +63,5 @@ public class BinanceFutureRequest {
         @JsonProperty("timestamp")
         private Long timestamp;
     }
+
 }
