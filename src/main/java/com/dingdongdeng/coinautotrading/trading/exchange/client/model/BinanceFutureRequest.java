@@ -17,4 +17,5 @@ public class BinanceFutureRequest {
         private Long timestamp;
 
     }
+
 }
