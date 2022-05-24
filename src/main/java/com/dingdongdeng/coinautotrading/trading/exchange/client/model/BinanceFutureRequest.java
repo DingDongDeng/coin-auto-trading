@@ -27,7 +27,7 @@ public class BinanceFutureRequest {
     public static class FutureChangePositionModeRequest {
 
         @JsonProperty("dualSidePosition")
-        private String dualSidePosition;
+        private String dualSidePosition;    //"true": 헤지 모드 "false": 단방향 모드
         @JsonProperty("timestamp")
         private Long timestamp;
 
@@ -39,9 +39,9 @@ public class BinanceFutureRequest {
     public static class FutureOrderInfoRequest {
 
         @JsonProperty("symbol")
-        private String symbol;
+        private String symbol;  //코인 종류
         @JsonProperty("orderId")
-        private Long orderId;
+        private Long orderId;   //주문ID
         @JsonProperty("timestamp")
         private Long timestamp;
 
@@ -53,9 +53,9 @@ public class BinanceFutureRequest {
     public static class FutureChangeLeverageRequest {
 
         @JsonProperty("symbol")
-        private String symbol;
+        private String symbol;  //코인 종류
         @JsonProperty("leverage")
-        private int leverage;
+        private int leverage;   //레버리지
         @JsonProperty("timestamp")
         private Long timestamp;
 
@@ -68,17 +68,17 @@ public class BinanceFutureRequest {
     public static class FutureNewOrderRequest {     //https://binance-docs.github.io/apidocs/futures/en/#new-order-trade
 
         @JsonProperty("symbol")
-        private String symbol;
+        private String symbol;  //코인 종류
         @JsonProperty("side")
-        private Side side;
+        private Side side;  //매수,매도
         @JsonProperty("type")
-        private Type type;
+        private Type type;  //주문 종류
         @JsonProperty("price")
-        private Double price;
+        private Double price;   //(지정가 필수값) 진입가
         @JsonProperty("quantity")
-        private Double quantity;
+        private Double quantity;    //수량
         @JsonProperty("timeInForce")
-        private TimeInForce timeInForce;
+        private TimeInForce timeInForce;    //(지정가 필수값) 주문 유형
         @JsonProperty("timestamp")
         private Long timestamp;
 
@@ -90,13 +90,12 @@ public class BinanceFutureRequest {
     public static class FutureOrderCancelRequest {
 
         @JsonProperty("symbol")
-        private String symbol;
+        private String symbol;  //코인 종류
         @JsonProperty("orderId")
-        private Long orderId;
+        private Long orderId;   //주문ID
         @JsonProperty("timestamp")
         private Long timestamp;
+
     }
-
-
 
 }

@@ -11,7 +11,7 @@ public class BinanceFutureResponse {
     @Getter
     public static class BinanceServerTimeResponse{
         @JsonProperty("serverTime")
-        private Long serverTime;
+        private Long serverTime;    //서버 시간
     }
 
     @ToString
@@ -44,7 +44,7 @@ public class BinanceFutureResponse {
         @JsonProperty("marginAvailable")
         private boolean marginAvailable; // 자산을 다중 자산 모드에서 여백으로 사용할 수 있는지 여부
         @JsonProperty("updateTime")
-        private Long updateTime; // 
+        private Long updateTime;
     }
 
     @ToString
@@ -52,11 +52,11 @@ public class BinanceFutureResponse {
     public static class FutureChangeLeverageResponse {
 
         @JsonProperty("leverage")
-        private int leverage; // 고유 계정 코드
+        private int leverage; // 레버리지
         @JsonProperty("maxNotionalValue")
-        private String maxNotionalValue; // 자산명
+        private String maxNotionalValue; // 레버리지에 의한 최대 포지션값
         @JsonProperty("symbol")
-        private String symbol; // 지갑 잔고
+        private String symbol; // 코인 종류
 
     }
 
@@ -118,7 +118,7 @@ public class BinanceFutureResponse {
     public static class FutureNewOrderResponse {
 
         @JsonProperty("clientOrderId")
-        private String clientOrderId; //
+        private String clientOrderId; //열려 있는 주문 중 고유한 ID
         @JsonProperty("cumQty")
         private String cumQty; //
         @JsonProperty("executedQty")
