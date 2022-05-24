@@ -10,6 +10,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum CoinExchangeType {
     UPBIT("업비트"),
+    BINANCE_FUTURE("바이낸스 선물")
     ;
 
     private String desc;
