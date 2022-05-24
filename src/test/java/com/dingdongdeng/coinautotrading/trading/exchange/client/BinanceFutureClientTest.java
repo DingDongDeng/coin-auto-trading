@@ -1,22 +1,26 @@
 package com.dingdongdeng.coinautotrading.trading.exchange.client;
 
-import com.dingdongdeng.coinautotrading.common.client.util.QueryParamsConverter;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.domain.entity.ExchangeKey;
 import com.dingdongdeng.coinautotrading.domain.repository.ExchangeKeyRepository;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureEnum.Symbol;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureEnum.TimeInForce;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureEnum.Type;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureEnum.Side;
-import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureEnum.OrdType;
-import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureRequest.FuturesNewOrderRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureRequest.FutureChangeLeverageRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureRequest.FutureChangePositionModeRequest;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureRequest.FutureOrderCancelRequest;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureRequest.FutureOrderInfoRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureRequest.FuturesAccountBalanceRequest;
-import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.FutureNewOrderResponse;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureRequest.FutureNewOrderRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.BinanceServerTimeResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.FutureAccountBalanceResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.FutureChangeLeverageResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.FutureChangePositionModeResponse;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.FutureNewOrderResponse;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.FutureOrderCancelResponse;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.FutureOrderInfoResponse;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,9 +28,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.client.WebClient;
 
 @Slf4j
 @SpringBootTest
@@ -132,9 +133,9 @@ class BinanceFutureClientTest {
     public void 주문하기() {
         BinanceServerTimeResponse timeResponse = binanceFutureClient.getServerTime();
         Long time = timeResponse.getServerTime();
-        FuturesNewOrderRequest request = FuturesNewOrderRequest.builder()
+        FutureNewOrderRequest request = FutureNewOrderRequest.builder()
                 .symbol("BTCUSDT")
-                .type(OrdType.MARKET)
+                .type(Type.MARKET)
                 .side(Side.BUY)
                 .quantity(0.001)
                 .timestamp(time)
@@ -143,5 +144,42 @@ class BinanceFutureClientTest {
         FutureNewOrderResponse orderResponse = binanceFutureClient.order(
                 request, keyPairId);
         log.info("result : {}", orderResponse);
+    }
+
+    @Test
+    public void 주문_및_주문_취소() {
+        BinanceServerTimeResponse timeResponse = binanceFutureClient.getServerTime();
+        Long time = timeResponse.getServerTime();
+        FutureNewOrderRequest request = FutureNewOrderRequest.builder()
+            .symbol(Symbol.USDT_BTC.getCode())
+            .type(Type.LIMIT)
+            .side(Side.SELL)
+            .price(100000.0)
+            .quantity(0.01)
+            .timeInForce(TimeInForce.GTC)
+            .timestamp(time)
+            .build();
+
+        FutureNewOrderResponse orderResponse = binanceFutureClient.order(
+            request, keyPairId);
+        log.info("주문 : {}", orderResponse.getOrderId());
+
+        FutureOrderInfoRequest request1 = FutureOrderInfoRequest.builder()
+            .symbol(Symbol.USDT_BTC.getCode())
+            .orderId(orderResponse.getOrderId())
+            .timestamp(time)
+            .build();
+
+        FutureOrderInfoResponse futureOrderInfoResponse = binanceFutureClient.getFutureOrderInfo(request1, keyPairId);
+        log.info("코인 정보 : {}", futureOrderInfoResponse);
+
+        FutureOrderCancelRequest futureOrderCancelRequest = FutureOrderCancelRequest.builder()
+            .orderId(futureOrderInfoResponse.getOrderId())
+            .symbol(Symbol.USDT_BTC.getCode())
+            .timestamp(time)
+            .build();
+
+        FutureOrderCancelResponse futureOrderCancelResponse = binanceFutureClient.orderCancel(futureOrderCancelRequest, keyPairId);
+        log.info("취소 : {}", futureOrderCancelResponse);
     }
 }

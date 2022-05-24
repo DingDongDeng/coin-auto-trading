@@ -4,13 +4,19 @@ import com.dingdongdeng.coinautotrading.common.client.ResponseHandler;
 import com.dingdongdeng.coinautotrading.common.client.util.QueryParamsConverter;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureRequest.FutureChangeLeverageRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureRequest.FutureChangePositionModeRequest;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureRequest.FutureOrderCancelRequest;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureRequest.FutureOrderInfoRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureRequest.FuturesAccountBalanceRequest;
-import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureRequest.FuturesNewOrderRequest;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureRequest.FutureNewOrderRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.BinanceServerTimeResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.FutureAccountBalanceResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.FutureChangeLeverageResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.FutureChangePositionModeResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.FutureNewOrderResponse;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.FutureOrderCancelResponse;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.FutureOrderInfoResponse;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.UpbitRequest.OrderCancelRequest;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.UpbitResponse.OrderCancelResponse;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -57,6 +63,21 @@ public class BinanceFutureClient {
         );
     }
 
+    public FutureOrderInfoResponse getFutureOrderInfo(FutureOrderInfoRequest request, String keyPairId) {
+        return responseHandler.handle(
+            () -> binanceFutureWebClient.get()
+                .uri(uriBuilder -> uriBuilder.path("/fapi/v1/order")
+                    .queryParams(queryParamsConverter.convertMap(makeSignatureWrapper(request, keyPairId)))
+                    .build()
+                )
+                .headers(headers -> headers.addAll(makeHeaders(keyPairId)))
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<FutureOrderInfoResponse>() {
+                })
+                .block()
+        );
+    }
+
     public FutureChangeLeverageResponse changeLeverage(FutureChangeLeverageRequest request, String keyPairId) {
         return responseHandler.handle(
             () -> binanceFutureWebClient.post()
@@ -84,7 +105,7 @@ public class BinanceFutureClient {
         );
     }
 
-    public FutureNewOrderResponse order(FuturesNewOrderRequest request, String keyPairId) {
+    public FutureNewOrderResponse order(FutureNewOrderRequest request, String keyPairId) {
         return responseHandler.handle(
             () -> binanceFutureWebClient.post()
                 .uri("/fapi/v1/order")
@@ -93,6 +114,20 @@ public class BinanceFutureClient {
                 .bodyValue(makeQueryParamForPOST(request, keyPairId))
                 .retrieve()
                 .bodyToMono(FutureNewOrderResponse.class)
+                .block()
+        );
+    }
+
+    public FutureOrderCancelResponse orderCancel(FutureOrderCancelRequest request, String keyPairId) {
+        return responseHandler.handle(
+            () -> binanceFutureWebClient.delete()
+                .uri(uriBuilder -> uriBuilder.path("/fapi/v1/order")
+                    .queryParams(queryParamsConverter.convertMap(makeSignatureWrapper(request, keyPairId)))
+                    .build()
+                )
+                .headers(headers -> headers.addAll(makeHeaders(keyPairId)))
+                .retrieve()
+                .bodyToMono(FutureOrderCancelResponse.class)
                 .block()
         );
     }

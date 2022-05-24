@@ -62,6 +62,59 @@ public class BinanceFutureResponse {
 
     @ToString
     @Getter
+    public static class FutureOrderInfoResponse {
+
+        @JsonProperty("avgPrice")
+        private String avgPrice; //
+        @JsonProperty("clientOrderId")
+        private String clientOrderId; //
+        @JsonProperty("cumQuote")
+        private String cumQuote; //
+        @JsonProperty("executedQty")
+        private String executedQty; //
+        @JsonProperty("orderId")
+        private Long orderId; //
+        @JsonProperty("origQty")
+        private String origQty; //
+        @JsonProperty("origType")
+        private String origType; //
+        @JsonProperty("price")
+        private String price; //
+        @JsonProperty("reduceOnly")
+        private boolean reduceOnly; //
+        @JsonProperty("side")
+        private String side; //
+        @JsonProperty("positionSide")
+        private String positionSide; //
+        @JsonProperty("status")
+        private String status; //
+        @JsonProperty("stopPrice")
+        private String stopPrice; // 주문 유형이 TRALLING_STOP_MARKET인 경우 무시하십시오.
+        @JsonProperty("closePosition")
+        private boolean closePosition; // 만약 모든 포지션 종료면 false
+        @JsonProperty("symbol")
+        private String symbol; //
+        @JsonProperty("time")
+        private Long time;
+        @JsonProperty("timeInForce")
+        private String timeInForce; //
+        @JsonProperty("type")
+        private String type; //
+        @JsonProperty("activatePrice")
+        private String activatePrice; // 활성화 가격, TRAING_STOP_MARKET 주문과 함께 반환만 가능합니다.
+        @JsonProperty("priceRate")
+        private String priceRate; // 콜백 요금, TRAILING_STOP_MARKET 주문과 함께만 반환됩니다.
+        @JsonProperty("updateTime")
+        private Long updateTime; //
+        @JsonProperty("workingType")
+        private String workingType; //
+        @JsonProperty("priceProtect")
+        private boolean priceProtect; // 조건부 순서 트리거가 보호되는 경우
+
+    }
+
+    @ToString
+    @Getter
     public static class FutureNewOrderResponse {
 
         @JsonProperty("clientOrderId")
@@ -98,6 +151,57 @@ public class BinanceFutureResponse {
         private String type; //
         @JsonProperty("origType")
         private String origType; //
+        @JsonProperty("activatePrice")
+        private String activatePrice; // 활성화 가격, TRAING_STOP_MARKET 주문과 함께 반환만 가능합니다.
+        @JsonProperty("priceRate")
+        private String priceRate; // 콜백 요금, TRAILING_STOP_MARKET 주문과 함께만 반환됩니다.
+        @JsonProperty("updateTime")
+        private Long updateTime; //
+        @JsonProperty("workingType")
+        private String workingType; //
+        @JsonProperty("priceProtect")
+        private boolean priceProtect; // 조건부 순서 트리거가 보호되는 경우
+
+    }
+
+    @ToString
+    @Getter
+    public static class FutureOrderCancelResponse {
+
+        @JsonProperty("clientOrderId")
+        private String clientOrderId; //
+        @JsonProperty("cumQty")
+        private String cumQty; //
+        @JsonProperty("cumQuote")
+        private String cumQuote; //
+        @JsonProperty("executedQty")
+        private String executedQty; //
+        @JsonProperty("orderId")
+        private Long orderId; //
+        @JsonProperty("origQty")
+        private String origQty; //
+        @JsonProperty("origType")
+        private String origType; //
+        @JsonProperty("price")
+        private String price; //
+        @JsonProperty("reduceOnly")
+        private boolean reduceOnly; //
+        @JsonProperty("side")
+        private String side; //
+        @JsonProperty("positionSide")
+        private String positionSide; //
+        @JsonProperty("status")
+        private String status; //
+        @JsonProperty("stopPrice")
+        private String stopPrice; // 주문 유형이 TRALLING_STOP_MARKET인 경우 무시하십시오.
+        @JsonProperty("closePosition")
+        private boolean closePosition; // 만약 모든 포지션 종료면 false
+        @JsonProperty("symbol")
+        private String symbol; //
+        @JsonProperty("timeInForce")
+        private String timeInForce; //
+        @JsonProperty("type")
+        private String type; //
         @JsonProperty("activatePrice")
         private String activatePrice; // 활성화 가격, TRAING_STOP_MARKET 주문과 함께 반환만 가능합니다.
         @JsonProperty("priceRate")
