@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.math.BigDecimal;
+
 @ToString
 public class BinanceFutureRequest {
 
@@ -56,10 +58,8 @@ public class BinanceFutureRequest {
         private Side side;
         @JsonProperty("type")
         private OrdType type;
-        @JsonProperty("timeInForce")
-        private OrdType timeInForce;
         @JsonProperty("quantity")
-        private OrdType quantity;
+        private double quantity;
         @JsonProperty("timestamp")
         private Long timestamp;
     }

@@ -63,7 +63,7 @@ public class BinanceFutureClient {
                 .uri("/fapi/v1/leverage")
                 .headers(headers -> headers.addAll(makeHeaders(keyPairId)))
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .bodyValue(queryParamsConverter.convertStr(makeSignatureWrapper(request, keyPairId)).substring(1))
+                .bodyValue(makeQueryParamForPOST(request, keyPairId))
                 .retrieve()
                 .bodyToMono(FutureChangeLeverageResponse.class)
                 .block()
@@ -77,7 +77,7 @@ public class BinanceFutureClient {
                 .uri("/fapi/v1/positionSide/dual")
                 .headers(headers -> headers.addAll(makeHeaders(keyPairId)))
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .bodyValue(queryParamsConverter.convertStr(makeSignatureWrapper(request, keyPairId)).substring(1))
+                .bodyValue(makeQueryParamForPOST(request, keyPairId))
                 .retrieve()
                 .bodyToMono(FutureChangePositionModeResponse.class)
                 .block()
@@ -90,7 +90,7 @@ public class BinanceFutureClient {
                 .uri("/fapi/v1/order")
                 .headers(headers -> headers.addAll(makeHeaders(keyPairId)))
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .bodyValue(queryParamsConverter.convertStr(makeSignatureWrapper(request, keyPairId)).substring(1))
+                .bodyValue(makeQueryParamForPOST(request, keyPairId))
                 .retrieve()
                 .bodyToMono(FutureNewOrderResponse.class)
                 .block()
@@ -106,6 +106,10 @@ public class BinanceFutureClient {
     private Map<String, Object> makeSignatureWrapper(Object request, String keyPairId) {
         String token = tokenGenerator.getSignature(request, keyPairId);
         return signatureWrapper.getSignatureRequest(request, token);
+    }
+
+    private String makeQueryParamForPOST(Object request, String keyPairId){
+        return queryParamsConverter.convertStr(makeSignatureWrapper(request, keyPairId)).substring(1);
     }
 
 }

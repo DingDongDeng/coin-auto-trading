@@ -4,9 +4,13 @@ import com.dingdongdeng.coinautotrading.common.client.util.QueryParamsConverter;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.domain.entity.ExchangeKey;
 import com.dingdongdeng.coinautotrading.domain.repository.ExchangeKeyRepository;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureEnum.Side;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureEnum.OrdType;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureRequest.FuturesNewOrderRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureRequest.FutureChangeLeverageRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureRequest.FutureChangePositionModeRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureRequest.FuturesAccountBalanceRequest;
+import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.FutureNewOrderResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.BinanceServerTimeResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.FutureAccountBalanceResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.client.model.BinanceFutureResponse.FutureChangeLeverageResponse;
@@ -101,7 +105,7 @@ class BinanceFutureClientTest {
         Long time = timeResponse.getServerTime();
         FutureChangeLeverageRequest request = FutureChangeLeverageRequest.builder()
             .symbol("BTCUSDT")
-            .leverage(30)
+            .leverage(40)
             .timestamp(time)
             .build();
 
@@ -124,4 +128,20 @@ class BinanceFutureClientTest {
         log.info("result : {}", positionModeResponse);
     }
 
+    @Test
+    public void 주문하기() {
+        BinanceServerTimeResponse timeResponse = binanceFutureClient.getServerTime();
+        Long time = timeResponse.getServerTime();
+        FuturesNewOrderRequest request = FuturesNewOrderRequest.builder()
+                .symbol("BTCUSDT")
+                .type(OrdType.MARKET)
+                .side(Side.BUY)
+                .quantity(0.001)
+                .timestamp(time)
+                .build();
+
+        FutureNewOrderResponse orderResponse = binanceFutureClient.order(
+                request, keyPairId);
+        log.info("result : {}", orderResponse);
+    }
 }
