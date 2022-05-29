@@ -3,6 +3,8 @@ package com.dingdongdeng.coinautotrading.trading.exchange.future.service.impl;
 import com.dingdongdeng.coinautotrading.common.type.CandleUnit;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.BinanceFutureClient;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.service.FutureExchangeCandleService;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.UpbitClient;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitEnum.MarketType;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitRequest.CandleRequest;
@@ -23,10 +25,10 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class BinanceFutureExchangeCandleService implements ExchangeCandleService {
+public class BinanceFutureExchangeCandleService implements FutureExchangeCandleService {
 
-    private final CoinExchangeType COIN_EXCHANGE_TYPE = CoinExchangeType.UPBIT;
-    private final UpbitClient upbitClient;
+    private final CoinExchangeType COIN_EXCHANGE_TYPE = CoinExchangeType.BINANCE_FUTURE;
+    private final BinanceFutureClient binanceFutureClient;
     private final int MAX_CHUNK_SIZE = 200;
 
     @Override //fixme 분봉만 지원

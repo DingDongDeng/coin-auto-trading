@@ -9,6 +9,7 @@ import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.Bin
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureNewOrderRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.Type;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureNewOrderResponse;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.service.FutureExchangeService;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeService;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrder;
@@ -31,7 +32,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class BinanceFutureExchangeService implements ExchangeService {
+public class BinanceFutureExchangeService implements FutureExchangeService {
 
     private final BinanceFutureClient binanceFutureClient;
     private final IndexCalculator indexCalculator;
@@ -41,13 +42,6 @@ public class BinanceFutureExchangeService implements ExchangeService {
         log.info("binance process : order param = {}", param);
         FutureNewOrderResponse response = binanceFutureClient.order(
             FutureNewOrderRequest.builder()
-                .symbol(Symbol.of(param.getCoinType()).getCode())
-                .side(Side.of(param.getOrderType()))
-                .quantity(param.getVolume())
-                .price(param.getPrice())
-                .type(Type.of(param.getPriceType()))
-                .timeInForce()
-                .timestamp()
                 .build(),
             keyPairId
         );
