@@ -5,16 +5,16 @@ import com.dingdongdeng.coinautotrading.common.type.OrderState;
 import com.dingdongdeng.coinautotrading.trading.backtesting.context.BackTestingContext;
 import com.dingdongdeng.coinautotrading.trading.backtesting.context.BackTestingContextLoader;
 import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeService;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeCandles;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrder;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrderCancel;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrderCancelParam;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrderInfoParam;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrderParam;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeTicker;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeTradingInfo;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeTradingInfoParam;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.SpotExchangeService;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeCandles;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeOrder;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeOrderCancel;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeOrderCancelParam;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeOrderInfoParam;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeOrderParam;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeTicker;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeTradingInfo;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeTradingInfoParam;
 import com.dingdongdeng.coinautotrading.trading.index.IndexCalculator;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,17 +27,17 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @AllArgsConstructor
 @Builder
-public class BackTestingExchangeService implements ExchangeService {
+public class BackTestingExchangeService implements SpotExchangeService {
 
     private BackTestingContextLoader contextLoader;
     private IndexCalculator indexCalculator;
     private double exchangeFeeRate;
     @Default
-    private Map<String, ExchangeOrder> orderMap = new HashMap<>();
+    private Map<String, SpotExchangeOrder> orderMap = new HashMap<>();
 
     @Override
-    public ExchangeOrder order(ExchangeOrderParam param, String keyPairId) {
-        ExchangeOrder order = ExchangeOrder.builder()
+    public SpotExchangeOrder order(SpotExchangeOrderParam param, String keyPairId) {
+        SpotExchangeOrder order = SpotExchangeOrder.builder()
             .orderId(UUID.randomUUID().toString())
             .orderType(param.getOrderType())
             .priceType(param.getPriceType())
@@ -62,10 +62,10 @@ public class BackTestingExchangeService implements ExchangeService {
     }
 
     @Override
-    public ExchangeOrderCancel orderCancel(ExchangeOrderCancelParam param, String keyPairId) {
-        ExchangeOrder order = orderMap.get(param.getOrderId());
+    public SpotExchangeOrderCancel orderCancel(SpotExchangeOrderCancelParam param, String keyPairId) {
+        SpotExchangeOrder order = orderMap.get(param.getOrderId());
 
-        ExchangeOrderCancel orderCancel = ExchangeOrderCancel.builder()
+        SpotExchangeOrderCancel orderCancel = SpotExchangeOrderCancel.builder()
             .orderId(param.getOrderId())
             .orderType(order.getOrderType())
             .priceType(order.getPriceType())
@@ -83,7 +83,7 @@ public class BackTestingExchangeService implements ExchangeService {
             .tradeCount(order.getTradeCount())
             .build();
 
-        ExchangeOrder order1 = ExchangeOrder.builder()
+        SpotExchangeOrder order1 = SpotExchangeOrder.builder()
             .orderId(param.getOrderId())
             .orderType(order.getOrderType())
             .priceType(order.getPriceType())
@@ -108,12 +108,12 @@ public class BackTestingExchangeService implements ExchangeService {
     }
 
     @Override
-    public ExchangeTradingInfo getTradingInformation(ExchangeTradingInfoParam param, String keyPairId) {
+    public SpotExchangeTradingInfo getTradingInformation(SpotExchangeTradingInfoParam param, String keyPairId) {
         BackTestingContext context = contextLoader.getCurrentContext();
         double currentPrice = context.getCurrentPrice();
-        ExchangeCandles candles = context.getCandles();
+        SpotExchangeCandles candles = context.getCandles();
 
-        return ExchangeTradingInfo.builder()
+        return SpotExchangeTradingInfo.builder()
             .coinType(param.getCoinType())
             .coinExchangeType(getCoinExchangeType())
             .tradingTerm(param.getTradingTerm())
@@ -126,14 +126,14 @@ public class BackTestingExchangeService implements ExchangeService {
             .unitCurrency(null)
 
             .candles(candles)
-            .ticker(ExchangeTicker.builder().tradePrice(currentPrice).build())
+            .ticker(SpotExchangeTicker.builder().tradePrice(currentPrice).build())
 
             .rsi(indexCalculator.getRsi(candles))
             .build();
     }
 
     @Override
-    public ExchangeOrder getOrderInfo(ExchangeOrderInfoParam param, String keyPairId) {
+    public SpotExchangeOrder getOrderInfo(SpotExchangeOrderInfoParam param, String keyPairId) {
         return orderMap.get(param.getOrderId());
     }
 

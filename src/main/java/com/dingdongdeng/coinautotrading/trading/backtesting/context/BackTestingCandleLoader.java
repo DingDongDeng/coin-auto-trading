@@ -3,9 +3,9 @@ package com.dingdongdeng.coinautotrading.trading.backtesting.context;
 import com.dingdongdeng.coinautotrading.common.type.CandleUnit;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeCandleService;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeCandles;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeCandles.Candle;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.SpotExchangeCandleService;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeCandles;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeCandles.Candle;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -25,7 +25,7 @@ public class BackTestingCandleLoader {
 
     private CoinType coinType;
     private String keyPairdId;
-    private ExchangeCandleService exchangeCandleService;
+    private SpotExchangeCandleService spotExchangeCandleService;
 
     @Default
     private CandleUnit candleUnit = CandleUnit.UNIT_1M;
@@ -75,13 +75,13 @@ public class BackTestingCandleLoader {
         return null;
     }
 
-    private ExchangeCandles getCandles(CandleUnit candleUnit, LocalDateTime start, LocalDateTime end) {
+    private SpotExchangeCandles getCandles(CandleUnit candleUnit, LocalDateTime start, LocalDateTime end) {
         delay(); // candle 조회 api 호출 제한이 걸리지 않도록 하기 위함
-        return exchangeCandleService.getCandles(coinType, candleUnit, start, end, keyPairdId);
+        return spotExchangeCandleService.getCandles(coinType, candleUnit, start, end, keyPairdId);
     }
 
     public CoinExchangeType getCoinExchangeType() {
-        return this.exchangeCandleService.getCoinExchangeType();
+        return this.spotExchangeCandleService.getCoinExchangeType();
     }
 
     private void delay() {

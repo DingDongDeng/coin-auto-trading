@@ -20,7 +20,7 @@ import com.dingdongdeng.coinautotrading.trading.autotrading.aggregation.AutoTrad
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingRegisterRequest;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingResponse;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.type.AutoTradingProcessStatus;
-import com.dingdongdeng.coinautotrading.trading.exchange.client.UpbitClient;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.UpbitClient;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.StrategyCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
