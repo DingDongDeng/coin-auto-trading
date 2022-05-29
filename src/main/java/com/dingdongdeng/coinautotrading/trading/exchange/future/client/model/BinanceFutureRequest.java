@@ -29,7 +29,7 @@ public class BinanceFutureRequest {
     public static class FutureChangePositionModeRequest {
 
         @JsonProperty("dualSidePosition")
-        private String dualSidePosition;    //"true": 헤지 모드 "false": 단방향 모드
+        private String dualSidePosition;    //(필수)"true": 헤지 모드 "false": 단방향 모드
         @JsonProperty("timestamp")
         private Long timestamp;
 
@@ -41,9 +41,9 @@ public class BinanceFutureRequest {
     public static class FutureOrderInfoRequest {
 
         @JsonProperty("symbol")
-        private String symbol;  //코인 종류
+        private String symbol;  //(필수)코인 종류
         @JsonProperty("orderId")
-        private Long orderId;   //주문ID
+        private Long orderId;   //(필수)주문ID
         @JsonProperty("timestamp")
         private Long timestamp;
 
@@ -55,9 +55,9 @@ public class BinanceFutureRequest {
     public static class FutureChangeLeverageRequest {
 
         @JsonProperty("symbol")
-        private String symbol;  //코인 종류
+        private String symbol;  //(필수)코인 종류
         @JsonProperty("leverage")
-        private int leverage;   //레버리지
+        private int leverage;   //(필수)레버리지
         @JsonProperty("timestamp")
         private Long timestamp;
 
@@ -74,7 +74,7 @@ public class BinanceFutureRequest {
         @JsonProperty("side")
         private Side side;  //매수,매도
         @JsonProperty("type")
-        private Type type;  //주문 종류
+        private Type type;  //주문 종류 - 지정가,시장가,...
         @JsonProperty("price")
         private Double price;   //(지정가 필수값) 진입가
         @JsonProperty("quantity")
