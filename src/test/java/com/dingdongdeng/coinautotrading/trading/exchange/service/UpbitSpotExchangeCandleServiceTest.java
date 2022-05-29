@@ -10,8 +10,8 @@ import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.domain.entity.ExchangeKey;
 import com.dingdongdeng.coinautotrading.domain.service.ExchangeKeyService;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.impl.UpbitExchangeCandleService;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.ExchangeCandles;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.impl.UpbitSpotExchangeCandleService;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeCandles;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -35,12 +35,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 //)
 @SpringBootTest
     //fixme ObjectMapper 주입받다가 의도한대로 동작안함...
-class UpbitExchangeCandleServiceTest {
+class UpbitSpotExchangeCandleServiceTest {
 
     @MockBean
     private ExchangeKeyService exchangeKeyService;
     @Autowired
-    private UpbitExchangeCandleService service;
+    private UpbitSpotExchangeCandleService service;
 
     @Value("${upbit.client.accessKey}")
     private String accessKey;
@@ -78,7 +78,7 @@ class UpbitExchangeCandleServiceTest {
             );
 
         //when
-        ExchangeCandles candles = service.getCandles(coinType, candleUnit, start, end, keyPairId);
+        SpotExchangeCandles candles = service.getCandles(coinType, candleUnit, start, end, keyPairId);
 
         //then
         assertEquals(4, candles.getCandleList().size());
@@ -119,7 +119,7 @@ class UpbitExchangeCandleServiceTest {
             );
 
         //when
-        ExchangeCandles candles = service.getCandles(coinType, candleUnit, start, end, keyPairId);
+        SpotExchangeCandles candles = service.getCandles(coinType, candleUnit, start, end, keyPairId);
 
         //then
         assertEquals(200, candles.getCandleList().size());
@@ -160,7 +160,7 @@ class UpbitExchangeCandleServiceTest {
             );
 
         //when
-        ExchangeCandles candles = service.getCandles(coinType, candleUnit, start, end, keyPairId);
+        SpotExchangeCandles candles = service.getCandles(coinType, candleUnit, start, end, keyPairId);
 
         //then
         assertEquals(200, candles.getCandleList().size());

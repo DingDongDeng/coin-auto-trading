@@ -7,8 +7,8 @@ import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.UpbitClient
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitEnum.MarketType;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitRequest.CandleRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitResponse.CandleResponse;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.ExchangeCandleService;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.ExchangeCandles;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.SpotExchangeCandleService;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeCandles;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
@@ -23,14 +23,14 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class UpbitExchangeCandleService implements ExchangeCandleService {
+public class UpbitSpotExchangeCandleService implements SpotExchangeCandleService {
 
     private final CoinExchangeType COIN_EXCHANGE_TYPE = CoinExchangeType.UPBIT;
     private final UpbitClient upbitClient;
     private final int MAX_CHUNK_SIZE = 200;
 
     @Override //fixme 분봉만 지원
-    public ExchangeCandles getCandles(CoinType coinType, CandleUnit candleUnit, LocalDateTime start, LocalDateTime end, String keyPairId) {
+    public SpotExchangeCandles getCandles(CoinType coinType, CandleUnit candleUnit, LocalDateTime start, LocalDateTime end, String keyPairId) {
         /**
          * start를 기준으로 최대 캔들 200개까지 조회 가능
          * start < 캔들 <= end 범위로 조회
@@ -54,13 +54,13 @@ public class UpbitExchangeCandleService implements ExchangeCandleService {
         );
         Collections.reverse(response);
 
-        return ExchangeCandles.builder()
+        return SpotExchangeCandles.builder()
             .coinExchangeType(getCoinExchangeType())
             .candleUnit(candleUnit)
             .coinType(coinType)
             .candleList(
                 response.stream().map(
-                    candle -> ExchangeCandles.Candle.builder()
+                    candle -> SpotExchangeCandles.Candle.builder()
                         .candleDateTimeUtc(candle.getCandleDateTimeUtc())
                         .candleDateTimeKst(candle.getCandleDateTimeKst())
                         .openingPrice(candle.getOpeningPrice())

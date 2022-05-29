@@ -10,7 +10,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @Builder
-public class ExchangeOrderParam {
+public class SpotExchangeOrderParam {
 
     private CoinType coinType; // 마켓 ID (필수)
     private OrderType orderType; // 주문 종류 (필수) - bid : 매수 - ask : 매도

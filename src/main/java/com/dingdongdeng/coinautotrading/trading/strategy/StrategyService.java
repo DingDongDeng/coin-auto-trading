@@ -2,14 +2,14 @@ package com.dingdongdeng.coinautotrading.trading.strategy;
 
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.ExchangeService;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.ExchangeOrder;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.ExchangeOrderCancel;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.ExchangeOrderCancelParam;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.ExchangeOrderInfoParam;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.ExchangeOrderParam;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.ExchangeTradingInfo;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.ExchangeTradingInfoParam;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.SpotExchangeService;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeOrder;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeOrderCancel;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeOrderCancelParam;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeOrderInfoParam;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeOrderParam;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeTradingInfo;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeTradingInfoParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
@@ -28,50 +28,50 @@ public class StrategyService {
     private final CoinType coinType;
     private final TradingTerm tradingTerm;
     private final String keyPairId;
-    private final ExchangeService exchangeService;
+    private final SpotExchangeService spotExchangeService;
 
     public TradingInfo getTradingInformation(String identifyCode, TradingResultPack tradingResultPack) {
-        ExchangeTradingInfoParam param = ExchangeTradingInfoParam.builder()
+        SpotExchangeTradingInfoParam param = SpotExchangeTradingInfoParam.builder()
             .coinType(coinType)
             .tradingTerm(tradingTerm)
             .build();
-        ExchangeTradingInfo exchangeTradingInfo = exchangeService.getTradingInformation(param, keyPairId);
+        SpotExchangeTradingInfo spotExchangeTradingInfo = spotExchangeService.getTradingInformation(param, keyPairId);
 
         return TradingInfo.builder()
             .identifyCode(identifyCode)
-            .coinExchangeType(exchangeTradingInfo.getCoinExchangeType())
-            .coinType(exchangeTradingInfo.getCoinType())
-            .tradingTerm(exchangeTradingInfo.getTradingTerm())
-            .currency(exchangeTradingInfo.getCurrency())
-            .candles(exchangeTradingInfo.getCandles())
-            .balance(exchangeTradingInfo.getBalance())
-            .locked(exchangeTradingInfo.getLocked())
-            .avgBuyPrice(exchangeTradingInfo.getAvgBuyPrice())
-            .unitCurrency(exchangeTradingInfo.getUnitCurrency())
-            .currentPrice(exchangeTradingInfo.getTicker().getTradePrice())
+            .coinExchangeType(spotExchangeTradingInfo.getCoinExchangeType())
+            .coinType(spotExchangeTradingInfo.getCoinType())
+            .tradingTerm(spotExchangeTradingInfo.getTradingTerm())
+            .currency(spotExchangeTradingInfo.getCurrency())
+            .candles(spotExchangeTradingInfo.getCandles())
+            .balance(spotExchangeTradingInfo.getBalance())
+            .locked(spotExchangeTradingInfo.getLocked())
+            .avgBuyPrice(spotExchangeTradingInfo.getAvgBuyPrice())
+            .unitCurrency(spotExchangeTradingInfo.getUnitCurrency())
+            .currentPrice(spotExchangeTradingInfo.getTicker().getTradePrice())
             .tradingResultPack(tradingResultPack)
-            .rsi(exchangeTradingInfo.getRsi())
+            .rsi(spotExchangeTradingInfo.getRsi())
             .build();
     }
 
     public TradingResult order(TradingTask orderTradingTask) {
-        ExchangeOrderParam param = ExchangeOrderParam.builder()
+        SpotExchangeOrderParam param = SpotExchangeOrderParam.builder()
             .coinType(orderTradingTask.getCoinType())
             .orderType(orderTradingTask.getOrderType())
             .volume(orderTradingTask.getVolume())
             .price(orderTradingTask.getPrice())
             .priceType(orderTradingTask.getPriceType())
             .build();
-        ExchangeOrder exchangeOrder = exchangeService.order(param, keyPairId);
-        return makeTradingResult(orderTradingTask, exchangeOrder);
+        SpotExchangeOrder spotExchangeOrder = spotExchangeService.order(param, keyPairId);
+        return makeTradingResult(orderTradingTask, spotExchangeOrder);
     }
 
     public TradingResult orderCancel(TradingTask cancelTradingTask) {
-        ExchangeOrderCancelParam param = ExchangeOrderCancelParam.builder()
+        SpotExchangeOrderCancelParam param = SpotExchangeOrderCancelParam.builder()
             .orderId(cancelTradingTask.getOrderId())
             .build();
-        ExchangeOrderCancel exchangeOrderCancel = exchangeService.orderCancel(param, keyPairId);
-        return makeTradingResult(cancelTradingTask, exchangeOrderCancel);
+        SpotExchangeOrderCancel spotExchangeOrderCancel = spotExchangeService.orderCancel(param, keyPairId);
+        return makeTradingResult(cancelTradingTask, spotExchangeOrderCancel);
     }
 
     public TradingResultPack updateTradingResultPack(TradingResultPack tradingResultPack) {
@@ -89,54 +89,54 @@ public class StrategyService {
     }
 
     private TradingResult updateTradingResult(TradingResult tradingResult) {
-        ExchangeOrder exchangeOrder =
-            exchangeService.getOrderInfo(ExchangeOrderInfoParam.builder().orderId(tradingResult.getOrderId()).build(), keyPairId);
+        SpotExchangeOrder spotExchangeOrder =
+            spotExchangeService.getOrderInfo(SpotExchangeOrderInfoParam.builder().orderId(tradingResult.getOrderId()).build(), keyPairId);
         return TradingResult.builder()
             .identifyCode(tradingResult.getIdentifyCode())
-            .coinType(exchangeOrder.getCoinType())
+            .coinType(spotExchangeOrder.getCoinType())
             .tradingTerm(tradingResult.getTradingTerm())
-            .orderType(exchangeOrder.getOrderType())
-            .orderState(exchangeOrder.getOrderState())
-            .volume(exchangeOrder.getVolume())
-            .price(exchangeOrder.getPrice())
-            .priceType(exchangeOrder.getPriceType())
-            .orderId(exchangeOrder.getOrderId())
+            .orderType(spotExchangeOrder.getOrderType())
+            .orderState(spotExchangeOrder.getOrderState())
+            .volume(spotExchangeOrder.getVolume())
+            .price(spotExchangeOrder.getPrice())
+            .priceType(spotExchangeOrder.getPriceType())
+            .orderId(spotExchangeOrder.getOrderId())
             .tag(tradingResult.getTag())
-            .createdAt(exchangeOrder.getCreatedAt())
+            .createdAt(spotExchangeOrder.getCreatedAt())
             .build();
     }
 
-    private TradingResult makeTradingResult(TradingTask tradingTask, ExchangeOrder exchangeOrder) {
+    private TradingResult makeTradingResult(TradingTask tradingTask, SpotExchangeOrder spotExchangeOrder) {
         return TradingResult.builder()
             .identifyCode(tradingTask.getIdentifyCode())
             .coinType(tradingTask.getCoinType())
             .orderType(tradingTask.getOrderType())
             .tradingTerm(tradingTask.getTradingTerm())
-            .orderState(exchangeOrder.getOrderState())
+            .orderState(spotExchangeOrder.getOrderState())
             .volume(tradingTask.getVolume())
             .price(tradingTask.getPrice())
-            .fee(exchangeOrder.getPaidFee() + exchangeOrder.getRemainingFee())
+            .fee(spotExchangeOrder.getPaidFee() + spotExchangeOrder.getRemainingFee())
             .priceType(tradingTask.getPriceType())
-            .orderId(exchangeOrder.getOrderId())
+            .orderId(spotExchangeOrder.getOrderId())
             .tag(tradingTask.getTag())
-            .createdAt(exchangeOrder.getCreatedAt())
+            .createdAt(spotExchangeOrder.getCreatedAt())
             .build();
     }
 
-    private TradingResult makeTradingResult(TradingTask tradingTask, ExchangeOrderCancel exchangeOrderCancel) { //fixme 중복 코드 개선
+    private TradingResult makeTradingResult(TradingTask tradingTask, SpotExchangeOrderCancel spotExchangeOrderCancel) { //fixme 중복 코드 개선
         return TradingResult.builder()
             .identifyCode(tradingTask.getIdentifyCode())
             .coinType(tradingTask.getCoinType())
             .orderType(tradingTask.getOrderType())
             .tradingTerm(tradingTask.getTradingTerm())
-            .orderState(exchangeOrderCancel.getOrderState())
+            .orderState(spotExchangeOrderCancel.getOrderState())
             .volume(tradingTask.getVolume())
             .price(tradingTask.getPrice())
-            .fee(exchangeOrderCancel.getPaidFee() + exchangeOrderCancel.getRemainingFee())
+            .fee(spotExchangeOrderCancel.getPaidFee() + spotExchangeOrderCancel.getRemainingFee())
             .priceType(tradingTask.getPriceType())
-            .orderId(exchangeOrderCancel.getOrderId())
+            .orderId(spotExchangeOrderCancel.getOrderId())
             .tag(tradingTask.getTag())
-            .createdAt(exchangeOrderCancel.getCreatedAt())
+            .createdAt(spotExchangeOrderCancel.getCreatedAt())
             .build();
     }
 

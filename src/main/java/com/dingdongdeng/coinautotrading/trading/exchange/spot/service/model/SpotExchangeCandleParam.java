@@ -9,7 +9,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @Builder
-public class ExchangeCandleParam {
+public class SpotExchangeCandleParam {
 
     private Integer unit; // 분 단위. 가능한 값 : 1, 3, 5, 15, 10, 30, 60, 240
     private CoinType coinType; // 마켓 ID (필수)

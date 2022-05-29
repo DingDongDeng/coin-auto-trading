@@ -10,7 +10,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @Builder
-public class ExchangeTradingInfo { //fixme 사용중인 모델만 남도록 리팩토링
+public class SpotExchangeTradingInfo { //fixme 사용중인 모델만 남도록 리팩토링
 
     private CoinExchangeType coinExchangeType;
     private CoinType coinType;
@@ -29,8 +29,8 @@ public class ExchangeTradingInfo { //fixme 사용중인 모델만 남도록 리�
     private boolean avgBuyPriceModified; // 매수평균가 수정 여부
     private String unitCurrency; // 평단가 기준 화폐
 
-    private ExchangeCandles candles; // 캔들 정보
-    private ExchangeTicker ticker; // 현재가 정보
+    private SpotExchangeCandles candles; // 캔들 정보
+    private SpotExchangeTicker ticker; // 현재가 정보
 
     /**
      * 보조 지표
