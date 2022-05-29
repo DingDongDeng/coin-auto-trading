@@ -2,7 +2,7 @@ package com.dingdongdeng.coinautotrading.trading.strategy.model;
 
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeService;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.ExchangeService;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.StrategyCode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

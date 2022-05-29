@@ -2,8 +2,8 @@ package com.dingdongdeng.coinautotrading.trading.backtesting.context;
 
 import com.dingdongdeng.coinautotrading.common.type.CandleUnit;
 import com.dingdongdeng.coinautotrading.common.type.CandleUnit.UnitType;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeCandles;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeCandles.Candle;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.ExchangeCandles;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.ExchangeCandles.Candle;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

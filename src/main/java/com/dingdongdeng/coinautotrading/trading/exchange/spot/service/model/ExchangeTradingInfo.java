@@ -1,9 +1,8 @@
-package com.dingdongdeng.coinautotrading.trading.strategy.model;
+package com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model;
 
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.ExchangeCandles;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -11,9 +10,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @Builder
-public class TradingInfo {
-
-    private String identifyCode;
+public class ExchangeTradingInfo { //fixme 사용중인 모델만 남도록 리팩토링
 
     private CoinExchangeType coinExchangeType;
     private CoinType coinType;
@@ -29,14 +26,11 @@ public class TradingInfo {
      * 주문 정보
      **/
     private Double avgBuyPrice; // 매수평균가
+    private boolean avgBuyPriceModified; // 매수평균가 수정 여부
     private String unitCurrency; // 평단가 기준 화폐
-    private Double currentPrice; // 현재 가격
-    private ExchangeCandles candles; // 캔들 정보
 
-    /**
-     * 자동 매매에서 관리중인 주문 정보
-     */
-    private TradingResultPack tradingResultPack;
+    private ExchangeCandles candles; // 캔들 정보
+    private ExchangeTicker ticker; // 현재가 정보
 
     /**
      * 보조 지표

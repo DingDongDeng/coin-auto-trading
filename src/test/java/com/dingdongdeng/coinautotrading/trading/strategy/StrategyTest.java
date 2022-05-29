@@ -1,6 +1,6 @@
 package com.dingdongdeng.coinautotrading.trading.strategy;
 
-import com.dingdongdeng.coinautotrading.trading.exchange.service.impl.UpbitExchangeService;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.impl.UpbitExchangeService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
