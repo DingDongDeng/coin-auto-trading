@@ -7,7 +7,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @Builder
-public class ExchangeTicker {
+public class SpotExchangeTicker {
 
     private String market;  //종목 구분 코드
     private String tradeDate;  //최근 거래 일자(UTC)

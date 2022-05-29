@@ -20,7 +20,7 @@ public class StrategyFactory {
             serviceParam.getCoinType(),
             serviceParam.getTradingTerm(),
             serviceParam.getKeyPairId(),
-            serviceParam.getExchangeService()
+            serviceParam.getSpotExchangeService()
         );
         StrategyStore strategyStore = new StrategyStore();
         StrategyCore strategyCore = strategyCode.getStrategyCore(coreParam);

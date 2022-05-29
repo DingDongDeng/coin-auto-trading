@@ -4,8 +4,8 @@ import com.dingdongdeng.coinautotrading.common.type.CandleUnit;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.domain.entity.Candle;
 import com.dingdongdeng.coinautotrading.domain.service.CandleService;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.ExchangeCandleService;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.ExchangeCandles;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.SpotExchangeCandleService;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeCandles;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public abstract class CandleStoreJob implements Job {
     private final List<CoinType> TARGET_COINT_LIST;
     private final CandleUnit CANDLE_UNIT;
     private final int LIMIT_DAYS = 2;
-    private final ExchangeCandleService exchangeCandleService;
+    private final SpotExchangeCandleService spotExchangeCandleService;
     private final CandleService candleService;
 
     @Override
@@ -42,13 +42,13 @@ public abstract class CandleStoreJob implements Job {
         // 중복 저장의 위험은 unique 컬럼을 설정해서 방지하는게 좋을거같아(거의 발생안할 이슈라고 판단됨)
     }
 
-    private List<Candle> makeCandleList(ExchangeCandles exchangeCandles) {
-        CoinType coinType = exchangeCandles.getCoinType();
-        CandleUnit candleUnit = exchangeCandles.getCandleUnit();
-        return exchangeCandles.getCandleList().stream()
+    private List<Candle> makeCandleList(SpotExchangeCandles spotExchangeCandles) {
+        CoinType coinType = spotExchangeCandles.getCoinType();
+        CandleUnit candleUnit = spotExchangeCandles.getCandleUnit();
+        return spotExchangeCandles.getCandleList().stream()
             .map(candle -> Candle.builder()
                 .coinType(coinType)
-                .coinExchangeType(exchangeCandles.getCoinExchangeType())
+                .coinExchangeType(spotExchangeCandles.getCoinExchangeType())
                 .candleUnit(candleUnit)
                 .candleDateTimeUtc(candle.getCandleDateTimeUtc())
                 .candleDateTimeKst(candle.getCandleDateTimeKst())

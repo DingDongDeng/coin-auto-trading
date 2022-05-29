@@ -9,7 +9,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @Builder
-public class ExchangeTradingInfoParam {
+public class SpotExchangeTradingInfoParam {
 
     private CoinType coinType;
     private TradingTerm tradingTerm;

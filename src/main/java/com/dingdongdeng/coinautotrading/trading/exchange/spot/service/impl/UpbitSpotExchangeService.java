@@ -17,16 +17,16 @@ import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.Upbit
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitResponse.OrderCancelResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitResponse.OrderResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitResponse.TickerResponse;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.ExchangeService;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.ExchangeCandles;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.ExchangeOrder;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.ExchangeOrderCancel;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.ExchangeOrderCancelParam;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.ExchangeOrderInfoParam;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.ExchangeOrderParam;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.ExchangeTicker;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.ExchangeTradingInfo;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.ExchangeTradingInfoParam;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.SpotExchangeService;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeCandles;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeOrder;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeOrderCancel;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeOrderCancelParam;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeOrderInfoParam;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeOrderParam;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeTicker;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeTradingInfo;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeTradingInfoParam;
 import com.dingdongdeng.coinautotrading.trading.index.IndexCalculator;
 import java.util.Collections;
 import java.util.List;
@@ -39,13 +39,13 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class UpbitExchangeService implements ExchangeService {
+public class UpbitSpotExchangeService implements SpotExchangeService {
 
     private final UpbitClient upbitClient;
     private final IndexCalculator indexCalculator;
 
     @Override
-    public ExchangeOrder order(ExchangeOrderParam param, String keyPairId) {
+    public SpotExchangeOrder order(SpotExchangeOrderParam param, String keyPairId) {
         log.info("upbit process : order param = {}", param);
         OrderResponse response = upbitClient.order(
             OrderRequest.builder()
@@ -61,7 +61,7 @@ public class UpbitExchangeService implements ExchangeService {
     }
 
     @Override
-    public ExchangeOrderCancel orderCancel(ExchangeOrderCancelParam param, String keyPairId) {
+    public SpotExchangeOrderCancel orderCancel(SpotExchangeOrderCancelParam param, String keyPairId) {
         log.info("upbit process : order cancel param = {}", param);
         OrderCancelResponse response = upbitClient.orderCancel(
             OrderCancelRequest.builder()
@@ -69,7 +69,7 @@ public class UpbitExchangeService implements ExchangeService {
                 .build(),
             keyPairId
         );
-        return ExchangeOrderCancel.builder()
+        return SpotExchangeOrderCancel.builder()
             .orderId(response.getUuid())
             .orderType(response.getSide().getOrderType())
             .priceType(response.getOrdType().getPriceType())
@@ -89,19 +89,19 @@ public class UpbitExchangeService implements ExchangeService {
     }
 
     @Override
-    public ExchangeTradingInfo getTradingInformation(ExchangeTradingInfoParam param, String keyPairId) {
+    public SpotExchangeTradingInfo getTradingInformation(SpotExchangeTradingInfoParam param, String keyPairId) {
         log.info("upbit process : get trading information param = {}", param);
 
         // 캔들 정보 조회
-        ExchangeCandles candles = getExchangeCandles(param, keyPairId);
+        SpotExchangeCandles candles = getExchangeCandles(param, keyPairId);
 
         // 현재가 정보 조회
-        ExchangeTicker ticker = getExchangeTicker(param, keyPairId);
+        SpotExchangeTicker ticker = getExchangeTicker(param, keyPairId);
 
         // 계좌 정보 조회
         AccountsResponse accounts = upbitClient.getAccounts(keyPairId).stream().findFirst().orElseThrow(() -> new NoSuchElementException("계좌를 찾지 못함"));
 
-        return ExchangeTradingInfo.builder()
+        return SpotExchangeTradingInfo.builder()
             .coinType(param.getCoinType())
             .coinExchangeType(getCoinExchangeType())
             .tradingTerm(param.getTradingTerm())
@@ -121,7 +121,7 @@ public class UpbitExchangeService implements ExchangeService {
     }
 
     @Override
-    public ExchangeOrder getOrderInfo(ExchangeOrderInfoParam param, String keyPairId) {
+    public SpotExchangeOrder getOrderInfo(SpotExchangeOrderInfoParam param, String keyPairId) {
         return makeExchangeOrder(
             upbitClient.getOrderInfo(OrderInfoRequest.builder()
                     .uuid(param.getOrderId())
@@ -136,7 +136,7 @@ public class UpbitExchangeService implements ExchangeService {
         return CoinExchangeType.UPBIT;
     }
 
-    private ExchangeCandles getExchangeCandles(ExchangeTradingInfoParam param, String keyPairId) {
+    private SpotExchangeCandles getExchangeCandles(SpotExchangeTradingInfoParam param, String keyPairId) {
         TradingTerm tradingTerm = param.getTradingTerm();
         List<CandleResponse> response = upbitClient.getMinuteCandle(
             CandleRequest.builder()
@@ -148,13 +148,13 @@ public class UpbitExchangeService implements ExchangeService {
             keyPairId
         );
         Collections.reverse(response);
-        return ExchangeCandles.builder()
+        return SpotExchangeCandles.builder()
             .coinExchangeType(getCoinExchangeType())
             .candleUnit(tradingTerm.getCandleUnit())
             .coinType(param.getCoinType())
             .candleList(
                 response.stream().map(
-                    candle -> ExchangeCandles.Candle.builder()
+                    candle -> SpotExchangeCandles.Candle.builder()
                         .candleDateTimeUtc(candle.getCandleDateTimeUtc())
                         .candleDateTimeKst(candle.getCandleDateTimeKst())
                         .openingPrice(candle.getOpeningPrice())
@@ -170,8 +170,8 @@ public class UpbitExchangeService implements ExchangeService {
             .build();
     }
 
-    private ExchangeOrder makeExchangeOrder(OrderResponse response) {
-        return ExchangeOrder.builder()
+    private SpotExchangeOrder makeExchangeOrder(OrderResponse response) {
+        return SpotExchangeOrder.builder()
             .orderId(response.getUuid())
             .orderType(response.getSide().getOrderType())
             .priceType(response.getOrdType().getPriceType())
@@ -192,14 +192,14 @@ public class UpbitExchangeService implements ExchangeService {
             .build();
     }
 
-    private ExchangeTicker getExchangeTicker(ExchangeTradingInfoParam param, String keyPairId) {
+    private SpotExchangeTicker getExchangeTicker(SpotExchangeTradingInfoParam param, String keyPairId) {
         TickerResponse response = upbitClient.getTicker(
             TickerRequest.builder()
                 .marketList(List.of(MarketType.of(param.getCoinType()).getCode()))
                 .build()
             , keyPairId
         ).stream().findFirst().orElseThrow(NoSuchElementException::new);
-        return ExchangeTicker.builder()
+        return SpotExchangeTicker.builder()
             .market(response.getMarket())
             .tradeDate(response.getTradeDate())
             .tradeTime(response.getTradeTime())

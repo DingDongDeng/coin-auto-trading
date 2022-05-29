@@ -7,7 +7,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @Builder
-public class ExchangeOrderCancelParam {
+public class SpotExchangeOrderInfoParam {
 
     private String orderId;
 }

@@ -14,7 +14,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @Builder
-public class ExchangeOrder {
+public class SpotExchangeOrder {
 
     private String orderId; // 주문의 고유 아이디
     private OrderType orderType; // 주문 종류
