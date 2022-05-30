@@ -69,7 +69,7 @@ public class BinanceFutureResponse {
         @JsonProperty("clientOrderId")
         private String clientOrderId; //
         @JsonProperty("cumQuote")
-        private String cumQuote; //
+        private String cumQuote; //사용된 화폐의 합 ex) 1분동안 도지 10000개가 거래됬는데 들어간 현금
         @JsonProperty("executedQty")
         private String executedQty; //
         @JsonProperty("orderId")
@@ -117,16 +117,18 @@ public class BinanceFutureResponse {
     @Getter
     public static class FutureNewOrderResponse {
 
+        @JsonProperty("avgPrice")
+        private String avgPrice; //
         @JsonProperty("clientOrderId")
         private String clientOrderId; //열려 있는 주문 중 고유한 ID
         @JsonProperty("cumQty")
         private String cumQty; //
+        @JsonProperty("cumQuote")
+        private String cumQuote; //
         @JsonProperty("executedQty")
         private String executedQty; //
         @JsonProperty("orderId")
         private Long orderId; //
-        @JsonProperty("avgPrice")
-        private String avgPrice; //
         @JsonProperty("origQty")
         private String origQty; //
         @JsonProperty("price")
