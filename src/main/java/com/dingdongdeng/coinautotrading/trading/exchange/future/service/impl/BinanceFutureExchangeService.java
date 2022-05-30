@@ -87,7 +87,7 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
 
     @Override
     public FutureExchangeOrder getOrderInfo(FutureExchangeOrderInfoParam param, String keyPairId) {
-        return makeExchangeOrder(
+        return makeExchangeOrderInfo(
             binanceFutureClient.getFutureOrderInfo(FutureOrderInfoRequest.builder().build()
                 , keyPairId
             )
@@ -101,7 +101,7 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
 
     private FutureExchangeCandles getExchangeCandles(FutureExchangeTradingInfoParam param, String keyPairId) {
         TradingTerm tradingTerm = param.getTradingTerm();
-        List<CandleResponse> response = upbitClient.getMinuteCandle(
+        List<CandleResponse> response = binanceFutureClient.getMinuteCandle(
             CandleRequest.builder()
                 .unit(tradingTerm.getCandleUnit().getSize())
                 .market(MarketType.of(param.getCoinType()).getCode())
@@ -134,6 +134,11 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
     }
 
     private FutureExchangeOrder makeExchangeOrder(FutureNewOrderResponse response) {
+        return FutureExchangeOrder.builder()
+            .build();
+    }
+
+    private FutureExchangeOrder makeExchangeOrderInfo(FutureOrderInfoResponse response) {
         return FutureExchangeOrder.builder()
             .build();
     }
