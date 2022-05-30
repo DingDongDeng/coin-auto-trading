@@ -36,6 +36,9 @@ public class BinanceFutureClient {
     private final QueryParamsConverter queryParamsConverter;
     private final ResponseHandler responseHandler;
 
+    /**
+     *  서버시간
+     */
     public BinanceServerTimeResponse getServerTime() {
         return responseHandler.handle(
             () -> binanceFutureWebClient.get()
@@ -46,6 +49,9 @@ public class BinanceFutureClient {
         );
     }
 
+    /**
+     *  계좌잔고
+     */
     public List<FutureAccountBalanceResponse> getFuturesAccountBalance(FuturesAccountBalanceRequest request, String keyPairId) {
         return responseHandler.handle(
             () -> binanceFutureWebClient.get()
@@ -61,6 +67,9 @@ public class BinanceFutureClient {
         );
     }
 
+    /**
+     *  현재포지션정보
+    */
     public FutureOrderInfoResponse getFutureOrderInfo(FutureOrderInfoRequest request, String keyPairId) {
         return responseHandler.handle(
             () -> binanceFutureWebClient.get()
@@ -76,6 +85,9 @@ public class BinanceFutureClient {
         );
     }
 
+    /**
+     *  레버리지 바꾸기
+     */
     public FutureChangeLeverageResponse changeLeverage(FutureChangeLeverageRequest request, String keyPairId) {
         return responseHandler.handle(
             () -> binanceFutureWebClient.post()
@@ -89,6 +101,9 @@ public class BinanceFutureClient {
         );
     }
 
+    /**
+     *  모드 바꾸기(단방향/양방향)
+     */
     public FutureChangePositionModeResponse changePositionMode(
         FutureChangePositionModeRequest request, String keyPairId) {
         return responseHandler.handle(
@@ -103,6 +118,9 @@ public class BinanceFutureClient {
         );
     }
 
+    /**
+     *  주문하기
+     */
     public FutureNewOrderResponse order(FutureNewOrderRequest request, String keyPairId) {
         return responseHandler.handle(
             () -> binanceFutureWebClient.post()
@@ -116,6 +134,9 @@ public class BinanceFutureClient {
         );
     }
 
+    /**
+     *  주문취소하기
+     */
     public FutureOrderCancelResponse orderCancel(FutureOrderCancelRequest request, String keyPairId) {
         return responseHandler.handle(
             () -> binanceFutureWebClient.delete()
