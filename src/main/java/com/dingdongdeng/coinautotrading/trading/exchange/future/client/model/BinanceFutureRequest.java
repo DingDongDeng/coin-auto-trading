@@ -1,5 +1,6 @@
 package com.dingdongdeng.coinautotrading.trading.exchange.future.client.model;
 
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.Interval;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.Side;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.TimeInForce;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.Type;
@@ -70,15 +71,15 @@ public class BinanceFutureRequest {
     public static class FutureNewOrderRequest {     //https://binance-docs.github.io/apidocs/futures/en/#new-order-trade
 
         @JsonProperty("symbol")
-        private String symbol;  //코인 종류
+        private String symbol;  //(필수)코인 종류
         @JsonProperty("side")
-        private Side side;  //매수,매도
+        private Side side;  //(필수)매수,매도
         @JsonProperty("type")
-        private Type type;  //주문 종류 - 지정가,시장가,...
+        private Type type;  //(필수)주문 종류 - 지정가,시장가,...
         @JsonProperty("price")
         private Double price;   //(지정가 필수값) 진입가
         @JsonProperty("quantity")
-        private Double quantity;    //수량
+        private Double quantity;    //(필수)수량
         @JsonProperty("timeInForce")
         private TimeInForce timeInForce;    //(지정가 필수값) 주문 유형
         @JsonProperty("timestamp")
@@ -92,11 +93,30 @@ public class BinanceFutureRequest {
     public static class FutureOrderCancelRequest {
 
         @JsonProperty("symbol")
-        private String symbol;  //코인 종류
+        private String symbol;  //(필수)코인 종류
         @JsonProperty("orderId")
-        private Long orderId;   //주문ID
+        private Long orderId;   //(필수)주문ID
         @JsonProperty("timestamp")
         private Long timestamp;
+
+    }
+
+    @ToString
+    @Getter
+    @Builder
+    @JsonInclude(Include.NON_NULL)
+    public static class FutureCandleRequest {
+
+        @JsonProperty("symbol")
+        private String symbol;  //(필수)코인 종류
+        @JsonProperty("interval")
+        private String interval;   //(필수)분봉선택 ex)1분봉,3분봉,5분봉,...
+        @JsonProperty("startTime")
+        private Long startTime; //(선택)시작시간
+        @JsonProperty("endTime")
+        private Long endTime;   //(선택)끝시간
+        @JsonProperty("limit")
+        private Integer limit;
 
     }
 

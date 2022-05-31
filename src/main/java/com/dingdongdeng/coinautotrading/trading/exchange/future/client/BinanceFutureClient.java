@@ -2,6 +2,7 @@ package com.dingdongdeng.coinautotrading.trading.exchange.future.client;
 
 import com.dingdongdeng.coinautotrading.common.client.ResponseHandler;
 import com.dingdongdeng.coinautotrading.common.client.util.QueryParamsConverter;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureCandleRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureChangeLeverageRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureChangePositionModeRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureNewOrderRequest;
@@ -10,6 +11,7 @@ import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.Bin
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FuturesAccountBalanceRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.BinanceServerTimeResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureAccountBalanceResponse;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureCandleResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureChangeLeverageResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureChangePositionModeResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureNewOrderResponse;
@@ -147,6 +149,23 @@ public class BinanceFutureClient {
                 .headers(headers -> headers.addAll(makeHeaders(keyPairId)))
                 .retrieve()
                 .bodyToMono(FutureOrderCancelResponse.class)
+                .block()
+        );
+    }
+
+    /**
+     *  캔들조회
+     */
+    public List<FutureCandleResponse> getMinuteCandle(FutureCandleRequest request) {
+        return responseHandler.handle(
+            () -> binanceFutureWebClient.get()
+                .uri(uriBuilder -> uriBuilder.path("/fapi/v1/klines")
+                    .queryParams(queryParamsConverter.convertMap(request))
+                    .build()
+                )
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<FutureCandleResponse>>() {
+                })
                 .block()
         );
     }

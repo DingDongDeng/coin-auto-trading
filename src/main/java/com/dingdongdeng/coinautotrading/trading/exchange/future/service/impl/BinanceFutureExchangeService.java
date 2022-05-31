@@ -68,10 +68,10 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
         log.info("binance process : get trading information param = {}", param);
 
         // 캔들 정보 조회
-        FutureExchangeCandles candles = getExchangeCandles(param, keyPairId);
+      /*  FutureExchangeCandles candles = getExchangeCandles(param, keyPairId);
 
         // 현재가 정보 조회
-        FutureExchangeTicker ticker = getExchangeTicker(param, keyPairId);
+        FutureExchangeTicker ticker = getExchangeTicker(param, keyPairId);*/
 
         // 계좌 정보 조회
         // fixme 선물이라면 현재 내가 들고 있는 포지션?
@@ -99,7 +99,7 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
         return CoinExchangeType.BINANCE_FUTURE;
     }
 
-    private FutureExchangeCandles getExchangeCandles(FutureExchangeTradingInfoParam param, String keyPairId) {
+    /*private FutureExchangeCandles getExchangeCandles(FutureExchangeTradingInfoParam param, String keyPairId) {
         TradingTerm tradingTerm = param.getTradingTerm();
         List<CandleResponse> response = binanceFutureClient.getMinuteCandle(
             CandleRequest.builder()
@@ -131,7 +131,7 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
                 ).collect(Collectors.toList())
             )
             .build();
-    }
+    }*/
 
     private FutureExchangeOrder makeExchangeOrder(FutureNewOrderResponse response) {
         return FutureExchangeOrder.builder()
@@ -143,7 +143,7 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
             .build();
     }
 
-    private FutureExchangeTicker getExchangeTicker(FutureExchangeTradingInfoParam param, String keyPairId) {
+    /*private FutureExchangeTicker getExchangeTicker(FutureExchangeTradingInfoParam param, String keyPairId) {
         TickerResponse response = upbitClient.getTicker(    //fixme ticker가 뭐임
             TickerRequest.builder()
                 .marketList(List.of(MarketType.of(param.getCoinType()).getCode()))
@@ -152,5 +152,5 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
         ).stream().findFirst().orElseThrow(NoSuchElementException::new);
         return FutureExchangeTicker.builder()
             .build();
-    }
+    }*/
 }

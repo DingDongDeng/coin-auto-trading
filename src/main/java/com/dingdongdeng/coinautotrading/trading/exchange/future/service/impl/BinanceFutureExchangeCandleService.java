@@ -9,8 +9,6 @@ import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.UpbitClient
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitEnum.MarketType;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitRequest.CandleRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitResponse.CandleResponse;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.ExchangeCandleService;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.ExchangeCandles;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
@@ -31,14 +29,14 @@ public class BinanceFutureExchangeCandleService implements FutureExchangeCandleS
     private final BinanceFutureClient binanceFutureClient;
     private final int MAX_CHUNK_SIZE = 200;
 
-    @Override //fixme 분봉만 지원
+    /*@Override //fixme 분봉만 지원
     public ExchangeCandles getCandles(CoinType coinType, CandleUnit candleUnit, LocalDateTime start, LocalDateTime end, String keyPairId) {
-        /**
+        *//**
          * start를 기준으로 최대 캔들 200개까지 조회 가능
          * start < 캔들 <= end 범위로 조회
          * start ~ end 순서로 정렬된 캔들 정보 반환
          * start가 null이라면 end를 기준으로 캔들 200개까지 조회
-         */
+         *//*
         if (Objects.isNull(start)) {
             start = getlimitedStartDateTime(candleUnit, end);
         }
@@ -141,5 +139,5 @@ public class BinanceFutureExchangeCandleService implements FutureExchangeCandleS
             throw new RuntimeException("upbit candle max size over");
         }
         return diff.intValue();
-    }
+    }*/
 }

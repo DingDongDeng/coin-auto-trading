@@ -1,5 +1,6 @@
 package com.dingdongdeng.coinautotrading.trading.exchange.future.client.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.ToString;
@@ -214,6 +215,37 @@ public class BinanceFutureResponse {
         private String workingType; //
         @JsonProperty("priceProtect")
         private boolean priceProtect; // 조건부 순서 트리거가 보호되는 경우
+
+    }
+
+    @ToString
+    @Getter
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class FutureCandleResponse{
+        @Json   //fixme 응답값받을 방법 구상
+        private Long openTime;
+        /*@JsonProperty(index = 1)
+        private String open;
+        @JsonProperty(index = 2)
+        private String high;
+        @JsonProperty(index = 3)
+        private String low;
+        @JsonProperty(index = 4)
+        private String close;
+        @JsonProperty(index = 5)
+        private String volume;
+        @JsonProperty(index = 6)
+        private Long closeTime;
+        @JsonProperty(index = 7)
+        private String quoteAssetVolume;
+        @JsonProperty(index = 8)
+        private Long numberOfTrades;
+        @JsonProperty(index = 9)
+        private String takerBuyBaseAssetVolume;
+        @JsonProperty(index = 10)
+        private String takerBuyQuoteAssetVolume;
+        @JsonProperty(index = 11)
+        private String ignore;*/
 
     }
 
