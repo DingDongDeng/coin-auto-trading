@@ -17,6 +17,7 @@ import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.Bin
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureNewOrderResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureOrderCancelResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureOrderInfoResponse;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -157,17 +158,38 @@ public class BinanceFutureClient {
      *  캔들조회
      */
     public List<FutureCandleResponse> getMinuteCandle(FutureCandleRequest request) {
-        return responseHandler.handle(
+        List<FutureCandleResponse> candleResponseList = new ArrayList<>();
+        List<List<String>> responseList = responseHandler.handle(
             () -> binanceFutureWebClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/fapi/v1/klines")
                     .queryParams(queryParamsConverter.convertMap(request))
                     .build()
                 )
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<FutureCandleResponse>>() {
+                .bodyToMono(new ParameterizedTypeReference<List<List<String>>>() {
                 })
                 .block()
         );
+
+        for (List<String> candleInfo: responseList) {
+            FutureCandleResponse futureCandleResponse = FutureCandleResponse.builder()
+                .openTime(Long.parseLong(candleInfo.get(0)))
+                .open(Double.parseDouble(candleInfo.get(1)))
+                .high(Double.parseDouble(candleInfo.get(2)))
+                .low(Double.parseDouble(candleInfo.get(3)))
+                .close(Double.parseDouble(candleInfo.get(4)))
+                .volume(Double.parseDouble(candleInfo.get(5)))
+                .closeTime(Long.parseLong(candleInfo.get(6)))
+                .quoteAssetVolume(Double.parseDouble(candleInfo.get(7)))
+                .numberOfTrades(Long.parseLong(candleInfo.get(8)))
+                .takerBuyBaseAssetVolume(Double.parseDouble(candleInfo.get(9)))
+                .takerBuyQuoteAssetVolume(Double.parseDouble(candleInfo.get(10)))
+                .ignore(Long.parseLong(candleInfo.get(11)))
+                .build();
+            candleResponseList.add(futureCandleResponse);
+        }
+
+        return candleResponseList;
     }
 
     private HttpHeaders makeHeaders(String keyPairId) {

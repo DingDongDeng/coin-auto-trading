@@ -1,7 +1,7 @@
 package com.dingdongdeng.coinautotrading.trading.exchange.future.client.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -220,32 +220,21 @@ public class BinanceFutureResponse {
 
     @ToString
     @Getter
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class FutureCandleResponse{
-        @Json   //fixme 응답값받을 방법 구상
+    @Builder
+    public static class FutureCandleResponse{   //응답값이 List로 반환되기에 @JsonProperty는 일단은 못씀
+
         private Long openTime;
-        /*@JsonProperty(index = 1)
-        private String open;
-        @JsonProperty(index = 2)
-        private String high;
-        @JsonProperty(index = 3)
-        private String low;
-        @JsonProperty(index = 4)
-        private String close;
-        @JsonProperty(index = 5)
-        private String volume;
-        @JsonProperty(index = 6)
+        private Double open;
+        private Double high;
+        private Double low;
+        private Double close;
+        private Double volume;
         private Long closeTime;
-        @JsonProperty(index = 7)
-        private String quoteAssetVolume;
-        @JsonProperty(index = 8)
+        private Double quoteAssetVolume;
         private Long numberOfTrades;
-        @JsonProperty(index = 9)
-        private String takerBuyBaseAssetVolume;
-        @JsonProperty(index = 10)
-        private String takerBuyQuoteAssetVolume;
-        @JsonProperty(index = 11)
-        private String ignore;*/
+        private Double takerBuyBaseAssetVolume;
+        private Double takerBuyQuoteAssetVolume;
+        private Long ignore;
 
     }
 
