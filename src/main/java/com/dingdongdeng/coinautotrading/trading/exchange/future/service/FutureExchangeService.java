@@ -1,23 +1,24 @@
 package com.dingdongdeng.coinautotrading.trading.exchange.future.service;
 
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.ExchangeOrder;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.ExchangeOrderCancel;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.ExchangeOrderCancelParam;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.ExchangeOrderInfoParam;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.ExchangeOrderParam;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.ExchangeTradingInfo;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.ExchangeTradingInfoParam;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrder;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrderCancel;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrderCancelParam;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrderInfoParam;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrderParam;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeTradingInfo;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeTradingInfoParam;
+
 
 public interface FutureExchangeService {
 
-    ExchangeOrder order(ExchangeOrderParam param, String keyPairId);
+    FutureExchangeOrder order(FutureExchangeOrderParam param, String keyPairId);
 
-    ExchangeOrderCancel orderCancel(ExchangeOrderCancelParam param, String keyPairId);
+    FutureExchangeOrderCancel orderCancel(FutureExchangeOrderCancelParam param, String keyPairId);
 
-    ExchangeTradingInfo getTradingInformation(ExchangeTradingInfoParam param, String keyPairId);
+    FutureExchangeTradingInfo getTradingInformation(FutureExchangeTradingInfoParam param, String keyPairId);
 
-    ExchangeOrder getOrderInfo(ExchangeOrderInfoParam param, String keyPairId);
+    FutureExchangeOrder getOrderInfo(FutureExchangeOrderInfoParam param, String keyPairId);
 
     CoinExchangeType getCoinExchangeType();
 }

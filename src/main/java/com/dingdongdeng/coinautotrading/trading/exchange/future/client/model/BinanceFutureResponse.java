@@ -1,6 +1,7 @@
 package com.dingdongdeng.coinautotrading.trading.exchange.future.client.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -69,7 +70,7 @@ public class BinanceFutureResponse {
         @JsonProperty("clientOrderId")
         private String clientOrderId; //
         @JsonProperty("cumQuote")
-        private String cumQuote; //
+        private String cumQuote; //사용된 화폐의 합 ex) 1분동안 도지 10000개가 거래됬는데 들어간 현금
         @JsonProperty("executedQty")
         private String executedQty; //
         @JsonProperty("orderId")
@@ -117,16 +118,18 @@ public class BinanceFutureResponse {
     @Getter
     public static class FutureNewOrderResponse {
 
+        @JsonProperty("avgPrice")
+        private String avgPrice; //
         @JsonProperty("clientOrderId")
         private String clientOrderId; //열려 있는 주문 중 고유한 ID
         @JsonProperty("cumQty")
         private String cumQty; //
+        @JsonProperty("cumQuote")
+        private String cumQuote; //
         @JsonProperty("executedQty")
         private String executedQty; //
         @JsonProperty("orderId")
         private Long orderId; //
-        @JsonProperty("avgPrice")
-        private String avgPrice; //
         @JsonProperty("origQty")
         private String origQty; //
         @JsonProperty("price")
@@ -212,6 +215,49 @@ public class BinanceFutureResponse {
         private String workingType; //
         @JsonProperty("priceProtect")
         private boolean priceProtect; // 조건부 순서 트리거가 보호되는 경우
+
+    }
+
+    @ToString
+    @Getter
+    @Builder
+    public static class FutureCandleResponse{   //응답값이 List로 반환되기에 @JsonProperty는 일단은 못씀
+
+        private Long openTime;
+        private Double open;
+        private Double high;
+        private Double low;
+        private Double close;
+        private Double volume;
+        private Long closeTime;
+        private Double quoteAssetVolume;
+        private Long numberOfTrades;
+        private Double takerBuyBaseAssetVolume;
+        private Double takerBuyQuoteAssetVolume;
+        private Long ignore;
+
+    }
+
+    @ToString
+    @Getter
+    public static class FutureMarkPriceResponse{
+
+        @JsonProperty("symbol")
+        private String symbol;
+        @JsonProperty("markPrice")
+        private Double markPrice;
+        @JsonProperty("indexPrice")
+        private Double indexPrice;
+        @JsonProperty("estimatedSettlePrice")
+        private Double estimatedSettlePrice;
+        @JsonProperty("lastFundingRate")
+        private Double lastFundingRate;
+        @JsonProperty("nextFundingTime")
+        private Long nextFundingTime;
+        @JsonProperty("interestRate")
+        private Double interestRate;
+        @JsonProperty("time")
+        private Long time;
 
     }
 

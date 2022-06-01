@@ -1,5 +1,6 @@
 package com.dingdongdeng.coinautotrading.trading.exchange.future.client.model;
 
+import com.dingdongdeng.coinautotrading.common.type.CandleUnit;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
@@ -44,8 +45,8 @@ public class BinanceFutureEnum {
         private String desc;
         private OrderType orderType;
 
-        public static BinanceFutureEnum.Side of(OrderType orderType) {
-            return Arrays.stream(BinanceFutureEnum.Side.values())
+        public static Side of(OrderType orderType) {
+            return Arrays.stream(Side.values())
                     .filter(type -> type.getOrderType() == orderType)
                     .findFirst()
                     .orElseThrow(() -> new NoSuchElementException(orderType.name()));
@@ -64,8 +65,8 @@ public class BinanceFutureEnum {
         private String desc;
         private TimeInForceType timeInForceType;
 
-        public static BinanceFutureEnum.TimeInForce of(TimeInForceType timeInForceType) {
-            return Arrays.stream(BinanceFutureEnum.TimeInForce.values())
+        public static TimeInForce of(TimeInForceType timeInForceType) {
+            return Arrays.stream(TimeInForce.values())
                     .filter(type -> type.getTimeInForceType() == timeInForceType)
                     .findFirst()
                     .orElseThrow(() -> new NoSuchElementException(timeInForceType.name()));
@@ -102,6 +103,32 @@ public class BinanceFutureEnum {
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException(code));
 
+        }
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public enum Interval {
+        MINUTE_1("1분봉", "1m", CandleUnit.UNIT_1M),
+        MINUTE_3("3분봉", "3m", CandleUnit.UNIT_3M),
+        MINUTE_5("5분봉", "5m", CandleUnit.UNIT_5M),
+        MINUTE_10("10분봉", "10m", CandleUnit.UNIT_10M),
+        MINUTE_15("15분봉", "15m", CandleUnit.UNIT_15M),
+        MINUTE_30("30분봉", "30m", CandleUnit.UNIT_30M),
+        MINUTE_60("60분봉", "60m", CandleUnit.UNIT_60M),
+        DAY_1("1일봉", "1d", CandleUnit.UNIT_1D),
+        MONTH_1("1달봉", "1M", CandleUnit.UNIT_1W),
+        ;
+
+        private String desc;
+        private String code;
+        private CandleUnit candleUnit;
+
+        public static Interval of(CandleUnit candleUnit) {
+            return Arrays.stream(Interval.values())
+                .filter(type -> type.getCandleUnit() == candleUnit)
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException(candleUnit.name()));
         }
     }
 
