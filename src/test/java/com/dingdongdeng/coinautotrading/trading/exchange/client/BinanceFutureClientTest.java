@@ -9,13 +9,15 @@ import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.Bin
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.Symbol;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.TimeInForce;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.Type;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureMarkPriceRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureCandleRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureChangeLeverageRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureChangePositionModeRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureNewOrderRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureOrderCancelRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureOrderInfoRequest;
-import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FuturesAccountBalanceRequest;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureAccountBalanceRequest;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureMarkPriceResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.BinanceServerTimeResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureAccountBalanceResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureCandleResponse;
@@ -89,7 +91,7 @@ class BinanceFutureClientTest {
     public void 전체_계좌_조회_테스트() {
         BinanceServerTimeResponse timeResponse = binanceFutureClient.getServerTime();
         Long time = timeResponse.getServerTime();
-        FuturesAccountBalanceRequest request = FuturesAccountBalanceRequest.builder()
+        FutureAccountBalanceRequest request = FutureAccountBalanceRequest.builder()
             .timestamp(time)
             .build();
         List<FutureAccountBalanceResponse> responseList = binanceFutureClient.getFuturesAccountBalance(
@@ -196,5 +198,15 @@ class BinanceFutureClientTest {
 
         List<FutureCandleResponse> response = binanceFutureClient.getMinuteCandle(futureCandleRequest);
         log.info("캔들 조회 : {}", response);
+    }
+
+    @Test
+    public void markPrice(){
+        FutureMarkPriceRequest request = FutureMarkPriceRequest.builder()
+                .symbol("BTCUSDT")
+                .build();
+
+        FutureMarkPriceResponse response = binanceFutureClient.getMarkPrice(request);
+        log.info("시장 현재가 : {}", response);
     }
 }
