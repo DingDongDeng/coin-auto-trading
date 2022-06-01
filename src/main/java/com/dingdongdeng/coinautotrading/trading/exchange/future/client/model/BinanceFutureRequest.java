@@ -17,7 +17,7 @@ public class BinanceFutureRequest {
     @ToString
     @Getter
     @Builder
-    public static class FuturesAccountBalanceRequest {
+    public static class FutureAccountBalanceRequest {
 
         @JsonProperty("timestamp")
         private Long timestamp;
@@ -117,6 +117,17 @@ public class BinanceFutureRequest {
         private Long endTime;   //(선택)끝시간
         @JsonProperty("limit")
         private Integer limit;
+
+    }
+
+    @ToString
+    @Getter
+    @Builder
+    @JsonInclude(Include.NON_NULL)
+    public static class FutureMarkPriceRequest {
+
+        @JsonProperty("symbol")
+        private String symbol;  //코인 종류
 
     }
 

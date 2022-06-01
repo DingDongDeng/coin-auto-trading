@@ -2,13 +2,15 @@ package com.dingdongdeng.coinautotrading.trading.exchange.future.client;
 
 import com.dingdongdeng.coinautotrading.common.client.ResponseHandler;
 import com.dingdongdeng.coinautotrading.common.client.util.QueryParamsConverter;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureMarkPriceRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureCandleRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureChangeLeverageRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureChangePositionModeRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureNewOrderRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureOrderCancelRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureOrderInfoRequest;
-import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FuturesAccountBalanceRequest;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureAccountBalanceRequest;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureMarkPriceResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.BinanceServerTimeResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureAccountBalanceResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureCandleResponse;
@@ -55,7 +57,7 @@ public class BinanceFutureClient {
     /**
      *  계좌잔고
      */
-    public List<FutureAccountBalanceResponse> getFuturesAccountBalance(FuturesAccountBalanceRequest request, String keyPairId) {
+    public List<FutureAccountBalanceResponse> getFuturesAccountBalance(FutureAccountBalanceRequest request, String keyPairId) {
         return responseHandler.handle(
             () -> binanceFutureWebClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/fapi/v2/balance")
@@ -190,6 +192,19 @@ public class BinanceFutureClient {
         }
 
         return candleResponseList;
+    }
+
+    public FutureMarkPriceResponse getMarkPrice(FutureMarkPriceRequest request) {
+        return responseHandler.handle(
+                () -> binanceFutureWebClient.get()
+                        .uri(uriBuilder -> uriBuilder.path("/fapi/v1/premiumIndex")
+                                .queryParams(queryParamsConverter.convertMap(request))
+                                .build()
+                        )
+                        .retrieve()
+                        .bodyToMono(FutureMarkPriceResponse.class)
+                        .block()
+        );
     }
 
     private HttpHeaders makeHeaders(String keyPairId) {

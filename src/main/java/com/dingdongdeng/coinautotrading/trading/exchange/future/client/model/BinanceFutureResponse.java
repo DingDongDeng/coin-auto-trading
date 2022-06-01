@@ -238,4 +238,27 @@ public class BinanceFutureResponse {
 
     }
 
+    @ToString
+    @Getter
+    public static class FutureMarkPriceResponse{
+
+        @JsonProperty("symbol")
+        private String symbol;
+        @JsonProperty("markPrice")
+        private Double markPrice;
+        @JsonProperty("indexPrice")
+        private Double indexPrice;
+        @JsonProperty("estimatedSettlePrice")
+        private Double estimatedSettlePrice;
+        @JsonProperty("lastFundingRate")
+        private Double lastFundingRate;
+        @JsonProperty("nextFundingTime")
+        private Long nextFundingTime;
+        @JsonProperty("interestRate")
+        private Double interestRate;
+        @JsonProperty("time")
+        private Long time;
+
+    }
+
 }
