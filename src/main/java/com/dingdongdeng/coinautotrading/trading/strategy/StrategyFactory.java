@@ -1,5 +1,8 @@
 package com.dingdongdeng.coinautotrading.trading.strategy;
 
+import com.dingdongdeng.coinautotrading.common.type.MarketType;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.service.FutureExchangeService;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.SpotExchangeService;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyServiceParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.StrategyCode;
@@ -16,12 +19,7 @@ public class StrategyFactory {
 
     public Strategy create(StrategyServiceParam serviceParam, StrategyCoreParam coreParam) {
         StrategyCode strategyCode = serviceParam.getStrategyCode();
-        StrategyService strategyService = new StrategyService(
-            serviceParam.getCoinType(),
-            serviceParam.getTradingTerm(),
-            serviceParam.getKeyPairId(),
-            serviceParam.getSpotExchangeService()
-        );
+        StrategyService strategyService = makeStrategyService(strategyCode.getMarketType(), serviceParam);
         StrategyStore strategyStore = new StrategyStore();
         StrategyCore strategyCore = strategyCode.getStrategyCore(coreParam);
         StrategyRecorder strategyRecorder = new StrategyRecorder();
@@ -30,5 +28,26 @@ public class StrategyFactory {
 
     public StrategyCoreParam createCoreParam(StrategyCode strategyCode, Map<String, Object> strategyCoreParamMap) {
         return objectMapper.convertValue(strategyCoreParamMap, strategyCode.getStrategyCoreParamClazz());
+    }
+
+    private StrategyService makeStrategyService(MarketType marketType, StrategyServiceParam serviceParam) {
+        if (marketType == MarketType.SPOT) {
+            return new StrategySpotService(
+                serviceParam.getCoinType(),
+                serviceParam.getTradingTerm(),
+                serviceParam.getKeyPairId(),
+                (SpotExchangeService) serviceParam.getExchangeService()
+            );
+        }
+        if (marketType == MarketType.FUTURE) {
+            return new StrategyFutureService(
+                serviceParam.getCoinType(),
+                serviceParam.getTradingTerm(),
+                serviceParam.getKeyPairId(),
+                (FutureExchangeService) serviceParam.getExchangeService()
+            );
+
+        }
+        throw new RuntimeException("not found marketType : " + marketType);
     }
 }

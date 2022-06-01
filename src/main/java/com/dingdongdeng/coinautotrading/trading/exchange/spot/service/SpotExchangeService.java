@@ -1,6 +1,7 @@
 package com.dingdongdeng.coinautotrading.trading.exchange.spot.service;
 
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.ExchangeService;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeOrder;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeOrderCancel;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeOrderCancelParam;
@@ -9,7 +10,7 @@ import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.Spot
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeTradingInfo;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeTradingInfoParam;
 
-public interface SpotExchangeService {
+public interface SpotExchangeService extends ExchangeService {
 
     SpotExchangeOrder order(SpotExchangeOrderParam param, String keyPairId);
 

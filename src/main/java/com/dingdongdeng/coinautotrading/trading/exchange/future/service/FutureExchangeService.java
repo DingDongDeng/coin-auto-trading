@@ -1,6 +1,7 @@
 package com.dingdongdeng.coinautotrading.trading.exchange.future.service;
 
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.ExchangeService;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrder;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrderCancel;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrderCancelParam;
@@ -10,7 +11,7 @@ import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.Fu
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeTradingInfoParam;
 
 
-public interface FutureExchangeService {
+public interface FutureExchangeService extends ExchangeService {
 
     FutureExchangeOrder order(FutureExchangeOrderParam param, String keyPairId);
 

@@ -44,7 +44,7 @@ public class BackTestingService {
 
         StrategyServiceParam serviceParam = StrategyServiceParam.builder()
             .strategyCode(strategy.getStrategyCode())
-            .spotExchangeService(backTestingExchangeService)
+            .exchangeService(backTestingExchangeService)
             .coinType(autoTradingProcessor.getCoinType())
             .tradingTerm(tradingTerm)
             .keyPairId(keyPairdId)
