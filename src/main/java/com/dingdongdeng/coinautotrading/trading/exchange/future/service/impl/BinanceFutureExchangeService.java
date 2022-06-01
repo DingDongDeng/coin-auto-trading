@@ -2,28 +2,39 @@ package com.dingdongdeng.coinautotrading.trading.exchange.future.service.impl;
 
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
-import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.BinanceFutureClient;
-import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.Side;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.Interval;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.Symbol;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureAccountBalanceRequest;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureMarkPriceRequest;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureCandleRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureNewOrderRequest;
-import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.Type;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureOrderCancelRequest;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureOrderInfoRequest;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureAccountBalanceResponse;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureMarkPriceResponse;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureCandleResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureNewOrderResponse;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureOrderCancelResponse;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureOrderInfoResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.FutureExchangeService;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeService;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeCandles;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrder;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrderCancel;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrderCancelParam;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrderInfoParam;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeOrderParam;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeTicker;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeTradingInfo;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeTradingInfoParam;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeCandles;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrder;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrderCancel;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrderCancelParam;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrderInfoParam;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrderParam;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeTicker;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeTradingInfo;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeTradingInfoParam;
 import com.dingdongdeng.coinautotrading.trading.index.IndexCalculator;
+
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +49,7 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
     private final IndexCalculator indexCalculator;
 
     @Override
-    public ExchangeOrder order(ExchangeOrderParam param, String keyPairId) {
+    public FutureExchangeOrder order(FutureExchangeOrderParam param, String keyPairId) {
         log.info("binance process : order param = {}", param);
         FutureNewOrderResponse response = binanceFutureClient.order(
             FutureNewOrderRequest.builder()
@@ -49,72 +60,50 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
     }
 
     @Override
-    public ExchangeOrderCancel orderCancel(ExchangeOrderCancelParam param, String keyPairId) {
+    public FutureExchangeOrderCancel orderCancel(FutureExchangeOrderCancelParam param, String keyPairId) {
         log.info("binance process : order cancel param = {}", param);
-        OrderCancelResponse response = upbitClient.orderCancel(
-            OrderCancelRequest.builder()
-                .uuid(param.getOrderId())
+        FutureOrderCancelResponse response = binanceFutureClient.orderCancel(
+            FutureOrderCancelRequest.builder()
                 .build(),
             keyPairId
         );
-        return ExchangeOrderCancel.builder()
-            .orderId(response.getUuid())
-            .orderType(response.getSide().getOrderType())
-            .priceType(response.getOrdType().getPriceType())
-            .price(response.getPrice())
-            .orderState(response.getState().getOrderState())
-            .coinType(MarketType.of(response.getMarket()).getCoinType())
-            .createdAt(response.getCreatedAt())
-            .volume(response.getVolume())
-            .remainingVolume(response.getRemainingVolume())
-            .reservedFee(response.getReservedFee())
-            .remainingFee(response.getRemainingFee())
-            .paidFee(response.getPaidFee())
-            .locked(response.getLocked())
-            .executedVolume(response.getExecutedVolume())
-            .tradeCount(response.getTradeCount())
+        return FutureExchangeOrderCancel.builder()
             .build();
     }
 
     @Override
-    public ExchangeTradingInfo getTradingInformation(ExchangeTradingInfoParam param, String keyPairId) {
+    public FutureExchangeTradingInfo getTradingInformation(FutureExchangeTradingInfoParam param, String keyPairId) {
         log.info("binance process : get trading information param = {}", param);
 
+
         // 캔들 정보 조회
-        ExchangeCandles candles = getExchangeCandles(param, keyPairId);
+        FutureExchangeCandles candles = getExchangeCandles(param);
 
         // 현재가 정보 조회
-        ExchangeTicker ticker = getExchangeTicker(param, keyPairId);
+        FutureExchangeTicker ticker = getExchangeTicker(param);
 
         // 계좌 정보 조회
-        AccountsResponse accounts = upbitClient.getAccounts(keyPairId).stream().findFirst().orElseThrow(() -> new NoSuchElementException("계좌를 찾지 못함"));
+        // fixme 선물이라면 현재 내가 들고 있는 포지션?
+        List<FutureAccountBalanceResponse> accounts = binanceFutureClient.getFuturesAccountBalance(
+            FutureAccountBalanceRequest.builder()
+                    .timestamp(System.currentTimeMillis())
+                    .build()
+            ,keyPairId
+        );
 
-        return ExchangeTradingInfo.builder()
-            .coinType(param.getCoinType())
-            .coinExchangeType(getCoinExchangeType())
-            .tradingTerm(param.getTradingTerm())
-            .currency(accounts.getCurrency())
-            .balance(accounts.getBalance())
-            .locked(accounts.getLocked())
-
-            .avgBuyPrice(accounts.getAvgBuyPrice())
-            .avgBuyPriceModified(accounts.isAvgBuyPriceModified())
-            .unitCurrency(accounts.getUnitCurrency())
-
-            .candles(candles)
-            .ticker(ticker)
-
-            .rsi(indexCalculator.getRsi(candles))
+        return FutureExchangeTradingInfo.builder()
+                .coinType(param.getCoinType())
+                .coinExchangeType(getCoinExchangeType())
+                .tradingTerm(param.getTradingTerm())
+                .currency()
             .build();
     }
 
     @Override
-    public ExchangeOrder getOrderInfo(ExchangeOrderInfoParam param, String keyPairId) {
-        return makeExchangeOrder(
-            upbitClient.getOrderInfo(OrderInfoRequest.builder()
-                    .uuid(param.getOrderId())
-                    .build(),
-                keyPairId
+    public FutureExchangeOrder getOrderInfo(FutureExchangeOrderInfoParam param, String keyPairId) {
+        return makeExchangeOrderInfo(
+            binanceFutureClient.getFutureOrderInfo(FutureOrderInfoRequest.builder().build()
+                , keyPairId
             )
         );
     }
@@ -124,95 +113,65 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
         return CoinExchangeType.BINANCE_FUTURE;
     }
 
-    private ExchangeCandles getExchangeCandles(ExchangeTradingInfoParam param, String keyPairId) {
+    private FutureExchangeCandles getExchangeCandles(FutureExchangeTradingInfoParam param) {
         TradingTerm tradingTerm = param.getTradingTerm();
-        List<CandleResponse> response = upbitClient.getMinuteCandle(
-            CandleRequest.builder()
-                .unit(tradingTerm.getCandleUnit().getSize())
-                .market(MarketType.of(param.getCoinType()).getCode())
-                .toKst(TradingTimeContext.now())
-                .count(60)
-                .build(),
-            keyPairId
+        List<FutureCandleResponse> response = binanceFutureClient.getMinuteCandle(
+            FutureCandleRequest.builder()
+                .symbol(Symbol.of(param.getCoinType()).getCode())
+                .interval(Interval.of(tradingTerm.getCandleUnit()).getCode())
+                .build()
         );
         Collections.reverse(response);
-        return ExchangeCandles.builder()
+        return FutureExchangeCandles.builder()
             .coinExchangeType(getCoinExchangeType())
             .candleUnit(tradingTerm.getCandleUnit())
             .coinType(param.getCoinType())
             .candleList(
                 response.stream().map(
-                    candle -> ExchangeCandles.Candle.builder()
-                        .candleDateTimeUtc(candle.getCandleDateTimeUtc())
-                        .candleDateTimeKst(candle.getCandleDateTimeKst())
-                        .openingPrice(candle.getOpeningPrice())
-                        .highPrice(candle.getHighPrice())
-                        .lowPrice(candle.getLowPrice())
-                        .tradePrice(candle.getTradePrice())
-                        .timestamp(candle.getTimestamp())
-                        .candleAccTradePrice(candle.getCandleAccTradePrice())
-                        .candleAccTradeVolume(candle.getCandleAccTradeVolume())
+                    candle -> FutureExchangeCandles.Candle.builder()
+                        .candleDateTimeUtc(convertTime(candle.getCloseTime()))
+                        .candleDateTimeKst(convertTime(candle.getCloseTime()))
+                        .openingPrice(candle.getOpen())
+                        .highPrice(candle.getHigh())
+                        .lowPrice(candle.getLow())
+                        .tradePrice(candle.getClose())
+                        .timestamp(candle.getCloseTime())
+                        .candleAccTradePrice(candle.getQuoteAssetVolume())
+                        .candleAccTradeVolume(candle.getVolume())
                         .build()
                 ).collect(Collectors.toList())
             )
             .build();
     }
 
-    private ExchangeOrder makeExchangeOrder(OrderResponse response) {
-        return ExchangeOrder.builder()
-            .orderId(response.getUuid())
-            .orderType(response.getSide().getOrderType())
-            .priceType(response.getOrdType().getPriceType())
-            .price(response.getPrice())
-            .avgPrice(response.getAvgPrice())
-            .orderState(response.getState().getOrderState())
-            .coinType(MarketType.of(response.getMarket()).getCoinType())
-            .createdAt(response.getCreatedAt())
-            .volume(response.getVolume())
-            .remainingVolume(response.getRemainingVolume())
-            .reservedFee(response.getReservedFee())
-            .remainingFee(response.getRemainingFee())
-            .paidFee(response.getPaidFee())
-            .locked(response.getLocked())
-            .executedVolume(response.getExecutedVolume())
-            .tradeCount(response.getTradeCount())
-            .tradeList(response.getTradeList())
+    private FutureExchangeOrder makeExchangeOrder(FutureNewOrderResponse response) {
+        return FutureExchangeOrder.builder()
             .build();
     }
 
-    private ExchangeTicker getExchangeTicker(ExchangeTradingInfoParam param, String keyPairId) {
-        TickerResponse response = upbitClient.getTicker(
-            TickerRequest.builder()
-                .marketList(List.of(MarketType.of(param.getCoinType()).getCode()))
-                .build()
-            , keyPairId
-        ).stream().findFirst().orElseThrow(NoSuchElementException::new);
-        return ExchangeTicker.builder()
-            .market(response.getMarket())
-            .tradeDate(response.getTradeDate())
-            .tradeTime(response.getTradeTime())
-            .tradeDateKst(response.getTradeDateKst())
-            .tradeTimeKst(response.getTradeTimeKst())
-            .openingPrice(response.getOpeningPrice())
-            .highPrice(response.getHighPrice())
-            .lowPrice(response.getLowPrice())
-            .tradePrice(response.getTradePrice())
-            .prevClosingPrice(response.getPrevClosingPrice())
-            .change(response.getChange())
-            .changePrice(response.getChangePrice())
-            .changeRate(response.getChangeRate())
-            .signedChangePrice(response.getSignedChangePrice())
-            .signedChangeRate(response.getSignedChangeRate())
-            .tradeVolume(response.getTradeVolume())
-            .accTradePrice(response.getAccTradePrice())
-            .accTradePrice24h(response.getAccTradePrice24h())
-            .accTradeVolume(response.getAccTradeVolume())
-            .accTradeVolume24h(response.getAccTradeVolume24h())
-            .highest52WeekPrice(response.getHighest52WeekPrice())
-            .highest52WeekDate(response.getHighest52WeekDate())
-            .lowest52WeekPrice(response.getLowest52WeekPrice())
-            .lowest52WeekDate(response.getLowest52WeekDate())
-            .timestamp(response.getTimestamp())
+    private FutureExchangeOrder makeExchangeOrderInfo(FutureOrderInfoResponse response) {
+        return FutureExchangeOrder.builder()
             .build();
+    }
+
+    private FutureExchangeTicker getExchangeTicker(FutureExchangeTradingInfoParam param) {
+         FutureMarkPriceResponse response = binanceFutureClient.getMarkPrice(
+            FutureMarkPriceRequest.builder()
+                .symbol(Symbol.of(param.getCoinType()).getCode())
+                .build()
+        );
+        return FutureExchangeTicker.builder()
+                .symbol(response.getSymbol())
+                .markPrice(response.getMarkPrice())
+                .indexPrice(response.getIndexPrice())
+                .estimatedSettlePrice(response.getEstimatedSettlePrice())
+                .lastFundingRate(response.getLastFundingRate())
+                .interestRate(response.getInterestRate())
+                .nextFundingTime(response.getNextFundingTime())
+                .build();
+    }
+
+    private LocalDateTime convertTime(Long timestamp){
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), TimeZone.getDefault().toZoneId());
     }
 }
