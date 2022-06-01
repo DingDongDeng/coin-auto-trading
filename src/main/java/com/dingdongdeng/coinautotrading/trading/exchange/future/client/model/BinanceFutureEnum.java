@@ -111,13 +111,13 @@ public class BinanceFutureEnum {
     public enum Interval {
         MINUTE_1("1분봉", "1m", CandleUnit.UNIT_1M),
         MINUTE_3("3분봉", "3m", CandleUnit.UNIT_3M),
-        MINUTE_5("5분봉", "3m", CandleUnit.UNIT_5M),
-        MINUTE_10("10분봉", "3m", CandleUnit.UNIT_10M),
-        MINUTE_15("15분봉", "3m", CandleUnit.UNIT_15M),
-        MINUTE_30("30분봉", "3m", CandleUnit.UNIT_30M),
-        MINUTE_60("60분봉", "3m", CandleUnit.UNIT_60M),
-        DAY_1("1일봉", "3m", CandleUnit.UNIT_1D),
-        MONTH_1("1달봉", "3m", CandleUnit.UNIT_1W),
+        MINUTE_5("5분봉", "5m", CandleUnit.UNIT_5M),
+        MINUTE_10("10분봉", "10m", CandleUnit.UNIT_10M),
+        MINUTE_15("15분봉", "15m", CandleUnit.UNIT_15M),
+        MINUTE_30("30분봉", "30m", CandleUnit.UNIT_30M),
+        MINUTE_60("60분봉", "60m", CandleUnit.UNIT_60M),
+        DAY_1("1일봉", "1d", CandleUnit.UNIT_1D),
+        MONTH_1("1달봉", "1M", CandleUnit.UNIT_1W),
         ;
 
         private String desc;
