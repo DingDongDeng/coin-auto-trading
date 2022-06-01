@@ -4,7 +4,7 @@ import com.dingdongdeng.coinautotrading.common.slack.SlackSender;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingProcessor;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingRegisterRequest;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.type.AutoTradingProcessStatus;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.SpotExchangeService;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.ExchangeService;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.selector.SpotExchangeServiceSelector;
 import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyFactory;
@@ -31,10 +31,10 @@ public class AutoTradingService {
     }
 
     public AutoTradingProcessor register(AutoTradingRegisterRequest request, String userId) {
-        SpotExchangeService spotExchangeService = processorSelector.getTargetService(request.getCoinExchangeType());
+        ExchangeService exchangeService = processorSelector.getTargetService(request.getCoinExchangeType());
         StrategyServiceParam serviceParam = StrategyServiceParam.builder()
             .strategyCode(request.getStrategyCode())
-            .spotExchangeService(spotExchangeService)
+            .exchangeService(exchangeService)
             .coinType(request.getCoinType())
             .tradingTerm(request.getTradingTerm())
             .keyPairId(request.getKeyPairId())

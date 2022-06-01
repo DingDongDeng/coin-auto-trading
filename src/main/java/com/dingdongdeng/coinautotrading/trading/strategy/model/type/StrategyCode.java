@@ -1,5 +1,6 @@
 package com.dingdongdeng.coinautotrading.trading.strategy.model.type;
 
+import com.dingdongdeng.coinautotrading.common.type.MarketType;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyCore;
 import com.dingdongdeng.coinautotrading.trading.strategy.core.ScaleTradingRsiStrategyCore;
 import com.dingdongdeng.coinautotrading.trading.strategy.core.ScaleTradingRsiStrategyCoreParam;
@@ -13,10 +14,11 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum StrategyCode {
-    SCALE_TRADING_RSI("분할 매수(RSI기반, 손절없음)", ScaleTradingRsiStrategyCore.class, ScaleTradingRsiStrategyCoreParam.class),
+    SCALE_TRADING_RSI("분할 매수(RSI기반, 손절없음)", MarketType.SPOT, ScaleTradingRsiStrategyCore.class, ScaleTradingRsiStrategyCoreParam.class),
     ;
 
     private String desc;
+    private MarketType marketType;
     private Class<? extends StrategyCore> strategyCoreClazz;
     private Class<? extends StrategyCoreParam> strategyCoreParamClazz;
 
