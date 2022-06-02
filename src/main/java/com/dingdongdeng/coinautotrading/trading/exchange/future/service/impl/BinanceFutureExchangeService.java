@@ -93,7 +93,7 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
             .coinType(param.getCoinType())
             .coinExchangeType(getCoinExchangeType())
             .tradingTerm(param.getTradingTerm())
-            .currency("USDT")
+            .currency("BTCUSDT")
             .build();
     }
 
