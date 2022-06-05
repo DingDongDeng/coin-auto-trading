@@ -11,7 +11,7 @@ import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.domain.entity.ExchangeKey;
 import com.dingdongdeng.coinautotrading.domain.service.ExchangeKeyService;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.SpotExchangeCandles;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.impl.UpbitSpotExchangeCandleService;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.impl.UpbitExchangeCandleService;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -35,12 +35,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 //)
 @SpringBootTest
     //fixme ObjectMapper 주입받다가 의도한대로 동작안함...
-class UpbitSpotExchangeCandleServiceTest {
+class UpbitExchangeCandleServiceTest {
 
     @MockBean
     private ExchangeKeyService exchangeKeyService;
     @Autowired
-    private UpbitSpotExchangeCandleService service;
+    private UpbitExchangeCandleService service;
 
     @Value("${upbit.client.accessKey}")
     private String accessKey;

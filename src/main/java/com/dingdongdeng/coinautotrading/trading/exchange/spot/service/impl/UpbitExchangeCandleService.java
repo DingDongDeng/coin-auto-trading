@@ -3,7 +3,7 @@ package com.dingdongdeng.coinautotrading.trading.exchange.spot.service.impl;
 import com.dingdongdeng.coinautotrading.common.type.CandleUnit;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
-import com.dingdongdeng.coinautotrading.trading.exchange.common.SpotExchangeCandleService;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.ExchangeCandleService;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.SpotExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.UpbitClient;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitEnum.MarketType;
@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class UpbitSpotExchangeCandleService implements SpotExchangeCandleService {
+public class UpbitExchangeCandleService implements ExchangeCandleService {
 
     private final CoinExchangeType COIN_EXCHANGE_TYPE = CoinExchangeType.UPBIT;
     private final UpbitClient upbitClient;

@@ -3,7 +3,7 @@ package com.dingdongdeng.coinautotrading.trading.backtesting.context;
 import com.dingdongdeng.coinautotrading.common.type.CandleUnit;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
-import com.dingdongdeng.coinautotrading.trading.exchange.common.SpotExchangeCandleService;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.ExchangeCandleService;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.SpotExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.SpotExchangeCandles.Candle;
 import java.time.LocalDateTime;
@@ -25,7 +25,7 @@ public class BackTestingCandleLoader {
 
     private CoinType coinType;
     private String keyPairdId;
-    private SpotExchangeCandleService spotExchangeCandleService;
+    private ExchangeCandleService exchangeCandleService;
 
     @Default
     private CandleUnit candleUnit = CandleUnit.UNIT_1M;
@@ -77,11 +77,11 @@ public class BackTestingCandleLoader {
 
     private SpotExchangeCandles getCandles(CandleUnit candleUnit, LocalDateTime start, LocalDateTime end) {
         delay(); // candle 조회 api 호출 제한이 걸리지 않도록 하기 위함
-        return spotExchangeCandleService.getCandles(coinType, candleUnit, start, end, keyPairdId);
+        return exchangeCandleService.getCandles(coinType, candleUnit, start, end, keyPairdId);
     }
 
     public CoinExchangeType getCoinExchangeType() {
-        return this.spotExchangeCandleService.getCoinExchangeType();
+        return this.exchangeCandleService.getCoinExchangeType();
     }
 
     private void delay() {

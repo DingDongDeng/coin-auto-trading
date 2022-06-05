@@ -6,7 +6,7 @@ import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.SpotExchangeCandles;
 import java.time.LocalDateTime;
 
-public interface SpotExchangeCandleService {
+public interface ExchangeCandleService {
 
     SpotExchangeCandles getCandles(CoinType coinType, CandleUnit candleUnit, LocalDateTime start, LocalDateTime end, String keyPairId);
 

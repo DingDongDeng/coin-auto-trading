@@ -4,7 +4,7 @@ import com.dingdongdeng.coinautotrading.common.type.CandleUnit;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.domain.entity.Candle;
 import com.dingdongdeng.coinautotrading.domain.service.CandleService;
-import com.dingdongdeng.coinautotrading.trading.exchange.common.SpotExchangeCandleService;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.ExchangeCandleService;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.SpotExchangeCandles;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +21,7 @@ public abstract class CandleStoreJob implements Job {
     private final List<CoinType> TARGET_COINT_LIST;
     private final CandleUnit CANDLE_UNIT;
     private final int LIMIT_DAYS = 2;
-    private final SpotExchangeCandleService spotExchangeCandleService;
+    private final ExchangeCandleService exchangeCandleService;
     private final CandleService candleService;
 
     @Override

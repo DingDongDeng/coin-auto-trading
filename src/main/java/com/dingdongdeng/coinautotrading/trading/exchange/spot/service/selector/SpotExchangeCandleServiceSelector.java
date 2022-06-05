@@ -1,7 +1,7 @@
 package com.dingdongdeng.coinautotrading.trading.exchange.spot.service.selector;
 
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
-import com.dingdongdeng.coinautotrading.trading.exchange.common.SpotExchangeCandleService;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.ExchangeCandleService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class SpotExchangeCandleServiceSelector {
 
-    private final List<SpotExchangeCandleService> candleServiceList;
+    private final List<ExchangeCandleService> candleServiceList;
 
-    public SpotExchangeCandleService getTargetService(CoinExchangeType coinExchangeType) {
+    public ExchangeCandleService getTargetService(CoinExchangeType coinExchangeType) {
         return candleServiceList.stream()
             .filter(processor -> processor.getCoinExchangeType() == coinExchangeType)
             .findFirst()
