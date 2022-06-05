@@ -4,7 +4,7 @@ import com.dingdongdeng.coinautotrading.common.type.CandleUnit.UnitType;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingProcessor;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.SpotExchangeCandleService;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.SpotExchangeCandleService;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.selector.SpotExchangeCandleServiceSelector;
 import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
 import java.time.LocalDateTime;

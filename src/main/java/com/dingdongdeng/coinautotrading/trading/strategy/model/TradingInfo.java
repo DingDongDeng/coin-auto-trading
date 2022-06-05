@@ -3,7 +3,7 @@ package com.dingdongdeng.coinautotrading.trading.strategy.model;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeCandles;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.model.SpotExchangeCandles;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
