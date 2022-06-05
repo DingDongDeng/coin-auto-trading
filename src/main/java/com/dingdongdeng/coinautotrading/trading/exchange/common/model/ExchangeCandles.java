@@ -12,7 +12,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @Builder
-public class SpotExchangeCandles {
+public class ExchangeCandles {
 
     private CoinExchangeType coinExchangeType;
     private CoinType coinType;

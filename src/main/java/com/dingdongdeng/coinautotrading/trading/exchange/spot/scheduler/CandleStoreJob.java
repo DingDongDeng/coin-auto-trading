@@ -5,7 +5,7 @@ import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.domain.entity.Candle;
 import com.dingdongdeng.coinautotrading.domain.service.CandleService;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.ExchangeCandleService;
-import com.dingdongdeng.coinautotrading.trading.exchange.common.model.SpotExchangeCandles;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -42,13 +42,13 @@ public abstract class CandleStoreJob implements Job {
         // 중복 저장의 위험은 unique 컬럼을 설정해서 방지하는게 좋을거같아(거의 발생안할 이슈라고 판단됨)
     }
 
-    private List<Candle> makeCandleList(SpotExchangeCandles spotExchangeCandles) {
-        CoinType coinType = spotExchangeCandles.getCoinType();
-        CandleUnit candleUnit = spotExchangeCandles.getCandleUnit();
-        return spotExchangeCandles.getCandleList().stream()
+    private List<Candle> makeCandleList(ExchangeCandles exchangeCandles) {
+        CoinType coinType = exchangeCandles.getCoinType();
+        CandleUnit candleUnit = exchangeCandles.getCandleUnit();
+        return exchangeCandles.getCandleList().stream()
             .map(candle -> Candle.builder()
                 .coinType(coinType)
-                .coinExchangeType(spotExchangeCandles.getCoinExchangeType())
+                .coinExchangeType(exchangeCandles.getCoinExchangeType())
                 .candleUnit(candleUnit)
                 .candleDateTimeUtc(candle.getCandleDateTimeUtc())
                 .candleDateTimeKst(candle.getCandleDateTimeKst())

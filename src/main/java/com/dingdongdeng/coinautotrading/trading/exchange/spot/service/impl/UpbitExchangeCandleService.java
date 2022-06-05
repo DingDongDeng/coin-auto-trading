@@ -4,7 +4,7 @@ import com.dingdongdeng.coinautotrading.common.type.CandleUnit;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.ExchangeCandleService;
-import com.dingdongdeng.coinautotrading.trading.exchange.common.model.SpotExchangeCandles;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.UpbitClient;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitEnum.MarketType;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitRequest.CandleRequest;
@@ -30,7 +30,7 @@ public class UpbitExchangeCandleService implements ExchangeCandleService {
     private final int MAX_CHUNK_SIZE = 200;
 
     @Override //fixme 분봉만 지원
-    public SpotExchangeCandles getCandles(CoinType coinType, CandleUnit candleUnit, LocalDateTime start, LocalDateTime end, String keyPairId) {
+    public ExchangeCandles getCandles(CoinType coinType, CandleUnit candleUnit, LocalDateTime start, LocalDateTime end, String keyPairId) {
         /**
          * start를 기준으로 최대 캔들 200개까지 조회 가능
          * start < 캔들 <= end 범위로 조회
@@ -54,13 +54,13 @@ public class UpbitExchangeCandleService implements ExchangeCandleService {
         );
         Collections.reverse(response);
 
-        return SpotExchangeCandles.builder()
+        return ExchangeCandles.builder()
             .coinExchangeType(getCoinExchangeType())
             .candleUnit(candleUnit)
             .coinType(coinType)
             .candleList(
                 response.stream().map(
-                    candle -> SpotExchangeCandles.Candle.builder()
+                    candle -> ExchangeCandles.Candle.builder()
                         .candleDateTimeUtc(candle.getCandleDateTimeUtc())
                         .candleDateTimeKst(candle.getCandleDateTimeKst())
                         .openingPrice(candle.getOpeningPrice())

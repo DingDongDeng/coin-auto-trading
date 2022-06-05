@@ -5,7 +5,7 @@ import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
-import com.dingdongdeng.coinautotrading.trading.exchange.common.model.SpotExchangeCandles;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyCore;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
@@ -46,7 +46,7 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
         CoinType coinType = tradingInfo.getCoinType();
         TradingTerm tradingTerm = tradingInfo.getTradingTerm();
         double rsi = tradingInfo.getRsi();
-        SpotExchangeCandles candles = tradingInfo.getCandles();
+        ExchangeCandles candles = tradingInfo.getCandles();
 
         log.info("tradingInfo : {}", tradingInfo);
         log.info("{} :: coinType={}", identifyCode, coinType);
@@ -192,7 +192,7 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
         return true;
     }
 
-    private boolean isBuyOrderTiming(double rsi, double currentPrice, TradingResultPack tradingResultPack, SpotExchangeCandles candles) {
+    private boolean isBuyOrderTiming(double rsi, double currentPrice, TradingResultPack tradingResultPack, ExchangeCandles candles) {
 
         if (rsi < param.getBuyRsi()) {
             if (tradingResultPack.getBuyTradingResultList().isEmpty()) {
@@ -222,7 +222,7 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
         return false;
     }
 
-    private boolean isLossOrderTiming(double currentPrice, double rsi, TradingResultPack tradingResultPack, SpotExchangeCandles candles) {
+    private boolean isLossOrderTiming(double currentPrice, double rsi, TradingResultPack tradingResultPack, ExchangeCandles candles) {
         // 손절하지 않음
         return false;
     }

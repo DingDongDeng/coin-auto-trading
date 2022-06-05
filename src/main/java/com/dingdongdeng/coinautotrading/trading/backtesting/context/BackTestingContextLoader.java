@@ -2,8 +2,8 @@ package com.dingdongdeng.coinautotrading.trading.backtesting.context;
 
 import com.dingdongdeng.coinautotrading.common.type.CandleUnit;
 import com.dingdongdeng.coinautotrading.common.type.CandleUnit.UnitType;
-import com.dingdongdeng.coinautotrading.trading.exchange.common.model.SpotExchangeCandles;
-import com.dingdongdeng.coinautotrading.trading.exchange.common.model.SpotExchangeCandles.Candle;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles.Candle;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,10 +49,10 @@ public class BackTestingContextLoader {
             .build();
     }
 
-    private SpotExchangeCandles getCandles(Double currentPrice, LocalDateTime currentTime) {
+    private ExchangeCandles getCandles(Double currentPrice, LocalDateTime currentTime) {
         List<Candle> candleList = getTradingTermCandleList(currentPrice, currentTime);
 
-        return SpotExchangeCandles.builder()
+        return ExchangeCandles.builder()
             .coinExchangeType(tradingTermCandleLoader.getCoinExchangeType())
             .coinType(tradingTermCandleLoader.getCoinType())
             .candleUnit(tradingTermCandleLoader.getCandleUnit())
@@ -63,7 +63,7 @@ public class BackTestingContextLoader {
     private List<Candle> getTradingTermCandleList(Double currentPrice, LocalDateTime currentTime) {
         List<Candle> candleList = Optional.ofNullable(currentContext)
             .map(BackTestingContext::getCandles)
-            .map(SpotExchangeCandles::getCandleList)
+            .map(ExchangeCandles::getCandleList)
             .orElse(new ArrayList<>());
 
         // 초기화

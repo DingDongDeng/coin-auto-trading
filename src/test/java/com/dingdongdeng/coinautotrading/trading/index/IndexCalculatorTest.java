@@ -8,7 +8,7 @@ import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.domain.entity.ExchangeKey;
 import com.dingdongdeng.coinautotrading.domain.service.ExchangeKeyService;
-import com.dingdongdeng.coinautotrading.trading.exchange.common.model.SpotExchangeCandles;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.UpbitClient;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitEnum.MarketType;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitRequest.CandleRequest;
@@ -69,7 +69,7 @@ class IndexCalculatorTest {
         CoinType coinType = CoinType.ETHEREUM;
         TradingTerm tradingTerm = TradingTerm.SCALPING;
         LocalDateTime now = LocalDateTime.of(2022, 04, 17, 13, 13, 10);
-        SpotExchangeCandles candles = getExchangeCandles(now, tradingTerm, coinType, keyPairId);
+        ExchangeCandles candles = getExchangeCandles(now, tradingTerm, coinType, keyPairId);
 
         // when
         double rsi = calculator.getRsi(candles);
@@ -80,7 +80,7 @@ class IndexCalculatorTest {
 
     }
 
-    private SpotExchangeCandles getExchangeCandles(LocalDateTime now, TradingTerm tradingTerm, CoinType coinType, String keyPairId) {
+    private ExchangeCandles getExchangeCandles(LocalDateTime now, TradingTerm tradingTerm, CoinType coinType, String keyPairId) {
         List<CandleResponse> response = upbitClient.getMinuteCandle(
             CandleRequest.builder()
                 .unit(tradingTerm.getCandleUnit().getSize())
@@ -91,13 +91,13 @@ class IndexCalculatorTest {
             keyPairId
         );
         Collections.reverse(response);
-        return SpotExchangeCandles.builder()
+        return ExchangeCandles.builder()
             .coinExchangeType(CoinExchangeType.UPBIT)
             .candleUnit(tradingTerm.getCandleUnit())
             .coinType(coinType)
             .candleList(
                 response.stream().map(
-                    candle -> SpotExchangeCandles.Candle.builder()
+                    candle -> ExchangeCandles.Candle.builder()
                         .candleDateTimeUtc(candle.getCandleDateTimeUtc())
                         .candleDateTimeKst(candle.getCandleDateTimeKst())
                         .openingPrice(candle.getOpeningPrice())

@@ -3,12 +3,12 @@ package com.dingdongdeng.coinautotrading.trading.exchange.common;
 import com.dingdongdeng.coinautotrading.common.type.CandleUnit;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
-import com.dingdongdeng.coinautotrading.trading.exchange.common.model.SpotExchangeCandles;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
 import java.time.LocalDateTime;
 
 public interface ExchangeCandleService {
 
-    SpotExchangeCandles getCandles(CoinType coinType, CandleUnit candleUnit, LocalDateTime start, LocalDateTime end, String keyPairId);
+    ExchangeCandles getCandles(CoinType coinType, CandleUnit candleUnit, LocalDateTime start, LocalDateTime end, String keyPairId);
 
     CoinExchangeType getCoinExchangeType();
 

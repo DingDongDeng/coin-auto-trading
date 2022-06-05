@@ -10,7 +10,7 @@ import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.domain.entity.ExchangeKey;
 import com.dingdongdeng.coinautotrading.domain.service.ExchangeKeyService;
-import com.dingdongdeng.coinautotrading.trading.exchange.common.model.SpotExchangeCandles;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.impl.UpbitExchangeCandleService;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -78,7 +78,7 @@ class UpbitExchangeCandleServiceTest {
             );
 
         //when
-        SpotExchangeCandles candles = service.getCandles(coinType, candleUnit, start, end, keyPairId);
+        ExchangeCandles candles = service.getCandles(coinType, candleUnit, start, end, keyPairId);
 
         //then
         assertEquals(4, candles.getCandleList().size());
@@ -119,7 +119,7 @@ class UpbitExchangeCandleServiceTest {
             );
 
         //when
-        SpotExchangeCandles candles = service.getCandles(coinType, candleUnit, start, end, keyPairId);
+        ExchangeCandles candles = service.getCandles(coinType, candleUnit, start, end, keyPairId);
 
         //then
         assertEquals(200, candles.getCandleList().size());
@@ -160,7 +160,7 @@ class UpbitExchangeCandleServiceTest {
             );
 
         //when
-        SpotExchangeCandles candles = service.getCandles(coinType, candleUnit, start, end, keyPairId);
+        ExchangeCandles candles = service.getCandles(coinType, candleUnit, start, end, keyPairId);
 
         //then
         assertEquals(200, candles.getCandleList().size());

@@ -3,7 +3,7 @@ package com.dingdongdeng.coinautotrading.trading.exchange.future.service.model;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
-import com.dingdongdeng.coinautotrading.trading.exchange.common.model.SpotExchangeCandles;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeTicker;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,7 +31,7 @@ public class FutureExchangeTradingInfo {
     private boolean avgBuyPriceModified; // 매수평균가 수정 여부
     private String unitCurrency; // 평단가 기준 화폐
 
-    private SpotExchangeCandles candles; // 캔들 정보
+    private ExchangeCandles candles; // 캔들 정보
     private SpotExchangeTicker ticker; // 현재가 정보
 
     /**

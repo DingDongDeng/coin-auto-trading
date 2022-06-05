@@ -1,7 +1,7 @@
 package com.dingdongdeng.coinautotrading.trading.index;
 
-import com.dingdongdeng.coinautotrading.trading.exchange.common.model.SpotExchangeCandles;
-import com.dingdongdeng.coinautotrading.trading.exchange.common.model.SpotExchangeCandles.Candle;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles.Candle;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,7 @@ public class IndexCalculator {
     // RSI(지수 가중 이동 평균)
     // https://www.investopedia.com/terms/r/rsi.asp
     // https://rebro.kr/139
-    public double getRsi(SpotExchangeCandles candles) {
+    public double getRsi(ExchangeCandles candles) {
 
         List<Candle> candleList = candles.getCandleList();
 
