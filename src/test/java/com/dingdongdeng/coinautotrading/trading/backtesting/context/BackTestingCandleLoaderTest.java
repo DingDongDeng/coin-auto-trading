@@ -7,8 +7,8 @@ import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.domain.entity.ExchangeKey;
 import com.dingdongdeng.coinautotrading.domain.service.ExchangeKeyService;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.impl.UpbitSpotExchangeCandleService;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeCandles.Candle;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles.Candle;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.impl.UpbitExchangeCandleService;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -26,7 +26,7 @@ class BackTestingCandleLoaderTest {
     @MockBean
     private ExchangeKeyService exchangeKeyService;
     @Autowired
-    private UpbitSpotExchangeCandleService exchangeCandleService;
+    private UpbitExchangeCandleService exchangeCandleService;
 
     @Value("${upbit.client.accessKey}")
     private String accessKey;
@@ -64,7 +64,7 @@ class BackTestingCandleLoaderTest {
         BackTestingCandleLoader backTestingCandleLoader = BackTestingCandleLoader.builder()
             .coinType(CoinType.ETHEREUM)
             .keyPairdId(keyPairId)
-            .spotExchangeCandleService(exchangeCandleService)
+            .exchangeCandleService(exchangeCandleService)
             .start(start)
             .end(end)
             .build();

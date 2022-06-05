@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model;
+package com.dingdongdeng.coinautotrading.trading.exchange.common.model;
 
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import java.time.LocalDateTime;

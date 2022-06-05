@@ -3,19 +3,10 @@ package com.dingdongdeng.coinautotrading.trading.exchange.future.service.impl;
 import com.dingdongdeng.coinautotrading.common.type.CandleUnit;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.ExchangeCandleService;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.BinanceFutureClient;
-import com.dingdongdeng.coinautotrading.trading.exchange.future.service.FutureExchangeCandleService;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.UpbitClient;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitEnum.MarketType;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitRequest.CandleRequest;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitResponse.CandleResponse;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -23,20 +14,30 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class BinanceFutureExchangeCandleService implements FutureExchangeCandleService {
+public class BinanceFutureExchangeCandleService implements ExchangeCandleService {
 
     private final CoinExchangeType COIN_EXCHANGE_TYPE = CoinExchangeType.BINANCE_FUTURE;
     private final BinanceFutureClient binanceFutureClient;
     private final int MAX_CHUNK_SIZE = 200;
 
+    @Override
+    public ExchangeCandles getCandles(CoinType coinType, CandleUnit candleUnit, LocalDateTime start, LocalDateTime end, String keyPairId) {
+        return null;
+    }
+
+    @Override
+    public CoinExchangeType getCoinExchangeType() {
+        return null;
+    }
+
     /*@Override //fixme 분봉만 지원
     public ExchangeCandles getCandles(CoinType coinType, CandleUnit candleUnit, LocalDateTime start, LocalDateTime end, String keyPairId) {
         *//**
-         * start를 기준으로 최대 캔들 200개까지 조회 가능
-         * start < 캔들 <= end 범위로 조회
-         * start ~ end 순서로 정렬된 캔들 정보 반환
-         * start가 null이라면 end를 기준으로 캔들 200개까지 조회
-         *//*
+     * start를 기준으로 최대 캔들 200개까지 조회 가능
+     * start < 캔들 <= end 범위로 조회
+     * start ~ end 순서로 정렬된 캔들 정보 반환
+     * start가 null이라면 end를 기준으로 캔들 200개까지 조회
+     *//*
         if (Objects.isNull(start)) {
             start = getlimitedStartDateTime(candleUnit, end);
         }

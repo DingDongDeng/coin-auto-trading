@@ -3,6 +3,7 @@ package com.dingdongdeng.coinautotrading.trading.exchange.spot.service.impl;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.UpbitClient;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitEnum.MarketType;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitEnum.OrdType;
@@ -18,7 +19,6 @@ import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.Upbit
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitResponse.OrderResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitResponse.TickerResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.SpotExchangeService;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeOrder;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeOrderCancel;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeOrderCancelParam;
@@ -93,7 +93,7 @@ public class UpbitSpotExchangeService implements SpotExchangeService {
         log.info("upbit process : get trading information param = {}", param);
 
         // 캔들 정보 조회
-        SpotExchangeCandles candles = getExchangeCandles(param, keyPairId);
+        ExchangeCandles candles = getExchangeCandles(param, keyPairId);
 
         // 현재가 정보 조회
         SpotExchangeTicker ticker = getExchangeTicker(param, keyPairId);
@@ -137,7 +137,7 @@ public class UpbitSpotExchangeService implements SpotExchangeService {
         return CoinExchangeType.UPBIT;
     }
 
-    private SpotExchangeCandles getExchangeCandles(SpotExchangeTradingInfoParam param, String keyPairId) {
+    private ExchangeCandles getExchangeCandles(SpotExchangeTradingInfoParam param, String keyPairId) {
         TradingTerm tradingTerm = param.getTradingTerm();
         List<CandleResponse> response = upbitClient.getMinuteCandle(
             CandleRequest.builder()
@@ -149,13 +149,13 @@ public class UpbitSpotExchangeService implements SpotExchangeService {
             keyPairId
         );
         Collections.reverse(response);
-        return SpotExchangeCandles.builder()
+        return ExchangeCandles.builder()
             .coinExchangeType(getCoinExchangeType())
             .candleUnit(tradingTerm.getCandleUnit())
             .coinType(param.getCoinType())
             .candleList(
                 response.stream().map(
-                    candle -> SpotExchangeCandles.Candle.builder()
+                    candle -> ExchangeCandles.Candle.builder()
                         .candleDateTimeUtc(candle.getCandleDateTimeUtc())
                         .candleDateTimeKst(candle.getCandleDateTimeKst())
                         .openingPrice(candle.getOpeningPrice())

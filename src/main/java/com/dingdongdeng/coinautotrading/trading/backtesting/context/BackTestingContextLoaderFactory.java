@@ -4,7 +4,7 @@ import com.dingdongdeng.coinautotrading.common.type.CandleUnit.UnitType;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingProcessor;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.SpotExchangeCandleService;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.ExchangeCandleService;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.selector.SpotExchangeCandleServiceSelector;
 import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
 import java.time.LocalDateTime;
@@ -23,19 +23,19 @@ public class BackTestingContextLoaderFactory {
         Strategy strategy = autoTradingProcessor.getStrategy();
         String keyPairdId = strategy.getStrategyService().getKeyPairId();
         TradingTerm tradingTerm = autoTradingProcessor.getTradingTerm();
-        SpotExchangeCandleService spotExchangeCandleService = getExchangeCandleService(autoTradingProcessor.getCoinExchangeType());
+        ExchangeCandleService exchangeCandleService = getExchangeCandleService(autoTradingProcessor.getCoinExchangeType());
 
         BackTestingCandleLoader currentCandleLoader = BackTestingCandleLoader.builder()
             .coinType(autoTradingProcessor.getCoinType())
             .keyPairdId(keyPairdId)
-            .spotExchangeCandleService(spotExchangeCandleService)
+            .exchangeCandleService(exchangeCandleService)
             .start(start)
             .end(end)
             .build();
         BackTestingCandleLoader tradingTermCandleLoader = BackTestingCandleLoader.builder()
             .coinType(autoTradingProcessor.getCoinType())
             .keyPairdId(keyPairdId)
-            .spotExchangeCandleService(spotExchangeCandleService)
+            .exchangeCandleService(exchangeCandleService)
             .start(getTradingTermStartDateTime(tradingTerm, start))
             .end(end)
             .candleUnit(tradingTerm.getCandleUnit())
@@ -43,7 +43,7 @@ public class BackTestingContextLoaderFactory {
         return new BackTestingContextLoader(currentCandleLoader, tradingTermCandleLoader);
     }
 
-    private SpotExchangeCandleService getExchangeCandleService(CoinExchangeType coinExchangeType) {
+    private ExchangeCandleService getExchangeCandleService(CoinExchangeType coinExchangeType) {
         return spotExchangeCandleServiceSelector.getTargetService(coinExchangeType);
     }
 

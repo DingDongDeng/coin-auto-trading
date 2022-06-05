@@ -27,6 +27,7 @@ public class StrategyController {
             .body(
                 StrategyMetaResponse.builder()
                     .strategyCode(code)
+                    .marketType(code.getMarketType())
                     .paramMetaList(
                         Arrays.stream(fields)
                             .map(
