@@ -4,7 +4,10 @@ import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.BinanceFutureClient;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.Interval;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.Side;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.Symbol;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.TimeInForce;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.Type;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureAccountBalanceRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureCandleRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureMarkPriceRequest;
@@ -32,6 +35,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +55,13 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
         log.info("binance process : order param = {}", param);
         FutureNewOrderResponse response = binanceFutureClient.order(
             FutureNewOrderRequest.builder()
+                .symbol(Symbol.of(param.getCoinType()).getCode())
+                .side(Side.of(param.getOrderType()))
+                .type(Type.of(param.getPriceType()))
+                .price(param.getPrice())
+                .quantity(param.getVolume())
+                .timeInForce(TimeInForce.GTC)
+                .timestamp(System.currentTimeMillis())
                 .build(),
             keyPairId
         );
@@ -82,18 +93,19 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
 
         // 계좌 정보 조회
         // fixme 선물이라면 현재 내가 들고 있는 포지션?
-        List<FutureAccountBalanceResponse> accounts = binanceFutureClient.getFuturesAccountBalance(
-            FutureAccountBalanceRequest.builder()
-                    .timestamp(System.currentTimeMillis())
-                    .build()
-            ,keyPairId
-        );
+        FutureAccountBalanceResponse accounts = getAssetBalance(keyPairId);
 
         return FutureExchangeTradingInfo.builder()
             .coinType(param.getCoinType())
             .coinExchangeType(getCoinExchangeType())
             .tradingTerm(param.getTradingTerm())
-            .currency("BTCUSDT")
+            .currency(accounts.getAsset())
+            .balance(accounts.getBalance())
+
+            .candles(candles)
+            .ticker(ticker)
+
+            .rsi(indexCalculator.getRsi(candles))   //fixme 파라미터가 spot만 가능한데 선물도 가능하게좀
             .build();
     }
 
@@ -144,6 +156,7 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
 
     private FutureExchangeOrder makeExchangeOrder(FutureNewOrderResponse response) {
         return FutureExchangeOrder.builder()
+
             .build();
     }
 
@@ -167,6 +180,18 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
                 .interestRate(response.getInterestRate())
                 .nextFundingTime(response.getNextFundingTime())
                 .build();
+    }
+
+    private FutureAccountBalanceResponse getAssetBalance(String keyPairId){
+        return binanceFutureClient.getFuturesAccountBalance(
+                FutureAccountBalanceRequest.builder()
+                    .timestamp(System.currentTimeMillis())
+                    .build()
+                ,keyPairId
+            ).stream()
+            .filter(m -> m.getAsset().equals("USDT"))
+            .findFirst()
+            .orElseThrow(() -> new NoSuchElementException("남아있는 USDT를 찾지 못함"));
     }
 
     private LocalDateTime convertTime(Long timestamp){
