@@ -10,16 +10,14 @@ import org.springframework.restdocs.operation.preprocess.OperationResponsePrepro
 
 public interface ApiDocumentUtils {
 
-    static OperationRequestPreprocessor getDocumentRequest() {
-        return preprocessRequest(
-            modifyUris()
-                .scheme("http")
-                .host("localhost"),
-            //.removePort(),
-            prettyPrint());
-    }
+  static OperationRequestPreprocessor getDocumentRequest() {
+    return preprocessRequest(
+        modifyUris().scheme("http").host("localhost"),
+        // .removePort(),
+        prettyPrint());
+  }
 
-    static OperationResponsePreprocessor getDocumentResponse() {
-        return preprocessResponse(prettyPrint());
-    }
+  static OperationResponsePreprocessor getDocumentResponse() {
+    return preprocessResponse(prettyPrint());
+  }
 }

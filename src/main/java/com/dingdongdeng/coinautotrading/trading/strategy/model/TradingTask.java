@@ -18,15 +18,15 @@ import lombok.ToString;
 @NoArgsConstructor
 public class TradingTask {
 
-    private boolean isReset;
-    private OrderType orderType;
+  private boolean isReset;
+  private OrderType orderType;
 
-    private String identifyCode;
-    private CoinType coinType;
-    private TradingTerm tradingTerm;
-    private Double volume;
-    private Double price;
-    private PriceType priceType;
-    private String orderId;
-    private TradingTag tag; // 주문의 의도를 구분하기 위한 값(ex: 손절 주문, 익절 주문, 매수 주문 등)
+  private String identifyCode;
+  private CoinType coinType;
+  private TradingTerm tradingTerm;
+  private Double volume;
+  private Double price;
+  private PriceType priceType;
+  private String orderId;
+  private TradingTag tag; // 주문의 의도를 구분하기 위한 값(ex: 손절 주문, 익절 주문, 매수 주문 등)
 }

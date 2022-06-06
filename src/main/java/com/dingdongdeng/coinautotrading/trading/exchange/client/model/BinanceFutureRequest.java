@@ -8,13 +8,12 @@ import lombok.ToString;
 @ToString
 public class BinanceFutureRequest {
 
-    @ToString
-    @Getter
-    @Builder
-    public static class FuturesAccountBalanceRequest {
+  @ToString
+  @Getter
+  @Builder
+  public static class FuturesAccountBalanceRequest {
 
-        @JsonProperty("timestamp")
-        private Long timestamp;
-
-    }
+    @JsonProperty("timestamp")
+    private Long timestamp;
+  }
 }

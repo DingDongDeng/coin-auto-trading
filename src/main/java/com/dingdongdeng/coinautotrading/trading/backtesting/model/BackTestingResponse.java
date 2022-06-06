@@ -15,25 +15,25 @@ import lombok.ToString;
 @Builder
 public class BackTestingResponse {
 
-    private String backTestingId;
-    private String userId;
-    private String autoTradingProcessorId;
-    private LocalDateTime start;
-    private LocalDateTime end;
-    private Result result;
+  private String backTestingId;
+  private String userId;
+  private String autoTradingProcessorId;
+  private LocalDateTime start;
+  private LocalDateTime end;
+  private Result result;
 
-    @ToString
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    public static class Result {
+  @ToString
+  @Getter
+  @NoArgsConstructor
+  @AllArgsConstructor
+  @Builder
+  public static class Result {
 
-        private BackTestingProcessStatus status;
-        private double executionRate;
-        private Double marginPrice;
-        private Double marginRate;
-        private double totalFee;
-        private String eventMessage;
-    }
+    private BackTestingProcessStatus status;
+    private double executionRate;
+    private Double marginPrice;
+    private Double marginRate;
+    private double totalFee;
+    private String eventMessage;
+  }
 }

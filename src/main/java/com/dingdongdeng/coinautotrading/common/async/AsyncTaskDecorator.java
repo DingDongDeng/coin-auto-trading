@@ -6,12 +6,12 @@ import org.springframework.core.task.TaskDecorator;
 
 public class AsyncTaskDecorator implements TaskDecorator {
 
-    @Override
-    public Runnable decorate(Runnable task) {
-        Map<String, String> context = LoggingUtils.getLogData();
-        return () -> {
-            LoggingUtils.setLogData(context);
-            task.run();
-        };
-    }
+  @Override
+  public Runnable decorate(Runnable task) {
+    Map<String, String> context = LoggingUtils.getLogData();
+    return () -> {
+      LoggingUtils.setLogData(context);
+      task.run();
+    };
+  }
 }

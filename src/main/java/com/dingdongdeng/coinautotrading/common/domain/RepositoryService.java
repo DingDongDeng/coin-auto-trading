@@ -4,13 +4,13 @@ import java.util.List;
 
 public interface RepositoryService<T, ID> {
 
-    T findById(ID id);
+  T findById(ID id);
 
-    T save(T entity);
+  T save(T entity);
 
-    List<T> saveAll(Iterable<T> iterable);
+  List<T> saveAll(Iterable<T> iterable);
 
-    void delete(T entity);
+  void delete(T entity);
 
-    void deleteAll(Iterable<T> iterable);
+  void deleteAll(Iterable<T> iterable);
 }

@@ -8,10 +8,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class FilterConfig implements WebMvcConfigurer {
 
-    @Bean
-    public FilterRegistrationBean getFilterRegistrationBean() {
-        FilterRegistrationBean registrationBean = new FilterRegistrationBean(new LoggingFilter());
-        registrationBean.addUrlPatterns("/*");
-        return registrationBean;
-    }
+  @Bean
+  public FilterRegistrationBean getFilterRegistrationBean() {
+    FilterRegistrationBean registrationBean = new FilterRegistrationBean(new LoggingFilter());
+    registrationBean.addUrlPatterns("/*");
+    return registrationBean;
+  }
 }

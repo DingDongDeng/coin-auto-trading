@@ -12,13 +12,13 @@ import org.springframework.data.repository.query.Param;
 
 public interface CandleRepository extends JpaRepository<Candle, Long> {
 
-    @Query("select c from Candle c "
-        + "where c.coinType = :coinType and c.candleUnit = :candleUnit and c.coinExchangeType = :coinExchangeType "
-        + "order by c.candleDateTimeKst desc ")
-    List<Candle> findAllCandleList(
-        @Param("coinType") CoinType coinType,
-        @Param("candleUnit") CandleUnit candleUnit,
-        @Param("coinExchangeType") CoinExchangeType coinExchangeType,
-        Pageable pageable
-    );
+  @Query(
+      "select c from Candle c "
+          + "where c.coinType = :coinType and c.candleUnit = :candleUnit and c.coinExchangeType = :coinExchangeType "
+          + "order by c.candleDateTimeKst desc ")
+  List<Candle> findAllCandleList(
+      @Param("coinType") CoinType coinType,
+      @Param("candleUnit") CandleUnit candleUnit,
+      @Param("coinExchangeType") CoinExchangeType coinExchangeType,
+      Pageable pageable);
 }

@@ -18,21 +18,22 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 @RestController
 public class BackTestingController {
 
-    private final BackTestingAggregation backTestingAggregation;
+  private final BackTestingAggregation backTestingAggregation;
 
-    @PostMapping("/backtesting")
-    public CommonResponse<BackTestingResponse> doTest(@RequestBody BackTestingRequest.Register request, @SessionAttribute String userId) {
-        return CommonResponse.<BackTestingResponse>builder()
-            .body(backTestingAggregation.doTest(request, userId))
-            .message("backtesting doTest success")
-            .build();
-    }
+  @PostMapping("/backtesting")
+  public CommonResponse<BackTestingResponse> doTest(
+      @RequestBody BackTestingRequest.Register request, @SessionAttribute String userId) {
+    return CommonResponse.<BackTestingResponse>builder()
+        .body(backTestingAggregation.doTest(request, userId))
+        .message("backtesting doTest success")
+        .build();
+  }
 
-    @GetMapping("/user/{userId}/backtesting")
-    public CommonResponse<List<BackTestingResponse>> getResult(@SessionAttribute String userId) {
-        return CommonResponse.<List<BackTestingResponse>>builder()
-            .body(backTestingAggregation.getResult(userId))
-            .message("backtesting getResult success")
-            .build();
-    }
+  @GetMapping("/user/{userId}/backtesting")
+  public CommonResponse<List<BackTestingResponse>> getResult(@SessionAttribute String userId) {
+    return CommonResponse.<List<BackTestingResponse>>builder()
+        .body(backTestingAggregation.getResult(userId))
+        .message("backtesting getResult success")
+        .build();
+  }
 }

@@ -27,44 +27,44 @@ import lombok.ToString;
 @Table(name = "candle")
 public class Candle {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "candle_id")
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "candle_id")
+  private Long id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "coin_exchange_type")
-    private CoinExchangeType coinExchangeType;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "coin_exchange_type")
+  private CoinExchangeType coinExchangeType;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "coin_type")
-    private CoinType coinType;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "coin_type")
+  private CoinType coinType;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "candle_unit")
-    private CandleUnit candleUnit;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "candle_unit")
+  private CandleUnit candleUnit;
 
-    @Column(name = "candle_date_time_utc")
-    private LocalDateTime candleDateTimeUtc;
+  @Column(name = "candle_date_time_utc")
+  private LocalDateTime candleDateTimeUtc;
 
-    @Column(name = "candle_date_time_kst")
-    private LocalDateTime candleDateTimeKst;
+  @Column(name = "candle_date_time_kst")
+  private LocalDateTime candleDateTimeKst;
 
-    @Column(name = "opening_price")
-    private Double openingPrice; // 시가
+  @Column(name = "opening_price")
+  private Double openingPrice; // 시가
 
-    @Column(name = "high_price")
-    private Double highPrice; // 고가
+  @Column(name = "high_price")
+  private Double highPrice; // 고가
 
-    @Column(name = "low_price")
-    private Double lowPrice; // 저가
+  @Column(name = "low_price")
+  private Double lowPrice; // 저가
 
-    @Column(name = "trade_price")
-    private Double tradePrice; // 종가
+  @Column(name = "trade_price")
+  private Double tradePrice; // 종가
 
-    @Column(name = "candle_acc_trade_price")
-    private Double candleAccTradePrice; // 누적 거래 금액
+  @Column(name = "candle_acc_trade_price")
+  private Double candleAccTradePrice; // 누적 거래 금액
 
-    @Column(name = "candle_acc_trade_volume")
-    private Double candleAccTradeVolume; // 누적 거래량
+  @Column(name = "candle_acc_trade_volume")
+  private Double candleAccTradeVolume; // 누적 거래량
 }

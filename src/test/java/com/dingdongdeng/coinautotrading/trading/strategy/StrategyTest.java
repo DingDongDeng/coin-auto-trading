@@ -10,15 +10,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class StrategyTest {
 
-    @Autowired
-    private UpbitExchangeService upbitExchangeProcessor;
+  @Autowired private UpbitExchangeService upbitExchangeProcessor;
 
-    @Test
-    public void Prototype_테스트() { //fixme Mock을 이용해서 테스트 고도화(TDD)
-//        Strategy strategy = new RsiTradingStrategy(CoinType.ETHEREUM, TradingTerm.SCALPING, upbitExchangeProcessor);
-        //log.info("orderTask : {}", strategy.execute());
-        //log.info("orderTask : {}", strategy.execute());
-        //log.info("orderTask : {}", strategy.execute());
-    }
-
+  @Test
+  public void Prototype_테스트() { // fixme Mock을 이용해서 테스트 고도화(TDD)
+    //        Strategy strategy = new RsiTradingStrategy(CoinType.ETHEREUM, TradingTerm.SCALPING,
+    // upbitExchangeProcessor);
+    // log.info("orderTask : {}", strategy.execute());
+    // log.info("orderTask : {}", strategy.execute());
+    // log.info("orderTask : {}", strategy.execute());
+  }
 }

@@ -6,8 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class CoinautotradingApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(CoinautotradingApplication.class, args);
-    }
-
+  public static void main(String[] args) {
+    SpringApplication.run(CoinautotradingApplication.class, args);
+  }
 }

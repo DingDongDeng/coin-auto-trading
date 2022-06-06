@@ -18,15 +18,15 @@ import lombok.ToString;
 @Builder
 public class AutoTradingResponse {
 
-    private String title;
-    private String processorId;
-    private long processDuration;
-    private AutoTradingProcessStatus processStatus;
-    private String userId;
-    private String strategyIdentifyCode;
-    private CoinType coinType;
-    private CoinExchangeType coinExchangeType;
-    private TradingTerm tradingTerm;
+  private String title;
+  private String processorId;
+  private long processDuration;
+  private AutoTradingProcessStatus processStatus;
+  private String userId;
+  private String strategyIdentifyCode;
+  private CoinType coinType;
+  private CoinExchangeType coinExchangeType;
+  private TradingTerm tradingTerm;
 
-    private StrategyCoreParam strategyCoreParam;
+  private StrategyCoreParam strategyCoreParam;
 }

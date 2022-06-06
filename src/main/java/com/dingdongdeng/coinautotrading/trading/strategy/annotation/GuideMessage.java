@@ -9,5 +9,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface GuideMessage {
 
-    String value() default "";
+  String value() default "";
 }

@@ -10,12 +10,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class ExchangeCandleServiceSelector {
 
-    private final List<ExchangeCandleService> candleServiceList;
+  private final List<ExchangeCandleService> candleServiceList;
 
-    public ExchangeCandleService getTargetService(CoinExchangeType coinExchangeType) {
-        return candleServiceList.stream()
-            .filter(processor -> processor.getCoinExchangeType() == coinExchangeType)
-            .findFirst()
-            .orElseThrow();
-    }
+  public ExchangeCandleService getTargetService(CoinExchangeType coinExchangeType) {
+    return candleServiceList.stream()
+        .filter(processor -> processor.getCoinExchangeType() == coinExchangeType)
+        .findFirst()
+        .orElseThrow();
+  }
 }

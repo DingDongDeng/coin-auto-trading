@@ -19,18 +19,12 @@ import lombok.ToString;
 @Builder
 public class AutoTradingRegisterRequest {
 
-    @NotNull
-    private String title;
-    @NotNull
-    private CoinType coinType;
-    @NotNull
-    private CoinExchangeType coinExchangeType;
-    @NotNull
-    private StrategyCode strategyCode;
-    @NotNull
-    private TradingTerm tradingTerm;
-    @NotNull
-    private String keyPairId;
+  @NotNull private String title;
+  @NotNull private CoinType coinType;
+  @NotNull private CoinExchangeType coinExchangeType;
+  @NotNull private StrategyCode strategyCode;
+  @NotNull private TradingTerm tradingTerm;
+  @NotNull private String keyPairId;
 
-    private Map<String, Object> strategyCoreParamMap;
+  private Map<String, Object> strategyCoreParamMap;
 }

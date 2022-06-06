@@ -11,13 +11,13 @@ import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeT
 
 public interface ExchangeService {
 
-    ExchangeOrder order(ExchangeOrderParam param, String keyPairId);
+  ExchangeOrder order(ExchangeOrderParam param, String keyPairId);
 
-    ExchangeOrderCancel orderCancel(ExchangeOrderCancelParam param, String keyPairId);
+  ExchangeOrderCancel orderCancel(ExchangeOrderCancelParam param, String keyPairId);
 
-    ExchangeTradingInfo getTradingInformation(ExchangeTradingInfoParam param, String keyPairId);
+  ExchangeTradingInfo getTradingInformation(ExchangeTradingInfoParam param, String keyPairId);
 
-    ExchangeOrder getOrderInfo(ExchangeOrderInfoParam param, String keyPairId);
+  ExchangeOrder getOrderInfo(ExchangeOrderInfoParam param, String keyPairId);
 
-    CoinExchangeType getCoinExchangeType();
+  CoinExchangeType getCoinExchangeType();
 }

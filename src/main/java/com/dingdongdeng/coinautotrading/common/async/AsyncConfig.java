@@ -12,23 +12,23 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @Configuration
 public class AsyncConfig implements AsyncConfigurer {
 
-    private final AsyncExceptionHandler asyncExceptionHandler;
+  private final AsyncExceptionHandler asyncExceptionHandler;
 
-    @Bean
-    public TaskExecutor taskExecutor() {
+  @Bean
+  public TaskExecutor taskExecutor() {
 
-        ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
-        taskExecutor.setCorePoolSize(10);
-        taskExecutor.setQueueCapacity(20);
-        taskExecutor.setMaxPoolSize(30);
-        taskExecutor.setThreadNamePrefix("Executor-");
-        taskExecutor.setTaskDecorator(new AsyncTaskDecorator());
+    ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
+    taskExecutor.setCorePoolSize(10);
+    taskExecutor.setQueueCapacity(20);
+    taskExecutor.setMaxPoolSize(30);
+    taskExecutor.setThreadNamePrefix("Executor-");
+    taskExecutor.setTaskDecorator(new AsyncTaskDecorator());
 
-        return taskExecutor;
-    }
+    return taskExecutor;
+  }
 
-    @Override
-    public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
-        return asyncExceptionHandler;
-    }
+  @Override
+  public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
+    return asyncExceptionHandler;
+  }
 }

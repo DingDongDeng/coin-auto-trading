@@ -6,9 +6,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum TradingTag {
-    PROFIT("익절"),
-    LOSS("손절"),
-    BUY("매수");
+  PROFIT("익절"),
+  LOSS("손절"),
+  BUY("매수");
 
-    private String desc;
+  private String desc;
 }

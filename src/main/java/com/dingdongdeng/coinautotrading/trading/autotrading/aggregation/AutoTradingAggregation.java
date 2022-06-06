@@ -16,43 +16,43 @@ import org.springframework.stereotype.Service;
 @Service
 public class AutoTradingAggregation {
 
-    private final AutoTradingService autoTradingService;
+  private final AutoTradingService autoTradingService;
 
-    public List<AutoTradingResponse> getUserProcessorList(String userId) {
-        return autoTradingService.getUserProcessorList(userId).stream()
-            .map(this::makeResponse)
-            .collect(Collectors.toList());
-    }
+  public List<AutoTradingResponse> getUserProcessorList(String userId) {
+    return autoTradingService.getUserProcessorList(userId).stream()
+        .map(this::makeResponse)
+        .collect(Collectors.toList());
+  }
 
-    public AutoTradingResponse register(AutoTradingRegisterRequest request, String userId) {
-        return makeResponse(autoTradingService.register(request, userId));
-    }
+  public AutoTradingResponse register(AutoTradingRegisterRequest request, String userId) {
+    return makeResponse(autoTradingService.register(request, userId));
+  }
 
-    public AutoTradingResponse start(String processorId, String userId) {
-        return makeResponse(autoTradingService.start(processorId, userId));
-    }
+  public AutoTradingResponse start(String processorId, String userId) {
+    return makeResponse(autoTradingService.start(processorId, userId));
+  }
 
-    public AutoTradingResponse stop(String processorId, String userId) {
-        return makeResponse(autoTradingService.stop(processorId, userId));
-    }
+  public AutoTradingResponse stop(String processorId, String userId) {
+    return makeResponse(autoTradingService.stop(processorId, userId));
+  }
 
-    public AutoTradingResponse terminate(String processorId, String userId) {
-        return makeResponse(autoTradingService.terminate(processorId, userId));
-    }
+  public AutoTradingResponse terminate(String processorId, String userId) {
+    return makeResponse(autoTradingService.terminate(processorId, userId));
+  }
 
-    private AutoTradingResponse makeResponse(AutoTradingProcessor processor) {
-        StrategyCoreParam coreParam = processor.getStrategy().getStrategyCore().getParam();
-        return AutoTradingResponse.builder()
-            .title(processor.getTitle())
-            .processorId(processor.getId())
-            .processDuration(processor.getDuration())
-            .processStatus(processor.getStatus())
-            .userId(processor.getUserId())
-            .strategyIdentifyCode(processor.getStrategy().getIdentifyCode())
-            .coinType(processor.getCoinType())
-            .coinExchangeType(processor.getCoinExchangeType())
-            .tradingTerm(processor.getTradingTerm())
-            .strategyCoreParam(coreParam)
-            .build();
-    }
+  private AutoTradingResponse makeResponse(AutoTradingProcessor processor) {
+    StrategyCoreParam coreParam = processor.getStrategy().getStrategyCore().getParam();
+    return AutoTradingResponse.builder()
+        .title(processor.getTitle())
+        .processorId(processor.getId())
+        .processDuration(processor.getDuration())
+        .processStatus(processor.getStatus())
+        .userId(processor.getUserId())
+        .strategyIdentifyCode(processor.getStrategy().getIdentifyCode())
+        .coinType(processor.getCoinType())
+        .coinExchangeType(processor.getCoinExchangeType())
+        .tradingTerm(processor.getTradingTerm())
+        .strategyCoreParam(coreParam)
+        .build();
+  }
 }

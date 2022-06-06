@@ -24,25 +24,24 @@ import lombok.ToString;
 @Table(name = "exchange_key")
 public class ExchangeKey {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "exchange_key_id")
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "exchange_key_id")
+  private Long id;
 
-    @Column(name = "pair_id")
-    private String pairId;
+  @Column(name = "pair_id")
+  private String pairId;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "coin_exchange_type")
-    private CoinExchangeType coinExchangeType;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "coin_exchange_type")
+  private CoinExchangeType coinExchangeType;
 
-    @Column(name = "name")
-    private String name;
+  @Column(name = "name")
+  private String name;
 
-    @Column(name = "value")
-    private String value;
+  @Column(name = "value")
+  private String value;
 
-    @Column(name = "user_id")
-    private String userId;
-
+  @Column(name = "user_id")
+  private String userId;
 }

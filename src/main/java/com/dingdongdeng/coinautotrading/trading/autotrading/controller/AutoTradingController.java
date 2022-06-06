@@ -20,46 +20,49 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 @RestController
 public class AutoTradingController {
 
-    private final AutoTradingAggregation autoTradingAggregation;
+  private final AutoTradingAggregation autoTradingAggregation;
 
-    @GetMapping("/user/{userId}/autotrading")
-    public CommonResponse<List<AutoTradingResponse>> getList(@SessionAttribute String userId) {
-        return CommonResponse.<List<AutoTradingResponse>>builder()
-            .body(autoTradingAggregation.getUserProcessorList(userId))
-            .message("autotrading get list success")
-            .build();
-    }
+  @GetMapping("/user/{userId}/autotrading")
+  public CommonResponse<List<AutoTradingResponse>> getList(@SessionAttribute String userId) {
+    return CommonResponse.<List<AutoTradingResponse>>builder()
+        .body(autoTradingAggregation.getUserProcessorList(userId))
+        .message("autotrading get list success")
+        .build();
+  }
 
-    @PostMapping("/autotrading/register")
-    public CommonResponse<AutoTradingResponse> register(@Valid @RequestBody AutoTradingRegisterRequest request, @SessionAttribute String userId) {
-        return CommonResponse.<AutoTradingResponse>builder()
-            .body(autoTradingAggregation.register(request, userId))
-            .message("autotrading register success")
-            .build();
-    }
+  @PostMapping("/autotrading/register")
+  public CommonResponse<AutoTradingResponse> register(
+      @Valid @RequestBody AutoTradingRegisterRequest request, @SessionAttribute String userId) {
+    return CommonResponse.<AutoTradingResponse>builder()
+        .body(autoTradingAggregation.register(request, userId))
+        .message("autotrading register success")
+        .build();
+  }
 
-    @PostMapping("/autotrading/{autoTradingProcessorId}/start")
-    public CommonResponse<AutoTradingResponse> start(@PathVariable String autoTradingProcessorId, @SessionAttribute String userId) {
-        return CommonResponse.<AutoTradingResponse>builder()
-            .body(autoTradingAggregation.start(autoTradingProcessorId, userId))
-            .message("autotrading start success")
-            .build();
-    }
+  @PostMapping("/autotrading/{autoTradingProcessorId}/start")
+  public CommonResponse<AutoTradingResponse> start(
+      @PathVariable String autoTradingProcessorId, @SessionAttribute String userId) {
+    return CommonResponse.<AutoTradingResponse>builder()
+        .body(autoTradingAggregation.start(autoTradingProcessorId, userId))
+        .message("autotrading start success")
+        .build();
+  }
 
-    @PostMapping("/autotrading/{autoTradingProcessorId}/stop")
-    public CommonResponse<AutoTradingResponse> stop(@PathVariable String autoTradingProcessorId, @SessionAttribute String userId) {
-        return CommonResponse.<AutoTradingResponse>builder()
-            .body(autoTradingAggregation.stop(autoTradingProcessorId, userId))
-            .message("autotrading stop success")
-            .build();
-    }
+  @PostMapping("/autotrading/{autoTradingProcessorId}/stop")
+  public CommonResponse<AutoTradingResponse> stop(
+      @PathVariable String autoTradingProcessorId, @SessionAttribute String userId) {
+    return CommonResponse.<AutoTradingResponse>builder()
+        .body(autoTradingAggregation.stop(autoTradingProcessorId, userId))
+        .message("autotrading stop success")
+        .build();
+  }
 
-    @PostMapping("/autotrading/{autoTradingProcessorId}/terminate")
-    public CommonResponse<AutoTradingResponse> terminate(@PathVariable String autoTradingProcessorId, @SessionAttribute String userId) {
-        return CommonResponse.<AutoTradingResponse>builder()
-            .body(autoTradingAggregation.terminate(autoTradingProcessorId, userId))
-            .message("autotrading terminate success")
-            .build();
-    }
-
+  @PostMapping("/autotrading/{autoTradingProcessorId}/terminate")
+  public CommonResponse<AutoTradingResponse> terminate(
+      @PathVariable String autoTradingProcessorId, @SessionAttribute String userId) {
+    return CommonResponse.<AutoTradingResponse>builder()
+        .body(autoTradingAggregation.terminate(autoTradingProcessorId, userId))
+        .message("autotrading terminate success")
+        .build();
+  }
 }

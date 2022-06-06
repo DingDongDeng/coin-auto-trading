@@ -12,23 +12,30 @@ import org.springframework.stereotype.Component;
 @Component
 public class StrategyFactory {
 
-    private final ObjectMapper objectMapper;
+  private final ObjectMapper objectMapper;
 
-    public Strategy create(StrategyServiceParam serviceParam, StrategyCoreParam coreParam) {
-        StrategyCode strategyCode = serviceParam.getStrategyCode();
-        StrategyService strategyService = new StrategyService(
+  public Strategy create(StrategyServiceParam serviceParam, StrategyCoreParam coreParam) {
+    StrategyCode strategyCode = serviceParam.getStrategyCode();
+    StrategyService strategyService =
+        new StrategyService(
             serviceParam.getCoinType(),
             serviceParam.getTradingTerm(),
             serviceParam.getKeyPairId(),
-            serviceParam.getExchangeService()
-        );
-        StrategyStore strategyStore = new StrategyStore();
-        StrategyCore strategyCore = strategyCode.getStrategyCore(coreParam);
-        StrategyRecorder strategyRecorder = new StrategyRecorder();
-        return new Strategy(serviceParam.getStrategyCode(), strategyCore, strategyService, strategyStore, strategyRecorder);
-    }
+            serviceParam.getExchangeService());
+    StrategyStore strategyStore = new StrategyStore();
+    StrategyCore strategyCore = strategyCode.getStrategyCore(coreParam);
+    StrategyRecorder strategyRecorder = new StrategyRecorder();
+    return new Strategy(
+        serviceParam.getStrategyCode(),
+        strategyCore,
+        strategyService,
+        strategyStore,
+        strategyRecorder);
+  }
 
-    public StrategyCoreParam createCoreParam(StrategyCode strategyCode, Map<String, Object> strategyCoreParamMap) {
-        return objectMapper.convertValue(strategyCoreParamMap, strategyCode.getStrategyCoreParamClazz());
-    }
+  public StrategyCoreParam createCoreParam(
+      StrategyCode strategyCode, Map<String, Object> strategyCoreParamMap) {
+    return objectMapper.convertValue(
+        strategyCoreParamMap, strategyCode.getStrategyCoreParamClazz());
+  }
 }

@@ -22,55 +22,59 @@ import org.springframework.stereotype.Service;
 @Service
 public class BackTestingAggregation {
 
-    private final BackTestingService backTestingService;
-    private final AutoTradingService autoTradingService;
+  private final BackTestingService backTestingService;
+  private final AutoTradingService autoTradingService;
 
-    public BackTestingResponse doTest(BackTestingRequest.Register request, String userId) {
-        List<AutoTradingProcessor> autoTradingProcessorList = autoTradingService.getUserProcessorList(userId);
-        AutoTradingProcessor autoTradingProcessor = autoTradingProcessorList.stream()
+  public BackTestingResponse doTest(BackTestingRequest.Register request, String userId) {
+    List<AutoTradingProcessor> autoTradingProcessorList =
+        autoTradingService.getUserProcessorList(userId);
+    AutoTradingProcessor autoTradingProcessor =
+        autoTradingProcessorList.stream()
             .filter(p -> p.getId().equals(request.getAutoTradingProcessorId()))
             .findFirst()
             .orElseThrow(() -> new RuntimeException("백테스팅 하기 위한 자동매매를 찾지 못했습니다."));
 
-        BackTestingProcessor backTestingProcessor = backTestingService.doTest(autoTradingProcessor, request.getStart(), request.getEnd());
+    BackTestingProcessor backTestingProcessor =
+        backTestingService.doTest(autoTradingProcessor, request.getStart(), request.getEnd());
 
-        return BackTestingResponse.builder()
-            .backTestingId(backTestingProcessor.getId())
-            .userId(backTestingProcessor.getUserId())
-            .autoTradingProcessorId(backTestingProcessor.getAutoTradingProcessorId())
-            .start(backTestingProcessor.getStart())
-            .end(backTestingProcessor.getEnd())
-            .result(null)
-            .build();
-    }
+    return BackTestingResponse.builder()
+        .backTestingId(backTestingProcessor.getId())
+        .userId(backTestingProcessor.getUserId())
+        .autoTradingProcessorId(backTestingProcessor.getAutoTradingProcessorId())
+        .start(backTestingProcessor.getStart())
+        .end(backTestingProcessor.getEnd())
+        .result(null)
+        .build();
+  }
 
-    public List<BackTestingResponse> getResult(String userId) {
-        return backTestingService.getBackTestingProcessorList(userId).stream()
-            .map(b -> {
-                StrategyRecorder recorder = b.getStrategy().getStrategyRecorder();
-                LocalDateTime start = b.getStart();
-                LocalDateTime end = b.getEnd();
-                double totalTime = ChronoUnit.MINUTES.between(start, end);
-                double executionTime = ChronoUnit.MINUTES.between(start, Optional.ofNullable(b.getNow()).orElse(start));
+  public List<BackTestingResponse> getResult(String userId) {
+    return backTestingService.getBackTestingProcessorList(userId).stream()
+        .map(
+            b -> {
+              StrategyRecorder recorder = b.getStrategy().getStrategyRecorder();
+              LocalDateTime start = b.getStart();
+              LocalDateTime end = b.getEnd();
+              double totalTime = ChronoUnit.MINUTES.between(start, end);
+              double executionTime =
+                  ChronoUnit.MINUTES.between(start, Optional.ofNullable(b.getNow()).orElse(start));
 
-                return BackTestingResponse.builder()
-                    .backTestingId(b.getId())
-                    .userId(b.getUserId())
-                    .autoTradingProcessorId(b.getAutoTradingProcessorId())
-                    .start(start)
-                    .end(end)
-                    .result(
-                        Result.builder()
-                            .status(b.getStatus())
-                            .executionRate(executionTime / totalTime)
-                            .marginPrice(recorder.getMarginPrice())
-                            .marginRate(recorder.getMarginRate())
-                            .totalFee(recorder.getTotalFee())
-                            .eventMessage(recorder.getEventMessage())
-                            .build()
-                    )
-                    .build();
+              return BackTestingResponse.builder()
+                  .backTestingId(b.getId())
+                  .userId(b.getUserId())
+                  .autoTradingProcessorId(b.getAutoTradingProcessorId())
+                  .start(start)
+                  .end(end)
+                  .result(
+                      Result.builder()
+                          .status(b.getStatus())
+                          .executionRate(executionTime / totalTime)
+                          .marginPrice(recorder.getMarginPrice())
+                          .marginRate(recorder.getMarginRate())
+                          .totalFee(recorder.getTotalFee())
+                          .eventMessage(recorder.getEventMessage())
+                          .build())
+                  .build();
             })
-            .collect(Collectors.toList());
-    }
+        .collect(Collectors.toList());
+  }
 }

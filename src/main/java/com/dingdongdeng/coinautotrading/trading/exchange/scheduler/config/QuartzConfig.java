@@ -15,24 +15,26 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 public class QuartzConfig {
 
-    public static class UpbitQuartzConfig {
+  public static class UpbitQuartzConfig {
 
-        @Bean
-        public JobDetail upbitCandleStoreJobDetail() {
-            return JobBuilder.newJob().ofType(UpbitCandleStoreJob.class)
-                .storeDurably()
-                .withIdentity("Qrtz_Job_Detail")
-                .withDescription("Invoke Sample Job service...")
-                .build();
-        }
-
-        @Bean
-        public Trigger upbitCandleStoreTrigger(JobDetail upbitCandleStoreJobDetail) {
-            return TriggerBuilder.newTrigger().forJob(upbitCandleStoreJobDetail)
-                .withIdentity("Qrtz_Trigger")
-                .withDescription("Sample trigger")
-                .withSchedule(simpleSchedule().repeatForever().withIntervalInSeconds(5))
-                .build();
-        }
+    @Bean
+    public JobDetail upbitCandleStoreJobDetail() {
+      return JobBuilder.newJob()
+          .ofType(UpbitCandleStoreJob.class)
+          .storeDurably()
+          .withIdentity("Qrtz_Job_Detail")
+          .withDescription("Invoke Sample Job service...")
+          .build();
     }
+
+    @Bean
+    public Trigger upbitCandleStoreTrigger(JobDetail upbitCandleStoreJobDetail) {
+      return TriggerBuilder.newTrigger()
+          .forJob(upbitCandleStoreJobDetail)
+          .withIdentity("Qrtz_Trigger")
+          .withDescription("Sample trigger")
+          .withSchedule(simpleSchedule().repeatForever().withIntervalInSeconds(5))
+          .build();
+    }
+  }
 }

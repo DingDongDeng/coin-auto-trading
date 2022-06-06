@@ -12,7 +12,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class UpbitCandleStoreJob extends CandleStoreJob {
 
-    public UpbitCandleStoreJob(ExchangeCandleService upbitExchangeCandleService, CandleService candleService) {
-        super(List.of(CoinType.ETHEREUM), CandleUnit.UNIT_1M, upbitExchangeCandleService, candleService);
-    }
+  public UpbitCandleStoreJob(
+      ExchangeCandleService upbitExchangeCandleService, CandleService candleService) {
+    super(
+        List.of(CoinType.ETHEREUM), CandleUnit.UNIT_1M, upbitExchangeCandleService, candleService);
+  }
 }

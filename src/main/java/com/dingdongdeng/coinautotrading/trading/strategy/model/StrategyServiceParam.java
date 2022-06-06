@@ -17,9 +17,9 @@ import lombok.ToString;
 @Builder
 public class StrategyServiceParam {
 
-    private StrategyCode strategyCode;
-    private ExchangeService exchangeService;
-    private CoinType coinType;
-    private TradingTerm tradingTerm;
-    private String keyPairId;
+  private StrategyCode strategyCode;
+  private ExchangeService exchangeService;
+  private CoinType coinType;
+  private TradingTerm tradingTerm;
+  private String keyPairId;
 }

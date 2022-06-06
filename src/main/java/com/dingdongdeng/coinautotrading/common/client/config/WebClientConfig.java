@@ -13,25 +13,30 @@ import reactor.netty.http.client.HttpClient;
 
 public abstract class WebClientConfig {
 
-    protected WebClient makeWebClient(String baseUrl, int readTimeout, int connectionTimeout) {
-        HttpClient httpClient = HttpClient.create()
+  protected WebClient makeWebClient(String baseUrl, int readTimeout, int connectionTimeout) {
+    HttpClient httpClient =
+        HttpClient.create()
             .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectionTimeout)
             .responseTimeout(Duration.ofMillis(5000))
-            .doOnConnected(conn ->
-                conn.addHandlerLast(new ReadTimeoutHandler(readTimeout, TimeUnit.MILLISECONDS))
-                    .addHandlerLast(new WriteTimeoutHandler(5000, TimeUnit.MILLISECONDS)))
-            //.wiretap("reactor.netty.http.client.HttpClient", LogLevel.INFO, AdvancedByteBufFormat.TEXTUAL)
-            ;
+            .doOnConnected(
+                conn ->
+                    conn.addHandlerLast(new ReadTimeoutHandler(readTimeout, TimeUnit.MILLISECONDS))
+                        .addHandlerLast(new WriteTimeoutHandler(5000, TimeUnit.MILLISECONDS)))
+        // .wiretap("reactor.netty.http.client.HttpClient", LogLevel.INFO,
+        // AdvancedByteBufFormat.TEXTUAL)
+        ;
 
-        return WebClient.builder()
-            .baseUrl(baseUrl)
-            .defaultHeaders(httpHeaders -> {
-                httpHeaders.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+    return WebClient.builder()
+        .baseUrl(baseUrl)
+        .defaultHeaders(
+            httpHeaders -> {
+              httpHeaders.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
             })
-            .clientConnector(new ReactorClientHttpConnector(httpClient))
-            .filters(exchangeFilterFunctions -> {
-                exchangeFilterFunctions.add(new WebClientLogger());
+        .clientConnector(new ReactorClientHttpConnector(httpClient))
+        .filters(
+            exchangeFilterFunctions -> {
+              exchangeFilterFunctions.add(new WebClientLogger());
             })
-            .build();
-    }
+        .build();
+  }
 }

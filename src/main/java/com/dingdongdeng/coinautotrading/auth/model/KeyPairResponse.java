@@ -15,7 +15,7 @@ import lombok.ToString;
 @Builder
 public class KeyPairResponse {
 
-    private String pairId;
-    private CoinExchangeType coinExchangeType;
-    private List<Key> keyList;
+  private String pairId;
+  private CoinExchangeType coinExchangeType;
+  private List<Key> keyList;
 }

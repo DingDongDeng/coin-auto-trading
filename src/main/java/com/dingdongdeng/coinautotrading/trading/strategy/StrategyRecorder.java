@@ -9,59 +9,70 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 public class StrategyRecorder {
 
-    private double totalBuyPrice;
-    private double totalProfitPrice;
-    private double totalLossPrice;
-    private double totalFee;
-    private double marginPrice;
-    private double marginRate;
-    private String eventMessage = ""; //fixme 메모리 이슈 가능성이 있음
+  private double totalBuyPrice;
+  private double totalProfitPrice;
+  private double totalLossPrice;
+  private double totalFee;
+  private double marginPrice;
+  private double marginRate;
+  private String eventMessage = ""; // fixme 메모리 이슈 가능성이 있음
 
-    public void apply(TradingResult tradingResult) {
-        addEventMessage("주문", tradingResult);
+  public void apply(TradingResult tradingResult) {
+    addEventMessage("주문", tradingResult);
 
-        totalFee += tradingResult.getFee();
-        TradingTag tag = tradingResult.getTag();
-        if (tag == TradingTag.BUY) {
-            totalBuyPrice += tradingResult.getPrice() * tradingResult.getVolume();
-            return;
-        }
-        if (tag == TradingTag.PROFIT) {
-            totalProfitPrice += tradingResult.getPrice() * tradingResult.getVolume();
-        }
-        if (tag == TradingTag.LOSS) {
-            totalLossPrice += tradingResult.getPrice() * tradingResult.getVolume();
-        }
-        calcMargin();
+    totalFee += tradingResult.getFee();
+    TradingTag tag = tradingResult.getTag();
+    if (tag == TradingTag.BUY) {
+      totalBuyPrice += tradingResult.getPrice() * tradingResult.getVolume();
+      return;
     }
-
-    public void revert(TradingResult tradingResult) {
-        addEventMessage("취소", tradingResult);
-
-        totalFee -= tradingResult.getFee();
-        TradingTag tag = tradingResult.getTag();
-        if (tag == TradingTag.BUY) {
-            totalBuyPrice -= tradingResult.getPrice() * tradingResult.getVolume();
-            return;
-        }
-        if (tag == TradingTag.PROFIT) {
-            totalProfitPrice -= tradingResult.getPrice() * tradingResult.getVolume();
-        }
-        if (tag == TradingTag.LOSS) {
-            totalLossPrice -= tradingResult.getPrice() * tradingResult.getVolume();
-        }
-        calcMargin();
+    if (tag == TradingTag.PROFIT) {
+      totalProfitPrice += tradingResult.getPrice() * tradingResult.getVolume();
     }
-
-    private void calcMargin() {
-        this.marginRate = ((totalProfitPrice + totalLossPrice - totalFee) / totalBuyPrice) * 100d - 100d;
-        this.marginPrice = (totalProfitPrice + totalLossPrice - totalFee) - totalBuyPrice;
+    if (tag == TradingTag.LOSS) {
+      totalLossPrice += tradingResult.getPrice() * tradingResult.getVolume();
     }
+    calcMargin();
+  }
 
-    private void addEventMessage(String event, TradingResult tradingResult) {
-        String tagName = tradingResult.getTag().getDesc();
-        double price = tradingResult.getPrice();
-        double orderPrice = tradingResult.getPrice() * tradingResult.getVolume();
-        this.eventMessage += tradingResult.getCreatedAt() + "/" + event + " / " + tagName + " / " + price + " / " + orderPrice + "</br>\n";
+  public void revert(TradingResult tradingResult) {
+    addEventMessage("취소", tradingResult);
+
+    totalFee -= tradingResult.getFee();
+    TradingTag tag = tradingResult.getTag();
+    if (tag == TradingTag.BUY) {
+      totalBuyPrice -= tradingResult.getPrice() * tradingResult.getVolume();
+      return;
     }
+    if (tag == TradingTag.PROFIT) {
+      totalProfitPrice -= tradingResult.getPrice() * tradingResult.getVolume();
+    }
+    if (tag == TradingTag.LOSS) {
+      totalLossPrice -= tradingResult.getPrice() * tradingResult.getVolume();
+    }
+    calcMargin();
+  }
+
+  private void calcMargin() {
+    this.marginRate =
+        ((totalProfitPrice + totalLossPrice - totalFee) / totalBuyPrice) * 100d - 100d;
+    this.marginPrice = (totalProfitPrice + totalLossPrice - totalFee) - totalBuyPrice;
+  }
+
+  private void addEventMessage(String event, TradingResult tradingResult) {
+    String tagName = tradingResult.getTag().getDesc();
+    double price = tradingResult.getPrice();
+    double orderPrice = tradingResult.getPrice() * tradingResult.getVolume();
+    this.eventMessage +=
+        tradingResult.getCreatedAt()
+            + "/"
+            + event
+            + " / "
+            + tagName
+            + " / "
+            + price
+            + " / "
+            + orderPrice
+            + "</br>\n";
+  }
 }

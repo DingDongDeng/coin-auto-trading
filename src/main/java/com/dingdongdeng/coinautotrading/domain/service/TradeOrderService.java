@@ -15,30 +15,30 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 public class TradeOrderService implements RepositoryService<TradeOrder, Long> {
 
-    private final TradeOrderRepository repository;
+  private final TradeOrderRepository repository;
 
-    @Override
-    public TradeOrder findById(Long id) {
-        return repository.findById(id).orElse(new TradeOrder());
-    }
+  @Override
+  public TradeOrder findById(Long id) {
+    return repository.findById(id).orElse(new TradeOrder());
+  }
 
-    @Override
-    public TradeOrder save(TradeOrder tradeOrder) {
-        return repository.save(tradeOrder);
-    }
+  @Override
+  public TradeOrder save(TradeOrder tradeOrder) {
+    return repository.save(tradeOrder);
+  }
 
-    @Override
-    public List<TradeOrder> saveAll(Iterable<TradeOrder> iterable) {
-        return repository.saveAll(iterable);
-    }
+  @Override
+  public List<TradeOrder> saveAll(Iterable<TradeOrder> iterable) {
+    return repository.saveAll(iterable);
+  }
 
-    @Override
-    public void delete(TradeOrder entity) {
-        repository.delete(entity);
-    }
+  @Override
+  public void delete(TradeOrder entity) {
+    repository.delete(entity);
+  }
 
-    @Override
-    public void deleteAll(Iterable<TradeOrder> iterable) {
-        repository.deleteAll(iterable);
-    }
+  @Override
+  public void deleteAll(Iterable<TradeOrder> iterable) {
+    repository.deleteAll(iterable);
+  }
 }

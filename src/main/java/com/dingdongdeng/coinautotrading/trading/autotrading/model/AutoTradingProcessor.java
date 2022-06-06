@@ -24,57 +24,57 @@ import lombok.extern.slf4j.Slf4j;
 @Builder
 public class AutoTradingProcessor {
 
-    @Default
-    private String id = UUID.randomUUID().toString();
-    private String title;
-    private String userId;
-    private CoinType coinType;
-    private CoinExchangeType coinExchangeType;
-    private AutoTradingProcessStatus status;
-    private TradingTerm tradingTerm;
-    private Strategy strategy;
-    private long duration;
-    private SlackSender slackSender;
+  @Default private String id = UUID.randomUUID().toString();
+  private String title;
+  private String userId;
+  private CoinType coinType;
+  private CoinExchangeType coinExchangeType;
+  private AutoTradingProcessStatus status;
+  private TradingTerm tradingTerm;
+  private Strategy strategy;
+  private long duration;
+  private SlackSender slackSender;
 
-    public void start() {
-        //fixme 로그 추적을 위해 id, userId를 찍을 수 있어야함
-        if (isRunning()) {
-            return;
-        }
-        this.status = AutoTradingProcessStatus.RUNNING;
-        CompletableFuture.runAsync(this::process); //fixme AsyncDecorater 설정이 먹힐려나>???
+  public void start() {
+    // fixme 로그 추적을 위해 id, userId를 찍을 수 있어야함
+    if (isRunning()) {
+      return;
     }
+    this.status = AutoTradingProcessStatus.RUNNING;
+    CompletableFuture.runAsync(this::process); // fixme AsyncDecorater 설정이 먹힐려나>???
+  }
 
-    public void stop() {
-        this.status = AutoTradingProcessStatus.STOPPED;
-    }
+  public void stop() {
+    this.status = AutoTradingProcessStatus.STOPPED;
+  }
 
-    public void terminate() {
-        this.status = AutoTradingProcessStatus.TERMINATED;
-    }
+  public void terminate() {
+    this.status = AutoTradingProcessStatus.TERMINATED;
+  }
 
-    private void process() {
-        while (isRunning()) {
-            log.info("running autoTradingProcessor...");
-            delay();
-            try {
-                this.strategy.execute();
-            } catch (Exception e) {
-                log.error("strategy execute exception : {}", e.getMessage(), e);
-                slackSender.send("userId : " + userId + ", title : " + title + ", autoTradingProcessorId : " + id, e);
-            }
-        }
+  private void process() {
+    while (isRunning()) {
+      log.info("running autoTradingProcessor...");
+      delay();
+      try {
+        this.strategy.execute();
+      } catch (Exception e) {
+        log.error("strategy execute exception : {}", e.getMessage(), e);
+        slackSender.send(
+            "userId : " + userId + ", title : " + title + ", autoTradingProcessorId : " + id, e);
+      }
     }
+  }
 
-    private boolean isRunning() {
-        return this.status == AutoTradingProcessStatus.RUNNING;
-    }
+  private boolean isRunning() {
+    return this.status == AutoTradingProcessStatus.RUNNING;
+  }
 
-    private void delay() {
-        try {
-            Thread.sleep(duration);
-        } catch (InterruptedException e) {
-            log.error(e.getMessage(), e);
-        }
+  private void delay() {
+    try {
+      Thread.sleep(duration);
+    } catch (InterruptedException e) {
+      log.error(e.getMessage(), e);
     }
+  }
 }

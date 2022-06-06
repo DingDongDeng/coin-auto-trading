@@ -11,12 +11,11 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 @DataJpaTest
 public class DataSourceTest {
 
-    @Autowired
-    private DataSource dataSource;
+  @Autowired private DataSource dataSource;
 
-    @Test
-    public void DB커넥션_테스트() throws Exception {
-        Connection con = dataSource.getConnection();
-        log.info("driver name : {}", con.getMetaData().getDriverName());
-    }
+  @Test
+  public void DB커넥션_테스트() throws Exception {
+    Connection con = dataSource.getConnection();
+    log.info("driver name : {}", con.getMetaData().getDriverName());
+  }
 }

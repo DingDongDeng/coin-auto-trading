@@ -10,21 +10,20 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 public class BackTestingRequest {
 
-    @ToString
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Register {
+  @ToString
+  @Getter
+  @NoArgsConstructor
+  @AllArgsConstructor
+  public static class Register {
 
-        @NotNull
-        private String autoTradingProcessorId;
-        @NotNull
-        @DateTimeFormat(pattern = "yyyy-MM-ddTHH:mm:ss")
-        private LocalDateTime start;
-        @NotNull
-        @DateTimeFormat(pattern = "yyyy-MM-ddTHH:mm:ss")
-        private LocalDateTime end;
+    @NotNull private String autoTradingProcessorId;
 
-    }
+    @NotNull
+    @DateTimeFormat(pattern = "yyyy-MM-ddTHH:mm:ss")
+    private LocalDateTime start;
 
+    @NotNull
+    @DateTimeFormat(pattern = "yyyy-MM-ddTHH:mm:ss")
+    private LocalDateTime end;
+  }
 }

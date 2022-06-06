@@ -12,11 +12,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class AsyncExceptionHandler implements AsyncUncaughtExceptionHandler {
 
-    private final SlackSender slackSender;
+  private final SlackSender slackSender;
 
-    @Override
-    public void handleUncaughtException(Throwable e, Method method, Object... params) {
-        slackSender.send(e);
-        log.error(e.getMessage(), e);
-    }
+  @Override
+  public void handleUncaughtException(Throwable e, Method method, Object... params) {
+    slackSender.send(e);
+    log.error(e.getMessage(), e);
+  }
 }

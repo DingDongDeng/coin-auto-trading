@@ -15,18 +15,18 @@ import lombok.ToString;
 @Builder
 public class StrategyMetaResponse {
 
-    private StrategyCode strategyCode;
-    private List<ParamMeta> paramMetaList;
+  private StrategyCode strategyCode;
+  private List<ParamMeta> paramMetaList;
 
-    @ToString
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    public static class ParamMeta {
+  @ToString
+  @Getter
+  @NoArgsConstructor
+  @AllArgsConstructor
+  @Builder
+  public static class ParamMeta {
 
-        private String name;
-        private String guideMessage;
-        private Object type;
-    }
+    private String name;
+    private String guideMessage;
+    private Object type;
+  }
 }

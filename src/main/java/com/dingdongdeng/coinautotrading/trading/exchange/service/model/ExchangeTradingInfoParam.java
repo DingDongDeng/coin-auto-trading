@@ -11,6 +11,6 @@ import lombok.ToString;
 @Builder
 public class ExchangeTradingInfoParam {
 
-    private CoinType coinType;
-    private TradingTerm tradingTerm;
+  private CoinType coinType;
+  private TradingTerm tradingTerm;
 }

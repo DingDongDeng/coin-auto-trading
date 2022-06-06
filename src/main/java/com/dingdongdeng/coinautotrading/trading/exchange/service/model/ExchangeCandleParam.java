@@ -11,8 +11,8 @@ import lombok.ToString;
 @Builder
 public class ExchangeCandleParam {
 
-    private Integer unit; // 분 단위. 가능한 값 : 1, 3, 5, 15, 10, 30, 60, 240
-    private CoinType coinType; // 마켓 ID (필수)
-    private LocalDateTime to; // 마지막 캔들 시각
-    private Integer count; // 캔들 개수
+  private Integer unit; // 분 단위. 가능한 값 : 1, 3, 5, 15, 10, 30, 60, 240
+  private CoinType coinType; // 마켓 ID (필수)
+  private LocalDateTime to; // 마지막 캔들 시각
+  private Integer count; // 캔들 개수
 }

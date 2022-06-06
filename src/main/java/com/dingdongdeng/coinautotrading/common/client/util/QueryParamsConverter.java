@@ -16,38 +16,38 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Component
 public class QueryParamsConverter {
 
-    private final ObjectMapper objectMapper;
+  private final ObjectMapper objectMapper;
 
-    public MultiValueMap<String, String> convertMap(Object object) {
-        try {
-            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-            if (Objects.isNull(object)) {
-                return params;
+  public MultiValueMap<String, String> convertMap(Object object) {
+    try {
+      MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+      if (Objects.isNull(object)) {
+        return params;
+      }
+      Map<String, Object> map = objectMapper.convertValue(object, new TypeReference<>() {});
+
+      map.forEach(
+          (key, value) -> {
+            if (value instanceof List) { // fixme 개선필요
+              List<String> str =
+                  (List<String>)
+                      ((List) value).stream().map(String::valueOf).collect(Collectors.toList());
+              str.forEach(s -> params.add(key + "", s));
+              return;
             }
-            Map<String, Object> map = objectMapper.convertValue(object, new TypeReference<>() {
-            });
-
-            map.forEach((key, value) -> {
-                if (value instanceof List) { //fixme 개선필요
-                    List<String> str = (List<String>) ((List) value).stream()
-                        .map(String::valueOf)
-                        .collect(Collectors.toList());
-                    str.forEach(s -> params.add(key + "", s));
-                    return;
-                }
-                params.add(key, String.valueOf(value));
-            });
-            return params;
-        } catch (Exception e) {
-            throw new IllegalStateException("fail generate query params", e);
-        }
+            params.add(key, String.valueOf(value));
+          });
+      return params;
+    } catch (Exception e) {
+      throw new IllegalStateException("fail generate query params", e);
     }
+  }
 
-    public String convertStr(Object object) {
-        return UriComponentsBuilder.fromUriString("")
-            .queryParams(convertMap(object))
-            .build()
-            //.encode()
-            .toUriString();
-    }
+  public String convertStr(Object object) {
+    return UriComponentsBuilder.fromUriString("")
+        .queryParams(convertMap(object))
+        .build()
+        // .encode()
+        .toUriString();
+  }
 }

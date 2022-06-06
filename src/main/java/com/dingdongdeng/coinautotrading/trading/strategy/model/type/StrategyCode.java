@@ -13,33 +13,36 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum StrategyCode {
-    SCALE_TRADING_RSI("분할 매수(RSI기반, 손절없음)", ScaleTradingRsiStrategyCore.class, ScaleTradingRsiStrategyCoreParam.class),
-    ;
+  SCALE_TRADING_RSI(
+      "분할 매수(RSI기반, 손절없음)",
+      ScaleTradingRsiStrategyCore.class,
+      ScaleTradingRsiStrategyCoreParam.class),
+  ;
 
-    private String desc;
-    private Class<? extends StrategyCore> strategyCoreClazz;
-    private Class<? extends StrategyCoreParam> strategyCoreParamClazz;
+  private String desc;
+  private Class<? extends StrategyCore> strategyCoreClazz;
+  private Class<? extends StrategyCoreParam> strategyCoreParamClazz;
 
-    public static StrategyCode of(String name) {
-        return Arrays.stream(StrategyCode.values())
-            .filter(type -> type.name().equalsIgnoreCase(name))
-            .findFirst()
-            .orElseThrow(() -> new NoSuchElementException(name));
+  public static StrategyCode of(String name) {
+    return Arrays.stream(StrategyCode.values())
+        .filter(type -> type.name().equalsIgnoreCase(name))
+        .findFirst()
+        .orElseThrow(() -> new NoSuchElementException(name));
+  }
+
+  public static EnumMap<StrategyCode, String> toMap() {
+    EnumMap<StrategyCode, String> map = new EnumMap<>(StrategyCode.class);
+    for (StrategyCode value : StrategyCode.values()) {
+      map.put(value, value.getDesc());
     }
+    return map;
+  }
 
-    public static EnumMap<StrategyCode, String> toMap() {
-        EnumMap<StrategyCode, String> map = new EnumMap<>(StrategyCode.class);
-        for (StrategyCode value : StrategyCode.values()) {
-            map.put(value, value.getDesc());
-        }
-        return map;
+  public StrategyCore getStrategyCore(StrategyCoreParam param) {
+    try {
+      return strategyCoreClazz.getDeclaredConstructor(strategyCoreParamClazz).newInstance(param);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
-
-    public StrategyCore getStrategyCore(StrategyCoreParam param) {
-        try {
-            return strategyCoreClazz.getDeclaredConstructor(strategyCoreParamClazz).newInstance(param);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+  }
 }

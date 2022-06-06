@@ -23,26 +23,33 @@ import org.springframework.stereotype.Service;
 @Service
 public class BackTestingService {
 
-    private final StrategyFactory strategyFactory;
-    private final BackTestingContextLoaderFactory backTestingContextLoaderFactory;
-    private final IndexCalculator indexCalculator;
-    private final Map<String, BackTestingProcessor> backTestingProcessorMap; //fixme 한번 래핑해서 다루기, 자동매매 삭제됐을때 얘도 삭제좀;
+  private final StrategyFactory strategyFactory;
+  private final BackTestingContextLoaderFactory backTestingContextLoaderFactory;
+  private final IndexCalculator indexCalculator;
+  private final Map<String, BackTestingProcessor>
+      backTestingProcessorMap; // fixme 한번 래핑해서 다루기, 자동매매 삭제됐을때 얘도 삭제좀;
 
-    public BackTestingProcessor doTest(AutoTradingProcessor autoTradingProcessor, LocalDateTime start, LocalDateTime end) {
+  public BackTestingProcessor doTest(
+      AutoTradingProcessor autoTradingProcessor, LocalDateTime start, LocalDateTime end) {
 
-        Strategy strategy = autoTradingProcessor.getStrategy();
-        String keyPairdId = strategy.getStrategyService().getKeyPairId();
-        TradingTerm tradingTerm = autoTradingProcessor.getTradingTerm();
+    Strategy strategy = autoTradingProcessor.getStrategy();
+    String keyPairdId = strategy.getStrategyService().getKeyPairId();
+    TradingTerm tradingTerm = autoTradingProcessor.getTradingTerm();
 
-        BackTestingContextLoader contextLoader = backTestingContextLoaderFactory.create(autoTradingProcessor, start, end);
+    BackTestingContextLoader contextLoader =
+        backTestingContextLoaderFactory.create(autoTradingProcessor, start, end);
 
-        BackTestingExchangeService backTestingExchangeService = BackTestingExchangeService.builder()
+    BackTestingExchangeService backTestingExchangeService =
+        BackTestingExchangeService.builder()
             .contextLoader(contextLoader)
             .indexCalculator(indexCalculator)
-            .exchangeFeeRate(BackTestingExchangeFeeType.of(autoTradingProcessor.getCoinExchangeType()).getFeeRate())
+            .exchangeFeeRate(
+                BackTestingExchangeFeeType.of(autoTradingProcessor.getCoinExchangeType())
+                    .getFeeRate())
             .build();
 
-        StrategyServiceParam serviceParam = StrategyServiceParam.builder()
+    StrategyServiceParam serviceParam =
+        StrategyServiceParam.builder()
             .strategyCode(strategy.getStrategyCode())
             .exchangeService(backTestingExchangeService)
             .coinType(autoTradingProcessor.getCoinType())
@@ -50,9 +57,11 @@ public class BackTestingService {
             .keyPairId(keyPairdId)
             .build();
 
-        Strategy backTestingStrategy = strategyFactory.create(serviceParam, strategy.getStrategyCore().getParam());
+    Strategy backTestingStrategy =
+        strategyFactory.create(serviceParam, strategy.getStrategyCore().getParam());
 
-        BackTestingProcessor backTestingProcessor = BackTestingProcessor.builder()
+    BackTestingProcessor backTestingProcessor =
+        BackTestingProcessor.builder()
             .id("BACKTESTING-" + autoTradingProcessor.getId())
             .userId(autoTradingProcessor.getUserId())
             .autoTradingProcessorId(autoTradingProcessor.getId())
@@ -63,15 +72,15 @@ public class BackTestingService {
             .duration(1000)
             .build();
 
-        backTestingProcessor.start();
-        backTestingProcessorMap.put(backTestingProcessor.getId(), backTestingProcessor);
+    backTestingProcessor.start();
+    backTestingProcessorMap.put(backTestingProcessor.getId(), backTestingProcessor);
 
-        return backTestingProcessor;
-    }
+    return backTestingProcessor;
+  }
 
-    public List<BackTestingProcessor> getBackTestingProcessorList(String userId) {
-        return backTestingProcessorMap.values().stream()
-            .filter(processor -> processor.getUserId().equals(userId))
-            .collect(Collectors.toList());
-    }
+  public List<BackTestingProcessor> getBackTestingProcessorList(String userId) {
+    return backTestingProcessorMap.values().stream()
+        .filter(processor -> processor.getUserId().equals(userId))
+        .collect(Collectors.toList());
+  }
 }

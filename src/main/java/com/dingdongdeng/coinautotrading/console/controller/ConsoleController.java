@@ -15,26 +15,23 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class ConsoleController {
 
-    @RequestMapping("/")
-    public String index() {
-        return "index";
-    }
+  @RequestMapping("/")
+  public String index() {
+    return "index";
+  }
 
-    @GetMapping("/type")
-    @ResponseBody
-    public CommonResponse<TypeInfoResponse> getTypeInfo() {
-        return CommonResponse.<TypeInfoResponse>builder()
-            .body(
-                TypeInfoResponse.builder()
-                    .coinTypeList(TypeInfoTemplate.listOf(CoinType.toMap()))
-                    .coinExchangeTypeList(TypeInfoTemplate.listOf(CoinExchangeType.toMap()))
-                    .tradingTermList(TypeInfoTemplate.listOf(TradingTerm.toMap()))
-                    .strategyCodeList(TypeInfoTemplate.listOf(StrategyCode.toMap()))
-                    .build()
-            )
-            .message("get type info success")
-            .build();
-    }
-
-
+  @GetMapping("/type")
+  @ResponseBody
+  public CommonResponse<TypeInfoResponse> getTypeInfo() {
+    return CommonResponse.<TypeInfoResponse>builder()
+        .body(
+            TypeInfoResponse.builder()
+                .coinTypeList(TypeInfoTemplate.listOf(CoinType.toMap()))
+                .coinExchangeTypeList(TypeInfoTemplate.listOf(CoinExchangeType.toMap()))
+                .tradingTermList(TypeInfoTemplate.listOf(TradingTerm.toMap()))
+                .strategyCodeList(TypeInfoTemplate.listOf(StrategyCode.toMap()))
+                .build())
+        .message("get type info success")
+        .build();
+  }
 }

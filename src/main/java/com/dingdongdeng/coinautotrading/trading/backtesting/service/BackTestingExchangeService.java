@@ -29,15 +29,15 @@ import lombok.extern.slf4j.Slf4j;
 @Builder
 public class BackTestingExchangeService implements ExchangeService {
 
-    private BackTestingContextLoader contextLoader;
-    private IndexCalculator indexCalculator;
-    private double exchangeFeeRate;
-    @Default
-    private Map<String, ExchangeOrder> orderMap = new HashMap<>();
+  private BackTestingContextLoader contextLoader;
+  private IndexCalculator indexCalculator;
+  private double exchangeFeeRate;
+  @Default private Map<String, ExchangeOrder> orderMap = new HashMap<>();
 
-    @Override
-    public ExchangeOrder order(ExchangeOrderParam param, String keyPairId) {
-        ExchangeOrder order = ExchangeOrder.builder()
+  @Override
+  public ExchangeOrder order(ExchangeOrderParam param, String keyPairId) {
+    ExchangeOrder order =
+        ExchangeOrder.builder()
             .orderId(UUID.randomUUID().toString())
             .orderType(param.getOrderType())
             .priceType(param.getPriceType())
@@ -57,15 +57,16 @@ public class BackTestingExchangeService implements ExchangeService {
             .tradeList(null)
             .build();
 
-        orderMap.put(order.getOrderId(), order);
-        return order;
-    }
+    orderMap.put(order.getOrderId(), order);
+    return order;
+  }
 
-    @Override
-    public ExchangeOrderCancel orderCancel(ExchangeOrderCancelParam param, String keyPairId) {
-        ExchangeOrder order = orderMap.get(param.getOrderId());
+  @Override
+  public ExchangeOrderCancel orderCancel(ExchangeOrderCancelParam param, String keyPairId) {
+    ExchangeOrder order = orderMap.get(param.getOrderId());
 
-        ExchangeOrderCancel orderCancel = ExchangeOrderCancel.builder()
+    ExchangeOrderCancel orderCancel =
+        ExchangeOrderCancel.builder()
             .orderId(param.getOrderId())
             .orderType(order.getOrderType())
             .priceType(order.getPriceType())
@@ -83,7 +84,8 @@ public class BackTestingExchangeService implements ExchangeService {
             .tradeCount(order.getTradeCount())
             .build();
 
-        ExchangeOrder order1 = ExchangeOrder.builder()
+    ExchangeOrder order1 =
+        ExchangeOrder.builder()
             .orderId(param.getOrderId())
             .orderType(order.getOrderType())
             .priceType(order.getPriceType())
@@ -103,44 +105,40 @@ public class BackTestingExchangeService implements ExchangeService {
             .tradeList(order.getTradeList())
             .build();
 
-        orderMap.put(order1.getOrderId(), order1);
-        return orderCancel;
-    }
+    orderMap.put(order1.getOrderId(), order1);
+    return orderCancel;
+  }
 
-    @Override
-    public ExchangeTradingInfo getTradingInformation(ExchangeTradingInfoParam param, String keyPairId) {
-        BackTestingContext context = contextLoader.getCurrentContext();
-        double currentPrice = context.getCurrentPrice();
-        ExchangeCandles candles = context.getCandles();
+  @Override
+  public ExchangeTradingInfo getTradingInformation(
+      ExchangeTradingInfoParam param, String keyPairId) {
+    BackTestingContext context = contextLoader.getCurrentContext();
+    double currentPrice = context.getCurrentPrice();
+    ExchangeCandles candles = context.getCandles();
 
-        return ExchangeTradingInfo.builder()
-            .coinType(param.getCoinType())
-            .coinExchangeType(getCoinExchangeType())
-            .tradingTerm(param.getTradingTerm())
-            .currency(null)
-            .balance(400 * 10000d)
-            .locked(null)
+    return ExchangeTradingInfo.builder()
+        .coinType(param.getCoinType())
+        .coinExchangeType(getCoinExchangeType())
+        .tradingTerm(param.getTradingTerm())
+        .currency(null)
+        .balance(400 * 10000d)
+        .locked(null)
+        .avgBuyPrice(null)
+        .avgBuyPriceModified(false)
+        .unitCurrency(null)
+        .candles(candles)
+        .ticker(ExchangeTicker.builder().tradePrice(currentPrice).build())
+        .rsi(indexCalculator.getRsi(candles))
+        .build();
+  }
 
-            .avgBuyPrice(null)
-            .avgBuyPriceModified(false)
-            .unitCurrency(null)
+  @Override
+  public ExchangeOrder getOrderInfo(ExchangeOrderInfoParam param, String keyPairId) {
+    return orderMap.get(param.getOrderId());
+  }
 
-            .candles(candles)
-            .ticker(ExchangeTicker.builder().tradePrice(currentPrice).build())
-
-            .rsi(indexCalculator.getRsi(candles))
-            .build();
-    }
-
-    @Override
-    public ExchangeOrder getOrderInfo(ExchangeOrderInfoParam param, String keyPairId) {
-        return orderMap.get(param.getOrderId());
-    }
-
-    @Override
-    public CoinExchangeType getCoinExchangeType() {
-        return null;
-    }
-
-
+  @Override
+  public CoinExchangeType getCoinExchangeType() {
+    return null;
+  }
 }

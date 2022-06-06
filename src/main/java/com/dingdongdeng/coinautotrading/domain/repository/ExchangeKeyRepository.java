@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ExchangeKeyRepository extends JpaRepository<ExchangeKey, Long> {
 
-    List<ExchangeKey> findByPairId(String pairId);
+  List<ExchangeKey> findByPairId(String pairId);
 
-    List<ExchangeKey> findByUserId(String userId);
+  List<ExchangeKey> findByUserId(String userId);
 }

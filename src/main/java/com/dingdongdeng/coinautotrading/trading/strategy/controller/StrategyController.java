@@ -19,29 +19,26 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class StrategyController {
 
-    @GetMapping("/{strategyCode}/meta")
-    public CommonResponse<StrategyMetaResponse> getMeta(@PathVariable String strategyCode) {
-        StrategyCode code = StrategyCode.of(strategyCode.toUpperCase());
-        Field[] fields = code.getStrategyCoreParamClazz().getDeclaredFields();
-        return CommonResponse.<StrategyMetaResponse>builder()
-            .body(
-                StrategyMetaResponse.builder()
-                    .strategyCode(code)
-                    .paramMetaList(
-                        Arrays.stream(fields)
-                            .map(
-                                field -> ParamMeta.builder()
+  @GetMapping("/{strategyCode}/meta")
+  public CommonResponse<StrategyMetaResponse> getMeta(@PathVariable String strategyCode) {
+    StrategyCode code = StrategyCode.of(strategyCode.toUpperCase());
+    Field[] fields = code.getStrategyCoreParamClazz().getDeclaredFields();
+    return CommonResponse.<StrategyMetaResponse>builder()
+        .body(
+            StrategyMetaResponse.builder()
+                .strategyCode(code)
+                .paramMetaList(
+                    Arrays.stream(fields)
+                        .map(
+                            field ->
+                                ParamMeta.builder()
                                     .name(field.getName())
                                     .guideMessage(field.getAnnotation(GuideMessage.class).value())
                                     .type(field.getType().getSimpleName())
-                                    .build()
-                            ).collect(Collectors.toList())
-
-                    )
-                    .build()
-            )
-            .message("success")
-            .build();
-    }
-
+                                    .build())
+                        .collect(Collectors.toList()))
+                .build())
+        .message("success")
+        .build();
+  }
 }

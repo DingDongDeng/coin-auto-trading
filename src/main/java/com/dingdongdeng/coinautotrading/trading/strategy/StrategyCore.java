@@ -8,12 +8,11 @@ import java.util.List;
 
 public interface StrategyCore {
 
-    List<TradingTask> makeTradingTask(TradingInfo tradingInfo);
+  List<TradingTask> makeTradingTask(TradingInfo tradingInfo);
 
-    void handleOrderResult(TradingResult tradingResult);
+  void handleOrderResult(TradingResult tradingResult);
 
-    void handleOrderCancelResult(TradingResult tradingResult);
+  void handleOrderCancelResult(TradingResult tradingResult);
 
-    StrategyCoreParam getParam();
-
+  StrategyCoreParam getParam();
 }

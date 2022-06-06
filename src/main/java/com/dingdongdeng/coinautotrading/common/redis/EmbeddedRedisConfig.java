@@ -11,30 +11,33 @@ import redis.embedded.RedisServer;
 @Configuration
 public class EmbeddedRedisConfig {
 
-    @Value("${spring.redis.host}")
-    private String host;
-    @Value("${spring.redis.port}")
-    private int port;
-    private RedisServer redisServer;
+  @Value("${spring.redis.host}")
+  private String host;
 
-    public EmbeddedRedisConfig(@Value("${spring.redis.port}") int port, @Value("${spring.redis.host}") String host) {
-        this.host = host;
-        this.port = port;
-        this.redisServer = new RedisServer(port);
-    }
+  @Value("${spring.redis.port}")
+  private int port;
 
-    @PostConstruct
-    public void postConstruct() {
-        try {
-            redisServer.stop();
-            redisServer.start();
-        } catch (Exception ige) {
-            log.error(ige.getMessage());
-        }
-    }
+  private RedisServer redisServer;
 
-    @PreDestroy
-    public void preDestroy() {
-        redisServer.stop();
+  public EmbeddedRedisConfig(
+      @Value("${spring.redis.port}") int port, @Value("${spring.redis.host}") String host) {
+    this.host = host;
+    this.port = port;
+    this.redisServer = new RedisServer(port);
+  }
+
+  @PostConstruct
+  public void postConstruct() {
+    try {
+      redisServer.stop();
+      redisServer.start();
+    } catch (Exception ige) {
+      log.error(ige.getMessage());
     }
+  }
+
+  @PreDestroy
+  public void preDestroy() {
+    redisServer.stop();
+  }
 }

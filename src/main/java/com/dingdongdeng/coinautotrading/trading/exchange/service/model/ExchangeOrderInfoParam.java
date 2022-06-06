@@ -9,5 +9,5 @@ import lombok.ToString;
 @Builder
 public class ExchangeOrderInfoParam {
 
-    private String orderId;
+  private String orderId;
 }

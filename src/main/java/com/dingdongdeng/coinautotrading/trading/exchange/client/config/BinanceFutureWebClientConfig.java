@@ -10,11 +10,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class BinanceFutureWebClientConfig extends WebClientConfig {
 
-    private final BinanceFutureClientResourceProperties properties;
+  private final BinanceFutureClientResourceProperties properties;
 
-    @Bean
-    public WebClient binanceFutureWebClient() {
-        return makeWebClient(properties.getBaseUrl(), properties.getReadTimeout(), properties.getConnectionTimeout());
-    }
-
+  @Bean
+  public WebClient binanceFutureWebClient() {
+    return makeWebClient(
+        properties.getBaseUrl(), properties.getReadTimeout(), properties.getConnectionTimeout());
+  }
 }

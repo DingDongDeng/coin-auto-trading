@@ -21,24 +21,24 @@ import lombok.ToString;
 @NoArgsConstructor
 public class TradingResult {
 
-    private String identifyCode;
-    private CoinType coinType;
-    private TradingTerm tradingTerm;
-    private OrderType orderType;
-    private OrderState orderState;
-    private Double volume;
-    private Double price;
-    private Double fee;
-    private PriceType priceType;
-    private String orderId;
-    private TradingTag tag;
-    private LocalDateTime createdAt;
+  private String identifyCode;
+  private CoinType coinType;
+  private TradingTerm tradingTerm;
+  private OrderType orderType;
+  private OrderState orderState;
+  private Double volume;
+  private Double price;
+  private Double fee;
+  private PriceType priceType;
+  private String orderId;
+  private TradingTag tag;
+  private LocalDateTime createdAt;
 
-    public boolean isDone() {
-        return this.orderState == OrderState.DONE;
-    }
+  public boolean isDone() {
+    return this.orderState == OrderState.DONE;
+  }
 
-    public boolean isExist() {
-        return Objects.nonNull(identifyCode);
-    }
+  public boolean isExist() {
+    return Objects.nonNull(identifyCode);
+  }
 }

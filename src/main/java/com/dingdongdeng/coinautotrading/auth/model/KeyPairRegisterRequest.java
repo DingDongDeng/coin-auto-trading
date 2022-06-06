@@ -17,10 +17,7 @@ import lombok.ToString;
 @Builder
 public class KeyPairRegisterRequest {
 
-    @NotNull
-    private CoinExchangeType coinExchangeType;
+  @NotNull private CoinExchangeType coinExchangeType;
 
-    @Valid
-    @NotNull
-    private List<Key> keyList;
+  @Valid @NotNull private List<Key> keyList;
 }

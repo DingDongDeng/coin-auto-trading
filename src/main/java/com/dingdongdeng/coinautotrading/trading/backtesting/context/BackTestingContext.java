@@ -13,9 +13,9 @@ import lombok.Getter;
 @Builder
 public class BackTestingContext {
 
-    private CoinExchangeType coinExchangeType;
-    private CoinType coinType;
-    private Double currentPrice;
-    private LocalDateTime now;
-    private ExchangeCandles candles;
+  private CoinExchangeType coinExchangeType;
+  private CoinType coinType;
+  private Double currentPrice;
+  private LocalDateTime now;
+  private ExchangeCandles candles;
 }

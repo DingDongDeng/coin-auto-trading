@@ -11,19 +11,18 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class RedisServiceTest {
 
-    @Autowired
-    private RedisService redisService;
+  @Autowired private RedisService redisService;
 
-    @Test
-    public void Redis_조회_생성_삭제_테스트() {
-        String key = "test";
-        String value = "test string";
-        redisService.set(key, value);
-        String str = redisService.get(key);
-        redisService.delete(key);
-        String str2 = redisService.get(key);
+  @Test
+  public void Redis_조회_생성_삭제_테스트() {
+    String key = "test";
+    String value = "test string";
+    redisService.set(key, value);
+    String str = redisService.get(key);
+    redisService.delete(key);
+    String str2 = redisService.get(key);
 
-        assertEquals(value, str);
-        assertEquals(null, str2);
-    }
+    assertEquals(value, str);
+    assertEquals(null, str2);
+  }
 }

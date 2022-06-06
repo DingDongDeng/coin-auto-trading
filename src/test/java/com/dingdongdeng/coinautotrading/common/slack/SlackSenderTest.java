@@ -9,11 +9,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class SlackSenderTest {
 
-    @Autowired
-    private SlackSender slackSender;
+  @Autowired private SlackSender slackSender;
 
-    @Test
-    public void 슬랙_발송_테스트() {
-        slackSender.send(new RuntimeException("슬랙 발송 테스트"));
-    }
+  @Test
+  public void 슬랙_발송_테스트() {
+    slackSender.send(new RuntimeException("슬랙 발송 테스트"));
+  }
 }

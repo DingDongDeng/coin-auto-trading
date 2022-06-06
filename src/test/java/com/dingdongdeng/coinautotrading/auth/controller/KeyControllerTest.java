@@ -48,189 +48,235 @@ import org.springframework.web.context.WebApplicationContext;
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class, MockitoExtension.class})
 class KeyControllerTest {
 
-    private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @SpyBean
-    private KeyService keyService;
-    @Autowired
-    private ExchangeKeyRepository exchangeKeyRepository;
+  private MockMvc mockMvc;
+  @Autowired private ObjectMapper objectMapper;
+  @SpyBean private KeyService keyService;
+  @Autowired private ExchangeKeyRepository exchangeKeyRepository;
 
-    @Value("${upbit.client.accessKey}")
-    private String accessKey;
-    @Value("${upbit.client.secretKey}")
-    private String secretKey;
+  @Value("${upbit.client.accessKey}")
+  private String accessKey;
 
-    private String userId = "123456";
-    private String keyPairId;
+  @Value("${upbit.client.secretKey}")
+  private String secretKey;
 
+  private String userId = "123456";
+  private String keyPairId;
 
-    @BeforeEach
-    public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+  @BeforeEach
+  public void setUp(
+      WebApplicationContext webApplicationContext,
+      RestDocumentationContextProvider restDocumentation) {
+    this.mockMvc =
+        MockMvcBuilders.webAppContextSetup(webApplicationContext)
             .apply(documentationConfiguration(restDocumentation))
             .build();
 
-        //fixme 많은 테스트 코드에서 아래 코드가 중복됨
-        String keyPairId = UUID.randomUUID().toString();
-        exchangeKeyRepository.save(
-            ExchangeKey.builder()
-                .pairId(keyPairId)
-                .coinExchangeType(CoinExchangeType.UPBIT)
-                .name("ACCESS_KEY")
-                .value(accessKey)
-                .userId(userId)
-                .build()
-        );
+    // fixme 많은 테스트 코드에서 아래 코드가 중복됨
+    String keyPairId = UUID.randomUUID().toString();
+    exchangeKeyRepository.save(
+        ExchangeKey.builder()
+            .pairId(keyPairId)
+            .coinExchangeType(CoinExchangeType.UPBIT)
+            .name("ACCESS_KEY")
+            .value(accessKey)
+            .userId(userId)
+            .build());
 
-        exchangeKeyRepository.save(
-            ExchangeKey.builder()
-                .pairId(keyPairId)
-                .coinExchangeType(CoinExchangeType.UPBIT)
-                .name("SECRET_KEY")
-                .value(secretKey)
-                .userId(userId)
-                .build()
-        );
+    exchangeKeyRepository.save(
+        ExchangeKey.builder()
+            .pairId(keyPairId)
+            .coinExchangeType(CoinExchangeType.UPBIT)
+            .name("SECRET_KEY")
+            .value(secretKey)
+            .userId(userId)
+            .build());
 
-        this.keyPairId = keyPairId;
-    }
+    this.keyPairId = keyPairId;
+  }
 
-    @Test
-    public void 거래소_키_등록_테스트() throws Exception {
+  @Test
+  public void 거래소_키_등록_테스트() throws Exception {
 
-        CoinExchangeType coinExchangeType = CoinExchangeType.UPBIT;
-        String userId = "1234";
-        List<Key> keyList = List.of(new Key("accessKey", "accessKey-123123123"), new Key("secretKey", "secretKey-1231231223"));
-        KeyPairRegisterRequest request = KeyPairRegisterRequest.builder()
+    CoinExchangeType coinExchangeType = CoinExchangeType.UPBIT;
+    String userId = "1234";
+    List<Key> keyList =
+        List.of(
+            new Key("accessKey", "accessKey-123123123"),
+            new Key("secretKey", "secretKey-1231231223"));
+    KeyPairRegisterRequest request =
+        KeyPairRegisterRequest.builder()
             .coinExchangeType(coinExchangeType)
             .keyList(keyList)
             .build();
 
-        Mockito.doReturn(
+    Mockito.doReturn(
             List.of(
                 KeyPairResponse.builder()
                     .pairId(UUID.randomUUID().toString())
                     .coinExchangeType(coinExchangeType)
                     .keyList(keyList)
-                    .build()
-            )
-        )
-            .when(keyService).register(Mockito.any(), Mockito.any());
+                    .build()))
+        .when(keyService)
+        .register(Mockito.any(), Mockito.any());
 
-        MvcResult result = this.mockMvc.perform(
-            RestDocumentationRequestBuilders.post("/key/pair")
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("userId", userId)
-                .content(objectMapper.writeValueAsString(request))
-        )
+    MvcResult result =
+        this.mockMvc
+            .perform(
+                RestDocumentationRequestBuilders.post("/key/pair")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header("userId", userId)
+                    .content(objectMapper.writeValueAsString(request)))
             .andExpect(status().isOk())
             .andDo(
-                document("key/pair",
+                document(
+                    "key/pair",
                     ApiDocumentUtils.getDocumentRequest(),
                     ApiDocumentUtils.getDocumentResponse(),
-                    requestHeaders(
-                        headerWithName("userId").description("사용자ID")
-                    ),
+                    requestHeaders(headerWithName("userId").description("사용자ID")),
                     requestFields(
-                        fieldWithPath("coinExchangeType").type(JsonFieldType.STRING).description("거래소 종류(upbit)"),
-                        fieldWithPath("keyList[]").type(JsonFieldType.ARRAY).description("거래소 api 사용을 위한 키"),
-                        fieldWithPath("keyList[].name").type(JsonFieldType.STRING).description("키 이름"),
-                        fieldWithPath("keyList[].value").type(JsonFieldType.STRING).description("키 값")
-                    ),
+                        fieldWithPath("coinExchangeType")
+                            .type(JsonFieldType.STRING)
+                            .description("거래소 종류(upbit)"),
+                        fieldWithPath("keyList[]")
+                            .type(JsonFieldType.ARRAY)
+                            .description("거래소 api 사용을 위한 키"),
+                        fieldWithPath("keyList[].name")
+                            .type(JsonFieldType.STRING)
+                            .description("키 이름"),
+                        fieldWithPath("keyList[].value")
+                            .type(JsonFieldType.STRING)
+                            .description("키 값")),
                     responseFields(
-                        fieldWithPath("body[]").type(JsonFieldType.ARRAY).description("데이터").optional(),
-                        fieldWithPath("body[].pairId").type(JsonFieldType.STRING).description("키 페어 ID"),
-                        fieldWithPath("body[].coinExchangeType").type(JsonFieldType.STRING).description("거래소 종류(upbit)"),
-                        fieldWithPath("body[].keyList[]").type(JsonFieldType.ARRAY).description("키 리스트"),
-                        fieldWithPath("body[].keyList[].name").type(JsonFieldType.STRING).description("키 이름"),
-                        fieldWithPath("body[].keyList[].value").type(JsonFieldType.STRING).description("키 값(마스킹)"),
-                        fieldWithPath("message").type(JsonFieldType.STRING).description("메세지").optional()
-                    )
-                )
-            )
+                        fieldWithPath("body[]")
+                            .type(JsonFieldType.ARRAY)
+                            .description("데이터")
+                            .optional(),
+                        fieldWithPath("body[].pairId")
+                            .type(JsonFieldType.STRING)
+                            .description("키 페어 ID"),
+                        fieldWithPath("body[].coinExchangeType")
+                            .type(JsonFieldType.STRING)
+                            .description("거래소 종류(upbit)"),
+                        fieldWithPath("body[].keyList[]")
+                            .type(JsonFieldType.ARRAY)
+                            .description("키 리스트"),
+                        fieldWithPath("body[].keyList[].name")
+                            .type(JsonFieldType.STRING)
+                            .description("키 이름"),
+                        fieldWithPath("body[].keyList[].value")
+                            .type(JsonFieldType.STRING)
+                            .description("키 값(마스킹)"),
+                        fieldWithPath("message")
+                            .type(JsonFieldType.STRING)
+                            .description("메세지")
+                            .optional())))
             .andReturn();
-    }
+  }
 
-    @Test
-    public void 사용자_거래소_키_조회_테스트() throws Exception {
+  @Test
+  public void 사용자_거래소_키_조회_테스트() throws Exception {
 
-        CoinExchangeType coinExchangeType = CoinExchangeType.UPBIT;
-        String userId = "1234";
-        List<Key> keyList = List.of(new Key("accessKey", "accessKey-123123123"), new Key("secretKey", "secretKey-1231231223"));
+    CoinExchangeType coinExchangeType = CoinExchangeType.UPBIT;
+    String userId = "1234";
+    List<Key> keyList =
+        List.of(
+            new Key("accessKey", "accessKey-123123123"),
+            new Key("secretKey", "secretKey-1231231223"));
 
-        Mockito.doReturn(
+    Mockito.doReturn(
             List.of(
                 KeyPairResponse.builder()
                     .pairId(UUID.randomUUID().toString())
                     .coinExchangeType(coinExchangeType)
                     .keyList(keyList)
-                    .build()
-            )
-        )
-            .when(keyService).getUserKeyList(Mockito.any());
+                    .build()))
+        .when(keyService)
+        .getUserKeyList(Mockito.any());
 
-        MvcResult result = this.mockMvc.perform(
-            RestDocumentationRequestBuilders.get("/user/{userId}/key/pair", userId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("userId", userId)
-        )
+    MvcResult result =
+        this.mockMvc
+            .perform(
+                RestDocumentationRequestBuilders.get("/user/{userId}/key/pair", userId)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header("userId", userId))
             .andExpect(status().isOk())
             .andDo(
-                document("user/key/pair",
+                document(
+                    "user/key/pair",
                     ApiDocumentUtils.getDocumentRequest(),
                     ApiDocumentUtils.getDocumentResponse(),
-                    requestHeaders(
-                        headerWithName("userId").description("사용자ID")
-                    ),
+                    requestHeaders(headerWithName("userId").description("사용자ID")),
                     pathParameters(
-                        RequestDocumentation.parameterWithName("userId").description("사용자 ID")
-                    ),
+                        RequestDocumentation.parameterWithName("userId").description("사용자 ID")),
                     responseFields(
-                        fieldWithPath("body[]").type(JsonFieldType.ARRAY).description("데이터").optional(),
-                        fieldWithPath("body[].pairId").type(JsonFieldType.STRING).description("키 페어 ID"),
-                        fieldWithPath("body[].coinExchangeType").type(JsonFieldType.STRING).description("거래소 종류(upbit)"),
-                        fieldWithPath("body[].keyList[]").type(JsonFieldType.ARRAY).description("키 리스트"),
-                        fieldWithPath("body[].keyList[].name").type(JsonFieldType.STRING).description("키 이름"),
-                        fieldWithPath("body[].keyList[].value").type(JsonFieldType.STRING).description("키 값(마스킹)"),
-                        fieldWithPath("message").type(JsonFieldType.STRING).description("메세지").optional()
-                    )
-                )
-            )
+                        fieldWithPath("body[]")
+                            .type(JsonFieldType.ARRAY)
+                            .description("데이터")
+                            .optional(),
+                        fieldWithPath("body[].pairId")
+                            .type(JsonFieldType.STRING)
+                            .description("키 페어 ID"),
+                        fieldWithPath("body[].coinExchangeType")
+                            .type(JsonFieldType.STRING)
+                            .description("거래소 종류(upbit)"),
+                        fieldWithPath("body[].keyList[]")
+                            .type(JsonFieldType.ARRAY)
+                            .description("키 리스트"),
+                        fieldWithPath("body[].keyList[].name")
+                            .type(JsonFieldType.STRING)
+                            .description("키 이름"),
+                        fieldWithPath("body[].keyList[].value")
+                            .type(JsonFieldType.STRING)
+                            .description("키 값(마스킹)"),
+                        fieldWithPath("message")
+                            .type(JsonFieldType.STRING)
+                            .description("메세지")
+                            .optional())))
             .andReturn();
-    }
+  }
 
-    @Test
-    public void 거래소_키_삭제_테스트() throws Exception {
+  @Test
+  public void 거래소_키_삭제_테스트() throws Exception {
 
-        MvcResult result = this.mockMvc.perform(
-            RestDocumentationRequestBuilders.delete("/key/pair/{pairKeyId}", keyPairId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("userId", userId)
-        )
+    MvcResult result =
+        this.mockMvc
+            .perform(
+                RestDocumentationRequestBuilders.delete("/key/pair/{pairKeyId}", keyPairId)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header("userId", userId))
             .andExpect(status().isOk())
             .andDo(
-                document("key/pair",
+                document(
+                    "key/pair",
                     ApiDocumentUtils.getDocumentRequest(),
                     ApiDocumentUtils.getDocumentResponse(),
-                    requestHeaders(
-                        headerWithName("userId").description("사용자ID")
-                    ),
+                    requestHeaders(headerWithName("userId").description("사용자ID")),
                     pathParameters(
-                        RequestDocumentation.parameterWithName("pairKeyId").description("키페어 ID")
-                    ),
+                        RequestDocumentation.parameterWithName("pairKeyId").description("키페어 ID")),
                     responseFields(
-                        fieldWithPath("body[]").type(JsonFieldType.ARRAY).description("데이터").optional(),
-                        fieldWithPath("body[].pairId").type(JsonFieldType.STRING).description("키 페어 ID"),
-                        fieldWithPath("body[].coinExchangeType").type(JsonFieldType.STRING).description("거래소 종류(upbit)"),
-                        fieldWithPath("body[].keyList[]").type(JsonFieldType.ARRAY).description("키 리스트"),
-                        fieldWithPath("body[].keyList[].name").type(JsonFieldType.STRING).description("키 이름"),
-                        fieldWithPath("body[].keyList[].value").type(JsonFieldType.STRING).description("키 값(마스킹)"),
-                        fieldWithPath("message").type(JsonFieldType.STRING).description("메세지").optional()
-                    )
-                )
-            )
+                        fieldWithPath("body[]")
+                            .type(JsonFieldType.ARRAY)
+                            .description("데이터")
+                            .optional(),
+                        fieldWithPath("body[].pairId")
+                            .type(JsonFieldType.STRING)
+                            .description("키 페어 ID"),
+                        fieldWithPath("body[].coinExchangeType")
+                            .type(JsonFieldType.STRING)
+                            .description("거래소 종류(upbit)"),
+                        fieldWithPath("body[].keyList[]")
+                            .type(JsonFieldType.ARRAY)
+                            .description("키 리스트"),
+                        fieldWithPath("body[].keyList[].name")
+                            .type(JsonFieldType.STRING)
+                            .description("키 이름"),
+                        fieldWithPath("body[].keyList[].value")
+                            .type(JsonFieldType.STRING)
+                            .description("키 값(마스킹)"),
+                        fieldWithPath("message")
+                            .type(JsonFieldType.STRING)
+                            .description("메세지")
+                            .optional())))
             .andReturn();
-    }
-
+  }
 }

@@ -21,30 +21,31 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 @RestController
 public class KeyController {
 
-    private final KeyService keyService;
+  private final KeyService keyService;
 
-    @GetMapping("/user/{userId}/key/pair")
-    public CommonResponse<List<KeyPairResponse>> getKeyList(@SessionAttribute String userId) {
-        return CommonResponse.<List<KeyPairResponse>>builder()
-            .body(keyService.getUserKeyList(userId))
-            .message("key get success")
-            .build();
-    }
+  @GetMapping("/user/{userId}/key/pair")
+  public CommonResponse<List<KeyPairResponse>> getKeyList(@SessionAttribute String userId) {
+    return CommonResponse.<List<KeyPairResponse>>builder()
+        .body(keyService.getUserKeyList(userId))
+        .message("key get success")
+        .build();
+  }
 
-    @PostMapping("/key/pair")
-    public CommonResponse<List<KeyPairResponse>> registerKey(@Valid @RequestBody KeyPairRegisterRequest request, @SessionAttribute String userId) {
-        return CommonResponse.<List<KeyPairResponse>>builder()
-            .body(keyService.register(request, userId))
-            .message("key register success")
-            .build();
-    }
+  @PostMapping("/key/pair")
+  public CommonResponse<List<KeyPairResponse>> registerKey(
+      @Valid @RequestBody KeyPairRegisterRequest request, @SessionAttribute String userId) {
+    return CommonResponse.<List<KeyPairResponse>>builder()
+        .body(keyService.register(request, userId))
+        .message("key register success")
+        .build();
+  }
 
-    @DeleteMapping("/key/pair/{keyPairId}")
-    public CommonResponse<List<KeyPairResponse>> deleteKey(@PathVariable String keyPairId, @SessionAttribute String userId) {
-        return CommonResponse.<List<KeyPairResponse>>builder()
-            .body(keyService.deleteKeyPair(keyPairId, userId))
-            .message("key register success")
-            .build();
-    }
-
+  @DeleteMapping("/key/pair/{keyPairId}")
+  public CommonResponse<List<KeyPairResponse>> deleteKey(
+      @PathVariable String keyPairId, @SessionAttribute String userId) {
+    return CommonResponse.<List<KeyPairResponse>>builder()
+        .body(keyService.deleteKeyPair(keyPairId, userId))
+        .message("key register success")
+        .build();
+  }
 }

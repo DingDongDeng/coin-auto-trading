@@ -10,8 +10,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class WebclientConfig extends WebClientConfig {
 
-    @Bean
-    public WebClient slackWebClient() {
-        return makeWebClient(null, 5000, 5000);
-    }
+  @Bean
+  public WebClient slackWebClient() {
+    return makeWebClient(null, 5000, 5000);
+  }
 }

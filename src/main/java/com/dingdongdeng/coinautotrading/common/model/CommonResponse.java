@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CommonResponse<T> {
 
-    private T body;
-    private String message;
+  private T body;
+  private String message;
 }

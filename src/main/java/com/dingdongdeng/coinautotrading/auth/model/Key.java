@@ -14,8 +14,6 @@ import lombok.ToString;
 @Builder
 public class Key {
 
-    @NotBlank
-    private String name;
-    @NotBlank
-    private String value;
+  @NotBlank private String name;
+  @NotBlank private String value;
 }

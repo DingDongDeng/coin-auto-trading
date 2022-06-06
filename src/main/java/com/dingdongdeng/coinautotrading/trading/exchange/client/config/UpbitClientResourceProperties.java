@@ -9,10 +9,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class UpbitClientResourceProperties {
 
-    private String accessKey;
-    private String secretKey;
+  private String accessKey;
+  private String secretKey;
 
-    private String baseUrl;
-    private int readTimeout;
-    private int connectionTimeout;
+  private String baseUrl;
+  private int readTimeout;
+  private int connectionTimeout;
 }

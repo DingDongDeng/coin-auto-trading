@@ -9,20 +9,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class RedisService {
 
-    private final RedisTemplate<String, Object> redisTemplate;
-    private final int DEFAULT_EXPIRE_DAYS = 3;
+  private final RedisTemplate<String, Object> redisTemplate;
+  private final int DEFAULT_EXPIRE_DAYS = 3;
 
-    public void set(String key, String value) {
-        redisTemplate.opsForValue().set(key, value);
-        redisTemplate.expire(key, DEFAULT_EXPIRE_DAYS, TimeUnit.DAYS);
-    }
+  public void set(String key, String value) {
+    redisTemplate.opsForValue().set(key, value);
+    redisTemplate.expire(key, DEFAULT_EXPIRE_DAYS, TimeUnit.DAYS);
+  }
 
-    public String get(String key) {
-        return (String) (redisTemplate.opsForValue().get(key));
-    }
+  public String get(String key) {
+    return (String) (redisTemplate.opsForValue().get(key));
+  }
 
-    public void delete(String key) {
-        redisTemplate.delete(key);
-    }
-
+  public void delete(String key) {
+    redisTemplate.delete(key);
+  }
 }

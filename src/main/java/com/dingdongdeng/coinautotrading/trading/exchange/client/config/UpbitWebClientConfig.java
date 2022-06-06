@@ -10,11 +10,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class UpbitWebClientConfig extends WebClientConfig {
 
-    private final UpbitClientResourceProperties properties;
+  private final UpbitClientResourceProperties properties;
 
-    @Bean
-    public WebClient upbitWebClient() {
-        return makeWebClient(properties.getBaseUrl(), properties.getReadTimeout(), properties.getConnectionTimeout());
-    }
-
+  @Bean
+  public WebClient upbitWebClient() {
+    return makeWebClient(
+        properties.getBaseUrl(), properties.getReadTimeout(), properties.getConnectionTimeout());
+  }
 }
