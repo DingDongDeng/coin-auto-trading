@@ -5,8 +5,8 @@ import com.dingdongdeng.coinautotrading.common.type.OrderState;
 import com.dingdongdeng.coinautotrading.trading.backtesting.context.BackTestingContext;
 import com.dingdongdeng.coinautotrading.trading.backtesting.context.BackTestingContextLoader;
 import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.SpotExchangeService;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeOrder;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeOrderCancel;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeOrderCancelParam;
@@ -111,7 +111,7 @@ public class BackTestingExchangeService implements SpotExchangeService {
     public SpotExchangeTradingInfo getTradingInformation(SpotExchangeTradingInfoParam param, String keyPairId) {
         BackTestingContext context = contextLoader.getCurrentContext();
         double currentPrice = context.getCurrentPrice();
-        SpotExchangeCandles candles = context.getCandles();
+        ExchangeCandles candles = context.getCandles();
 
         return SpotExchangeTradingInfo.builder()
             .coinType(param.getCoinType())

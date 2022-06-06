@@ -30,6 +30,7 @@ public class StrategySpotService implements StrategyService {
     private final String keyPairId;
     private final SpotExchangeService spotExchangeService;
 
+    @Override
     public TradingInfo getTradingInformation(String identifyCode, TradingResultPack tradingResultPack) {
         SpotExchangeTradingInfoParam param = SpotExchangeTradingInfoParam.builder()
             .coinType(coinType)
@@ -55,6 +56,7 @@ public class StrategySpotService implements StrategyService {
             .build();
     }
 
+    @Override
     public TradingResult order(TradingTask orderTradingTask) {
         SpotExchangeOrderParam param = SpotExchangeOrderParam.builder()
             .coinType(orderTradingTask.getCoinType())
@@ -67,6 +69,7 @@ public class StrategySpotService implements StrategyService {
         return makeTradingResult(orderTradingTask, spotExchangeOrder);
     }
 
+    @Override
     public TradingResult orderCancel(TradingTask cancelTradingTask) {
         SpotExchangeOrderCancelParam param = SpotExchangeOrderCancelParam.builder()
             .orderId(cancelTradingTask.getOrderId())
@@ -75,6 +78,7 @@ public class StrategySpotService implements StrategyService {
         return makeTradingResult(cancelTradingTask, spotExchangeOrderCancel);
     }
 
+    @Override
     public TradingResultPack updateTradingResultPack(TradingResultPack tradingResultPack) {
         return new TradingResultPack(
             updateTradingResultList(tradingResultPack.getBuyTradingResultList()),

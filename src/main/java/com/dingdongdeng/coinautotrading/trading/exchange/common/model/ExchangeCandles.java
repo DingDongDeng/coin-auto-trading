@@ -1,4 +1,4 @@
-package com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model;
+package com.dingdongdeng.coinautotrading.trading.exchange.common.model;
 
 import com.dingdongdeng.coinautotrading.common.type.CandleUnit;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
@@ -12,7 +12,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @Builder
-public class SpotExchangeCandles {
+public class ExchangeCandles {
 
     private CoinExchangeType coinExchangeType;
     private CoinType coinType;

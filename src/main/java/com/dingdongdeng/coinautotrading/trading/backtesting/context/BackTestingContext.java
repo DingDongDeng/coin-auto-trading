@@ -2,7 +2,7 @@ package com.dingdongdeng.coinautotrading.trading.backtesting.context;
 
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeCandles;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,5 +17,5 @@ public class BackTestingContext {
     private CoinType coinType;
     private Double currentPrice;
     private LocalDateTime now;
-    private SpotExchangeCandles candles;
+    private ExchangeCandles candles;
 }

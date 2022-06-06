@@ -30,6 +30,7 @@ public class StrategyFutureService implements StrategyService {
     private final String keyPairId;
     private final FutureExchangeService futureExchangeService;
 
+    @Override
     public TradingInfo getTradingInformation(String identifyCode, TradingResultPack tradingResultPack) {
         FutureExchangeTradingInfoParam param = FutureExchangeTradingInfoParam.builder()
             .coinType(coinType)
@@ -55,6 +56,7 @@ public class StrategyFutureService implements StrategyService {
             .build();
     }
 
+    @Override
     public TradingResult order(TradingTask orderTradingTask) {
         FutureExchangeOrderParam param = FutureExchangeOrderParam.builder()
             .coinType(orderTradingTask.getCoinType())
@@ -67,6 +69,7 @@ public class StrategyFutureService implements StrategyService {
         return makeTradingResult(orderTradingTask, futureExchangeOrder);
     }
 
+    @Override
     public TradingResult orderCancel(TradingTask cancelTradingTask) {
         FutureExchangeOrderCancelParam param = FutureExchangeOrderCancelParam.builder()
             .orderId(cancelTradingTask.getOrderId())
@@ -75,6 +78,7 @@ public class StrategyFutureService implements StrategyService {
         return makeTradingResult(cancelTradingTask, futureExchangeOrderCancel);
     }
 
+    @Override
     public TradingResultPack updateTradingResultPack(TradingResultPack tradingResultPack) {
         return new TradingResultPack(
             updateTradingResultList(tradingResultPack.getBuyTradingResultList()),
