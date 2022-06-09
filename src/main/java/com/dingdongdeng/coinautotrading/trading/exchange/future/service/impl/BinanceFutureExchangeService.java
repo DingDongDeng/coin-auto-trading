@@ -1,6 +1,7 @@
 package com.dingdongdeng.coinautotrading.trading.exchange.future.service.impl;
 
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
+import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.BinanceFutureClient;
@@ -89,8 +90,8 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
             .origType(response.getOrigType())
             .price(response.getPrice())
             .reduceOnly(response.getReduceOnly())
-            .side(response.getSide())
-            .positionSide(response.getPositionSide())
+            .orderType(response.getSide().getOrderType())
+            .positionSide(response.getPositionSide().getPosition())
             .status(response.getStatus())
             .stopPrice(response.getStopPrice())
             .closePosition(response.getClosePosition())

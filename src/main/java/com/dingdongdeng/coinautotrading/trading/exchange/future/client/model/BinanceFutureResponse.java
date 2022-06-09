@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.Side;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.PositionSide;
+
 
 @ToString
 public class BinanceFutureResponse {
@@ -190,9 +193,9 @@ public class BinanceFutureResponse {
         @JsonProperty("reduceOnly")
         private Boolean reduceOnly; //인터넷에 reduceOnly검색.(햇지모드일때,closePosition=ture일때 사용불가)
         @JsonProperty("side")
-        private String side; //매수,매도
+        private Side side; //매수,매도
         @JsonProperty("positionSide")
-        private String positionSide; //롱,숏
+        private PositionSide positionSide; //롱,숏
         @JsonProperty("status")
         private String status; //포지션의 상태(채결,주문대기,취소...)
         @JsonProperty("stopPrice")

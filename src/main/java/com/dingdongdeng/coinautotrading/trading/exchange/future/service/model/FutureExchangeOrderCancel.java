@@ -3,11 +3,10 @@ package com.dingdongdeng.coinautotrading.trading.exchange.future.service.model;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.OrderState;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
-import com.dingdongdeng.coinautotrading.common.type.PositionSide;
+import com.dingdongdeng.coinautotrading.common.type.Position;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import com.dingdongdeng.coinautotrading.common.type.TimeInForceType;
-import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.Side;
-import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,7 +26,7 @@ public class FutureExchangeOrderCancel {    //https://binance-docs.github.io/api
     private Double price; //
     private Boolean reduceOnly; //
     private OrderType orderType; //
-    private PositionSide positionSide; //
+    private Position positionSide; //
     private OrderState orderState; //
     private Double stopPrice; // 주문 유형이 TRALLING_STOP_MARKET인 경우 무시하십시오.
     private Boolean closePosition; // 만약 모든 포지션 종료면 false
