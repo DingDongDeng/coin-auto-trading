@@ -2,6 +2,7 @@ package com.dingdongdeng.coinautotrading.trading.exchange.future.service.impl;
 
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.BinanceFutureClient;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.Interval;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.Side;
@@ -73,10 +74,34 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
         log.info("binance process : order cancel param = {}", param);
         FutureOrderCancelResponse response = binanceFutureClient.orderCancel(
             FutureOrderCancelRequest.builder()
+                .symbol(Symbol.of(param.getSymbol()).getCode())
+                .orderId(param.getOrderId())
+                .timestamp(System.currentTimeMillis())
                 .build(),
             keyPairId
         );
         return FutureExchangeOrderCancel.builder()
+            .cumQty(response.getCumQty())
+            .cumQuote(response.getCumQuote())
+            .executedQty(response.getExecutedQty())
+            .orderId(response.getOrderId().toString())
+            .origQty(response.getOrigQty())
+            .origType(response.getOrigType())
+            .price(response.getPrice())
+            .reduceOnly(response.getReduceOnly())
+            .side(response.getSide())
+            .positionSide(response.getPositionSide())
+            .status(response.getStatus())
+            .stopPrice(response.getStopPrice())
+            .closePosition(response.getClosePosition())
+            .symbol(response.getSymbol())
+            .timeInForce(response.getTimeInForce())
+            .type(response.getType())
+            .activatePrice(response.getActivatePrice())
+            .priceRate(response.getPriceRate())
+            .updateTime(response.getUpdateTime())
+            .workingType(response.getWorkingType())
+            .priceProtect(response.getPriceProtect())
             .build();
     }
 
@@ -86,13 +111,12 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
 
 
         // 캔들 정보 조회
-        FutureExchangeCandles candles = getExchangeCandles(param);
+        ExchangeCandles candles = getExchangeCandles(param);
 
         // 현재가 정보 조회
         FutureExchangeTicker ticker = getExchangeTicker(param);
 
         // 계좌 정보 조회
-        // fixme 선물이라면 현재 내가 들고 있는 포지션?
         FutureAccountBalanceResponse accounts = getAssetBalance(keyPairId);
 
         return FutureExchangeTradingInfo.builder()
@@ -112,7 +136,9 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
     @Override
     public FutureExchangeOrder getOrderInfo(FutureExchangeOrderInfoParam param, String keyPairId) {
         return makeExchangeOrderInfo(
-            binanceFutureClient.getFutureOrderInfo(FutureOrderInfoRequest.builder().build()
+            binanceFutureClient.getFutureOrderInfo(FutureOrderInfoRequest.builder()
+
+                    .build()
                 , keyPairId
             )
         );
@@ -123,22 +149,23 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
         return CoinExchangeType.BINANCE_FUTURE;
     }
 
-    private FutureExchangeCandles getExchangeCandles(FutureExchangeTradingInfoParam param) {
+    private ExchangeCandles getExchangeCandles(FutureExchangeTradingInfoParam param) {
         TradingTerm tradingTerm = param.getTradingTerm();
         List<FutureCandleResponse> response = binanceFutureClient.getMinuteCandle(
             FutureCandleRequest.builder()
                 .symbol(Symbol.of(param.getCoinType()).getCode())
                 .interval(Interval.of(tradingTerm.getCandleUnit()).getCode())
+                .limit(60)
                 .build()
         );
         Collections.reverse(response);
-        return FutureExchangeCandles.builder()
+        return ExchangeCandles.builder()
             .coinExchangeType(getCoinExchangeType())
             .candleUnit(tradingTerm.getCandleUnit())
             .coinType(param.getCoinType())
             .candleList(
                 response.stream().map(
-                    candle -> FutureExchangeCandles.Candle.builder()
+                    candle -> ExchangeCandles.Candle.builder()
                         .candleDateTimeUtc(convertTime(candle.getCloseTime()))
                         .candleDateTimeKst(convertTime(candle.getCloseTime()))
                         .openingPrice(candle.getOpen())

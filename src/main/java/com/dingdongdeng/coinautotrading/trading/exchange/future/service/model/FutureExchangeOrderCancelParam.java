@@ -9,5 +9,7 @@ import lombok.ToString;
 @Builder
 public class FutureExchangeOrderCancelParam {
 
-    private String orderId;
+    private String symbol;
+    private Long orderId;
+
 }
