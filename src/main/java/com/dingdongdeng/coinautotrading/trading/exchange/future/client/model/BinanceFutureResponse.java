@@ -66,41 +66,41 @@ public class BinanceFutureResponse {
     public static class FutureOrderInfoResponse {
 
         @JsonProperty("avgPrice")
-        private Double avgPrice; //
+        private Double avgPrice; //평균가
         @JsonProperty("clientOrderId")
-        private String clientOrderId; //
+        private String clientOrderId; //고유 id
         @JsonProperty("cumQuote")
         private Double cumQuote; //사용된 화폐의 합 ex) 1분동안 도지 10000개가 거래됬는데 들어간 현금
         @JsonProperty("executedQty")
         private Double executedQty; //
         @JsonProperty("orderId")
-        private Long orderId; //
+        private Long orderId; //고유 주문id
         @JsonProperty("origQty")
-        private Double origQty; //
+        private Double origQty; //사용자가 파라미터에 넣은 quantity(수량)
         @JsonProperty("origType")
-        private String origType; //
+        private String origType; //사용자가 설정한 매매방법
         @JsonProperty("price")
-        private Double price; //
+        private Double price; //채결가
         @JsonProperty("reduceOnly")
-        private boolean reduceOnly; //
+        private boolean reduceOnly; //인터넷에 reduceOnly검색.(햇지모드일때,closePosition=ture일때 사용불가)
         @JsonProperty("side")
-        private String side; //
+        private String side; //매수,매도
         @JsonProperty("positionSide")
-        private String positionSide; //
+        private String positionSide; //롱,숏
         @JsonProperty("status")
-        private String status; //
+        private String status; //포지션의 상태(채결,주문대기,취소...)
         @JsonProperty("stopPrice")
         private Double stopPrice; // 주문 유형이 TRALLING_STOP_MARKET인 경우 무시하십시오.
         @JsonProperty("closePosition")
         private boolean closePosition; // 만약 모든 포지션 종료면 false
         @JsonProperty("symbol")
-        private String symbol; //
+        private String symbol; //코인종류
         @JsonProperty("time")
-        private Long time;
+        private Long time;  //주문시간
         @JsonProperty("timeInForce")
-        private String timeInForce; //
+        private String timeInForce; //주문의 유효기간 지정 옵션.자세한건 인터넷
         @JsonProperty("type")
-        private String type; //
+        private String type; //매매방법(limit,market,TRAILING_STOP_MARKET...등)
         @JsonProperty("activatePrice")
         private Double activatePrice; // 활성화 가격, TRAING_STOP_MARKET 주문과 함께 반환만 가능합니다.
         @JsonProperty("priceRate")
@@ -188,7 +188,7 @@ public class BinanceFutureResponse {
         @JsonProperty("price")
         private Double price; //
         @JsonProperty("reduceOnly")
-        private boolean reduceOnly; //
+        private Boolean reduceOnly; //
         @JsonProperty("side")
         private String side; //
         @JsonProperty("positionSide")
@@ -198,7 +198,7 @@ public class BinanceFutureResponse {
         @JsonProperty("stopPrice")
         private Double stopPrice; // 주문 유형이 TRALLING_STOP_MARKET인 경우 무시하십시오.
         @JsonProperty("closePosition")
-        private boolean closePosition; // 만약 모든 포지션 종료면 false
+        private Boolean closePosition; // 만약 모든 포지션 종료면 false
         @JsonProperty("symbol")
         private String symbol; //
         @JsonProperty("timeInForce")
@@ -214,7 +214,7 @@ public class BinanceFutureResponse {
         @JsonProperty("workingType")
         private String workingType; //
         @JsonProperty("priceProtect")
-        private boolean priceProtect; // 조건부 순서 트리거가 보호되는 경우
+        private Boolean priceProtect; // 조건부 순서 트리거가 보호되는 경우
 
     }
 
@@ -223,15 +223,15 @@ public class BinanceFutureResponse {
     @Builder
     public static class FutureCandleResponse{   //응답값이 List로 반환되기에 @JsonProperty는 일단은 못씀
 
-        private Long openTime;
-        private Double open;
-        private Double high;
-        private Double low;
-        private Double close;
-        private Double volume;
-        private Long closeTime;
-        private Double quoteAssetVolume;
-        private Long numberOfTrades;
+        private Long openTime;  //캔들시작시간
+        private Double open;    //오픈가격
+        private Double high;    //봉최고가
+        private Double low;     //봉최저가
+        private Double close;   //마감가격
+        private Double volume;  //거래량
+        private Long closeTime; //캔들마감시간
+        private Double quoteAssetVolume;    //거래금
+        private Long numberOfTrades;    //거래횟수
         private Double takerBuyBaseAssetVolume;
         private Double takerBuyQuoteAssetVolume;
         private Long ignore;
