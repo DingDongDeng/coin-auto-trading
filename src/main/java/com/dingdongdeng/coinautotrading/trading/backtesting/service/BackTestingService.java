@@ -1,11 +1,14 @@
 package com.dingdongdeng.coinautotrading.trading.backtesting.service;
 
+import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
+import com.dingdongdeng.coinautotrading.common.type.MarketType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingProcessor;
 import com.dingdongdeng.coinautotrading.trading.backtesting.context.BackTestingContextLoader;
 import com.dingdongdeng.coinautotrading.trading.backtesting.context.BackTestingContextLoaderFactory;
 import com.dingdongdeng.coinautotrading.trading.backtesting.model.BackTestingProcessor;
 import com.dingdongdeng.coinautotrading.trading.backtesting.model.type.BackTestingExchangeFeeType;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.ExchangeService;
 import com.dingdongdeng.coinautotrading.trading.index.IndexCalculator;
 import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyFactory;
@@ -36,11 +39,7 @@ public class BackTestingService {
 
         BackTestingContextLoader contextLoader = backTestingContextLoaderFactory.create(autoTradingProcessor, start, end);
 
-        BackTestingExchangeService backTestingExchangeService = BackTestingExchangeService.builder()
-            .contextLoader(contextLoader)
-            .indexCalculator(indexCalculator)
-            .exchangeFeeRate(BackTestingExchangeFeeType.of(autoTradingProcessor.getCoinExchangeType()).getFeeRate())
-            .build();
+        ExchangeService backTestingExchangeService = makeBackTestingExchangeService(contextLoader, autoTradingProcessor);
 
         StrategyServiceParam serviceParam = StrategyServiceParam.builder()
             .strategyCode(strategy.getStrategyCode())
@@ -73,5 +72,25 @@ public class BackTestingService {
         return backTestingProcessorMap.values().stream()
             .filter(processor -> processor.getUserId().equals(userId))
             .collect(Collectors.toList());
+    }
+
+    private ExchangeService makeBackTestingExchangeService(BackTestingContextLoader contextLoader, AutoTradingProcessor autoTradingProcessor) {
+        CoinExchangeType coinExchangeType = autoTradingProcessor.getCoinExchangeType();
+        BackTestingExchangeFeeType feeType = BackTestingExchangeFeeType.of(autoTradingProcessor.getCoinExchangeType());
+        if (coinExchangeType.getMarketType() == MarketType.SPOT) {
+            return BackTestingSpotExchangeService.builder()
+                .contextLoader(contextLoader)
+                .indexCalculator(indexCalculator)
+                .exchangeFeeRate(feeType.getFeeRate())
+                .build();
+        }
+        if (coinExchangeType.getMarketType() == MarketType.FUTURE) {
+            return BackTestingFutureExchangeService.builder()
+                .contextLoader(contextLoader)
+                .indexCalculator(indexCalculator)
+                .exchangeFeeRate(feeType.getFeeRate())
+                .build();
+        }
+        throw new RuntimeException("백테스팅을 위한 서비스를 생성하지 못함 , MarketType을 매핑하지 못했음");
     }
 }

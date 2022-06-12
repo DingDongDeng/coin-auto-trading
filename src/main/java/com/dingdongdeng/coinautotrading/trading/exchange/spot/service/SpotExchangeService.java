@@ -1,6 +1,6 @@
 package com.dingdongdeng.coinautotrading.trading.exchange.spot.service;
 
-import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
+import com.dingdongdeng.coinautotrading.common.type.MarketType;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.ExchangeService;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeOrder;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeOrderCancel;
@@ -20,5 +20,8 @@ public interface SpotExchangeService extends ExchangeService {
 
     SpotExchangeOrder getOrderInfo(SpotExchangeOrderInfoParam param, String keyPairId);
 
-    CoinExchangeType getCoinExchangeType();
+    @Override
+    default MarketType getMarketType() {
+        return MarketType.SPOT;
+    }
 }

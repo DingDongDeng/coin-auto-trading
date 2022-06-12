@@ -5,7 +5,7 @@ import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingPro
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingRegisterRequest;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.type.AutoTradingProcessStatus;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.ExchangeService;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.selector.SpotExchangeServiceSelector;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.selector.ExchangeServiceSelector;
 import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyFactory;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreParam;
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 public class AutoTradingService {
 
     private final AutoTradingManager autoTradingManager;
-    private final SpotExchangeServiceSelector processorSelector;
+    private final ExchangeServiceSelector processorSelector;
     private final StrategyFactory strategyFactory;
     private final SlackSender slackSender;
 
