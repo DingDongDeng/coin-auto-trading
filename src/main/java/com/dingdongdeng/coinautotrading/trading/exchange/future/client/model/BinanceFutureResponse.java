@@ -1,5 +1,8 @@
 package com.dingdongdeng.coinautotrading.trading.exchange.future.client.model;
 
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.State;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.TimeInForce;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.Type;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
@@ -87,11 +90,11 @@ public class BinanceFutureResponse {
         @JsonProperty("reduceOnly")
         private boolean reduceOnly; //인터넷에 reduceOnly검색.(햇지모드일때,closePosition=ture일때 사용불가)
         @JsonProperty("side")
-        private String side; //매수,매도
+        private Side side; //매수,매도
         @JsonProperty("positionSide")
         private String positionSide; //롱,숏
         @JsonProperty("status")
-        private String status; //포지션의 상태(채결,주문대기,취소...)
+        private State status; //포지션의 상태(채결,주문대기,취소...)
         @JsonProperty("stopPrice")
         private Double stopPrice; // 주문 유형이 TRALLING_STOP_MARKET인 경우 무시하십시오.
         @JsonProperty("closePosition")
@@ -103,7 +106,7 @@ public class BinanceFutureResponse {
         @JsonProperty("timeInForce")
         private String timeInForce; //주문의 유효기간 지정 옵션.자세한건 인터넷
         @JsonProperty("type")
-        private String type; //매매방법(limit,market,TRAILING_STOP_MARKET...등)
+        private Type type; //매매방법(limit,market,TRAILING_STOP_MARKET...등)
         @JsonProperty("activatePrice")
         private Double activatePrice; // 활성화 가격, TRAING_STOP_MARKET 주문과 함께 반환만 가능합니다.
         @JsonProperty("priceRate")
@@ -140,11 +143,11 @@ public class BinanceFutureResponse {
         @JsonProperty("reduceOnly")
         private boolean reduceOnly; //인터넷에 reduceOnly검색.(햇지모드일때,closePosition=ture일때 사용불가)
         @JsonProperty("side")
-        private String side; //매수,매도
+        private Side side; //매수,매도
         @JsonProperty("positionSide")
         private String positionSide; //롱,숏
         @JsonProperty("status")
-        private String status; //포지션의 상태(채결,주문대기,취소...)
+        private State status; //포지션의 상태(채결,주문대기,취소...)
         @JsonProperty("stopPrice")
         private Double stopPrice; // 주문 유형이 TRALLING_STOP_MARKET인 경우 무시하십시오.
         @JsonProperty("closePosition")
@@ -154,7 +157,7 @@ public class BinanceFutureResponse {
         @JsonProperty("timeInForce")
         private String timeInForce; //주문의 유효기간 지정 옵션.자세한건 인터넷
         @JsonProperty("type")
-        private String type; //매매방법(limit,market,TRAILING_STOP_MARKET...등)
+        private Type type; //매매방법(limit,market,TRAILING_STOP_MARKET...등)
         @JsonProperty("origType")
         private String origType; //사용자가 설정한 매매방법
         @JsonProperty("activatePrice")
@@ -197,7 +200,7 @@ public class BinanceFutureResponse {
         @JsonProperty("positionSide")
         private PositionSide positionSide; //롱,숏
         @JsonProperty("status")
-        private String status; //포지션의 상태(채결,주문대기,취소...)
+        private State status; //포지션의 상태(채결,주문대기,취소...)
         @JsonProperty("stopPrice")
         private Double stopPrice; // 주문 유형이 TRALLING_STOP_MARKET인 경우 무시하십시오.
         @JsonProperty("closePosition")
@@ -205,9 +208,9 @@ public class BinanceFutureResponse {
         @JsonProperty("symbol")
         private String symbol; //코인 종류
         @JsonProperty("timeInForce")
-        private String timeInForce; //주문의 유효기간 지정 옵션.자세한건 인터넷
+        private TimeInForce timeInForce; //주문의 유효기간 지정 옵션.자세한건 인터넷
         @JsonProperty("type")
-        private String type; //매매방법(limit,market,TRAILING_STOP_MARKET...등)
+        private Type type; //매매방법(limit,market,TRAILING_STOP_MARKET...등)
         @JsonProperty("activatePrice")
         private Double activatePrice; // 활성화 가격, TRAING_STOP_MARKET 주문과 함께 반환만 가능합니다.
         @JsonProperty("priceRate")
