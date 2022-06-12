@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 public enum Position {
 
+    BOTH("단방향일때"),
     SHORT("숏 포지션"),
     LONG("롱 포지션"),
     ;

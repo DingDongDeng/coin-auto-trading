@@ -133,6 +133,7 @@ public class BinanceFutureEnum {
     @AllArgsConstructor
     public enum PositionSide{
 
+        BOTH("단방향일때", Position.BOTH),
         LONG("롱 포지션", Position.LONG),
         SHORT("숏 포지션", Position.SHORT),
         ;
@@ -146,6 +147,20 @@ public class BinanceFutureEnum {
                     .findFirst()
                     .orElseThrow(() -> new NoSuchElementException(position.name()));
         }
+
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public enum State {
+
+        NEW("체결 대기", OrderState.WAIT),
+        PARTIALLY_FILLED("부분 체결", OrderState.WATCH),
+        FILLED("전체 체결 완료", OrderState.DONE),
+        CANCELED("주문 취소", OrderState.CANCEL);
+
+        private String desc;
+        private OrderState orderState;
 
     }
 
