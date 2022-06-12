@@ -128,7 +128,7 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
             .candles(candles)
             .ticker(ticker)
 
-            .rsi(indexCalculator.getRsi(candles))   //fixme 파라미터가 spot만 가능한데 선물도 가능하게좀
+            .rsi(indexCalculator.getRsi(candles))
             .build();
     }
 
