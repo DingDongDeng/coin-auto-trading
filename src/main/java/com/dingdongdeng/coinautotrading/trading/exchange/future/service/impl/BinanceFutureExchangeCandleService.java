@@ -27,7 +27,7 @@ public class BinanceFutureExchangeCandleService implements ExchangeCandleService
 
     @Override
     public CoinExchangeType getCoinExchangeType() {
-        return null;
+        return CoinExchangeType.BINANCE_FUTURE;
     }
 
     /*@Override //fixme 분봉만 지원
