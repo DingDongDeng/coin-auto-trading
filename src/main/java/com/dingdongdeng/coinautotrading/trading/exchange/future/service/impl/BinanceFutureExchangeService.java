@@ -1,7 +1,6 @@
 package com.dingdongdeng.coinautotrading.trading.exchange.future.service.impl;
 
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
-import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.BinanceFutureClient;
@@ -23,7 +22,6 @@ import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.Bin
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureOrderCancelResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureOrderInfoResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.FutureExchangeService;
-import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrder;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrderCancel;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrderCancelParam;
@@ -92,15 +90,15 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
             .reduceOnly(response.getReduceOnly())
             .orderType(response.getSide().getOrderType())
             .positionSide(response.getPositionSide().getPosition())
-            .status(response.getStatus())
+            .orderState(response.getStatus().getOrderState())
             .stopPrice(response.getStopPrice())
             .closePosition(response.getClosePosition())
-            .symbol(response.getSymbol())
-            .timeInForce(response.getTimeInForce())
-            .type(response.getType())
+            .coinType(Symbol.of(response.getSymbol()).getCoinType())
+            .timeInForceType(response.getTimeInForce().getTimeInForceType())
+            .priceType(response.getType().getPriceType())
             .activatePrice(response.getActivatePrice())
             .priceRate(response.getPriceRate())
-            .updateTime(response.getUpdateTime())
+            .updateTime(convertTime(response.getUpdateTime()))
             .workingType(response.getWorkingType())
             .priceProtect(response.getPriceProtect())
             .build();
@@ -136,9 +134,11 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
 
     @Override
     public FutureExchangeOrder getOrderInfo(FutureExchangeOrderInfoParam param, String keyPairId) {
-        return makeExchangeOrderInfo(
+        return makeExchangeOrder(
             binanceFutureClient.getFutureOrderInfo(FutureOrderInfoRequest.builder()
-
+                    .symbol(param.getSymbol())
+                    .orderId(param.getOrderId())
+                    .timestamp(System.currentTimeMillis())
                     .build()
                 , keyPairId
             )
@@ -184,12 +184,31 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
 
     private FutureExchangeOrder makeExchangeOrder(FutureNewOrderResponse response) {
         return FutureExchangeOrder.builder()
-
+            .orderId(response.getOrderId().toString())
+            .orderType(response.getSide().getOrderType())
+            .priceType(response.getType().getPriceType())
+            .price(response.getPrice())
+            .avgPrice(response.getAvgPrice())
+            .orderState(response.getStatus().getOrderState())
+            .coinType(Symbol.of(response.getSymbol()).getCoinType())
+            .createdAt(convertTime(response.getUpdateTime()))
+            .volume(response.getOrigQty())
+            .executedVolume(response.getExecutedQty())
             .build();
     }
 
-    private FutureExchangeOrder makeExchangeOrderInfo(FutureOrderInfoResponse response) {
+    private FutureExchangeOrder makeExchangeOrder(FutureOrderInfoResponse response) {
         return FutureExchangeOrder.builder()
+            .orderId(response.getOrderId().toString())
+            .orderType(response.getSide().getOrderType())
+            .priceType(response.getType().getPriceType())
+            .price(response.getPrice())
+            .avgPrice(response.getAvgPrice())
+            .orderState(response.getStatus().getOrderState())
+            .coinType(Symbol.of(response.getSymbol()).getCoinType())
+            .createdAt(convertTime(response.getUpdateTime()))
+            .volume(response.getOrigQty())
+            .executedVolume(response.getExecutedQty())
             .build();
     }
 
