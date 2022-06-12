@@ -44,7 +44,7 @@ public class BinanceFutureRequest {
         @JsonProperty("symbol")
         private String symbol;  //(필수)코인 종류
         @JsonProperty("orderId")
-        private Long orderId;   //(필수)주문ID
+        private String orderId;   //(필수)주문ID
         @JsonProperty("timestamp")
         private Long timestamp;
 
@@ -95,7 +95,7 @@ public class BinanceFutureRequest {
         @JsonProperty("symbol")
         private String symbol;  //(필수)코인 종류
         @JsonProperty("orderId")
-        private Long orderId;   //(필수)주문ID
+        private String orderId;   //(필수)주문ID
         @JsonProperty("timestamp")
         private Long timestamp;
 

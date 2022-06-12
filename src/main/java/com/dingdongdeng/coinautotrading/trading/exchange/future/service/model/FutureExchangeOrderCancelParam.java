@@ -10,6 +10,6 @@ import lombok.ToString;
 public class FutureExchangeOrderCancelParam {
 
     private String symbol;
-    private Long orderId;
+    private String orderId;
 
 }

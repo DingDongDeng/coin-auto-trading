@@ -172,7 +172,7 @@ class BinanceFutureClientTest {
 
         FutureOrderInfoRequest request1 = FutureOrderInfoRequest.builder()
             .symbol(Symbol.USDT_BTC.getCode())
-            .orderId(orderResponse.getOrderId())
+            .orderId(orderResponse.getOrderId().toString())
             .timestamp(time)
             .build();
 
@@ -180,7 +180,7 @@ class BinanceFutureClientTest {
         log.info("코인 정보 : {}", futureOrderInfoResponse);
 
         FutureOrderCancelRequest futureOrderCancelRequest = FutureOrderCancelRequest.builder()
-            .orderId(futureOrderInfoResponse.getOrderId())
+            .orderId(futureOrderInfoResponse.getOrderId().toString())
             .symbol(Symbol.USDT_BTC.getCode())
             .timestamp(time)
             .build();
