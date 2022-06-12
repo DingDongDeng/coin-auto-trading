@@ -45,6 +45,6 @@ public class TestStrategyCore implements StrategyCore {
 
     @Override
     public StrategyCoreParam getParam() {
-        return null;
+        return this.param;
     }
 }
