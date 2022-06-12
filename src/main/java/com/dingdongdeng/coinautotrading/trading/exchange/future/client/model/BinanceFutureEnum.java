@@ -1,10 +1,7 @@
 package com.dingdongdeng.coinautotrading.trading.exchange.future.client.model;
 
-import com.dingdongdeng.coinautotrading.common.type.CandleUnit;
-import com.dingdongdeng.coinautotrading.common.type.CoinType;
-import com.dingdongdeng.coinautotrading.common.type.OrderType;
-import com.dingdongdeng.coinautotrading.common.type.PriceType;
-import com.dingdongdeng.coinautotrading.common.type.TimeInForceType;
+import com.dingdongdeng.coinautotrading.common.type.*;
+
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import lombok.AllArgsConstructor;
@@ -130,6 +127,41 @@ public class BinanceFutureEnum {
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException(candleUnit.name()));
         }
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public enum PositionSide{
+
+        BOTH("단방향일때", Position.BOTH),
+        LONG("롱 포지션", Position.LONG),
+        SHORT("숏 포지션", Position.SHORT),
+        ;
+
+        private String desc;
+        private Position position;
+
+        public static PositionSide of(Position position){
+            return Arrays.stream(PositionSide.values())
+                    .filter(type -> type.getPosition() == position)
+                    .findFirst()
+                    .orElseThrow(() -> new NoSuchElementException(position.name()));
+        }
+
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public enum State {
+
+        NEW("체결 대기", OrderState.WAIT),
+        PARTIALLY_FILLED("부분 체결", OrderState.WATCH),
+        FILLED("전체 체결 완료", OrderState.DONE),
+        CANCELED("주문 취소", OrderState.CANCEL);
+
+        private String desc;
+        private OrderState orderState;
+
     }
 
 }

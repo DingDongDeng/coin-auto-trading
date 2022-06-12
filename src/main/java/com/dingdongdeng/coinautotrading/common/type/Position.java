@@ -5,12 +5,11 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum TimeInForceType {
+public enum Position {
 
-    GTC("Good Till Cancel"),
-    FOK("Fill Or Kill"),
-    IOC("Immediate or Cancel"),
-    GTX("Good Till Crossing"),
+    BOTH("단방향일때"),
+    SHORT("숏 포지션"),
+    LONG("롱 포지션"),
     ;
 
     private String desc;

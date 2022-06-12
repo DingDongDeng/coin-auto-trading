@@ -17,7 +17,7 @@ public class BinanceFutureRequest {
     @ToString
     @Getter
     @Builder
-    public static class FutureAccountBalanceRequest {
+    public static class FutureAccountBalanceRequest {   //https://binance-docs.github.io/apidocs/futures/en/#futures-account-balance-v2-user_data
 
         @JsonProperty("timestamp")
         private Long timestamp;
@@ -27,7 +27,7 @@ public class BinanceFutureRequest {
     @ToString
     @Getter
     @Builder
-    public static class FutureChangePositionModeRequest {
+    public static class FutureChangePositionModeRequest {   //https://binance-docs.github.io/apidocs/futures/en/#change-position-mode-trade
 
         @JsonProperty("dualSidePosition")
         private String dualSidePosition;    //(필수)"true": 헤지 모드 "false": 단방향 모드
@@ -39,12 +39,12 @@ public class BinanceFutureRequest {
     @ToString
     @Getter
     @Builder
-    public static class FutureOrderInfoRequest {
+    public static class FutureOrderInfoRequest {    //https://binance-docs.github.io/apidocs/futures/en/#query-order-user_data
 
         @JsonProperty("symbol")
         private String symbol;  //(필수)코인 종류
         @JsonProperty("orderId")
-        private Long orderId;   //(필수)주문ID
+        private String orderId;   //(필수)주문ID
         @JsonProperty("timestamp")
         private Long timestamp;
 
@@ -53,7 +53,7 @@ public class BinanceFutureRequest {
     @ToString
     @Getter
     @Builder
-    public static class FutureChangeLeverageRequest {
+    public static class FutureChangeLeverageRequest {   //https://binance-docs.github.io/apidocs/futures/en/#change-initial-leverage-trade
 
         @JsonProperty("symbol")
         private String symbol;  //(필수)코인 종류
@@ -90,12 +90,12 @@ public class BinanceFutureRequest {
     @ToString
     @Getter
     @Builder
-    public static class FutureOrderCancelRequest {
+    public static class FutureOrderCancelRequest {  //https://binance-docs.github.io/apidocs/futures/en/#cancel-order-trade
 
         @JsonProperty("symbol")
         private String symbol;  //(필수)코인 종류
         @JsonProperty("orderId")
-        private Long orderId;   //(필수)주문ID
+        private String orderId;   //(필수)주문ID
         @JsonProperty("timestamp")
         private Long timestamp;
 
@@ -105,7 +105,7 @@ public class BinanceFutureRequest {
     @Getter
     @Builder
     @JsonInclude(Include.NON_NULL)
-    public static class FutureCandleRequest {
+    public static class FutureCandleRequest {   //https://binance-docs.github.io/apidocs/futures/en/#kline-candlestick-data
 
         @JsonProperty("symbol")
         private String symbol;  //(필수)코인 종류
@@ -124,10 +124,10 @@ public class BinanceFutureRequest {
     @Getter
     @Builder
     @JsonInclude(Include.NON_NULL)
-    public static class FutureMarkPriceRequest {
+    public static class FutureMarkPriceRequest {    //https://binance-docs.github.io/apidocs/futures/en/#mark-price
 
         @JsonProperty("symbol")
-        private String symbol;  //코인 종류
+        private String symbol;  //코인 종류(선택 안할시, 모든 코인의 markPrice반환)
 
     }
 

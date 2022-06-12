@@ -50,7 +50,7 @@ public class StrategyFutureService implements StrategyService {
             .locked(futureExchangeTradingInfo.getLocked())
             .avgBuyPrice(futureExchangeTradingInfo.getAvgBuyPrice())
             .unitCurrency(futureExchangeTradingInfo.getUnitCurrency())
-            .currentPrice(futureExchangeTradingInfo.getTicker().getTradePrice())
+            .currentPrice(futureExchangeTradingInfo.getTicker().getMarkPrice())
             .tradingResultPack(tradingResultPack)
             .rsi(futureExchangeTradingInfo.getRsi())
             .build();

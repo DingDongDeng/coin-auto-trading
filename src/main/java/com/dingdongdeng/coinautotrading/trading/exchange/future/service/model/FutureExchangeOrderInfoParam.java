@@ -9,5 +9,6 @@ import lombok.ToString;
 @Builder
 public class FutureExchangeOrderInfoParam {
 
+    private String symbol;
     private String orderId;
 }

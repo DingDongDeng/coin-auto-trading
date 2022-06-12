@@ -32,7 +32,7 @@ public class FutureExchangeTradingInfo {
     private String unitCurrency; // 평단가 기준 화폐
 
     private ExchangeCandles candles; // 캔들 정보
-    private SpotExchangeTicker ticker; // 현재가 정보
+    private FutureExchangeTicker ticker; // 현재가 정보
 
     /**
      * 보조 지표
