@@ -1,7 +1,6 @@
 package com.dingdongdeng.coinautotrading.trading.backtesting.context;
 
 import com.dingdongdeng.coinautotrading.common.type.CandleUnit.UnitType;
-import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingProcessor;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.ExchangeCandleService;
@@ -23,7 +22,7 @@ public class BackTestingContextLoaderFactory {
         Strategy strategy = autoTradingProcessor.getStrategy();
         String keyPairdId = strategy.getStrategyService().getKeyPairId();
         TradingTerm tradingTerm = autoTradingProcessor.getTradingTerm();
-        ExchangeCandleService exchangeCandleService = getExchangeCandleService(autoTradingProcessor.getCoinExchangeType());
+        ExchangeCandleService exchangeCandleService = exchangeCandleServiceSelector.getTargetService(autoTradingProcessor.getCoinExchangeType());
 
         BackTestingCandleLoader currentCandleLoader = BackTestingCandleLoader.builder()
             .coinType(autoTradingProcessor.getCoinType())
@@ -41,10 +40,6 @@ public class BackTestingContextLoaderFactory {
             .candleUnit(tradingTerm.getCandleUnit())
             .build();
         return new BackTestingContextLoader(currentCandleLoader, tradingTermCandleLoader);
-    }
-
-    private ExchangeCandleService getExchangeCandleService(CoinExchangeType coinExchangeType) {
-        return exchangeCandleServiceSelector.getTargetService(coinExchangeType);
     }
 
     private LocalDateTime getTradingTermStartDateTime(TradingTerm tradingTerm, LocalDateTime start) {

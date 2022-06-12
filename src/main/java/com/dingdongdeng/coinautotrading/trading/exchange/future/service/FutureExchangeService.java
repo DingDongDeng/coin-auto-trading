@@ -1,6 +1,6 @@
 package com.dingdongdeng.coinautotrading.trading.exchange.future.service;
 
-import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
+import com.dingdongdeng.coinautotrading.common.type.MarketType;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.ExchangeService;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrder;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrderCancel;
@@ -21,5 +21,8 @@ public interface FutureExchangeService extends ExchangeService {
 
     FutureExchangeOrder getOrderInfo(FutureExchangeOrderInfoParam param, String keyPairId);
 
-    CoinExchangeType getCoinExchangeType();
+    @Override
+    default MarketType getMarketType() {
+        return MarketType.FUTURE;
+    }
 }

@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @AllArgsConstructor
 @Builder
-public class BackTestingExchangeService implements SpotExchangeService {
+public class BackTestingSpotExchangeService implements SpotExchangeService {
 
     private BackTestingContextLoader contextLoader;
     private IndexCalculator indexCalculator;
