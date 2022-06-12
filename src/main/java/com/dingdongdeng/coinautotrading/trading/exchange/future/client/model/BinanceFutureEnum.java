@@ -155,7 +155,7 @@ public class BinanceFutureEnum {
     public enum State {
 
         NEW("체결 대기", OrderState.WAIT),
-        PARTIALLY_FILLED("부분 체결", OrderState.WATCH),
+        PARTIALLY_FILLED("부분 체결", OrderState.WAIT), //채결이 덜 되도 주문은 남은 주문은 대기 상태이기에 일단 ENUM은 WAIT으로 둠
         FILLED("전체 체결 완료", OrderState.DONE),
         CANCELED("주문 취소", OrderState.CANCEL);
 
