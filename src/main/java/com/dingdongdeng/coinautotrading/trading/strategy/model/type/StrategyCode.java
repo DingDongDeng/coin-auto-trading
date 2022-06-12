@@ -4,6 +4,8 @@ import com.dingdongdeng.coinautotrading.common.type.MarketType;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyCore;
 import com.dingdongdeng.coinautotrading.trading.strategy.core.ScaleTradingRsiStrategyCore;
 import com.dingdongdeng.coinautotrading.trading.strategy.core.ScaleTradingRsiStrategyCoreParam;
+import com.dingdongdeng.coinautotrading.trading.strategy.core.TestStrategyCore;
+import com.dingdongdeng.coinautotrading.trading.strategy.core.TestStrategyCoreParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreParam;
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -15,6 +17,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum StrategyCode {
     SCALE_TRADING_RSI("분할 매수(RSI기반, 손절없음)", MarketType.SPOT, ScaleTradingRsiStrategyCore.class, ScaleTradingRsiStrategyCoreParam.class),
+    TEST_FUTURE("테스트 선물 전략", MarketType.FUTURE, TestStrategyCore.class, TestStrategyCoreParam.class),
     ;
 
     private String desc;
