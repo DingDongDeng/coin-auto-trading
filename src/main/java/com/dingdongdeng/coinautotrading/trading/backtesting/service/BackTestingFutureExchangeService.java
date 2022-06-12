@@ -10,7 +10,6 @@ import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.Fu
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrderParam;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeTradingInfo;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeTradingInfoParam;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeOrder;
 import com.dingdongdeng.coinautotrading.trading.index.IndexCalculator;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +27,7 @@ public class BackTestingFutureExchangeService implements FutureExchangeService {
     private IndexCalculator indexCalculator;
     private double exchangeFeeRate;
     @Default
-    private Map<String, SpotExchangeOrder> orderMap = new HashMap<>();
+    private Map<String, FutureExchangeOrder> orderMap = new HashMap<>();
 
     @Override
     public FutureExchangeOrder order(FutureExchangeOrderParam param, String keyPairId) {
