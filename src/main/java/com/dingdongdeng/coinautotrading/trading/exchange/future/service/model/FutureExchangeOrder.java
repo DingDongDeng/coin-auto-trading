@@ -25,12 +25,6 @@ public class FutureExchangeOrder {
     private CoinType coinType;
     private LocalDateTime createdAt; // 주문 생성 시간
     private Double volume; // 사용자가 입력한 주문 양
-    private Double remainingVolume; // 체결 후 남은 주문 양
-    private Double reservedFee; // 수수료로 예약된 비용
-    private Double remainingFee; // 남은 수수료
-    private Double paidFee; // 사용된 수수료
-    private Double locked; // 거래에 사용중인 비용
     private Double executedVolume; // 체결된 양
-    private Long tradeCount; // 해당 주문에 걸린 체결 수
-    private List<TradeResponse> tradeList; // 체결
+
 }
