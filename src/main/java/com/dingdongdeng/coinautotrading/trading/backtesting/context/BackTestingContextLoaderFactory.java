@@ -5,7 +5,7 @@ import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingProcessor;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.ExchangeCandleService;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.selector.SpotExchangeCandleServiceSelector;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.selector.ExchangeCandleServiceSelector;
 import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class BackTestingContextLoaderFactory {
 
-    private final SpotExchangeCandleServiceSelector spotExchangeCandleServiceSelector;
+    private final ExchangeCandleServiceSelector exchangeCandleServiceSelector;
 
     public BackTestingContextLoader create(AutoTradingProcessor autoTradingProcessor, LocalDateTime start, LocalDateTime end) {
         Strategy strategy = autoTradingProcessor.getStrategy();
@@ -44,7 +44,7 @@ public class BackTestingContextLoaderFactory {
     }
 
     private ExchangeCandleService getExchangeCandleService(CoinExchangeType coinExchangeType) {
-        return spotExchangeCandleServiceSelector.getTargetService(coinExchangeType);
+        return exchangeCandleServiceSelector.getTargetService(coinExchangeType);
     }
 
     private LocalDateTime getTradingTermStartDateTime(TradingTerm tradingTerm, LocalDateTime start) {

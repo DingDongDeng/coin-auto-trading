@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class SpotExchangeCandleServiceSelector {
+public class ExchangeCandleServiceSelector {
 
     private final List<ExchangeCandleService> candleServiceList;
 
