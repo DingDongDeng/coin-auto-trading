@@ -1,67 +1,18 @@
 package com.dingdongdeng.coinautotrading.trading.strategy;
 
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
-import com.dingdongdeng.coinautotrading.trading.strategy.model.type.TradingTag;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@Getter
-public class StrategyRecorder {
+public interface StrategyRecorder {
 
-    private double totalBuyPrice;
-    private double totalProfitPrice;
-    private double totalLossPrice;
-    private double totalFee;
-    private double marginPrice;
-    private double marginRate;
-    private String eventMessage = ""; //fixme 메모리 이슈 가능성이 있음
+    void apply(TradingResult tradingResult); // 기록
 
-    public void apply(TradingResult tradingResult) {
-        addEventMessage("주문", tradingResult);
+    void revert(TradingResult tradingResult); // 기록 취소
 
-        totalFee += tradingResult.getFee();
-        TradingTag tag = tradingResult.getTag();
-        if (tag == TradingTag.BUY) {
-            totalBuyPrice += tradingResult.getPrice() * tradingResult.getVolume();
-            return;
-        }
-        if (tag == TradingTag.PROFIT) {
-            totalProfitPrice += tradingResult.getPrice() * tradingResult.getVolume();
-        }
-        if (tag == TradingTag.LOSS) {
-            totalLossPrice += tradingResult.getPrice() * tradingResult.getVolume();
-        }
-        calcMargin();
-    }
+    double getTotalFee();
 
-    public void revert(TradingResult tradingResult) {
-        addEventMessage("취소", tradingResult);
+    double getMarginPrice(); // 이익금
 
-        totalFee -= tradingResult.getFee();
-        TradingTag tag = tradingResult.getTag();
-        if (tag == TradingTag.BUY) {
-            totalBuyPrice -= tradingResult.getPrice() * tradingResult.getVolume();
-            return;
-        }
-        if (tag == TradingTag.PROFIT) {
-            totalProfitPrice -= tradingResult.getPrice() * tradingResult.getVolume();
-        }
-        if (tag == TradingTag.LOSS) {
-            totalLossPrice -= tradingResult.getPrice() * tradingResult.getVolume();
-        }
-        calcMargin();
-    }
+    double getMarginRate(); // 이익율
 
-    private void calcMargin() {
-        this.marginRate = ((totalProfitPrice + totalLossPrice - totalFee) / totalBuyPrice) * 100d - 100d;
-        this.marginPrice = (totalProfitPrice + totalLossPrice - totalFee) - totalBuyPrice;
-    }
-
-    private void addEventMessage(String event, TradingResult tradingResult) {
-        String tagName = tradingResult.getTag().getDesc();
-        double price = tradingResult.getPrice();
-        double orderPrice = tradingResult.getPrice() * tradingResult.getVolume();
-        this.eventMessage += tradingResult.getCreatedAt() + "/" + event + " / " + tagName + " / " + price + " / " + orderPrice + "</br>\n";
-    }
+    String getEventMessage();
 }

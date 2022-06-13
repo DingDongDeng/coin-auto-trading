@@ -19,10 +19,11 @@ public class StrategyFactory {
 
     public Strategy create(StrategyServiceParam serviceParam, StrategyCoreParam coreParam) {
         StrategyCode strategyCode = serviceParam.getStrategyCode();
-        StrategyService strategyService = makeStrategyService(strategyCode.getMarketType(), serviceParam);
+        MarketType marketType = strategyCode.getMarketType();
+        StrategyService strategyService = makeStrategyService(marketType, serviceParam);
         StrategyStore strategyStore = new StrategyStore();
         StrategyCore strategyCore = strategyCode.getStrategyCore(coreParam);
-        StrategyRecorder strategyRecorder = new StrategyRecorder();
+        StrategyRecorder strategyRecorder = makeStrategyRecorder(marketType);
         return new Strategy(serviceParam.getStrategyCode(), strategyCore, strategyService, strategyStore, strategyRecorder);
     }
 
@@ -49,5 +50,14 @@ public class StrategyFactory {
 
         }
         throw new RuntimeException("not found marketType : " + marketType);
+    }
+
+    private StrategyRecorder makeStrategyRecorder(MarketType marketType) {
+        if (marketType == MarketType.SPOT) {
+            return new StrategySpotRecorder();
+        }
+        if (marketType == MarketType.FUTURE) {
+            return new StrategyFutureRecorder();
+        }
     }
 }
