@@ -59,5 +59,6 @@ public class StrategyFactory {
         if (marketType == MarketType.FUTURE) {
             return new StrategyFutureRecorder();
         }
+        throw new RuntimeException("not found marketType : " + marketType);
     }
 }
