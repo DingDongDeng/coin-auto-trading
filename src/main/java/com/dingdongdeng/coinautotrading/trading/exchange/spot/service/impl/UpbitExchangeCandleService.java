@@ -135,7 +135,7 @@ public class UpbitExchangeCandleService implements ExchangeCandleService {
                 throw new NoSuchElementException("fail make candleCount");
         }
 
-        if (diff > 200) {
+        if (diff > MAX_CHUNK_SIZE) {
             throw new RuntimeException("upbit candle max size over");
         }
         return diff.intValue();
