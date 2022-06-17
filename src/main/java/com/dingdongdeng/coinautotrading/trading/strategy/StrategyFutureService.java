@@ -10,6 +10,7 @@ import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.Fu
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrderParam;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeTradingInfo;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeTradingInfoParam;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.FutureTradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
@@ -93,10 +94,10 @@ public class StrategyFutureService implements StrategyService {
             .collect(Collectors.toList());
     }
 
-    private TradingResult updateTradingResult(TradingResult tradingResult) {
+    private FutureTradingResult updateTradingResult(TradingResult tradingResult) {
         FutureExchangeOrder futureExchangeOrder =
             futureExchangeService.getOrderInfo(FutureExchangeOrderInfoParam.builder().orderId(tradingResult.getOrderId()).build(), keyPairId);
-        return TradingResult.builder()
+        return FutureTradingResult.builder()
             .identifyCode(tradingResult.getIdentifyCode())
             .coinType(futureExchangeOrder.getCoinType())
             .tradingTerm(tradingResult.getTradingTerm())
@@ -106,13 +107,13 @@ public class StrategyFutureService implements StrategyService {
             .price(futureExchangeOrder.getPrice())
             .priceType(futureExchangeOrder.getPriceType())
             .orderId(futureExchangeOrder.getOrderId())
-            .tag(tradingResult.getTag())
+            .tradingTag(tradingResult.getTradingTag())
             .createdAt(futureExchangeOrder.getCreatedAt())
             .build();
     }
 
-    private TradingResult makeTradingResult(TradingTask tradingTask, FutureExchangeOrder futureExchangeOrder) {
-        return TradingResult.builder()
+    private FutureTradingResult makeTradingResult(TradingTask tradingTask, FutureExchangeOrder futureExchangeOrder) {
+        return FutureTradingResult.builder()
             .identifyCode(tradingTask.getIdentifyCode())
             .coinType(tradingTask.getCoinType())
             .orderType(tradingTask.getOrderType())
@@ -123,13 +124,13 @@ public class StrategyFutureService implements StrategyService {
             //.fee(futureExchangeOrder.getPaidFee() + futureExchangeOrder.getRemainingFee())
             .priceType(tradingTask.getPriceType())
             .orderId(futureExchangeOrder.getOrderId())
-            .tag(tradingTask.getTag())
+            .tradingTag(tradingTask.getTag())
             .createdAt(futureExchangeOrder.getCreatedAt())
             .build();
     }
 
-    private TradingResult makeTradingResult(TradingTask tradingTask, FutureExchangeOrderCancel futureExchangeOrderCancel) { //fixme 중복 코드 개선
-        return TradingResult.builder()
+    private FutureTradingResult makeTradingResult(TradingTask tradingTask, FutureExchangeOrderCancel futureExchangeOrderCancel) { //fixme 중복 코드 개선
+        return FutureTradingResult.builder()
             .identifyCode(tradingTask.getIdentifyCode())
             .coinType(tradingTask.getCoinType())
             .orderType(tradingTask.getOrderType())
@@ -140,7 +141,7 @@ public class StrategyFutureService implements StrategyService {
             //.fee(futureExchangeOrderCancel.getPaidFee() + futureExchangeOrderCancel.getRemainingFee())
             .priceType(tradingTask.getPriceType())
             .orderId(futureExchangeOrderCancel.getOrderId())
-            .tag(tradingTask.getTag())
+            .tradingTag(tradingTask.getTag())
             //.createdAt(futureExchangeOrderCancel.getCreatedAt())
             .build();
     }

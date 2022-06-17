@@ -27,12 +27,12 @@ public class TradingResultPack {
     }
 
     public void add(TradingResult tradingResult) {
-        TradingTag tag = tradingResult.getTag();
+        TradingTag tag = tradingResult.getTradingTag();
         findTargetTradingResultList(tag).add(tradingResult);
     }
 
     public void delete(TradingResult tradingResult) {
-        List<TradingResult> tradingResultList = findTargetTradingResultList(tradingResult.getTag());
+        List<TradingResult> tradingResultList = findTargetTradingResultList(tradingResult.getTradingTag());
         TradingResult targetTradingResult = findTradingResult(tradingResultList, tradingResult.getOrderId());
         tradingResultList.remove(targetTradingResult);
     }

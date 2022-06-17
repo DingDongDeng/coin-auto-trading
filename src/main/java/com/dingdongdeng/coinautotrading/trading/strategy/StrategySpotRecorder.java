@@ -20,7 +20,7 @@ public class StrategySpotRecorder implements StrategyRecorder {
         addEventMessage("주문", tradingResult);
 
         totalFee += tradingResult.getFee();
-        TradingTag tag = tradingResult.getTag();
+        TradingTag tag = tradingResult.getTradingTag();
         if (tag == TradingTag.BUY) {
             totalBuyPrice += tradingResult.getPrice() * tradingResult.getVolume();
             return;
@@ -39,7 +39,7 @@ public class StrategySpotRecorder implements StrategyRecorder {
         addEventMessage("취소", tradingResult);
 
         totalFee -= tradingResult.getFee();
-        TradingTag tag = tradingResult.getTag();
+        TradingTag tag = tradingResult.getTradingTag();
         if (tag == TradingTag.BUY) {
             totalBuyPrice -= tradingResult.getPrice() * tradingResult.getVolume();
             return;
@@ -59,7 +59,7 @@ public class StrategySpotRecorder implements StrategyRecorder {
     }
 
     private void addEventMessage(String event, TradingResult tradingResult) {
-        String tagName = tradingResult.getTag().getDesc();
+        String tagName = tradingResult.getTradingTag().getDesc();
         double price = tradingResult.getPrice();
         double orderPrice = tradingResult.getPrice() * tradingResult.getVolume();
         this.eventMessage += tradingResult.getCreatedAt() + "/" + event + " / " + tagName + " / " + price + " / " + orderPrice + "</br>\n";

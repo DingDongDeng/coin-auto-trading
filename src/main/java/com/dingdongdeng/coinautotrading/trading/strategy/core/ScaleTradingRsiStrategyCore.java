@@ -78,7 +78,7 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
                         .volume(tradingResult.getVolume())
                         .price(tradingResult.getPrice())
                         .priceType(tradingResult.getPriceType())
-                        .tag(tradingResult.getTag())
+                        .tag(tradingResult.getTradingTag())
                         .build()
                 );
             }
