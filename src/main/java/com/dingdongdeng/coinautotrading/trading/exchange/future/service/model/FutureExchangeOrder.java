@@ -26,5 +26,6 @@ public class FutureExchangeOrder {
     private LocalDateTime createdAt; // 주문 생성 시간
     private Double volume; // 사용자가 입력한 주문 양
     private Double executedVolume; // 체결된 양
+    private Double cumQuote; //체결에 사용된 금액
 
 }
