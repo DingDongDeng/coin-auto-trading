@@ -11,6 +11,7 @@ import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.Bin
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.Type;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureAccountBalanceRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureCandleRequest;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureChangeLeverageRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureMarkPriceRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureNewOrderRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureOrderCancelRequest;
@@ -18,12 +19,15 @@ import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.Bin
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FuturePositionRiskRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureAccountBalanceResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureCandleResponse;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureChangeLeverageResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureMarkPriceResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureNewOrderResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureOrderCancelResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureOrderInfoResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FuturePositionRiskResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.FutureExchangeService;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeLeverage;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeLeverageParam;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrder;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrderCancel;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrderCancelParam;
@@ -155,6 +159,21 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
                 , keyPairId
             )
         );
+    }
+
+    @Override
+    public FutureExchangeLeverage updateLeverage(FutureExchangeLeverageParam param, String keyPairId) {
+        FutureChangeLeverageResponse response = binanceFutureClient.changeLeverage(
+            FutureChangeLeverageRequest.builder()
+                .leverage(param.getLeverage())
+                .symbol(Symbol.of(param.getCoinType()).getCode())
+                .build(),
+            keyPairId
+        );
+        return FutureExchangeLeverage.builder()
+            .leverage(response.getLeverage())
+            .coinType(Symbol.of(response.getSymbol()).getCoinType())
+            .build();
     }
 
     @Override
