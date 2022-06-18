@@ -32,6 +32,8 @@ public class FutureTradingInfo implements TradingInfo {
     private String unitCurrency; // 평단가 기준 화폐
     private Double currentPrice; // 현재 가격
     private ExchangeCandles candles; // 캔들 정보
+    private Double liquidationPrice; // 청산가
+    private Integer leverage; // 레버리지
 
     /**
      * 보조 지표
