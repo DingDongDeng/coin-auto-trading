@@ -31,6 +31,10 @@ public class Strategy<TI extends TradingInfo, TR extends TradingResult> {
         this.strategyRecorder = recorder;
     }
 
+    public void ready() {
+        strategyService.ready(strategyCore.getParam());
+    }
+
     public void execute() {
         // 주문 정보 갱신 및 생성
         TradingResultPack<TR> tradingResultPack = strategyStore.get();
