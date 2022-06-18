@@ -45,9 +45,9 @@ public class BackTestingFutureExchangeService implements FutureExchangeService {
             .avgPrice(null)
             .orderState(OrderState.DONE)
             .coinType(param.getCoinType())
-            .updateTime(TradingTimeContext.now())
-            .cumQty(param.getVolume())
-            .executedQty(null)
+            .createdAt(TradingTimeContext.now())
+            .volume(param.getVolume())
+            .executedVolume(null)
             .cumQuote(null)
             .build();
 
@@ -67,9 +67,9 @@ public class BackTestingFutureExchangeService implements FutureExchangeService {
             .price(order.getPrice())
             .orderState(order.getOrderState())
             .coinType(order.getCoinType())
-            .updateTime(order.getUpdateTime())
-            .cumQty(order.getCumQty())
-            .executedQty(order.getExecutedQty())
+            .createdAt(order.getCreatedAt())
+            .volume(order.getVolume())
+            .executedVolume(order.getExecutedVolume())
             .cumQuote(order.getCumQuote())
             .build();
 
@@ -81,9 +81,9 @@ public class BackTestingFutureExchangeService implements FutureExchangeService {
             .avgPrice(order.getAvgPrice())
             .orderState(OrderState.CANCEL)
             .coinType(order.getCoinType())
-            .updateTime(order.getUpdateTime())
-            .cumQty(order.getCumQty())
-            .executedQty(order.getExecutedQty())
+            .createdAt(order.getCreatedAt())
+            .volume(order.getVolume())
+            .executedVolume(order.getExecutedVolume())
             .cumQuote(order.getCumQuote())
             .build();
 

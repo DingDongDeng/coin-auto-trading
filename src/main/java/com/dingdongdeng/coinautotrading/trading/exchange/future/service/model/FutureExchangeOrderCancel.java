@@ -16,9 +16,9 @@ import lombok.ToString;
 @Builder
 public class FutureExchangeOrderCancel {    //https://binance-docs.github.io/apidocs/futures/en/#query-order-user_data
 
-    private Double cumQty; //총 수량
+    private Double volume; //총 수량
     private Double cumQuote; //사용된 화폐의 합 ex) 1분동안 도지 10000개가 거래됬는데 들어간 현금
-    private Double executedQty; //채결 수량
+    private Double executedVolume; //채결 수량
     private String orderId; //고유 주문id
     private Double origQty; //사용자가 파라미터에 넣은 quantity(수량)
     private String origType; //사용자가 설정한 매매방법
@@ -34,7 +34,7 @@ public class FutureExchangeOrderCancel {    //https://binance-docs.github.io/api
     private PriceType priceType; //매매방법(limit,market,TRAILING_STOP_MARKET...등)
     private Double activatePrice; // 활성화 가격, TRAING_STOP_MARKET 주문과 함께 반환만 가능합니다.
     private Double priceRate; // 콜백 요금, TRAILING_STOP_MARKET 주문과 함께만 반환됩니다.
-    private LocalDateTime updateTime; //
+    private LocalDateTime createdAt; //
     private String workingType; //
     private Boolean priceProtect; // 조건부 순서 트리거가 보호되는 경우
 

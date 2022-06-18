@@ -116,7 +116,7 @@ public class BinanceFutureRequest {
         @JsonProperty("endTime")
         private Long endTime;   //(선택)끝시간
         @JsonProperty("limit")
-        private int limit;
+        private Integer limit;
 
     }
 

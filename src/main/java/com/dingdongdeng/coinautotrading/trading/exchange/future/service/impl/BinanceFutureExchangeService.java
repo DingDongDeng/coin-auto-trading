@@ -81,9 +81,9 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
             keyPairId
         );
         return FutureExchangeOrderCancel.builder()
-            .cumQty(response.getCumQty())
+            .volume(response.getCumQty())
             .cumQuote(response.getCumQuote())
-            .executedQty(response.getExecutedQty())
+            .executedVolume(response.getExecutedQty())
             .orderId(response.getOrderId().toString())
             .origQty(response.getOrigQty())
             .origType(response.getOrigType())
@@ -99,7 +99,7 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
             .priceType(response.getType().getPriceType())
             .activatePrice(response.getActivatePrice())
             .priceRate(response.getPriceRate())
-            .updateTime(convertTime(response.getUpdateTime()))
+            .createdAt(convertTime(response.getUpdateTime()))
             .workingType(response.getWorkingType())
             .priceProtect(response.getPriceProtect())
             .build();
@@ -192,9 +192,9 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
             .avgPrice(response.getAvgPrice())
             .orderState(response.getStatus().getOrderState())
             .coinType(Symbol.of(response.getSymbol()).getCoinType())
-            .updateTime(convertTime(response.getUpdateTime()))
-            .cumQty(response.getOrigQty())
-            .executedQty(response.getExecutedQty())
+            .createdAt(convertTime(response.getUpdateTime()))
+            .volume(response.getOrigQty())
+            .executedVolume(response.getExecutedQty())
             .build();
     }
 
@@ -207,9 +207,9 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
             .avgPrice(response.getAvgPrice())
             .orderState(response.getStatus().getOrderState())
             .coinType(Symbol.of(response.getSymbol()).getCoinType())
-            .updateTime(convertTime(response.getUpdateTime()))
-            .cumQty(response.getOrigQty())
-            .executedQty(response.getExecutedQty())
+            .createdAt(convertTime(response.getUpdateTime()))
+            .volume(response.getOrigQty())
+            .executedVolume(response.getExecutedQty())
             .build();
     }
 
