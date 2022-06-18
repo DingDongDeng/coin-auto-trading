@@ -30,7 +30,7 @@ public class BackTestingProcessor {
     private LocalDateTime start;
     private LocalDateTime end;
     private LocalDateTime now;
-    private Strategy strategy;
+    private Strategy<?> strategy;
     private BackTestingContextLoader backTestingContextLoader;
     private long duration;
 

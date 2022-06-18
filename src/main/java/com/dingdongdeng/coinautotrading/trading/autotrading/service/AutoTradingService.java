@@ -41,7 +41,7 @@ public class AutoTradingService {
             .build();
 
         StrategyCoreParam coreParam = strategyFactory.createCoreParam(request.getStrategyCode(), request.getStrategyCoreParamMap());
-        Strategy strategy = strategyFactory.create(serviceParam, coreParam);
+        Strategy<?> strategy = strategyFactory.createStrategy(serviceParam, coreParam);
 
         return autoTradingManager.register(
             AutoTradingProcessor.builder()

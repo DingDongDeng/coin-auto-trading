@@ -47,7 +47,7 @@ public class BackTestingAggregation {
     public List<BackTestingResponse> getResult(String userId) {
         return backTestingService.getBackTestingProcessorList(userId).stream()
             .map(b -> {
-                StrategyRecorder recorder = b.getStrategy().getStrategyRecorder();
+                StrategyRecorder<?> recorder = b.getStrategy().getStrategyRecorder();
                 LocalDateTime start = b.getStart();
                 LocalDateTime end = b.getEnd();
                 double totalTime = ChronoUnit.MINUTES.between(start, end);
