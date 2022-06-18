@@ -113,7 +113,7 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore<SpotTradingResu
                         .orderType(OrderType.SELL)
                         .volume(tradingResultPack.getVolume())
                         .price(currentPrice)
-                        .priceType(PriceType.LIMIT_PRICE)
+                        .priceType(PriceType.LIMIT)
                         .tag(TradingTag.PROFIT)
                         .build()
                 );
@@ -130,7 +130,7 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore<SpotTradingResu
                         .orderType(OrderType.SELL)
                         .volume(tradingResultPack.getVolume())
                         .price(currentPrice)
-                        .priceType(PriceType.LIMIT_PRICE)
+                        .priceType(PriceType.LIMIT)
                         .tag(TradingTag.LOSS)
                         .build()
                 );
@@ -157,7 +157,7 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore<SpotTradingResu
                     .orderType(OrderType.BUY)
                     .volume(volume)
                     .price(currentPrice)
-                    .priceType(PriceType.LIMIT_PRICE)
+                    .priceType(PriceType.LIMIT)
                     .tag(TradingTag.BUY)
                     .build()
             );

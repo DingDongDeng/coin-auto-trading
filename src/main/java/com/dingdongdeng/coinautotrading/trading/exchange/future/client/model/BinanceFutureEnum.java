@@ -1,7 +1,12 @@
 package com.dingdongdeng.coinautotrading.trading.exchange.future.client.model;
 
-import com.dingdongdeng.coinautotrading.common.type.*;
-
+import com.dingdongdeng.coinautotrading.common.type.CandleUnit;
+import com.dingdongdeng.coinautotrading.common.type.CoinType;
+import com.dingdongdeng.coinautotrading.common.type.OrderState;
+import com.dingdongdeng.coinautotrading.common.type.OrderType;
+import com.dingdongdeng.coinautotrading.common.type.Position;
+import com.dingdongdeng.coinautotrading.common.type.PriceType;
+import com.dingdongdeng.coinautotrading.common.type.TimeInForceType;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import lombok.AllArgsConstructor;
@@ -12,8 +17,8 @@ public class BinanceFutureEnum {
     @Getter
     @AllArgsConstructor
     public enum Type {
-        LIMIT("지정가 주문", PriceType.LIMIT_PRICE),
-        MARKET("시장가 주문", PriceType.SELLING_MARKET_PRICE),
+        LIMIT("지정가 주문", PriceType.LIMIT),
+        MARKET("시장가 주문", PriceType.MARKET),
         STOP("스탑 주문(지정가)", null),
         STOP_MARKET("스탑 주문(시장가)", null),
         TAKE_PROFIT("이익 실현 주문(시장가)", null),
