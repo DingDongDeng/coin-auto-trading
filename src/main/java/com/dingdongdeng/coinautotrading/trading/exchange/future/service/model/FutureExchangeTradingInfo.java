@@ -31,6 +31,9 @@ public class FutureExchangeTradingInfo {
     private boolean avgBuyPriceModified; // 매수평균가 수정 여부
     private String unitCurrency; // 평단가 기준 화폐
 
+    private Double liquidationPrice; // 청산가
+    private Integer leverage; // 레버리지
+
     private ExchangeCandles candles; // 캔들 정보
     private FutureExchangeTicker ticker; // 현재가 정보
 
@@ -38,6 +41,5 @@ public class FutureExchangeTradingInfo {
      * 보조 지표
      **/
     private Double rsi;
-
 
 }

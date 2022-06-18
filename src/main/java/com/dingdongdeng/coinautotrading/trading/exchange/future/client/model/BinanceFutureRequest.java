@@ -131,4 +131,19 @@ public class BinanceFutureRequest {
 
     }
 
+    @ToString
+    @Getter
+    @Builder
+    @JsonInclude(Include.NON_NULL)
+    public static class FuturePositionRiskRequest {    //https://binance-docs.github.io/apidocs/futures/en/#position-information-v2-user_data
+
+        @JsonProperty("symbol")
+        private String symbol;  //코인 종류(선택 안할시, 모든 코인의 markPrice반환)
+        @JsonProperty("recvWindow")
+        private Long recvWindow;
+        @JsonProperty("timestamp")
+        private Long timestamp;
+
+    }
+
 }
