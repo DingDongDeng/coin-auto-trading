@@ -33,7 +33,7 @@ public class BackTestingService {
 
     public BackTestingProcessor doTest(AutoTradingProcessor autoTradingProcessor, LocalDateTime start, LocalDateTime end) {
 
-        Strategy strategy = autoTradingProcessor.getStrategy();
+        Strategy<?> strategy = autoTradingProcessor.getStrategy();
         String keyPairdId = strategy.getStrategyService().getKeyPairId();
         TradingTerm tradingTerm = autoTradingProcessor.getTradingTerm();
 
@@ -49,7 +49,7 @@ public class BackTestingService {
             .keyPairId(keyPairdId)
             .build();
 
-        Strategy backTestingStrategy = strategyFactory.create(serviceParam, strategy.getStrategyCore().getParam());
+        Strategy<?> backTestingStrategy = strategyFactory.createStrategy(serviceParam, strategy.getStrategyCore().getParam());
 
         BackTestingProcessor backTestingProcessor = BackTestingProcessor.builder()
             .id("BACKTESTING-" + autoTradingProcessor.getId())

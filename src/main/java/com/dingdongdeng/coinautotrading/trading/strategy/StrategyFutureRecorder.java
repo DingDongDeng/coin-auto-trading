@@ -1,10 +1,10 @@
 package com.dingdongdeng.coinautotrading.trading.strategy;
 
-import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.FutureTradingResult;
 import lombok.Getter;
 
 @Getter
-public class StrategyFutureRecorder implements StrategyRecorder {
+public class StrategyFutureRecorder implements StrategyRecorder<FutureTradingResult> {
 
     private double totalBuyPrice;
     private double totalProfitPrice;
@@ -15,12 +15,12 @@ public class StrategyFutureRecorder implements StrategyRecorder {
     private String eventMessage = ""; //fixme 메모리 이슈 가능성이 있음
 
     @Override
-    public void apply(TradingResult tradingResult) {
+    public void apply(FutureTradingResult tradingResult) {
         //fixme
     }
 
     @Override
-    public void revert(TradingResult tradingResult) {
+    public void revert(FutureTradingResult tradingResult) {
         //fixme
     }
 }

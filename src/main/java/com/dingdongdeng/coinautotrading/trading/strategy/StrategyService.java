@@ -5,16 +5,16 @@ import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
 
-public interface StrategyService {
+public interface StrategyService<T extends TradingResult> {
 
     String getKeyPairId();
 
-    TradingInfo getTradingInformation(String identifyCode, TradingResultPack tradingResultPack);
+    TradingInfo<T> getTradingInformation(String identifyCode, TradingResultPack<T> tradingResultPack);
 
-    TradingResult order(TradingTask orderTradingTask);
+    T order(TradingTask orderTradingTask);
 
-    TradingResult orderCancel(TradingTask cancelTradingTask);
+    T orderCancel(TradingTask cancelTradingTask);
 
-    TradingResultPack updateTradingResultPack(TradingResultPack tradingResultPack);
+    TradingResultPack<T> updateTradingResultPack(TradingResultPack<T> tradingResultPack);
 
 }

@@ -11,7 +11,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @Builder
-public class TradingInfo {
+public class TradingInfo<T extends TradingResult> {
 
     private String identifyCode;
 
@@ -36,7 +36,7 @@ public class TradingInfo {
     /**
      * 자동 매매에서 관리중인 주문 정보
      */
-    private TradingResultPack tradingResultPack;
+    private TradingResultPack<T> tradingResultPack;
 
     /**
      * 보조 지표

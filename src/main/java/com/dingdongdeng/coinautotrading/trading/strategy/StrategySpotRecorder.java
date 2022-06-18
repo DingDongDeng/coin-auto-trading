@@ -1,11 +1,11 @@
 package com.dingdongdeng.coinautotrading.trading.strategy;
 
-import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.SpotTradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.TradingTag;
 import lombok.Getter;
 
 @Getter
-public class StrategySpotRecorder implements StrategyRecorder {
+public class StrategySpotRecorder implements StrategyRecorder<SpotTradingResult> {
 
     private double totalBuyPrice;
     private double totalProfitPrice;
@@ -16,7 +16,7 @@ public class StrategySpotRecorder implements StrategyRecorder {
     private String eventMessage = ""; //fixme 메모리 이슈 가능성이 있음
 
     @Override
-    public void apply(TradingResult tradingResult) {
+    public void apply(SpotTradingResult tradingResult) {
         addEventMessage("주문", tradingResult);
 
         totalFee += tradingResult.getFee();
@@ -35,7 +35,7 @@ public class StrategySpotRecorder implements StrategyRecorder {
     }
 
     @Override
-    public void revert(TradingResult tradingResult) {
+    public void revert(SpotTradingResult tradingResult) {
         addEventMessage("취소", tradingResult);
 
         totalFee -= tradingResult.getFee();
@@ -58,7 +58,7 @@ public class StrategySpotRecorder implements StrategyRecorder {
         this.marginPrice = (totalProfitPrice + totalLossPrice - totalFee) - totalBuyPrice;
     }
 
-    private void addEventMessage(String event, TradingResult tradingResult) {
+    private void addEventMessage(String event, SpotTradingResult tradingResult) {
         String tagName = tradingResult.getTradingTag().getDesc();
         double price = tradingResult.getPrice();
         double orderPrice = tradingResult.getPrice() * tradingResult.getVolume();

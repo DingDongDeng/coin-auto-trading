@@ -9,9 +9,9 @@ public interface TradingResult {
 
     String getOrderId();
 
-    double getPrice();
+    Double getPrice();
 
-    double getVolume();
+    Double getVolume();
 
     TradingTag getTradingTag();
 

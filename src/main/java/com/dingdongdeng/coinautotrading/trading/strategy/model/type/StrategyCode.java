@@ -40,7 +40,7 @@ public enum StrategyCode {
         return map;
     }
 
-    public StrategyCore getStrategyCore(StrategyCoreParam param) {
+    public StrategyCore<?> getStrategyCore(StrategyCoreParam param) {
         try {
             return strategyCoreClazz.getDeclaredConstructor(strategyCoreParamClazz).newInstance(param);
         } catch (Exception e) {

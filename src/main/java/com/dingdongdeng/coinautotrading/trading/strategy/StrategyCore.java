@@ -6,13 +6,13 @@ import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
 import java.util.List;
 
-public interface StrategyCore {
+public interface StrategyCore<T extends TradingResult> {
 
-    List<TradingTask> makeTradingTask(TradingInfo tradingInfo);
+    List<TradingTask> makeTradingTask(TradingInfo<T> tradingInfo);
 
-    void handleOrderResult(TradingResult tradingResult);
+    void handleOrderResult(T tradingResult);
 
-    void handleOrderCancelResult(TradingResult tradingResult);
+    void handleOrderCancelResult(T tradingResult);
 
     StrategyCoreParam getParam();
 
