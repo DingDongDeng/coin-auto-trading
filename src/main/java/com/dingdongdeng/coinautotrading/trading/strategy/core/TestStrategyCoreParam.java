@@ -1,6 +1,7 @@
 package com.dingdongdeng.coinautotrading.trading.strategy.core;
 
 import com.dingdongdeng.coinautotrading.trading.strategy.annotation.GuideMessage;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreFutureParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreParam;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +14,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TestStrategyCoreParam implements StrategyCoreParam {
+public class TestStrategyCoreParam implements StrategyCoreParam, StrategyCoreFutureParam {
 
     @GuideMessage("사용할 레버러지")
     private int leverage;
