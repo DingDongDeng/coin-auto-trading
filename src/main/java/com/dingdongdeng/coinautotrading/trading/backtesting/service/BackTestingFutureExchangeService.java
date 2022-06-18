@@ -45,9 +45,9 @@ public class BackTestingFutureExchangeService implements FutureExchangeService {
             .avgPrice(null)
             .orderState(OrderState.DONE)
             .coinType(param.getCoinType())
-            .createdAt(TradingTimeContext.now())
-            .volume(param.getVolume())
-            .executedVolume(null)
+            .updateTime(TradingTimeContext.now())
+            .cumQty(param.getVolume())
+            .executedQty(null)
             .cumQuote(null)
             .build();
 
@@ -67,9 +67,9 @@ public class BackTestingFutureExchangeService implements FutureExchangeService {
             .price(order.getPrice())
             .orderState(order.getOrderState())
             .coinType(order.getCoinType())
-            .createdAt(order.getCreatedAt())
-            .volume(order.getVolume())
-            .executedVolume(order.getExecutedVolume())
+            .updateTime(order.getUpdateTime())
+            .cumQty(order.getCumQty())
+            .executedQty(order.getExecutedQty())
             .cumQuote(order.getCumQuote())
             .build();
 
@@ -81,9 +81,9 @@ public class BackTestingFutureExchangeService implements FutureExchangeService {
             .avgPrice(order.getAvgPrice())
             .orderState(OrderState.CANCEL)
             .coinType(order.getCoinType())
-            .createdAt(order.getCreatedAt())
-            .volume(order.getVolume())
-            .executedVolume(order.getExecutedVolume())
+            .updateTime(order.getUpdateTime())
+            .cumQty(order.getCumQty())
+            .executedQty(order.getExecutedQty())
             .cumQuote(order.getCumQuote())
             .build();
 
@@ -92,7 +92,8 @@ public class BackTestingFutureExchangeService implements FutureExchangeService {
     }
 
     @Override
-    public FutureExchangeTradingInfo getTradingInformation(FutureExchangeTradingInfoParam param, String keyPairId) {
+    public FutureExchangeTradingInfo getTradingInformation(FutureExchangeTradingInfoParam param,
+        String keyPairId) {
         BackTestingContext context = contextLoader.getCurrentContext();
         double currentPrice = context.getCurrentPrice();
         ExchangeCandles candles = context.getCandles();
@@ -110,7 +111,7 @@ public class BackTestingFutureExchangeService implements FutureExchangeService {
             .unitCurrency(null)
 
             .candles(candles)
-            .ticker(FutureExchangeTicker.builder().close(currentPrice).build())
+            .ticker(FutureExchangeTicker.builder().markPrice(currentPrice).build())
 
             .rsi(indexCalculator.getRsi(candles))
             .build();

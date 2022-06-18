@@ -69,7 +69,8 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
     }
 
     @Override
-    public FutureExchangeOrderCancel orderCancel(FutureExchangeOrderCancelParam param, String keyPairId) {
+    public FutureExchangeOrderCancel orderCancel(FutureExchangeOrderCancelParam param,
+        String keyPairId) {
         log.info("binance process : order cancel param = {}", param);
         FutureOrderCancelResponse response = binanceFutureClient.orderCancel(
             FutureOrderCancelRequest.builder()
@@ -105,9 +106,9 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
     }
 
     @Override
-    public FutureExchangeTradingInfo getTradingInformation(FutureExchangeTradingInfoParam param, String keyPairId) {
+    public FutureExchangeTradingInfo getTradingInformation(FutureExchangeTradingInfoParam param,
+        String keyPairId) {
         log.info("binance process : get trading information param = {}", param);
-
 
         // 캔들 정보 조회
         ExchangeCandles candles = getExchangeCandles(param);
@@ -191,9 +192,9 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
             .avgPrice(response.getAvgPrice())
             .orderState(response.getStatus().getOrderState())
             .coinType(Symbol.of(response.getSymbol()).getCoinType())
-            .createdAt(convertTime(response.getUpdateTime()))
-            .volume(response.getOrigQty())
-            .executedVolume(response.getExecutedQty())
+            .updateTime(convertTime(response.getUpdateTime()))
+            .cumQty(response.getOrigQty())
+            .executedQty(response.getExecutedQty())
             .build();
     }
 
@@ -206,42 +207,43 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
             .avgPrice(response.getAvgPrice())
             .orderState(response.getStatus().getOrderState())
             .coinType(Symbol.of(response.getSymbol()).getCoinType())
-            .createdAt(convertTime(response.getUpdateTime()))
-            .volume(response.getOrigQty())
-            .executedVolume(response.getExecutedQty())
+            .updateTime(convertTime(response.getUpdateTime()))
+            .cumQty(response.getOrigQty())
+            .executedQty(response.getExecutedQty())
             .build();
     }
 
     private FutureExchangeTicker getExchangeTicker(FutureExchangeTradingInfoParam param) {
-         FutureMarkPriceResponse response = binanceFutureClient.getMarkPrice(
+        FutureMarkPriceResponse response = binanceFutureClient.getMarkPrice(
             FutureMarkPriceRequest.builder()
                 .symbol(Symbol.of(param.getCoinType()).getCode())
                 .build()
         );
         return FutureExchangeTicker.builder()
-                .symbol(response.getSymbol())
-                .markPrice(response.getMarkPrice())
-                .indexPrice(response.getIndexPrice())
-                .estimatedSettlePrice(response.getEstimatedSettlePrice())
-                .lastFundingRate(response.getLastFundingRate())
-                .interestRate(response.getInterestRate())
-                .nextFundingTime(response.getNextFundingTime())
-                .build();
+            .symbol(response.getSymbol())
+            .markPrice(response.getMarkPrice())
+            .indexPrice(response.getIndexPrice())
+            .estimatedSettlePrice(response.getEstimatedSettlePrice())
+            .lastFundingRate(response.getLastFundingRate())
+            .interestRate(response.getInterestRate())
+            .nextFundingTime(response.getNextFundingTime())
+            .build();
     }
 
-    private FutureAccountBalanceResponse getAssetBalance(String keyPairId){
+    private FutureAccountBalanceResponse getAssetBalance(String keyPairId) {
         return binanceFutureClient.getFuturesAccountBalance(
                 FutureAccountBalanceRequest.builder()
                     .timestamp(System.currentTimeMillis())
                     .build()
-                ,keyPairId
+                , keyPairId
             ).stream()
             .filter(m -> m.getAsset().equals("USDT"))
             .findFirst()
             .orElseThrow(() -> new NoSuchElementException("남아있는 USDT를 찾지 못함"));
     }
 
-    private LocalDateTime convertTime(Long timestamp){
-        return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), TimeZone.getDefault().toZoneId());
+    private LocalDateTime convertTime(Long timestamp) {
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp),
+            TimeZone.getDefault().toZoneId());
     }
 }

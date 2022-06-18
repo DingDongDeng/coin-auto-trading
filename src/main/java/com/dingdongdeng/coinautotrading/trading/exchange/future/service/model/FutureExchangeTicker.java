@@ -10,14 +10,12 @@ import lombok.ToString;
 public class FutureExchangeTicker {
 
     private String symbol;
-    private Double open;    //오픈가격
-    private Double high;    //봉최고가
-    private Double low;     //봉최저가
-    private Double close;   //마감가격
-    private Double volume;  //거래량
-    private Long closeTime; //캔들마감시간
-    private Double quoteAssetVolume;    //거래금
-    private Long numberOfTrades;    //거래횟수
-    private Long timestamp;  //타임스탬프
+    private Double markPrice;
+    private Double indexPrice;
+    private Double estimatedSettlePrice;
+    private Double lastFundingRate;
+    private Long nextFundingTime;
+    private Double interestRate;
+    private Long time;
 
 }
