@@ -120,7 +120,7 @@ public class StrategyFutureService implements StrategyService<FutureTradingResul
             .orderState(futureExchangeOrder.getOrderState())
             .volume(tradingTask.getVolume())
             .price(tradingTask.getPrice())
-            //.fee(futureExchangeOrder.getPaidFee() + futureExchangeOrder.getRemainingFee())
+            .fee(futureExchangeOrder.getPaidFee())
             .priceType(tradingTask.getPriceType())
             .orderId(futureExchangeOrder.getOrderId())
             .tradingTag(tradingTask.getTag())
@@ -137,11 +137,11 @@ public class StrategyFutureService implements StrategyService<FutureTradingResul
             .orderState(futureExchangeOrderCancel.getOrderState())
             .volume(tradingTask.getVolume())
             .price(tradingTask.getPrice())
-            //.fee(futureExchangeOrderCancel.getPaidFee() + futureExchangeOrderCancel.getRemainingFee())
+            .fee(futureExchangeOrderCancel.getPaidFee())
             .priceType(tradingTask.getPriceType())
             .orderId(futureExchangeOrderCancel.getOrderId())
             .tradingTag(tradingTask.getTag())
-            //.createdAt(futureExchangeOrderCancel.getCreatedAt())
+            .createdAt(futureExchangeOrderCancel.getCreatedAt())
             .build();
     }
 

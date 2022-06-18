@@ -25,5 +25,6 @@ public class FutureExchangeOrder {
     private Double volume; // 사용자가 입력한 주문 양
     private Double executedVolume; // 체결된 양
     private Double cumQuote; //체결에 사용된 금액
+    private Double paidFee; // 사용된 수수료
 
 }

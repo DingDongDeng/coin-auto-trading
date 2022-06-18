@@ -37,5 +37,6 @@ public class FutureExchangeOrderCancel {    //https://binance-docs.github.io/api
     private LocalDateTime createdAt; //
     private String workingType; //
     private Boolean priceProtect; // 조건부 순서 트리거가 보호되는 경우
+    private Double paidFee; // 수수료
 
 }

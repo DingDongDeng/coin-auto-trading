@@ -49,6 +49,7 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
 
     private final BinanceFutureClient binanceFutureClient;
     private final IndexCalculator indexCalculator;
+    private final double FEE_RATE = 0.02; // 0.02 퍼센트
 
     @Override
     public FutureExchangeOrder order(FutureExchangeOrderParam param, String keyPairId) {
@@ -102,6 +103,7 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
             .createdAt(convertTime(response.getUpdateTime()))
             .workingType(response.getWorkingType())
             .priceProtect(response.getPriceProtect())
+            .paidFee(getCancelFee(response.getOrigQty(), response.getPrice()))
             .build();
     }
 
@@ -195,6 +197,7 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
             .createdAt(convertTime(response.getUpdateTime()))
             .volume(response.getOrigQty())
             .executedVolume(response.getExecutedQty())
+            .paidFee(getCancelFee(response.getOrigQty(), response.getPrice()))
             .build();
     }
 
@@ -210,6 +213,7 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
             .createdAt(convertTime(response.getUpdateTime()))
             .volume(response.getOrigQty())
             .executedVolume(response.getExecutedQty())
+            .paidFee(getCancelFee(response.getOrigQty(), response.getPrice()))
             .build();
     }
 
@@ -245,5 +249,9 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
     private LocalDateTime convertTime(Long timestamp) {
         return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp),
             TimeZone.getDefault().toZoneId());
+    }
+
+    private double getCancelFee(double volume, double price) {
+        return FEE_RATE * (volume * price) / 100;
     }
 }
