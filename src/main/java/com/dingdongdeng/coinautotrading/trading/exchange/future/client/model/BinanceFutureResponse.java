@@ -92,7 +92,7 @@ public class BinanceFutureResponse {
         @JsonProperty("side")
         private Side side; //매수,매도
         @JsonProperty("positionSide")
-        private String positionSide; //롱,숏
+        private PositionSide positionSide; //롱,숏
         @JsonProperty("status")
         private State status; //포지션의 상태(채결,주문대기,취소...)
         @JsonProperty("stopPrice")
@@ -145,7 +145,7 @@ public class BinanceFutureResponse {
         @JsonProperty("side")
         private Side side; //매수,매도
         @JsonProperty("positionSide")
-        private String positionSide; //롱,숏
+        private PositionSide positionSide; //롱,숏
         @JsonProperty("status")
         private State status; //포지션의 상태(채결,주문대기,취소...)
         @JsonProperty("stopPrice")

@@ -1,6 +1,7 @@
 package com.dingdongdeng.coinautotrading.trading.strategy;
 
 import com.dingdongdeng.coinautotrading.trading.strategy.model.FutureTradingResult;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.type.TradingTag;
 import lombok.Getter;
 
 @Getter
@@ -16,11 +17,54 @@ public class StrategyFutureRecorder implements StrategyRecorder<FutureTradingRes
 
     @Override
     public void apply(FutureTradingResult tradingResult) {
-        //fixme
+        addEventMessage("주문", tradingResult);
+
+        totalFee += tradingResult.getFee();
+        TradingTag tag = tradingResult.getTradingTag();
+        if (tag == TradingTag.BUY) {
+            totalBuyPrice += tradingResult.getPrice() * tradingResult.getVolume();
+            return;
+        }
+        if (tag == TradingTag.PROFIT) {
+            totalProfitPrice += tradingResult.getPrice() * tradingResult.getVolume();
+        }
+        if (tag == TradingTag.LOSS) {
+            totalLossPrice += tradingResult.getPrice() * tradingResult.getVolume();
+        }
+        calcMargin();
     }
 
     @Override
     public void revert(FutureTradingResult tradingResult) {
-        //fixme
+        addEventMessage("취소", tradingResult);
+
+        totalFee -= tradingResult.getFee();
+        TradingTag tag = tradingResult.getTradingTag();
+        if (tag == TradingTag.BUY) {
+            totalBuyPrice -= tradingResult.getPrice() * tradingResult.getVolume();
+            return;
+        }
+        if (tag == TradingTag.PROFIT) {
+            totalProfitPrice -= tradingResult.getPrice() * tradingResult.getVolume();
+        }
+        if (tag == TradingTag.LOSS) {
+            totalLossPrice -= tradingResult.getPrice() * tradingResult.getVolume();
+        }
+        calcMargin();
+    }
+
+    private void calcMargin() {
+        this.marginRate =
+            ((totalProfitPrice + totalLossPrice - totalFee) / totalBuyPrice) * 100d - 100d;
+        this.marginPrice = (totalProfitPrice + totalLossPrice - totalFee) - totalBuyPrice;
+    }
+
+    private void addEventMessage(String event, FutureTradingResult tradingResult) {
+        String tagName = tradingResult.getTradingTag().getDesc();
+        double price = tradingResult.getPrice();
+        double orderPrice = tradingResult.getPrice() * tradingResult.getVolume();
+        this.eventMessage +=
+            tradingResult.getCreatedAt() + "/" + event + " / " + tagName + " / " + price + " / "
+                + orderPrice + "</br>\n";
     }
 }

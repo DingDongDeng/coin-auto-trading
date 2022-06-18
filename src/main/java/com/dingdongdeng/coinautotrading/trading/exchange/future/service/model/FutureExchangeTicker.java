@@ -14,8 +14,8 @@ public class FutureExchangeTicker {
     private Double indexPrice;
     private Double estimatedSettlePrice;
     private Double lastFundingRate;
-    private Double interestRate;
     private Long nextFundingTime;
-    private Long timestamp;  //타임스탬프
+    private Double interestRate;
+    private Long time;
 
 }
