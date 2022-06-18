@@ -13,16 +13,16 @@ import lombok.extern.slf4j.Slf4j;
 
 @Getter //fixme Strategy가 너무 외부에 많이 노출됨
 @Slf4j
-public class Strategy<T extends TradingResult> {
+public class Strategy<TI extends TradingInfo, TR extends TradingResult> {
 
     private final String identifyCode;
     private final StrategyCode strategyCode;
-    private final StrategyCore<T> strategyCore;
-    private final StrategyService<T> strategyService;
-    private final StrategyStore<T> strategyStore;
-    private final StrategyRecorder<T> strategyRecorder;
+    private final StrategyCore<TI, TR> strategyCore;
+    private final StrategyService<TI, TR> strategyService;
+    private final StrategyStore<TR> strategyStore;
+    private final StrategyRecorder<TR> strategyRecorder;
 
-    public Strategy(StrategyCode code, StrategyCore<T> core, StrategyService<T> service, StrategyStore<T> store, StrategyRecorder<T> recorder) {
+    public Strategy(StrategyCode code, StrategyCore<TI, TR> core, StrategyService<TI, TR> service, StrategyStore<TR> store, StrategyRecorder<TR> recorder) {
         this.strategyCode = code;
         this.identifyCode = code.name() + UUID.randomUUID();
         this.strategyCore = core;
@@ -33,12 +33,12 @@ public class Strategy<T extends TradingResult> {
 
     public void execute() {
         // 주문 정보 갱신 및 생성
-        TradingResultPack<T> tradingResultPack = strategyStore.get();
-        TradingResultPack<T> updatedTradingResultPack = strategyService.updateTradingResultPack(tradingResultPack);
+        TradingResultPack<TR> tradingResultPack = strategyStore.get();
+        TradingResultPack<TR> updatedTradingResultPack = strategyService.updateTradingResultPack(tradingResultPack);
         strategyStore.saveAll(updatedTradingResultPack);
-        TradingInfo<T> tradingInfo = strategyService.getTradingInformation(identifyCode, updatedTradingResultPack);
+        TI tradingInfo = strategyService.getTradingInformation(identifyCode);
 
-        List<TradingTask> tradingTaskList = strategyCore.makeTradingTask(tradingInfo);
+        List<TradingTask> tradingTaskList = strategyCore.makeTradingTask(tradingInfo, updatedTradingResultPack);
         log.info("tradingTaskList : {}", tradingTaskList);
 
         tradingTaskList.forEach(tradingTask -> {
@@ -50,7 +50,7 @@ public class Strategy<T extends TradingResult> {
 
             // 매수, 매도 주문
             if (isOrder(tradingTask)) {
-                T orderTradingResult = strategyService.order(tradingTask);
+                TR orderTradingResult = strategyService.order(tradingTask);
                 strategyStore.save(orderTradingResult); // 주문 성공 건 정보 저장
                 strategyRecorder.apply(orderTradingResult);
                 strategyCore.handleOrderResult(orderTradingResult);
@@ -59,7 +59,7 @@ public class Strategy<T extends TradingResult> {
 
             // 주문 취소
             if (isOrderCancel(tradingTask)) {
-                T cancelTradingResult = strategyService.orderCancel(tradingTask);
+                TR cancelTradingResult = strategyService.orderCancel(tradingTask);
                 strategyStore.delete(cancelTradingResult); // 주문 취소 건 정보 제거
                 strategyRecorder.revert(cancelTradingResult);
                 strategyCore.handleOrderCancelResult(cancelTradingResult);

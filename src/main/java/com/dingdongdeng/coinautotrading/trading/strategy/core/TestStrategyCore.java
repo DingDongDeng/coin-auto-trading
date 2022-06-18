@@ -1,9 +1,10 @@
 package com.dingdongdeng.coinautotrading.trading.strategy.core;
 
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyCore;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.FutureTradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.FutureTradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreParam;
-import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -11,12 +12,12 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-public class TestStrategyCore implements StrategyCore<FutureTradingResult> {
+public class TestStrategyCore implements StrategyCore<FutureTradingInfo, FutureTradingResult> {
 
     private final TestStrategyCoreParam param;
 
     @Override
-    public List<TradingTask> makeTradingTask(TradingInfo<FutureTradingResult> tradingInfo) {
+    public List<TradingTask> makeTradingTask(FutureTradingInfo tradingInfo, TradingResultPack<FutureTradingResult> tradingResultPack) {
 
         log.info("msg : {}", param.getMsg());
         log.info("tradingInfo : {}", tradingInfo);

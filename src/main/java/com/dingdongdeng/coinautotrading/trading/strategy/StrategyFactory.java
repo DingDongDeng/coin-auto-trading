@@ -3,7 +3,9 @@ package com.dingdongdeng.coinautotrading.trading.strategy;
 import com.dingdongdeng.coinautotrading.common.type.MarketType;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.FutureExchangeService;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.SpotExchangeService;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.FutureTradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.FutureTradingResult;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.SpotTradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.SpotTradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyServiceParam;
@@ -19,30 +21,30 @@ public class StrategyFactory {
 
     private final ObjectMapper objectMapper;
 
-    public Strategy<?> createStrategy(StrategyServiceParam serviceParam, StrategyCoreParam coreParam) {
+    public Strategy<?, ?> createStrategy(StrategyServiceParam serviceParam, StrategyCoreParam coreParam) {
         StrategyCode strategyCode = serviceParam.getStrategyCode();
         MarketType marketType = strategyCode.getMarketType();
 
         if (marketType == MarketType.SPOT) {
-            StrategyService<SpotTradingResult> strategyService = new StrategySpotService(
+            StrategyService<SpotTradingInfo, SpotTradingResult> strategyService = new StrategySpotService(
                 serviceParam.getCoinType(),
                 serviceParam.getTradingTerm(),
                 serviceParam.getKeyPairId(),
                 (SpotExchangeService) serviceParam.getExchangeService()
             );
             StrategyStore<SpotTradingResult> strategyStore = new StrategyStore<>();
-            StrategyCore<SpotTradingResult> strategyCore = (StrategyCore<SpotTradingResult>) strategyCode.getStrategyCore(coreParam);
+            StrategyCore<SpotTradingInfo, SpotTradingResult> strategyCore = (StrategyCore<SpotTradingInfo, SpotTradingResult>) strategyCode.getStrategyCore(coreParam);
             StrategyRecorder<SpotTradingResult> strategyRecorder = new StrategySpotRecorder();
             return new Strategy<>(serviceParam.getStrategyCode(), strategyCore, strategyService, strategyStore, strategyRecorder);
         } else if (marketType == MarketType.FUTURE) {
-            StrategyService<FutureTradingResult> strategyService = new StrategyFutureService(
+            StrategyService<FutureTradingInfo, FutureTradingResult> strategyService = new StrategyFutureService(
                 serviceParam.getCoinType(),
                 serviceParam.getTradingTerm(),
                 serviceParam.getKeyPairId(),
                 (FutureExchangeService) serviceParam.getExchangeService()
             );
             StrategyStore<FutureTradingResult> strategyStore = new StrategyStore<>();
-            StrategyCore<FutureTradingResult> strategyCore = (StrategyCore<FutureTradingResult>) strategyCode.getStrategyCore(coreParam);
+            StrategyCore<FutureTradingInfo, FutureTradingResult> strategyCore = (StrategyCore<FutureTradingInfo, FutureTradingResult>) strategyCode.getStrategyCore(coreParam);
             StrategyRecorder<FutureTradingResult> strategyRecorder = new StrategyFutureRecorder();
             return new Strategy<>(serviceParam.getStrategyCode(), strategyCore, strategyService, strategyStore, strategyRecorder);
         } else {
