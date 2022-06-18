@@ -11,7 +11,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @Builder
-public class TradingInfo<T extends TradingResult> {
+public class TradingInfo {
 
     private String identifyCode;
 
@@ -32,11 +32,6 @@ public class TradingInfo<T extends TradingResult> {
     private String unitCurrency; // 평단가 기준 화폐
     private Double currentPrice; // 현재 가격
     private ExchangeCandles candles; // 캔들 정보
-
-    /**
-     * 자동 매매에서 관리중인 주문 정보
-     */
-    private TradingResultPack<T> tradingResultPack;
 
     /**
      * 보조 지표

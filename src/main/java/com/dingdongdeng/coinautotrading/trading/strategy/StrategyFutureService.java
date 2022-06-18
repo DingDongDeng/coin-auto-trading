@@ -31,7 +31,7 @@ public class StrategyFutureService implements StrategyService<FutureTradingResul
     private final FutureExchangeService futureExchangeService;
 
     @Override
-    public TradingInfo<FutureTradingResult> getTradingInformation(String identifyCode, TradingResultPack<FutureTradingResult> tradingResultPack) {
+    public TradingInfo getTradingInformation(String identifyCode) {
         FutureExchangeTradingInfoParam param = FutureExchangeTradingInfoParam.builder()
             .coinType(coinType)
             .tradingTerm(tradingTerm)
@@ -39,7 +39,7 @@ public class StrategyFutureService implements StrategyService<FutureTradingResul
 
         FutureExchangeTradingInfo futureExchangeTradingInfo = futureExchangeService.getTradingInformation(param, keyPairId);
 
-        return TradingInfo.<FutureTradingResult>builder()
+        return TradingInfo.builder()
             .identifyCode(identifyCode)
             .coinExchangeType(futureExchangeTradingInfo.getCoinExchangeType())
             .coinType(futureExchangeTradingInfo.getCoinType())
@@ -51,7 +51,6 @@ public class StrategyFutureService implements StrategyService<FutureTradingResul
             .avgBuyPrice(futureExchangeTradingInfo.getAvgBuyPrice())
             .unitCurrency(futureExchangeTradingInfo.getUnitCurrency())
             .currentPrice(futureExchangeTradingInfo.getTicker().getMarkPrice())
-            .tradingResultPack(tradingResultPack)
             .rsi(futureExchangeTradingInfo.getRsi())
             .build();
     }

@@ -36,9 +36,9 @@ public class Strategy<T extends TradingResult> {
         TradingResultPack<T> tradingResultPack = strategyStore.get();
         TradingResultPack<T> updatedTradingResultPack = strategyService.updateTradingResultPack(tradingResultPack);
         strategyStore.saveAll(updatedTradingResultPack);
-        TradingInfo<T> tradingInfo = strategyService.getTradingInformation(identifyCode, updatedTradingResultPack);
+        TradingInfo tradingInfo = strategyService.getTradingInformation(identifyCode);
 
-        List<TradingTask> tradingTaskList = strategyCore.makeTradingTask(tradingInfo);
+        List<TradingTask> tradingTaskList = strategyCore.makeTradingTask(tradingInfo, updatedTradingResultPack);
         log.info("tradingTaskList : {}", tradingTaskList);
 
         tradingTaskList.forEach(tradingTask -> {

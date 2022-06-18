@@ -4,6 +4,7 @@ import com.dingdongdeng.coinautotrading.trading.strategy.StrategyCore;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.FutureTradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ public class TestStrategyCore implements StrategyCore<FutureTradingResult> {
     private final TestStrategyCoreParam param;
 
     @Override
-    public List<TradingTask> makeTradingTask(TradingInfo<FutureTradingResult> tradingInfo) {
+    public List<TradingTask> makeTradingTask(TradingInfo tradingInfo, TradingResultPack<FutureTradingResult> tradingResultPack) {
 
         log.info("msg : {}", param.getMsg());
         log.info("tradingInfo : {}", tradingInfo);

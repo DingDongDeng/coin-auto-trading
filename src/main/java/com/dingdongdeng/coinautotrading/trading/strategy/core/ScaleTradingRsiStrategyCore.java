@@ -40,7 +40,7 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore<SpotTradingResu
      *  - 손절하지 않음
      */
     @Override
-    public List<TradingTask> makeTradingTask(TradingInfo<SpotTradingResult> tradingInfo) {
+    public List<TradingTask> makeTradingTask(TradingInfo tradingInfo, TradingResultPack<SpotTradingResult> tradingResultPack) {
         String identifyCode = tradingInfo.getIdentifyCode();
         log.info("{} :: ---------------------------------------", identifyCode);
         CoinType coinType = tradingInfo.getCoinType();
@@ -53,7 +53,6 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore<SpotTradingResu
         log.info("{} :: rsi={}", identifyCode, rsi);
 
         // 자동매매 중 기억해야할 실시간 주문 정보(익절, 손절, 매수 주문 정보)
-        TradingResultPack<SpotTradingResult> tradingResultPack = tradingInfo.getTradingResultPack();
         List<SpotTradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
         List<SpotTradingResult> profitTradingResultList = tradingResultPack.getProfitTradingResultList();
         List<SpotTradingResult> lossTradingResultList = tradingResultPack.getLossTradingResultList();

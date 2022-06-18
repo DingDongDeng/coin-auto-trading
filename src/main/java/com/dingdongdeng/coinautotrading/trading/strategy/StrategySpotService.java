@@ -31,7 +31,7 @@ public class StrategySpotService implements StrategyService<SpotTradingResult> {
     private final SpotExchangeService spotExchangeService;
 
     @Override
-    public TradingInfo<SpotTradingResult> getTradingInformation(String identifyCode, TradingResultPack<SpotTradingResult> tradingResultPack) {
+    public TradingInfo getTradingInformation(String identifyCode) {
         SpotExchangeTradingInfoParam param = SpotExchangeTradingInfoParam.builder()
             .coinType(coinType)
             .tradingTerm(tradingTerm)
@@ -39,7 +39,7 @@ public class StrategySpotService implements StrategyService<SpotTradingResult> {
 
         SpotExchangeTradingInfo spotExchangeTradingInfo = spotExchangeService.getTradingInformation(param, keyPairId);
 
-        return TradingInfo.<SpotTradingResult>builder()
+        return TradingInfo.builder()
             .identifyCode(identifyCode)
             .coinExchangeType(spotExchangeTradingInfo.getCoinExchangeType())
             .coinType(spotExchangeTradingInfo.getCoinType())
@@ -51,7 +51,6 @@ public class StrategySpotService implements StrategyService<SpotTradingResult> {
             .avgBuyPrice(spotExchangeTradingInfo.getAvgBuyPrice())
             .unitCurrency(spotExchangeTradingInfo.getUnitCurrency())
             .currentPrice(spotExchangeTradingInfo.getTicker().getTradePrice())
-            .tradingResultPack(tradingResultPack)
             .rsi(spotExchangeTradingInfo.getRsi())
             .build();
     }

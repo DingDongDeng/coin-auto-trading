@@ -9,7 +9,7 @@ public interface StrategyService<T extends TradingResult> {
 
     String getKeyPairId();
 
-    TradingInfo<T> getTradingInformation(String identifyCode, TradingResultPack<T> tradingResultPack);
+    TradingInfo getTradingInformation(String identifyCode);
 
     T order(TradingTask orderTradingTask);
 
