@@ -3,6 +3,7 @@ package com.dingdongdeng.coinautotrading.trading.strategy;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.FutureExchangeService;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeLeverageParam;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrder;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrderCancel;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrderCancelParam;
@@ -12,6 +13,8 @@ import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.Fu
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeTradingInfoParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.FutureTradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.FutureTradingResult;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreFutureParam;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
 import java.util.List;
@@ -29,6 +32,17 @@ public class StrategyFutureService implements StrategyService<FutureTradingInfo,
     private final TradingTerm tradingTerm;
     private final String keyPairId;
     private final FutureExchangeService futureExchangeService;
+
+    @Override
+    public void ready(StrategyCoreParam param) {
+        StrategyCoreFutureParam futureParam = (StrategyCoreFutureParam) param;
+        futureExchangeService.updateLeverage(FutureExchangeLeverageParam.builder()
+                .coinType(coinType)
+                .leverage(futureParam.getLeverage())
+                .build(),
+            keyPairId
+        );
+    }
 
     @Override
     public FutureTradingInfo getTradingInformation(String identifyCode) {
@@ -145,5 +159,4 @@ public class StrategyFutureService implements StrategyService<FutureTradingInfo,
             .createdAt(futureExchangeOrderCancel.getCreatedAt())
             .build();
     }
-
 }

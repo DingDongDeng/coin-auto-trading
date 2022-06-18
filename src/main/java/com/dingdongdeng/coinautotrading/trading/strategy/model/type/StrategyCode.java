@@ -20,10 +20,10 @@ public enum StrategyCode {
     TEST_FUTURE("테스트 선물 전략", MarketType.FUTURE, TestStrategyCore.class, TestStrategyCoreParam.class),
     ;
 
-    private String desc;
-    private MarketType marketType;
-    private Class<? extends StrategyCore> strategyCoreClazz;
-    private Class<? extends StrategyCoreParam> strategyCoreParamClazz;
+    private final String desc;
+    private final MarketType marketType;
+    private final Class<? extends StrategyCore<?, ?>> strategyCoreClazz;
+    private final Class<? extends StrategyCoreParam> strategyCoreParamClazz;
 
     public static StrategyCode of(String name) {
         return Arrays.stream(StrategyCode.values())

@@ -54,6 +54,7 @@ public class AutoTradingProcessor {
     }
 
     private void process() {
+        this.strategy.ready();
         while (isRunning()) {
             log.info("running autoTradingProcessor...");
             delay();

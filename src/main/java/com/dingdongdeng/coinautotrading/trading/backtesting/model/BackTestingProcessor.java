@@ -39,6 +39,7 @@ public class BackTestingProcessor {
     }
 
     private void process() {
+        this.strategy.ready();
         try {
             this.status = BackTestingProcessStatus.RUNNING;
             while (backTestingContextLoader.hasNext()) {
