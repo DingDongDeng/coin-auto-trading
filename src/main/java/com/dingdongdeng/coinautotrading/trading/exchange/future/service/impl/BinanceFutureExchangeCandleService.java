@@ -34,8 +34,7 @@ public class BinanceFutureExchangeCandleService implements ExchangeCandleService
 
 
     @Override //fixme 분봉만 지원
-    public ExchangeCandles getCandles(CoinType coinType, CandleUnit candleUnit, LocalDateTime start,
-        LocalDateTime end, String keyPairId) {
+    public ExchangeCandles getCandles(CoinType coinType, CandleUnit candleUnit, LocalDateTime start, LocalDateTime end, String keyPairId) {
         /**
          * start를 기준으로 최대 캔들 1500개까지 조회 가능
          * start < 캔들 <= end 범위로 조회
@@ -151,7 +150,6 @@ public class BinanceFutureExchangeCandleService implements ExchangeCandleService
     }
 
     private LocalDateTime convertLocalDateTime(Long timestamp) {
-        return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp),
-            TimeZone.getDefault().toZoneId());
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), TimeZone.getDefault().toZoneId());
     }
 }
