@@ -10,8 +10,8 @@ import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.Spot
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeOrderParam;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeTradingInfo;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeTradingInfoParam;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.SpotTradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
-import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
 import java.util.List;
@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 @RequiredArgsConstructor
-public class StrategySpotService implements StrategyService {
+public class StrategySpotService implements StrategyService<SpotTradingResult> {
 
     private final CoinType coinType;
     private final TradingTerm tradingTerm;
@@ -31,7 +31,7 @@ public class StrategySpotService implements StrategyService {
     private final SpotExchangeService spotExchangeService;
 
     @Override
-    public TradingInfo getTradingInformation(String identifyCode, TradingResultPack tradingResultPack) {
+    public TradingInfo<SpotTradingResult> getTradingInformation(String identifyCode, TradingResultPack<SpotTradingResult> tradingResultPack) {
         SpotExchangeTradingInfoParam param = SpotExchangeTradingInfoParam.builder()
             .coinType(coinType)
             .tradingTerm(tradingTerm)
@@ -39,7 +39,7 @@ public class StrategySpotService implements StrategyService {
 
         SpotExchangeTradingInfo spotExchangeTradingInfo = spotExchangeService.getTradingInformation(param, keyPairId);
 
-        return TradingInfo.builder()
+        return TradingInfo.<SpotTradingResult>builder()
             .identifyCode(identifyCode)
             .coinExchangeType(spotExchangeTradingInfo.getCoinExchangeType())
             .coinType(spotExchangeTradingInfo.getCoinType())
@@ -57,7 +57,7 @@ public class StrategySpotService implements StrategyService {
     }
 
     @Override
-    public TradingResult order(TradingTask orderTradingTask) {
+    public SpotTradingResult order(TradingTask orderTradingTask) {
         SpotExchangeOrderParam param = SpotExchangeOrderParam.builder()
             .coinType(orderTradingTask.getCoinType())
             .orderType(orderTradingTask.getOrderType())
@@ -70,7 +70,7 @@ public class StrategySpotService implements StrategyService {
     }
 
     @Override
-    public TradingResult orderCancel(TradingTask cancelTradingTask) {
+    public SpotTradingResult orderCancel(TradingTask cancelTradingTask) {
         SpotExchangeOrderCancelParam param = SpotExchangeOrderCancelParam.builder()
             .orderId(cancelTradingTask.getOrderId())
             .build();
@@ -79,24 +79,24 @@ public class StrategySpotService implements StrategyService {
     }
 
     @Override
-    public TradingResultPack updateTradingResultPack(TradingResultPack tradingResultPack) {
-        return new TradingResultPack(
+    public TradingResultPack<SpotTradingResult> updateTradingResultPack(TradingResultPack<SpotTradingResult> tradingResultPack) {
+        return new TradingResultPack<SpotTradingResult>(
             updateTradingResultList(tradingResultPack.getBuyTradingResultList()),
             updateTradingResultList(tradingResultPack.getProfitTradingResultList()),
             updateTradingResultList(tradingResultPack.getLossTradingResultList())
         );
     }
 
-    private List<TradingResult> updateTradingResultList(List<TradingResult> tradingResultList) {
+    private List<SpotTradingResult> updateTradingResultList(List<SpotTradingResult> tradingResultList) {
         return tradingResultList.stream()
             .map(this::updateTradingResult)
             .collect(Collectors.toList());
     }
 
-    private TradingResult updateTradingResult(TradingResult tradingResult) {
+    private SpotTradingResult updateTradingResult(SpotTradingResult tradingResult) {
         SpotExchangeOrder spotExchangeOrder =
             spotExchangeService.getOrderInfo(SpotExchangeOrderInfoParam.builder().orderId(tradingResult.getOrderId()).build(), keyPairId);
-        return TradingResult.builder()
+        return SpotTradingResult.builder()
             .identifyCode(tradingResult.getIdentifyCode())
             .coinType(spotExchangeOrder.getCoinType())
             .tradingTerm(tradingResult.getTradingTerm())
@@ -106,13 +106,13 @@ public class StrategySpotService implements StrategyService {
             .price(spotExchangeOrder.getPrice())
             .priceType(spotExchangeOrder.getPriceType())
             .orderId(spotExchangeOrder.getOrderId())
-            .tag(tradingResult.getTag())
+            .tradingTag(tradingResult.getTradingTag())
             .createdAt(spotExchangeOrder.getCreatedAt())
             .build();
     }
 
-    private TradingResult makeTradingResult(TradingTask tradingTask, SpotExchangeOrder spotExchangeOrder) {
-        return TradingResult.builder()
+    private SpotTradingResult makeTradingResult(TradingTask tradingTask, SpotExchangeOrder spotExchangeOrder) {
+        return SpotTradingResult.builder()
             .identifyCode(tradingTask.getIdentifyCode())
             .coinType(tradingTask.getCoinType())
             .orderType(tradingTask.getOrderType())
@@ -123,13 +123,13 @@ public class StrategySpotService implements StrategyService {
             .fee(spotExchangeOrder.getPaidFee() + spotExchangeOrder.getRemainingFee())
             .priceType(tradingTask.getPriceType())
             .orderId(spotExchangeOrder.getOrderId())
-            .tag(tradingTask.getTag())
+            .tradingTag(tradingTask.getTag())
             .createdAt(spotExchangeOrder.getCreatedAt())
             .build();
     }
 
-    private TradingResult makeTradingResult(TradingTask tradingTask, SpotExchangeOrderCancel spotExchangeOrderCancel) { //fixme 중복 코드 개선
-        return TradingResult.builder()
+    private SpotTradingResult makeTradingResult(TradingTask tradingTask, SpotExchangeOrderCancel spotExchangeOrderCancel) { //fixme 중복 코드 개선
+        return SpotTradingResult.builder()
             .identifyCode(tradingTask.getIdentifyCode())
             .coinType(tradingTask.getCoinType())
             .orderType(tradingTask.getOrderType())
@@ -140,7 +140,7 @@ public class StrategySpotService implements StrategyService {
             .fee(spotExchangeOrderCancel.getPaidFee() + spotExchangeOrderCancel.getRemainingFee())
             .priceType(tradingTask.getPriceType())
             .orderId(spotExchangeOrderCancel.getOrderId())
-            .tag(tradingTask.getTag())
+            .tradingTag(tradingTask.getTag())
             .createdAt(spotExchangeOrderCancel.getCreatedAt())
             .build();
     }

@@ -32,7 +32,7 @@ public class AutoTradingProcessor {
     private CoinExchangeType coinExchangeType;
     private AutoTradingProcessStatus status;
     private TradingTerm tradingTerm;
-    private Strategy strategy;
+    private Strategy<?> strategy;
     private long duration;
     private SlackSender slackSender;
 

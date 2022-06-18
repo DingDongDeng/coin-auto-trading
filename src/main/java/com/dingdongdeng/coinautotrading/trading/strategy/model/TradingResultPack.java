@@ -14,11 +14,11 @@ import lombok.ToString;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TradingResultPack {
+public class TradingResultPack<T extends TradingResult> {
 
-    private List<TradingResult> buyTradingResultList = new ArrayList<>(); // 매수 주문
-    private List<TradingResult> profitTradingResultList = new ArrayList<>(); // 익절 주문
-    private List<TradingResult> lossTradingResultList = new ArrayList<>(); // 손절 주문
+    private List<T> buyTradingResultList = new ArrayList<>(); // 매수 주문
+    private List<T> profitTradingResultList = new ArrayList<>(); // 익절 주문
+    private List<T> lossTradingResultList = new ArrayList<>(); // 손절 주문
 
     public void reset() {
         buyTradingResultList.clear();
@@ -26,19 +26,19 @@ public class TradingResultPack {
         lossTradingResultList.clear();
     }
 
-    public void add(TradingResult tradingResult) {
-        TradingTag tag = tradingResult.getTag();
+    public void add(T tradingResult) {
+        TradingTag tag = tradingResult.getTradingTag();
         findTargetTradingResultList(tag).add(tradingResult);
     }
 
-    public void delete(TradingResult tradingResult) {
-        List<TradingResult> tradingResultList = findTargetTradingResultList(tradingResult.getTag());
+    public void delete(T tradingResult) {
+        List<T> tradingResultList = findTargetTradingResultList(tradingResult.getTradingTag());
         TradingResult targetTradingResult = findTradingResult(tradingResultList, tradingResult.getOrderId());
         tradingResultList.remove(targetTradingResult);
     }
 
-    public List<TradingResult> getAll() {
-        List<TradingResult> list = new ArrayList<>();
+    public List<T> getAll() {
+        List<T> list = new ArrayList<>();
         list.addAll(buyTradingResultList);
         list.addAll(profitTradingResultList);
         list.addAll(lossTradingResultList);
@@ -77,8 +77,8 @@ public class TradingResultPack {
         return lossTradingResultList.stream().mapToDouble(TradingResult::getVolume).sum();
     }
 
-    private List<TradingResult> findTargetTradingResultList(TradingTag tag) {
-        List<TradingResult> tradingResultList = Map.of(
+    private List<T> findTargetTradingResultList(TradingTag tag) {
+        List<T> tradingResultList = Map.of(
             TradingTag.BUY, buyTradingResultList,
             TradingTag.PROFIT, profitTradingResultList,
             TradingTag.LOSS, lossTradingResultList
@@ -89,8 +89,8 @@ public class TradingResultPack {
         return tradingResultList;
     }
 
-    private TradingResult findTradingResult(List<TradingResult> tradingResultList, String orderId) {
-        for (TradingResult tradingResult : tradingResultList) {
+    private T findTradingResult(List<T> tradingResultList, String orderId) {
+        for (T tradingResult : tradingResultList) {
             if (tradingResult.getOrderId().equals(orderId)) {
                 return tradingResult;
             }
