@@ -76,7 +76,7 @@ class UpbitSpotExchangeServiceTest {
             .orderType(OrderType.BUY)
             .volume(1.0)
             .price(5000.0)
-            .priceType(PriceType.LIMIT_PRICE)
+            .priceType(PriceType.LIMIT)
             .build();
         SpotExchangeOrder exchangeOrderResult = upbitSpotExchangeService.order(spotExchangeOrderParam, keyPairId);
         log.info("exchangeOrder result : {}", exchangeOrderResult);

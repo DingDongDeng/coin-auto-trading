@@ -2,10 +2,13 @@ package com.dingdongdeng.coinautotrading.trading.exchange.service;
 
 //import static org.junit.jupiter.api.Assertions.*;
 
-import com.dingdongdeng.coinautotrading.common.type.*;
+import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
+import com.dingdongdeng.coinautotrading.common.type.CoinType;
+import com.dingdongdeng.coinautotrading.common.type.OrderType;
+import com.dingdongdeng.coinautotrading.common.type.PriceType;
+import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.domain.entity.ExchangeKey;
 import com.dingdongdeng.coinautotrading.domain.repository.ExchangeKeyRepository;
-import com.dingdongdeng.coinautotrading.trading.exchange.future.client.BinanceFutureClient;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.Symbol;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.impl.BinanceFutureExchangeService;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrder;
@@ -15,16 +18,13 @@ import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.Fu
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrderParam;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeTradingInfo;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeTradingInfoParam;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.impl.UpbitSpotExchangeService;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.*;
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.UUID;
 
 @Slf4j
 @SpringBootTest
@@ -87,7 +87,7 @@ class BinanceFutureExchangeServiceTest {
         FutureExchangeOrderParam param = FutureExchangeOrderParam.builder()
             .coinType(CoinType.BITCOIN)
             .orderType(OrderType.BUY)
-            .priceType(PriceType.LIMIT_PRICE)
+            .priceType(PriceType.LIMIT)
             .price(10000.0)
             .volume(0.009)
             .build();

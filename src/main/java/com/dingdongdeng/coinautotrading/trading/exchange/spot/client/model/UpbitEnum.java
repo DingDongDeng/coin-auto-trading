@@ -61,16 +61,18 @@ public class UpbitEnum {
     @Getter
     @AllArgsConstructor
     public enum OrdType {
-        limit("지정가 주문", PriceType.LIMIT_PRICE),
-        price("시장가 주문(매수)", PriceType.BUYING_MARKET_PRICE),
-        market("시장가 주문(매도)", PriceType.SELLING_MARKET_PRICE),
+        limit("지정가 주문", PriceType.LIMIT, null),
+        price("시장가 주문(매수)", PriceType.MARKET, OrderType.BUY),
+        market("시장가 주문(매도)", PriceType.MARKET, OrderType.SELL),
         ;
         private String desc;
         private PriceType priceType;
+        private OrderType orderType;
 
-        public static OrdType of(PriceType priceType) {
+        public static OrdType of(PriceType priceType, OrderType orderType) {
             return Arrays.stream(OrdType.values())
                 .filter(type -> type.getPriceType() == priceType)
+                .filter(type -> type.getOrderType() == orderType)
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException(priceType.name()));
         }
