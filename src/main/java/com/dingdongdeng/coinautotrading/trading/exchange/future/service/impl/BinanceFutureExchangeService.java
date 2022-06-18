@@ -144,15 +144,6 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
             .build();
     }
 
-    private FuturePositionRiskResponse getPositionRisk(FutureExchangeTradingInfoParam param, String keyPairId) {
-        return binanceFutureClient.getPositionRisk(
-                FuturePositionRiskRequest.builder()
-                    .symbol(Symbol.of(param.getCoinType()).getCode())
-                    .timestamp(System.currentTimeMillis())
-                    .build(), keyPairId)
-            .stream().findFirst().orElse(new FuturePositionRiskResponse());
-    }
-
     @Override
     public FutureExchangeOrder getOrderInfo(FutureExchangeOrderInfoParam param, String keyPairId) {
         return makeExchangeOrder(
@@ -262,6 +253,15 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
             .filter(m -> m.getAsset().equals("USDT"))
             .findFirst()
             .orElseThrow(() -> new NoSuchElementException("남아있는 USDT를 찾지 못함"));
+    }
+
+    private FuturePositionRiskResponse getPositionRisk(FutureExchangeTradingInfoParam param, String keyPairId) {
+        return binanceFutureClient.getPositionRisk(
+                FuturePositionRiskRequest.builder()
+                    .symbol(Symbol.of(param.getCoinType()).getCode())
+                    .timestamp(System.currentTimeMillis())
+                    .build(), keyPairId)
+            .stream().findFirst().orElse(new FuturePositionRiskResponse());
     }
 
     private LocalDateTime convertTime(Long timestamp) {
