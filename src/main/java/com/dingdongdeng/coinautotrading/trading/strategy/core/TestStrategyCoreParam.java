@@ -15,6 +15,9 @@ import lombok.ToString;
 @Builder
 public class TestStrategyCoreParam implements StrategyCoreParam {
 
+    @GuideMessage("사용할 레버러지")
+    private int leverage;
+
     @GuideMessage("태스트를 위한 메세지")
     private String msg;
 
