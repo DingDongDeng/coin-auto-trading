@@ -7,9 +7,9 @@ import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyCore;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.SpotTradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.SpotTradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreParam;
-import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.TradingTag;
@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-public class ScaleTradingRsiStrategyCore implements StrategyCore<SpotTradingResult> {
+public class ScaleTradingRsiStrategyCore implements StrategyCore<SpotTradingInfo, SpotTradingResult> {
 
     private final ScaleTradingRsiStrategyCoreParam param;
 
@@ -40,7 +40,7 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore<SpotTradingResu
      *  - 손절하지 않음
      */
     @Override
-    public List<TradingTask> makeTradingTask(TradingInfo tradingInfo, TradingResultPack<SpotTradingResult> tradingResultPack) {
+    public List<TradingTask> makeTradingTask(SpotTradingInfo tradingInfo, TradingResultPack<SpotTradingResult> tradingResultPack) {
         String identifyCode = tradingInfo.getIdentifyCode();
         log.info("{} :: ---------------------------------------", identifyCode);
         CoinType coinType = tradingInfo.getCoinType();

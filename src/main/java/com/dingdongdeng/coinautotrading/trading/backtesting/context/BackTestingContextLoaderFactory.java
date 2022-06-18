@@ -19,7 +19,7 @@ public class BackTestingContextLoaderFactory {
     private final ExchangeCandleServiceSelector exchangeCandleServiceSelector;
 
     public BackTestingContextLoader create(AutoTradingProcessor autoTradingProcessor, LocalDateTime start, LocalDateTime end) {
-        Strategy<?> strategy = autoTradingProcessor.getStrategy();
+        Strategy<?, ?> strategy = autoTradingProcessor.getStrategy();
         String keyPairdId = strategy.getStrategyService().getKeyPairId();
         TradingTerm tradingTerm = autoTradingProcessor.getTradingTerm();
         ExchangeCandleService exchangeCandleService = exchangeCandleServiceSelector.getTargetService(autoTradingProcessor.getCoinExchangeType());

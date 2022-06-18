@@ -10,8 +10,8 @@ import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.Fu
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrderParam;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeTradingInfo;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeTradingInfoParam;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.FutureTradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.FutureTradingResult;
-import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
 import java.util.List;
@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 @RequiredArgsConstructor
-public class StrategyFutureService implements StrategyService<FutureTradingResult> {
+public class StrategyFutureService implements StrategyService<FutureTradingInfo, FutureTradingResult> {
 
     private final CoinType coinType;
     private final TradingTerm tradingTerm;
@@ -31,7 +31,7 @@ public class StrategyFutureService implements StrategyService<FutureTradingResul
     private final FutureExchangeService futureExchangeService;
 
     @Override
-    public TradingInfo getTradingInformation(String identifyCode) {
+    public FutureTradingInfo getTradingInformation(String identifyCode) {
         FutureExchangeTradingInfoParam param = FutureExchangeTradingInfoParam.builder()
             .coinType(coinType)
             .tradingTerm(tradingTerm)
@@ -39,7 +39,7 @@ public class StrategyFutureService implements StrategyService<FutureTradingResul
 
         FutureExchangeTradingInfo futureExchangeTradingInfo = futureExchangeService.getTradingInformation(param, keyPairId);
 
-        return TradingInfo.builder()
+        return FutureTradingInfo.builder()
             .identifyCode(identifyCode)
             .coinExchangeType(futureExchangeTradingInfo.getCoinExchangeType())
             .coinType(futureExchangeTradingInfo.getCoinType())

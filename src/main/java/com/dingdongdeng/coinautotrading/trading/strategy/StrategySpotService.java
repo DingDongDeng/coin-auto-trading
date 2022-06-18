@@ -10,8 +10,8 @@ import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.Spot
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeOrderParam;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeTradingInfo;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeTradingInfoParam;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.SpotTradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.SpotTradingResult;
-import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
 import java.util.List;
@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 @RequiredArgsConstructor
-public class StrategySpotService implements StrategyService<SpotTradingResult> {
+public class StrategySpotService implements StrategyService<SpotTradingInfo, SpotTradingResult> {
 
     private final CoinType coinType;
     private final TradingTerm tradingTerm;
@@ -31,7 +31,7 @@ public class StrategySpotService implements StrategyService<SpotTradingResult> {
     private final SpotExchangeService spotExchangeService;
 
     @Override
-    public TradingInfo getTradingInformation(String identifyCode) {
+    public SpotTradingInfo getTradingInformation(String identifyCode) {
         SpotExchangeTradingInfoParam param = SpotExchangeTradingInfoParam.builder()
             .coinType(coinType)
             .tradingTerm(tradingTerm)
@@ -39,7 +39,7 @@ public class StrategySpotService implements StrategyService<SpotTradingResult> {
 
         SpotExchangeTradingInfo spotExchangeTradingInfo = spotExchangeService.getTradingInformation(param, keyPairId);
 
-        return TradingInfo.builder()
+        return SpotTradingInfo.builder()
             .identifyCode(identifyCode)
             .coinExchangeType(spotExchangeTradingInfo.getCoinExchangeType())
             .coinType(spotExchangeTradingInfo.getCoinType())
