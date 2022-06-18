@@ -10,7 +10,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum BackTestingExchangeFeeType {
     UPBIT(CoinExchangeType.UPBIT, 0.05),
-    BINANCE(CoinExchangeType.BINANCE_FUTURE, 0.04), //fixme 선물의 경우 레버리지 개념때문에 수수료 공식이 따로 적용되어야함
+    BINANCE(CoinExchangeType.BINANCE_FUTURE, 0.02),
     ;
 
     private CoinExchangeType coinExchangeType;

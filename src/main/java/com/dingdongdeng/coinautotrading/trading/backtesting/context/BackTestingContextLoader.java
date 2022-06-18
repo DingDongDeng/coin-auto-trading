@@ -86,7 +86,7 @@ public class BackTestingContextLoader {
             return candleList;
         }
 
-        if (Objects.isNull(candleList.get(candleList.size() - 1).getTimestamp())) { //fixme 더 세련된 방법 필요
+        if (hasVirtualCandle(candleList)) {
             candleList.remove(candleList.size() - 1);
         }
 
@@ -128,5 +128,9 @@ public class BackTestingContextLoader {
 
     private boolean isExistCurrentCandle(LocalDateTime currentTime, List<Candle> candleList) {
         return candleList.get(candleList.size() - 1).getCandleDateTimeKst().equals(currentTime);
+    }
+
+    private boolean hasVirtualCandle(List<Candle> candleList) {
+        return Objects.isNull(candleList.get(candleList.size() - 1).getTimestamp());
     }
 }

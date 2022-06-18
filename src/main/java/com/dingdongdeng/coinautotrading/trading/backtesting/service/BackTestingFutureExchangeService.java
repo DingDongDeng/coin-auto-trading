@@ -49,6 +49,7 @@ public class BackTestingFutureExchangeService implements FutureExchangeService {
             .volume(param.getVolume())
             .executedVolume(null)
             .cumQuote(null)
+            .paidFee(getCancelFee(param.getVolume(), param.getPrice()))
             .build();
 
         orderMap.put(order.getOrderId(), order);
@@ -56,8 +57,7 @@ public class BackTestingFutureExchangeService implements FutureExchangeService {
     }
 
     @Override
-    public FutureExchangeOrderCancel orderCancel(FutureExchangeOrderCancelParam param,
-        String keyPairId) {
+    public FutureExchangeOrderCancel orderCancel(FutureExchangeOrderCancelParam param, String keyPairId) {
         FutureExchangeOrder order = orderMap.get(param.getOrderId());
 
         FutureExchangeOrderCancel orderCancel = FutureExchangeOrderCancel.builder()
@@ -85,6 +85,7 @@ public class BackTestingFutureExchangeService implements FutureExchangeService {
             .volume(order.getVolume())
             .executedVolume(order.getExecutedVolume())
             .cumQuote(order.getCumQuote())
+            .paidFee(getCancelFee(order.getVolume(), order.getPrice()))
             .build();
 
         orderMap.put(order1.getOrderId(), order1);
@@ -92,8 +93,7 @@ public class BackTestingFutureExchangeService implements FutureExchangeService {
     }
 
     @Override
-    public FutureExchangeTradingInfo getTradingInformation(FutureExchangeTradingInfoParam param,
-        String keyPairId) {
+    public FutureExchangeTradingInfo getTradingInformation(FutureExchangeTradingInfoParam param, String keyPairId) {
         BackTestingContext context = contextLoader.getCurrentContext();
         double currentPrice = context.getCurrentPrice();
         ExchangeCandles candles = context.getCandles();
@@ -125,5 +125,9 @@ public class BackTestingFutureExchangeService implements FutureExchangeService {
     @Override
     public CoinExchangeType getCoinExchangeType() {
         return null;
+    }
+
+    private double getCancelFee(double volume, double price) {
+        return exchangeFeeRate * volume * price / 100;
     }
 }
