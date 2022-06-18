@@ -199,14 +199,14 @@ class BinanceFutureClientTest {
         FutureOrderInfoResponse futureOrderInfoResponse = binanceFutureClient.getFutureOrderInfo(request1, keyPairId);
         log.info("코인 정보 : {}", futureOrderInfoResponse);
 
-        /*FutureOrderCancelRequest futureOrderCancelRequest = FutureOrderCancelRequest.builder()
+        FutureOrderCancelRequest futureOrderCancelRequest = FutureOrderCancelRequest.builder()
             .orderId(futureOrderInfoResponse.getOrderId().toString())
             .symbol(Symbol.USDT_BTC.getCode())
             .timestamp(time)
             .build();
 
         FutureOrderCancelResponse futureOrderCancelResponse = binanceFutureClient.orderCancel(futureOrderCancelRequest, keyPairId);
-        log.info("취소 : {}", futureOrderCancelResponse);*/
+        log.info("취소 : {}", futureOrderCancelResponse);
     }
 
     @Test
