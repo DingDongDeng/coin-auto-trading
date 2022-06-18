@@ -10,6 +10,7 @@ import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.Bin
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureOrderCancelRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureOrderInfoRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureAccountBalanceRequest;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FuturePositionRiskRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureMarkPriceResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.BinanceServerTimeResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureAccountBalanceResponse;
@@ -19,6 +20,7 @@ import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.Bin
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureNewOrderResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureOrderCancelResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureOrderInfoResponse;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FuturePositionRiskResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -204,6 +206,21 @@ public class BinanceFutureClient {
                         .retrieve()
                         .bodyToMono(FutureMarkPriceResponse.class)
                         .block()
+        );
+    }
+
+    public List<FuturePositionRiskResponse> getPositionInfo(FuturePositionRiskRequest request, String keyPairId){
+        return responseHandler.handle(
+            () -> binanceFutureWebClient.get()
+                .uri(uriBuilder -> uriBuilder.path("/fapi/v2/positionRisk")
+                    .queryParams(queryParamsConverter.convertMap(makeSignatureWrapper(request, keyPairId)))
+                    .build()
+                )
+                .headers(headers -> headers.addAll(makeHeaders(keyPairId)))
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<FuturePositionRiskResponse>>() {
+                })
+                .block()
         );
     }
 

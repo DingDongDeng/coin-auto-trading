@@ -15,12 +15,14 @@ import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.Bin
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureNewOrderRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureOrderCancelRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureOrderInfoRequest;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FuturePositionRiskRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureAccountBalanceResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureCandleResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureMarkPriceResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureNewOrderResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureOrderCancelResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureOrderInfoResponse;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FuturePositionRiskResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.FutureExchangeService;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrder;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrderCancel;
@@ -66,6 +68,7 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
                 .build(),
             keyPairId
         );
+
         return makeExchangeOrder(response);
     }
 
@@ -121,6 +124,9 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
         // 계좌 정보 조회
         FutureAccountBalanceResponse accounts = getAssetBalance(keyPairId);
 
+        // 포지션 리스크 정보 조회
+        FuturePositionRiskResponse positionRisk = getPositionRisk(param, keyPairId);
+
         return FutureExchangeTradingInfo.builder()
             .coinType(param.getCoinType())
             .coinExchangeType(getCoinExchangeType())
@@ -128,11 +134,23 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
             .currency(accounts.getAsset())
             .balance(accounts.getBalance())
 
+            .leverage(positionRisk.getLeverage())
+            .liquidationPrice(positionRisk.getLiquidationPrice())
+
             .candles(candles)
             .ticker(ticker)
 
             .rsi(indexCalculator.getRsi(candles))
             .build();
+    }
+
+    private FuturePositionRiskResponse getPositionRisk(FutureExchangeTradingInfoParam param, String keyPairId) {
+        return binanceFutureClient.getPositionInfo(
+            FuturePositionRiskRequest.builder()
+                .symbol(Symbol.of(param.getCoinType()).getCode())
+                .timestamp(System.currentTimeMillis())
+                .build(), keyPairId)
+            .stream().findFirst().orElse(new FuturePositionRiskResponse());
     }
 
     @Override

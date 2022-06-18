@@ -1,5 +1,7 @@
 package com.dingdongdeng.coinautotrading.trading.exchange.future.client.model;
 
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.PositionSide;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.Side;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.State;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.TimeInForce;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.Type;
@@ -7,8 +9,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
-import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.Side;
-import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.PositionSide;
 
 
 @ToString
@@ -264,6 +264,39 @@ public class BinanceFutureResponse {
         private Double interestRate;
         @JsonProperty("time")
         private Long time;
+
+    }
+
+    @ToString
+    @Getter
+    public static class FuturePositionRiskResponse {    //https://binance-docs.github.io/apidocs/futures/en/#position-information-v2-user_data
+
+        @JsonProperty("entryPrice")
+        private Double entryPrice; // 진입가
+        @JsonProperty("marginType")
+        private String marginType;
+        @JsonProperty("isAutoAddMargin")
+        private Boolean isAutoAddMargin;
+        @JsonProperty("isolatedMargin")
+        private Double isolatedMargin;
+        @JsonProperty("leverage")
+        private Integer leverage; // 레버리지
+        @JsonProperty("liquidationPrice")
+        private Double liquidationPrice; // 청산가
+        @JsonProperty("markPrice")
+        private String markPrice;
+        @JsonProperty("maxNotionalValue")
+        private String maxNotionalValue;
+        @JsonProperty("positionAmt")
+        private Double positionAmount;
+        @JsonProperty("symbol")
+        private String symbol; // 코인 종류
+        @JsonProperty("unRealizedProfit")
+        private Double unRealizedProfit;
+        @JsonProperty("positionSide")
+        private PositionSide positionSide; // 포지션
+        @JsonProperty("updateTime")
+        private Long updateTime;
 
     }
 

@@ -17,6 +17,7 @@ import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.Bin
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureOrderCancelRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureOrderInfoRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FutureAccountBalanceRequest;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureRequest.FuturePositionRiskRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureMarkPriceResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.BinanceServerTimeResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureAccountBalanceResponse;
@@ -26,7 +27,11 @@ import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.Bin
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureNewOrderResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureOrderCancelResponse;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FutureOrderInfoResponse;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureResponse.FuturePositionRiskResponse;
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -153,6 +158,21 @@ class BinanceFutureClientTest {
     }
 
     @Test
+    public void 주문정보조회(){
+
+        FutureOrderInfoRequest request1 = FutureOrderInfoRequest.builder()
+            .symbol(Symbol.USDT_BTC.getCode())
+            .orderId("58652985361")
+            .timestamp(System.currentTimeMillis())
+            .build();
+
+        FutureOrderInfoResponse futureOrderInfoResponse = binanceFutureClient.getFutureOrderInfo(request1, keyPairId);
+        log.info("코인 정보 : {}", futureOrderInfoResponse);
+
+    }
+
+
+    @Test
     public void 주문_및_주문_취소() {
         BinanceServerTimeResponse timeResponse = binanceFutureClient.getServerTime();
         Long time = timeResponse.getServerTime();
@@ -160,7 +180,7 @@ class BinanceFutureClientTest {
             .symbol(Symbol.USDT_BTC.getCode())
             .type(Type.LIMIT)
             .side(Side.SELL)
-            .price(100000.0)
+            .price(19308.6)
             .quantity(0.01)
             .timeInForce(TimeInForce.GTC)
             .timestamp(time)
@@ -179,14 +199,14 @@ class BinanceFutureClientTest {
         FutureOrderInfoResponse futureOrderInfoResponse = binanceFutureClient.getFutureOrderInfo(request1, keyPairId);
         log.info("코인 정보 : {}", futureOrderInfoResponse);
 
-        FutureOrderCancelRequest futureOrderCancelRequest = FutureOrderCancelRequest.builder()
+        /*FutureOrderCancelRequest futureOrderCancelRequest = FutureOrderCancelRequest.builder()
             .orderId(futureOrderInfoResponse.getOrderId().toString())
             .symbol(Symbol.USDT_BTC.getCode())
             .timestamp(time)
             .build();
 
         FutureOrderCancelResponse futureOrderCancelResponse = binanceFutureClient.orderCancel(futureOrderCancelRequest, keyPairId);
-        log.info("취소 : {}", futureOrderCancelResponse);
+        log.info("취소 : {}", futureOrderCancelResponse);*/
     }
 
     @Test
@@ -208,5 +228,16 @@ class BinanceFutureClientTest {
 
         FutureMarkPriceResponse response = binanceFutureClient.getMarkPrice(request);
         log.info("시장 현재가 : {}", response);
+    }
+
+    @Test
+    public void 리스크조회(){
+        FuturePositionRiskRequest request = FuturePositionRiskRequest.builder()
+            .symbol("BTCUSDT")
+            .timestamp(System.currentTimeMillis())
+            .build();
+
+        List<FuturePositionRiskResponse> response = binanceFutureClient.getPositionInfo(request, keyPairId);
+        log.info("risk info : {}", response);
     }
 }
