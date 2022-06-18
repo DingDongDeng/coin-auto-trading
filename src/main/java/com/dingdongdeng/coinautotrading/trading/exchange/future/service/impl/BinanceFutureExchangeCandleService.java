@@ -4,6 +4,7 @@ import com.dingdongdeng.coinautotrading.common.type.CandleUnit;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.ExchangeCandleService;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.ExchangeCandleUtils;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.BinanceFutureClient;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.BinanceFutureEnum.Interval;
@@ -13,9 +14,7 @@ import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.Bin
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
@@ -31,6 +30,7 @@ public class BinanceFutureExchangeCandleService implements ExchangeCandleService
     private final CoinExchangeType COIN_EXCHANGE_TYPE = CoinExchangeType.BINANCE_FUTURE;
     private final BinanceFutureClient binanceFutureClient;
     private final int MAX_CHUNK_SIZE = 1500;
+    private final ExchangeCandleUtils candleUtils = new ExchangeCandleUtils(MAX_CHUNK_SIZE);
 
 
     @Override //fixme 분봉만 지원
@@ -42,11 +42,11 @@ public class BinanceFutureExchangeCandleService implements ExchangeCandleService
          * start가 null이라면 end를 기준으로 캔들 1500개까지 조회
          */
         if (Objects.isNull(start)) {
-            start = getlimitedStartDateTime(candleUnit, end);
+            start = candleUtils.getlimitedStartDateTime(candleUnit, end);
         }
 
-        LocalDateTime limitedEndDateTime = getlimitedEndDateTime(candleUnit, start, end);
-        int candleCount = getCandleCount(candleUnit, start, limitedEndDateTime);
+        LocalDateTime limitedEndDateTime = candleUtils.getlimitedEndDateTime(candleUnit, start, end);
+        int candleCount = candleUtils.getCandleCount(candleUnit, start, limitedEndDateTime);
         List<FutureCandleResponse> response = binanceFutureClient.getMinuteCandle(
             FutureCandleRequest.builder()
                 .interval(Interval.of(candleUnit).getCode())
@@ -81,68 +81,6 @@ public class BinanceFutureExchangeCandleService implements ExchangeCandleService
     @Override
     public CoinExchangeType getCoinExchangeType() {
         return COIN_EXCHANGE_TYPE;
-    }
-
-    private LocalDateTime getlimitedEndDateTime(CandleUnit candleUnit, LocalDateTime start,
-        LocalDateTime end) {
-        LocalDateTime limitedEndDateTime;
-        int unitSize = candleUnit.getSize();
-        switch (candleUnit.getUnitType()) {
-            case WEEK:
-                limitedEndDateTime = start.plusWeeks(MAX_CHUNK_SIZE * unitSize);
-                break;
-            case DAY:
-                limitedEndDateTime = start.plusDays(MAX_CHUNK_SIZE * unitSize);
-                break;
-            case MIN:
-                limitedEndDateTime = start.plusMinutes(MAX_CHUNK_SIZE * unitSize);
-                break;
-            default:
-                throw new NoSuchElementException("fail make limitedEndDateTime");
-        }
-        return (end.isAfter(limitedEndDateTime) ? limitedEndDateTime : end).withSecond(59);
-    }
-
-    private LocalDateTime getlimitedStartDateTime(CandleUnit candleUnit, LocalDateTime end) {
-        LocalDateTime limitedStartDateTime;
-        int unitSize = candleUnit.getSize();
-        switch (candleUnit.getUnitType()) {
-            case WEEK:
-                limitedStartDateTime = end.minusWeeks(MAX_CHUNK_SIZE * unitSize);
-                break;
-            case DAY:
-                limitedStartDateTime = end.minusDays(MAX_CHUNK_SIZE * unitSize);
-                break;
-            case MIN:
-                limitedStartDateTime = end.minusMinutes(MAX_CHUNK_SIZE * unitSize);
-                break;
-            default:
-                throw new NoSuchElementException("fail make limitedStartDateTime");
-        }
-        return limitedStartDateTime;
-    }
-
-    private int getCandleCount(CandleUnit candleUnit, LocalDateTime start,
-        LocalDateTime limitedEndDateTime) {
-        Long diff = null;
-        switch (candleUnit.getUnitType()) {
-            case WEEK:
-                diff = ChronoUnit.WEEKS.between(start, limitedEndDateTime) / candleUnit.getSize();
-                break;
-            case DAY:
-                diff = ChronoUnit.DAYS.between(start, limitedEndDateTime) / candleUnit.getSize();
-                break;
-            case MIN:
-                diff = ChronoUnit.MINUTES.between(start, limitedEndDateTime) / candleUnit.getSize();
-                break;
-            default:
-                throw new NoSuchElementException("fail make candleCount");
-        }
-
-        if (diff > MAX_CHUNK_SIZE) {
-            throw new RuntimeException("binance candle max size over");
-        }
-        return diff.intValue();
     }
 
     private Long convertTimeStamp(LocalDateTime localDateTime) {
