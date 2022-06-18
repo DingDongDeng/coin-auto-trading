@@ -53,7 +53,7 @@ public class UpbitSpotExchangeService implements SpotExchangeService {
                 .side(Side.of(param.getOrderType()))
                 .volume(param.getVolume())
                 .price(param.getPrice())
-                .ordType(OrdType.of(param.getPriceType()))
+                .ordType(OrdType.of(param.getPriceType(), param.getOrderType()))
                 .build(),
             keyPairId
         );
