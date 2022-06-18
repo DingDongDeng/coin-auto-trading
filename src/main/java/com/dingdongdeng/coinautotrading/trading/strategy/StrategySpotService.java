@@ -12,6 +12,7 @@ import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.Spot
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeTradingInfoParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.SpotTradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.SpotTradingResult;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
 import java.util.List;
@@ -29,6 +30,11 @@ public class StrategySpotService implements StrategyService<SpotTradingInfo, Spo
     private final TradingTerm tradingTerm;
     private final String keyPairId;
     private final SpotExchangeService spotExchangeService;
+
+    @Override
+    public void ready(StrategyCoreParam param) {
+
+    }
 
     @Override
     public SpotTradingInfo getTradingInformation(String identifyCode) {
