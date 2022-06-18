@@ -40,16 +40,16 @@ public class BackTestingFutureExchangeService implements FutureExchangeService {
 
     @Override
     public FutureExchangeOrder order(FutureExchangeOrderParam param, String keyPairId) {
-        FutureExchangeOrder order = FutureExchangeOrder.builder()
-            .orderId(UUID.randomUUID().toString())
-            .orderType(param.getOrderType())
-            .priceType(param.getPriceType())
-            .price(param.getPrice())
-            .avgPrice(null)
-            .orderState(OrderState.DONE)
-            .coinType(param.getCoinType())
-            .createdAt(TradingTimeContext.now())
-            .volume(param.getVolume())
+            FutureExchangeOrder order = FutureExchangeOrder.builder()
+                .orderId(UUID.randomUUID().toString())
+                .orderType(param.getOrderType())
+                .priceType(param.getPriceType())
+                .price(param.getPrice())
+                .avgPrice(null)
+                .orderState(OrderState.DONE)
+                .coinType(param.getCoinType())
+                .createdAt(TradingTimeContext.now())
+                .volume(param.getVolume() * leverage)   //fixme 첫 포지션때만 레버리지가 곱해지도록
             .executedVolume(null)
             .cumQuote(null)
             .paidFee(getCancelFee(param.getVolume(), param.getPrice()))

@@ -14,6 +14,8 @@ import com.dingdongdeng.coinautotrading.trading.exchange.future.client.model.Bin
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.TimeZone;
@@ -63,8 +65,8 @@ public class BinanceFutureExchangeCandleService implements ExchangeCandleService
             .candleList(
                 response.stream().map(
                     candle -> ExchangeCandles.Candle.builder()
-                        .candleDateTimeUtc(convertLocalDateTime(candle.getOpenTime()))
-                        .candleDateTimeKst(convertLocalDateTime(candle.getOpenTime()))
+                        .candleDateTimeUtc(convertLocalDateTimeUTC(candle.getOpenTime()))
+                        .candleDateTimeKst(convertLocalDateTimeKST(candle.getOpenTime()))
                         .openingPrice(candle.getOpen())
                         .highPrice(candle.getHigh())
                         .lowPrice(candle.getLow())
@@ -87,7 +89,11 @@ public class BinanceFutureExchangeCandleService implements ExchangeCandleService
         return Timestamp.valueOf(localDateTime).getTime();
     }
 
-    private LocalDateTime convertLocalDateTime(Long timestamp) {
-        return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), TimeZone.getDefault().toZoneId());
+    private LocalDateTime convertLocalDateTimeKST(Long timestamp) {
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneId.of("Asia/Seoul"));
+    }
+
+    private LocalDateTime convertLocalDateTimeUTC(Long timestamp) {
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneId.of("Europe/London"));
     }
 }

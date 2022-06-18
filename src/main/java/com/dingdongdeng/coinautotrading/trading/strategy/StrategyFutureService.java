@@ -117,6 +117,7 @@ public class StrategyFutureService implements StrategyService<FutureTradingInfo,
             .tradingTerm(tradingResult.getTradingTerm())
             .orderType(futureExchangeOrder.getOrderType())
             .orderState(futureExchangeOrder.getOrderState())
+            .fee(futureExchangeOrder.getPaidFee())
             .volume(futureExchangeOrder.getVolume())
             .price(futureExchangeOrder.getPrice())
             .priceType(futureExchangeOrder.getPriceType())
