@@ -7,6 +7,8 @@ import com.dingdongdeng.coinautotrading.trading.backtesting.context.BackTestingC
 import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.FutureExchangeService;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeLeverage;
+import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeLeverageParam;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrder;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrderCancel;
 import com.dingdongdeng.coinautotrading.trading.exchange.future.service.model.FutureExchangeOrderCancelParam;
@@ -32,6 +34,7 @@ public class BackTestingFutureExchangeService implements FutureExchangeService {
     private BackTestingContextLoader contextLoader;
     private IndexCalculator indexCalculator;
     private double exchangeFeeRate;
+    private int leverage;
     @Default
     private Map<String, FutureExchangeOrder> orderMap = new HashMap<>();
 
@@ -113,6 +116,9 @@ public class BackTestingFutureExchangeService implements FutureExchangeService {
             .candles(candles)
             .ticker(FutureExchangeTicker.builder().markPrice(currentPrice).build())
 
+            .leverage(leverage)
+            .liquidationPrice(getLiquidationPrice())
+
             .rsi(indexCalculator.getRsi(candles))
             .build();
     }
@@ -123,11 +129,20 @@ public class BackTestingFutureExchangeService implements FutureExchangeService {
     }
 
     @Override
+    public FutureExchangeLeverage updateLeverage(FutureExchangeLeverageParam param, String keyPairId) {
+        return null;
+    }
+
+    @Override
     public CoinExchangeType getCoinExchangeType() {
         return null;
     }
 
     private double getCancelFee(double volume, double price) {
         return exchangeFeeRate * volume * price / 100;
+    }
+
+    private double getLiquidationPrice() {
+        return 0d;
     }
 }

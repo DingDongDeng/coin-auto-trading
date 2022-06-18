@@ -12,6 +12,7 @@ import com.dingdongdeng.coinautotrading.trading.exchange.common.ExchangeService;
 import com.dingdongdeng.coinautotrading.trading.index.IndexCalculator;
 import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyFactory;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreFutureParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyServiceParam;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -85,10 +86,12 @@ public class BackTestingService {
                 .build();
         }
         if (coinExchangeType.getMarketType() == MarketType.FUTURE) {
+            int leverage = ((StrategyCoreFutureParam) (autoTradingProcessor.getStrategy().getStrategyCore().getParam())).getLeverage();
             return BackTestingFutureExchangeService.builder()
                 .contextLoader(contextLoader)
                 .indexCalculator(indexCalculator)
                 .exchangeFeeRate(feeType.getFeeRate())
+                .leverage(leverage)
                 .build();
         }
         throw new RuntimeException("백테스팅을 위한 서비스를 생성하지 못함 , MarketType을 매핑하지 못했음");
