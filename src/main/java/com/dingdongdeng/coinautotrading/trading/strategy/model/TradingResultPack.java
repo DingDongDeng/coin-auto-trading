@@ -33,7 +33,7 @@ public class TradingResultPack<T extends TradingResult> {
 
     public void delete(T tradingResult) {
         List<T> tradingResultList = findTargetTradingResultList(tradingResult.getTradingTag());
-        TradingResult targetTradingResult = findTradingResult(tradingResultList, tradingResult.getOrderId());
+        T targetTradingResult = findTradingResult(tradingResultList, tradingResult.getOrderId());
         tradingResultList.remove(targetTradingResult);
     }
 
