@@ -145,11 +145,11 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
     }
 
     private FuturePositionRiskResponse getPositionRisk(FutureExchangeTradingInfoParam param, String keyPairId) {
-        return binanceFutureClient.getPositionInfo(
-            FuturePositionRiskRequest.builder()
-                .symbol(Symbol.of(param.getCoinType()).getCode())
-                .timestamp(System.currentTimeMillis())
-                .build(), keyPairId)
+        return binanceFutureClient.getPositionRisk(
+                FuturePositionRiskRequest.builder()
+                    .symbol(Symbol.of(param.getCoinType()).getCode())
+                    .timestamp(System.currentTimeMillis())
+                    .build(), keyPairId)
             .stream().findFirst().orElse(new FuturePositionRiskResponse());
     }
 
