@@ -10,6 +10,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum BackTestingExchangeFeeType {
     UPBIT(CoinExchangeType.UPBIT, 0.05),
+    BINANCE(CoinExchangeType.BINANCE_FUTURE, 0.02),
     ;
 
     private CoinExchangeType coinExchangeType;

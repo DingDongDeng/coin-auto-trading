@@ -5,11 +5,11 @@ import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeCandles;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyCore;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.SpotTradingInfo;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.SpotTradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreParam;
-import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
-import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.TradingTag;
@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-public class ScaleTradingRsiStrategyCore implements StrategyCore {
+public class ScaleTradingRsiStrategyCore implements StrategyCore<SpotTradingInfo, SpotTradingResult> {
 
     private final ScaleTradingRsiStrategyCoreParam param;
 
@@ -40,7 +40,7 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
      *  - 손절하지 않음
      */
     @Override
-    public List<TradingTask> makeTradingTask(TradingInfo tradingInfo) {
+    public List<TradingTask> makeTradingTask(SpotTradingInfo tradingInfo, TradingResultPack<SpotTradingResult> tradingResultPack) {
         String identifyCode = tradingInfo.getIdentifyCode();
         log.info("{} :: ---------------------------------------", identifyCode);
         CoinType coinType = tradingInfo.getCoinType();
@@ -53,15 +53,14 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
         log.info("{} :: rsi={}", identifyCode, rsi);
 
         // 자동매매 중 기억해야할 실시간 주문 정보(익절, 손절, 매수 주문 정보)
-        TradingResultPack tradingResultPack = tradingInfo.getTradingResultPack();
-        List<TradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
-        List<TradingResult> profitTradingResultList = tradingResultPack.getProfitTradingResultList();
-        List<TradingResult> lossTradingResultList = tradingResultPack.getLossTradingResultList();
+        List<SpotTradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
+        List<SpotTradingResult> profitTradingResultList = tradingResultPack.getProfitTradingResultList();
+        List<SpotTradingResult> lossTradingResultList = tradingResultPack.getLossTradingResultList();
 
         /*
          * 미체결 상태가 너무 오래되면, 주문을 취소
          */
-        for (TradingResult tradingResult : tradingResultPack.getAll()) {
+        for (SpotTradingResult tradingResult : tradingResultPack.getAll()) {
             if (tradingResult.isDone()) {
                 continue;
             }
@@ -78,7 +77,7 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
                         .volume(tradingResult.getVolume())
                         .price(tradingResult.getPrice())
                         .priceType(tradingResult.getPriceType())
-                        .tag(tradingResult.getTag())
+                        .tag(tradingResult.getTradingTag())
                         .build()
                 );
             }
@@ -113,7 +112,7 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
                         .orderType(OrderType.SELL)
                         .volume(tradingResultPack.getVolume())
                         .price(currentPrice)
-                        .priceType(PriceType.LIMIT_PRICE)
+                        .priceType(PriceType.LIMIT)
                         .tag(TradingTag.PROFIT)
                         .build()
                 );
@@ -130,7 +129,7 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
                         .orderType(OrderType.SELL)
                         .volume(tradingResultPack.getVolume())
                         .price(currentPrice)
-                        .priceType(PriceType.LIMIT_PRICE)
+                        .priceType(PriceType.LIMIT)
                         .tag(TradingTag.LOSS)
                         .build()
                 );
@@ -157,7 +156,7 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
                     .orderType(OrderType.BUY)
                     .volume(volume)
                     .price(currentPrice)
-                    .priceType(PriceType.LIMIT_PRICE)
+                    .priceType(PriceType.LIMIT)
                     .tag(TradingTag.BUY)
                     .build()
             );
@@ -167,12 +166,12 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
     }
 
     @Override
-    public void handleOrderResult(TradingResult tradingResult) {
+    public void handleOrderResult(SpotTradingResult tradingResult) {
 
     }
 
     @Override
-    public void handleOrderCancelResult(TradingResult tradingResult) {
+    public void handleOrderCancelResult(SpotTradingResult tradingResult) {
 
     }
 
@@ -227,7 +226,7 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore {
         return false;
     }
 
-    private boolean isTooOld(TradingResult tradingResult) {
+    private boolean isTooOld(SpotTradingResult tradingResult) {
         if (Objects.isNull(tradingResult.getCreatedAt())) {
             return false;
         }

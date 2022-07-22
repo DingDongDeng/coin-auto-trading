@@ -32,7 +32,7 @@ public class AutoTradingProcessor {
     private CoinExchangeType coinExchangeType;
     private AutoTradingProcessStatus status;
     private TradingTerm tradingTerm;
-    private Strategy strategy;
+    private Strategy<?, ?> strategy;
     private long duration;
     private SlackSender slackSender;
 
@@ -54,6 +54,7 @@ public class AutoTradingProcessor {
     }
 
     private void process() {
+        this.strategy.ready();
         while (isRunning()) {
             log.info("running autoTradingProcessor...");
             delay();

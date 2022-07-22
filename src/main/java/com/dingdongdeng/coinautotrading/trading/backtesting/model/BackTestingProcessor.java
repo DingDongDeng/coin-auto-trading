@@ -30,7 +30,7 @@ public class BackTestingProcessor {
     private LocalDateTime start;
     private LocalDateTime end;
     private LocalDateTime now;
-    private Strategy strategy;
+    private Strategy<?, ?> strategy;
     private BackTestingContextLoader backTestingContextLoader;
     private long duration;
 
@@ -39,6 +39,7 @@ public class BackTestingProcessor {
     }
 
     private void process() {
+        this.strategy.ready();
         try {
             this.status = BackTestingProcessStatus.RUNNING;
             while (backTestingContextLoader.hasNext()) {

@@ -4,8 +4,8 @@ import com.dingdongdeng.coinautotrading.common.slack.SlackSender;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingProcessor;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingRegisterRequest;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.type.AutoTradingProcessStatus;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.ExchangeService;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.selector.ExchangeServiceSelector;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.ExchangeService;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.selector.ExchangeServiceSelector;
 import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyFactory;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreParam;
@@ -41,7 +41,7 @@ public class AutoTradingService {
             .build();
 
         StrategyCoreParam coreParam = strategyFactory.createCoreParam(request.getStrategyCode(), request.getStrategyCoreParamMap());
-        Strategy strategy = strategyFactory.create(serviceParam, coreParam);
+        Strategy<?, ?> strategy = strategyFactory.createStrategy(serviceParam, coreParam);
 
         return autoTradingManager.register(
             AutoTradingProcessor.builder()
