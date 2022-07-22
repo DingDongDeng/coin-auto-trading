@@ -40,16 +40,16 @@ public class BackTestingFutureExchangeService implements FutureExchangeService {
 
     @Override
     public FutureExchangeOrder order(FutureExchangeOrderParam param, String keyPairId) {
-            FutureExchangeOrder order = FutureExchangeOrder.builder()
-                .orderId(UUID.randomUUID().toString())
-                .orderType(param.getOrderType())
-                .priceType(param.getPriceType())
-                .price(param.getPrice())
-                .avgPrice(null)
-                .orderState(OrderState.DONE)
-                .coinType(param.getCoinType())
-                .createdAt(TradingTimeContext.now())
-                .volume(param.getVolume() * leverage)   //fixme 첫 포지션때만 레버리지가 곱해지도록
+        FutureExchangeOrder order = FutureExchangeOrder.builder()
+            .orderId(UUID.randomUUID().toString())
+            .orderType(param.getOrderType())
+            .priceType(param.getPriceType())
+            .price(param.getPrice())
+            .avgPrice(null)
+            .orderState(OrderState.DONE)
+            .coinType(param.getCoinType())
+            .createdAt(TradingTimeContext.now())
+            .volume(param.getVolume() * leverage)   //fixme 첫 포지션때만 레버리지가 곱해지도록(매 주문마다 곱해버리면 안됨)
             .executedVolume(null)
             .cumQuote(null)
             .paidFee(getCancelFee(param.getVolume(), param.getPrice()))
@@ -97,6 +97,13 @@ public class BackTestingFutureExchangeService implements FutureExchangeService {
 
     @Override
     public FutureExchangeTradingInfo getTradingInformation(FutureExchangeTradingInfoParam param, String keyPairId) {
+        /*
+        FIXME
+            if(currentPrice <= 계산된 청산가){
+                orderList를 전부다 OrderState.LIQUIDATION으로 수정
+            }
+         */
+
         BackTestingContext context = contextLoader.getCurrentContext();
         double currentPrice = context.getCurrentPrice();
         ExchangeCandles candles = context.getCandles();
@@ -143,6 +150,6 @@ public class BackTestingFutureExchangeService implements FutureExchangeService {
     }
 
     private double getLiquidationPrice() {
-        return 0d;
+        return 0d; //fixme 이것도
     }
 }
