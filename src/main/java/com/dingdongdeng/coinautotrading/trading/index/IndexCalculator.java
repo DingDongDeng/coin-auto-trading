@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 public class IndexCalculator {
 
     private final int RSI_STANDARD_PERIOD = 14;
+    private final double RESISTANCE_GAP = 0.02; // 2%
 
     public List<Double> getResistancePrice(ExchangeCandles candles) {
         Map<Double, Integer> priceMap = new HashMap<>();
@@ -30,11 +31,25 @@ public class IndexCalculator {
                 priceMap.put(candle.getTradePrice(), priceMap.get(price) + 1);
             }
         }
-        return priceMap.entrySet().stream()
+        List<Entry<Double, Integer>> entryList = priceMap.entrySet().stream()
             .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-            .map(Entry::getKey)
-            .limit(10)
+            .limit(5)
+            .sorted(Map.Entry.comparingByKey())
             .collect(Collectors.toList());
+
+        // 저항선 간의 간격이 가깝지 않도록 필터
+        for (int i = 0; i < entryList.size(); i++) {
+            Entry<Double, Integer> currentEntry = entryList.get(i);
+            for (int j = i + 1; j < entryList.size(); j++) {
+                Entry<Double, Integer> nextEntry = entryList.get(j);
+                if (currentEntry.getKey() * (1 + RESISTANCE_GAP) > nextEntry.getKey()) {
+                    entryList.remove(nextEntry);
+                    j--;
+                }
+            }
+        }
+
+        return entryList.stream().map(Entry::getKey).collect(Collectors.toList());
     }
 
     // RSI(지수 가중 이동 평균)
