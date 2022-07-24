@@ -22,16 +22,17 @@ public class IndexCalculator {
     private final double RESISTANCE_GAP = 0.02; // 2%
 
     public List<Double> getResistancePrice(ExchangeCandles candles) {
-        Map<Double, Integer> priceMap = new HashMap<>();
+        Map<Double, Double> priceMap = new HashMap<>();
         for (Candle candle : candles.getCandleList()) {
             Double price = candle.getTradePrice();
+            Double volume = Objects.isNull(candle.getCandleAccTradeVolume()) ? 0 : candle.getCandleAccTradeVolume();
             if (Objects.isNull(priceMap.get(price))) {
-                priceMap.put(price, 1);
+                priceMap.put(price, volume);
             } else {
-                priceMap.put(candle.getTradePrice(), priceMap.get(price) + 1);
+                priceMap.put(price, priceMap.get(price) + volume);
             }
         }
-        List<Entry<Double, Integer>> entryList = priceMap.entrySet().stream()
+        List<Entry<Double, Double>> entryList = priceMap.entrySet().stream()
             .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
             .limit(5)
             .sorted(Map.Entry.comparingByKey())
@@ -39,9 +40,9 @@ public class IndexCalculator {
 
         // 저항선 간의 간격이 가깝지 않도록 필터
         for (int i = 0; i < entryList.size(); i++) {
-            Entry<Double, Integer> currentEntry = entryList.get(i);
+            Entry<Double, Double> currentEntry = entryList.get(i);
             for (int j = i + 1; j < entryList.size(); j++) {
-                Entry<Double, Integer> nextEntry = entryList.get(j);
+                Entry<Double, Double> nextEntry = entryList.get(j);
                 if (currentEntry.getKey() * (1 + RESISTANCE_GAP) > nextEntry.getKey()) {
                     entryList.remove(nextEntry);
                     j--;
