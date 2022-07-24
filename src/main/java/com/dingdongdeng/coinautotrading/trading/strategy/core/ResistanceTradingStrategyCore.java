@@ -5,7 +5,6 @@ import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
-import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyCore;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.SpotTradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.SpotTradingResult;
@@ -21,26 +20,21 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-public class ScaleTradingRsiV2StrategyCore implements StrategyCore<SpotTradingInfo, SpotTradingResult> {
+public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingInfo, SpotTradingResult> {
 
-    private final ScaleTradingRsiV2StrategyCoreParam param;
+    private final ResistanceTradingStrategyCoreParam param;
 
     /*
-     *  RSI 기반 물타기 매매 전략
-     *
-     *  요약 :
-     *  - 추가 매수를 할수록, 목표 이익율을 낮춰 익절을 쉽게함
-     *  - 추가 매수를 할수록, 추가 매수 기준이 어려워짐
+     *  저항선 기반 매매
      *
      *  매수 시점
-     *  - RSI가 buyRsi 보다 낮으면서 매수주문한적이 없을때
-     *  - RSI가 buyRsi 보다 낮으면서 손실율이 n%이상 일때 (n= buyLossRate * 추가매수횟수)
+     *  - 저항선에 지지 받을때
      *
      *  익절 시점
-     *  - 이익율이 n% 이상이 됐을때 (profitLimitPriceRate / 추가매수횟수)
+     *  - 저항선에 저항 받을때
      *
      *  손절 시점
-     *  - 손절하지 않음
+     *  - 저항선의 지지를 받지 못했을때
      */
     @Override
     public List<TradingTask> makeTradingTask(SpotTradingInfo tradingInfo, TradingResultPack<SpotTradingResult> tradingResultPack) {
@@ -48,12 +42,11 @@ public class ScaleTradingRsiV2StrategyCore implements StrategyCore<SpotTradingIn
         log.info("{} :: ---------------------------------------", identifyCode);
         CoinType coinType = tradingInfo.getCoinType();
         TradingTerm tradingTerm = tradingInfo.getTradingTerm();
-        double rsi = tradingInfo.getRsi();
-        ExchangeCandles candles = tradingInfo.getCandles();
+        List<Double> resistancePriceList = tradingInfo.getResistancePriceList();
 
         log.info("tradingInfo : {}", tradingInfo);
         log.info("{} :: coinType={}", identifyCode, coinType);
-        log.info("{} :: rsi={}", identifyCode, rsi);
+        log.info("{} :: resistancePriceList={}", identifyCode, resistancePriceList);
 
         // 자동매매 중 기억해야할 실시간 주문 정보(익절, 손절, 매수 주문 정보)
         List<SpotTradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
@@ -105,7 +98,7 @@ public class ScaleTradingRsiV2StrategyCore implements StrategyCore<SpotTradingIn
             }
 
             //익절 주문
-            if (isProfitOrderTiming(currentPrice, rsi, tradingResultPack)) {
+            if (isProfitOrderTiming(currentPrice, tradingResultPack, resistancePriceList)) {
                 log.info("{} :: 익절 주문 요청", identifyCode);
                 return List.of(
                     TradingTask.builder()
@@ -122,7 +115,7 @@ public class ScaleTradingRsiV2StrategyCore implements StrategyCore<SpotTradingIn
             }
 
             //손절 주문
-            if (isLossOrderTiming(currentPrice, rsi, tradingResultPack, candles)) {
+            if (isLossOrderTiming(currentPrice, tradingResultPack, resistancePriceList)) {
                 log.info("{} :: 부분 또는 전부 손절 주문 요청", identifyCode);
                 return List.of(
                     TradingTask.builder()
@@ -142,7 +135,7 @@ public class ScaleTradingRsiV2StrategyCore implements StrategyCore<SpotTradingIn
         /*
          * 조건을 만족하면 매수 주문
          */
-        if (isBuyOrderTiming(rsi, tradingInfo.getCurrentPrice(), tradingResultPack, candles)) {
+        if (isBuyOrderTiming(tradingInfo.getCurrentPrice(), tradingResultPack, resistancePriceList, tradingInfo.getRsi())) {
             if (!isEnoughBalance(tradingInfo.getCurrentPrice(), tradingResultPack, tradingInfo.getBalance())) {
                 log.warn("{} :: 계좌가 매수 가능한 상태가 아님", identifyCode);
                 return List.of(new TradingTask());
@@ -150,7 +143,7 @@ public class ScaleTradingRsiV2StrategyCore implements StrategyCore<SpotTradingIn
 
             log.info("{} :: 매수 주문 요청", identifyCode);
             double currentPrice = tradingInfo.getCurrentPrice();
-            double volume = getVolumeToBuy(currentPrice, tradingResultPack);
+            double volume = getVolumeForBuy(currentPrice, tradingResultPack);
             return List.of(
                 TradingTask.builder()
                     .identifyCode(identifyCode)
@@ -183,7 +176,7 @@ public class ScaleTradingRsiV2StrategyCore implements StrategyCore<SpotTradingIn
         return this.param;
     }
 
-    private boolean isEnoughBalance(double currentPrice, TradingResultPack tradingResultPack, double balance) {
+    private boolean isEnoughBalance(double currentPrice, TradingResultPack<SpotTradingResult> tradingResultPack, double balance) {
         if (balance < param.getAccountBalanceLimit()) {
             return false;
         }
@@ -191,44 +184,53 @@ public class ScaleTradingRsiV2StrategyCore implements StrategyCore<SpotTradingIn
         if (tradingResultPack.getVolume() * currentPrice > balance) {
             return false;
         }
+
         return true;
     }
 
-    private boolean isBuyOrderTiming(double rsi, double currentPrice, TradingResultPack tradingResultPack, ExchangeCandles candles) {
-        int buyOrderCount = tradingResultPack.getBuyTradingResultList().size();
+    private boolean isBuyOrderTiming(double currentPrice, TradingResultPack<SpotTradingResult> tradingResultPack, List<Double> resistancePriceList, double rsi) {
+        boolean isResistancePrice = resistancePriceList.stream()
+            .anyMatch(resistancePrice -> currentPrice < resistancePrice * (1 + param.getResistancePriceBuffer()) && currentPrice > resistancePrice);
 
-        if (rsi < param.getBuyRsi()) {
-            if (tradingResultPack.getBuyTradingResultList().isEmpty()) {
-                return true;
-            }
-
-            // 손익율 계산
-            double averagePrice = tradingResultPack.getAveragePrice();
-            if ((averagePrice - currentPrice) / averagePrice > (param.getInitBuyLossRate() * buyOrderCount)) {
-                return true;
-            }
-            return false;
+        if (tradingResultPack.getBuyTradingResultList().isEmpty() && isResistancePrice) {
+            return true;
         }
+
+        // //손익율 계산(추매할때 사용했었음)
+        //double averagePrice = tradingResultPack.getAveragePrice();
+        //if ((averagePrice - currentPrice) / averagePrice > param.getBuyLossRate() && isResistancePrice) {
+        //    return true;
+        //}
         return false;
     }
 
-    private boolean isProfitOrderTiming(double currentPrice, double rsi, TradingResultPack<SpotTradingResult> tradingResultPack) {
-        int buyOrderCount = tradingResultPack.getBuyTradingResultList().size();
-        // 이익 중일때, 목표 이익율에 다다르면 익절(목표 이익율은 추가매수 횟수에 따라 다름)
-        if (currentPrice >= tradingResultPack.getAveragePrice() * (1 + (param.getInitProfitRate() / buyOrderCount))) {
+    private boolean isProfitOrderTiming(double currentPrice, TradingResultPack<SpotTradingResult> tradingResultPack, List<Double> resistancePriceList) {
+        boolean isResistancePrice = resistancePriceList.stream()
+            .anyMatch(resistancePrice -> currentPrice > resistancePrice * (1 - param.getResistancePriceBuffer()) && currentPrice < resistancePrice);
+
+        if (currentPrice > tradingResultPack.getAveragePrice() && isResistancePrice) {
             return true;
         }
         return false;
     }
 
-    private boolean isLossOrderTiming(double currentPrice, double rsi, TradingResultPack<SpotTradingResult> tradingResultPack, ExchangeCandles candles) {
-        // 손절하지 않음
+    private boolean isLossOrderTiming(double currentPrice, TradingResultPack<SpotTradingResult> tradingResultPack, List<Double> resistancePriceList) {
+        boolean isResistancePrice = resistancePriceList.stream()
+            .anyMatch(resistancePrice -> currentPrice < resistancePrice * (1 - param.getResistancePriceBuffer())
+                && currentPrice > resistancePrice * (1 - param.getResistancePriceBuffer() * 2));
+        if (currentPrice < tradingResultPack.getAveragePrice() && isResistancePrice) {
+            return true;
+        }
         return false;
     }
 
-    private double getVolumeToBuy(double currentPrice, TradingResultPack<SpotTradingResult> tradingResultPack) {
+    private double getVolumeForBuy(double currentPrice, TradingResultPack<SpotTradingResult> tradingResultPack) {
         List<SpotTradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
-        return buyTradingResultList.isEmpty() ? param.getInitOrderPrice() / currentPrice : tradingResultPack.getVolume() * param.getBuyVolumeRate();
+
+        double averagePrice = tradingResultPack.getAveragePrice();
+        double lossRate = ((averagePrice - currentPrice) / averagePrice); // 현재 손실율
+
+        return buyTradingResultList.isEmpty() ? param.getInitOrderPrice() / currentPrice : tradingResultPack.getVolume();
     }
 
     private boolean isTooOld(SpotTradingResult tradingResult) {
