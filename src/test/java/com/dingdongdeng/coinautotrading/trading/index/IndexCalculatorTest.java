@@ -112,7 +112,7 @@ class IndexCalculatorTest {
 
         // then
         log.info("result : {}", rsi);
-        assertEquals(rsi, 0.3987051437640047);
+        assertEquals(rsi, 0.39407307248496637);
 
     }
 
@@ -122,7 +122,7 @@ class IndexCalculatorTest {
                 .unit(tradingTerm.getCandleUnit().getSize())
                 .market(MarketType.of(coinType).getCode())
                 .toKst(now)
-                .count(60)
+                .count(200)
                 .build(),
             keyPairId
         );
