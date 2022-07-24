@@ -19,7 +19,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum StrategyCode {
     SCALE_TRADING_RSI("분할 매수(RSI기반, 손절없음)", MarketType.SPOT, ScaleTradingRsiStrategyCore.class, ScaleTradingRsiStrategyCoreParam.class),
-    SCALE_TRADING_RSI_V2("분할 매수V2(RSI기반, 손절없음)", MarketType.SPOT, ScaleTradingRsiV2StrategyCore.class, ScaleTradingRsiV2StrategyCoreParam.class),
+    SCALE_TRADING_RESISTANCE("분할 매수(저항선기반, 손절있음)", MarketType.SPOT, ScaleTradingRsiV2StrategyCore.class, ScaleTradingRsiV2StrategyCoreParam.class),
     TEST_FUTURE("테스트 선물 전략", MarketType.FUTURE, PrototypeFutureStrategyCore.class, PrototypeFutureStrategyCoreParam.class),
     ;
 
