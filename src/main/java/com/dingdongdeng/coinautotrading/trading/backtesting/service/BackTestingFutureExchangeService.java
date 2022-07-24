@@ -127,6 +127,7 @@ public class BackTestingFutureExchangeService implements FutureExchangeService {
             .liquidationPrice(getLiquidationPrice())
 
             .rsi(indexCalculator.getRsi(candles))
+            .resistancePriceList(indexCalculator.getResistancePrice(candles))
             .build();
     }
 

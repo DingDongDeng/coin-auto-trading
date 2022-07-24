@@ -4,6 +4,7 @@ import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -37,6 +38,6 @@ public class SpotExchangeTradingInfo { //fixme 사용중인 모델만 남도록 
      * 보조 지표
      **/
     private Double rsi;
-
+    private List<Double> resistancePriceList;
 
 }

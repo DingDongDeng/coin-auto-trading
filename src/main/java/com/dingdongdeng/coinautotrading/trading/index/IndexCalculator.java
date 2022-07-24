@@ -2,7 +2,13 @@ package com.dingdongdeng.coinautotrading.trading.index;
 
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles.Candle;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -13,6 +19,23 @@ import org.springframework.stereotype.Component;
 public class IndexCalculator {
 
     private final int RSI_STANDARD_PERIOD = 14;
+
+    public List<Double> getResistancePrice(ExchangeCandles candles) {
+        Map<Double, Integer> priceMap = new HashMap<>();
+        for (Candle candle : candles.getCandleList()) {
+            Double price = candle.getTradePrice();
+            if (Objects.isNull(priceMap.get(price))) {
+                priceMap.put(price, 1);
+            } else {
+                priceMap.put(candle.getTradePrice(), priceMap.get(price) + 1);
+            }
+        }
+        return priceMap.entrySet().stream()
+            .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+            .map(Entry::getKey)
+            .limit(10)
+            .collect(Collectors.toList());
+    }
 
     // RSI(지수 가중 이동 평균)
     // https://www.investopedia.com/terms/r/rsi.asp

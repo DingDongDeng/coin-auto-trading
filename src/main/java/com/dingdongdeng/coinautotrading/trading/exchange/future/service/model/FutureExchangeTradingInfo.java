@@ -4,7 +4,7 @@ import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeTicker;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -41,5 +41,6 @@ public class FutureExchangeTradingInfo {
      * 보조 지표
      **/
     private Double rsi;
+    private List<Double> resistancePriceList;
 
 }

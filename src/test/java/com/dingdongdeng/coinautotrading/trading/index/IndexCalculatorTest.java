@@ -42,6 +42,42 @@ class IndexCalculatorTest {
     private String secretKey;
 
     @Test
+    public void 저항선_계산_테스트() {
+        //given
+        String keyPairId = UUID.randomUUID().toString();
+        String userId = "123456";
+        given(exchangeKeyService.findByPairId(keyPairId))
+            .willReturn(
+                List.of(
+                    ExchangeKey.builder()
+                        .pairId(keyPairId)
+                        .coinExchangeType(CoinExchangeType.UPBIT)
+                        .name("ACCESS_KEY")
+                        .value(accessKey)
+                        .userId(userId)
+                        .build(),
+                    ExchangeKey.builder()
+                        .pairId(keyPairId)
+                        .coinExchangeType(CoinExchangeType.UPBIT)
+                        .name("SECRET_KEY")
+                        .value(secretKey)
+                        .userId(userId)
+                        .build()
+                )
+            );
+        CoinType coinType = CoinType.ETHEREUM;
+        TradingTerm tradingTerm = TradingTerm.SCALPING;
+        LocalDateTime now = LocalDateTime.of(2022, 07, 24, 17, 30, 10);
+        ExchangeCandles candles = getExchangeCandles(now, tradingTerm, coinType, keyPairId);
+
+        //when
+        List<Double> resistancePriceList = calculator.getResistancePrice(candles);
+
+        //then
+        log.info("resistancePrice List = {}", resistancePriceList);
+    }
+
+    @Test
     public void RSI_계산_테스트() {
 
         // given
