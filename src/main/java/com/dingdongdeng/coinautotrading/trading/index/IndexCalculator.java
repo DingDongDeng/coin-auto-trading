@@ -32,9 +32,11 @@ public class IndexCalculator {
                 priceMap.put(price, priceMap.get(price) + volume);
             }
         }
+
+        // 영향력 있는 지지/저항선을 추출
         List<Entry<Double, Double>> entryList = priceMap.entrySet().stream()
             .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-            .limit(5)
+            .limit(20)
             .sorted(Map.Entry.comparingByKey())
             .collect(Collectors.toList());
 
@@ -48,6 +50,14 @@ public class IndexCalculator {
                     j--;
                 }
             }
+        }
+
+        // 필터 이후에 현재가격 기준으로 저항선이 없다면 추가
+        double currentPrice = candles.getLatest(0).getTradePrice();
+        double filteredLastResistancePrice = entryList.get(entryList.size() - 1).getKey(); // 필터링 된 후 마지막 저항선 가격
+        if (currentPrice > filteredLastResistancePrice) {
+            //필터링 되어 저항선이 없다면 간격 조절을 위해 RESISTANCE_GAP만큼 임의 생성
+            entryList.add(Map.entry(filteredLastResistancePrice * (1 + RESISTANCE_GAP), 0d));
         }
 
         return entryList.stream().map(Entry::getKey).collect(Collectors.toList());
