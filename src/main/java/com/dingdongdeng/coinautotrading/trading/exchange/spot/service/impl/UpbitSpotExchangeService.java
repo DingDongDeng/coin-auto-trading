@@ -117,8 +117,7 @@ public class UpbitSpotExchangeService implements SpotExchangeService {
             .candles(candles)
             .ticker(ticker)
 
-            .rsi(indexCalculator.getRsi(candles))
-            .resistancePriceList(indexCalculator.getResistancePrice(candles))
+            .index(indexCalculator.getIndex(candles))
             .build();
     }
 

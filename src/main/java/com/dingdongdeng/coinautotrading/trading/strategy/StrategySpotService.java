@@ -57,8 +57,7 @@ public class StrategySpotService implements StrategyService<SpotTradingInfo, Spo
             .avgBuyPrice(spotExchangeTradingInfo.getAvgBuyPrice())
             .unitCurrency(spotExchangeTradingInfo.getUnitCurrency())
             .currentPrice(spotExchangeTradingInfo.getTicker().getTradePrice())
-            .rsi(spotExchangeTradingInfo.getRsi())
-            .resistancePriceList(spotExchangeTradingInfo.getResistancePriceList())
+            .index(spotExchangeTradingInfo.getIndex())
             .build();
     }
 

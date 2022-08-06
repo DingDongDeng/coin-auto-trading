@@ -22,6 +22,14 @@ public class IndexCalculator {
 
     private final Core core = new Core(); // ta-lib
 
+    public Index getIndex(ExchangeCandles candles) {
+        return Index.builder()
+            .rsi(this.getRsi(candles))
+            .resistancePriceList(this.getResistancePrice(candles))
+            .macd(this.getMACD(candles))
+            .build();
+    }
+
     public double getMACD(ExchangeCandles candles) {
         int FAST_PERIOD = 12;
         int SLOW_PERIOD = 26;
