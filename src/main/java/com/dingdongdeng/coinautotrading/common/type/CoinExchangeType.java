@@ -9,10 +9,11 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum CoinExchangeType {
-    UPBIT("업비트"),
-    ;
+    UPBIT("업비트", MarketType.SPOT),
+    BINANCE_FUTURE("바이낸스 선물", MarketType.FUTURE);
 
     private String desc;
+    private MarketType marketType;
 
     public static CoinExchangeType of(String name) {
         return Arrays.stream(CoinExchangeType.values())

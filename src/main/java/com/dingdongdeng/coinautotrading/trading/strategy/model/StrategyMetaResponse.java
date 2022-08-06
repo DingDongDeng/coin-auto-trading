@@ -1,5 +1,6 @@
 package com.dingdongdeng.coinautotrading.trading.strategy.model;
 
+import com.dingdongdeng.coinautotrading.common.type.MarketType;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.StrategyCode;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,7 @@ import lombok.ToString;
 public class StrategyMetaResponse {
 
     private StrategyCode strategyCode;
+    private MarketType marketType;
     private List<ParamMeta> paramMetaList;
 
     @ToString

@@ -10,6 +10,7 @@ public enum OrderState {
     WATCH("예약 주문 대기"),
     DONE("체결 완료"),
     CANCEL("주문 취소"),
+    LIQUIDATION("주문 청산")
     ;
     private String desc;
 }

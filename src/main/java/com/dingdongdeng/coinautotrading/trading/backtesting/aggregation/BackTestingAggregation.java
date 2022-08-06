@@ -47,7 +47,7 @@ public class BackTestingAggregation {
     public List<BackTestingResponse> getResult(String userId) {
         return backTestingService.getBackTestingProcessorList(userId).stream()
             .map(b -> {
-                StrategyRecorder recorder = b.getStrategy().getStrategyRecorder();
+                StrategyRecorder<?> recorder = b.getStrategy().getStrategyRecorder();
                 LocalDateTime start = b.getStart();
                 LocalDateTime end = b.getEnd();
                 double totalTime = ChronoUnit.MINUTES.between(start, end);
@@ -62,10 +62,10 @@ public class BackTestingAggregation {
                     .result(
                         Result.builder()
                             .status(b.getStatus())
-                            .executionRate(executionTime / totalTime)
-                            .marginPrice(recorder.getMarginPrice())
-                            .marginRate(recorder.getMarginRate())
-                            .totalFee(recorder.getTotalFee())
+                            .executionRate(Math.round((executionTime / totalTime) * 10000) / 100.0)
+                            .marginPrice(Math.round(recorder.getMarginPrice()))
+                            .marginRate(Math.round(recorder.getMarginRate() * 100) / 100.0)
+                            .totalFee(Math.round(recorder.getTotalFee()))
                             .eventMessage(recorder.getEventMessage())
                             .build()
                     )

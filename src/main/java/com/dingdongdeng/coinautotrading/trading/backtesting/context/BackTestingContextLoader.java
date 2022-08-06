@@ -2,8 +2,8 @@ package com.dingdongdeng.coinautotrading.trading.backtesting.context;
 
 import com.dingdongdeng.coinautotrading.common.type.CandleUnit;
 import com.dingdongdeng.coinautotrading.common.type.CandleUnit.UnitType;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeCandles;
-import com.dingdongdeng.coinautotrading.trading.exchange.service.model.ExchangeCandles.Candle;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles.Candle;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,7 +86,7 @@ public class BackTestingContextLoader {
             return candleList;
         }
 
-        if (Objects.isNull(candleList.get(candleList.size() - 1).getTimestamp())) { //fixme 더 세련된 방법 필요
+        if (hasVirtualCandle(candleList)) {
             candleList.remove(candleList.size() - 1);
         }
 
@@ -128,5 +128,9 @@ public class BackTestingContextLoader {
 
     private boolean isExistCurrentCandle(LocalDateTime currentTime, List<Candle> candleList) {
         return candleList.get(candleList.size() - 1).getCandleDateTimeKst().equals(currentTime);
+    }
+
+    private boolean hasVirtualCandle(List<Candle> candleList) {
+        return Objects.isNull(candleList.get(candleList.size() - 1).getTimestamp());
     }
 }

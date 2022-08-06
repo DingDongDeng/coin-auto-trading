@@ -3,19 +3,19 @@ package com.dingdongdeng.coinautotrading.trading.strategy;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
 
-public class StrategyStore {
+public class StrategyStore<T extends TradingResult> {
 
-    private TradingResultPack tradingResultPack = new TradingResultPack();
+    private TradingResultPack<T> tradingResultPack = new TradingResultPack<>();
 
-    public TradingResultPack get() {
+    public TradingResultPack<T> get() {
         return tradingResultPack;
     }
 
-    public void saveAll(TradingResultPack tradingResultPack) {
+    public void saveAll(TradingResultPack<T> tradingResultPack) {
         this.tradingResultPack = tradingResultPack;
     }
 
-    public void save(TradingResult tradingResult) {
+    public void save(T tradingResult) {
         tradingResultPack.add(tradingResult);
     }
 
@@ -23,7 +23,7 @@ public class StrategyStore {
         tradingResultPack.reset();
     }
 
-    public void delete(TradingResult tradingResult) {
+    public void delete(T tradingResult) {
         tradingResultPack.delete(tradingResult);
     }
 }
