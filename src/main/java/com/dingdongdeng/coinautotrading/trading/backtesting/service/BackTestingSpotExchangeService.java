@@ -128,8 +128,7 @@ public class BackTestingSpotExchangeService implements SpotExchangeService {
             .candles(candles)
             .ticker(SpotExchangeTicker.builder().tradePrice(currentPrice).build())
 
-            .rsi(indexCalculator.getRsi(candles))
-            .resistancePriceList(indexCalculator.getResistancePrice(candles))
+            .index(indexCalculator.getIndex(candles))
             .build();
     }
 

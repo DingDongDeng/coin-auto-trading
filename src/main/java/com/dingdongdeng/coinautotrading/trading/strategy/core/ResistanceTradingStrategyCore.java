@@ -5,6 +5,7 @@ import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
+import com.dingdongdeng.coinautotrading.trading.index.Index;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyCore;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.SpotTradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.SpotTradingResult;
@@ -42,11 +43,12 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         log.info("{} :: ---------------------------------------", identifyCode);
         CoinType coinType = tradingInfo.getCoinType();
         TradingTerm tradingTerm = tradingInfo.getTradingTerm();
-        List<Double> resistancePriceList = tradingInfo.getResistancePriceList();
+        Index index = tradingInfo.getIndex();
+        List<Double> resistancePriceList = index.getResistancePriceList();
 
         log.info("tradingInfo : {}", tradingInfo);
         log.info("{} :: coinType={}", identifyCode, coinType);
-        log.info("{} :: resistancePriceList={}", identifyCode, resistancePriceList);
+        log.info("{} :: index={}", identifyCode, resistancePriceList);
 
         // 자동매매 중 기억해야할 실시간 주문 정보(익절, 손절, 매수 주문 정보)
         List<SpotTradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
@@ -135,7 +137,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         /*
          * 조건을 만족하면 매수 주문
          */
-        if (isBuyOrderTiming(tradingInfo.getCurrentPrice(), tradingResultPack, resistancePriceList, tradingInfo.getRsi())) {
+        if (isBuyOrderTiming(tradingInfo.getCurrentPrice(), tradingResultPack, resistancePriceList, index.getRsi())) {
             if (!isEnoughBalance(tradingInfo.getCurrentPrice(), tradingResultPack, tradingInfo.getBalance())) {
                 log.warn("{} :: 계좌가 매수 가능한 상태가 아님", identifyCode);
                 return List.of(new TradingTask());
