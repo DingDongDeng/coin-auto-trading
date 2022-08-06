@@ -144,7 +144,7 @@ public class BinanceFutureExchangeService implements FutureExchangeService {
             .candles(candles)
             .ticker(ticker)
 
-            .rsi(indexCalculator.getRsi(candles))
+            .index(indexCalculator.getIndex(candles))
             .build();
     }
 

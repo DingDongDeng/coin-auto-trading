@@ -6,6 +6,7 @@ import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
+import com.dingdongdeng.coinautotrading.trading.index.Index;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyCore;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.SpotTradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.SpotTradingResult;
@@ -43,9 +44,10 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore<SpotTradingInfo
     public List<TradingTask> makeTradingTask(SpotTradingInfo tradingInfo, TradingResultPack<SpotTradingResult> tradingResultPack) {
         String identifyCode = tradingInfo.getIdentifyCode();
         log.info("{} :: ---------------------------------------", identifyCode);
+        Index index = tradingInfo.getIndex();
         CoinType coinType = tradingInfo.getCoinType();
         TradingTerm tradingTerm = tradingInfo.getTradingTerm();
-        double rsi = tradingInfo.getRsi();
+        double rsi = index.getRsi();
         ExchangeCandles candles = tradingInfo.getCandles();
 
         log.info("tradingInfo : {}", tradingInfo);

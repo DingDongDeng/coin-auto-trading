@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,11 +42,11 @@ class IndexCalculatorTest {
     @Value("${upbit.client.secretKey}")
     private String secretKey;
 
-    @Test
-    public void RSI_계산_테스트() {
+    private final String keyPairId = UUID.randomUUID().toString();
 
-        // given
-        String keyPairId = UUID.randomUUID().toString();
+    @BeforeEach
+    public void init() {
+        //given
         String userId = "123456";
         given(exchangeKeyService.findByPairId(keyPairId))
             .willReturn(
@@ -66,6 +67,26 @@ class IndexCalculatorTest {
                         .build()
                 )
             );
+    }
+
+    @Test
+    public void 저항선_계산_테스트() {
+        //given
+        CoinType coinType = CoinType.ETHEREUM;
+        TradingTerm tradingTerm = TradingTerm.SCALPING;
+        LocalDateTime now = LocalDateTime.of(2022, 07, 24, 17, 30, 10);
+        ExchangeCandles candles = getExchangeCandles(now, tradingTerm, coinType, keyPairId);
+
+        //when
+        List<Double> resistancePriceList = calculator.getResistancePrice(candles);
+
+        //then
+        log.info("resistancePrice List = {}", resistancePriceList);
+    }
+
+    @Test
+    public void RSI_계산_테스트() {
+        // given
         CoinType coinType = CoinType.ETHEREUM;
         TradingTerm tradingTerm = TradingTerm.SCALPING;
         LocalDateTime now = LocalDateTime.of(2022, 04, 17, 13, 13, 10);
@@ -76,8 +97,24 @@ class IndexCalculatorTest {
 
         // then
         log.info("result : {}", rsi);
-        assertEquals(rsi, 0.3987051437640047);
+        assertEquals(rsi, 0.39407307248496637);
 
+    }
+
+    @Test
+    public void MACD_계산_테스트() {
+        // given
+        CoinType coinType = CoinType.ETHEREUM;
+        TradingTerm tradingTerm = TradingTerm.SCALPING;
+        LocalDateTime now = LocalDateTime.of(2022, 8, 6, 9, 45, 10);
+        ExchangeCandles candles = getExchangeCandles(now, tradingTerm, coinType, keyPairId);
+
+        // when
+        double macd = calculator.getMACD(candles);
+
+        // then
+        log.info("result : {}", macd);
+        assertEquals(macd, 3399.4713725503443);
     }
 
     private ExchangeCandles getExchangeCandles(LocalDateTime now, TradingTerm tradingTerm, CoinType coinType, String keyPairId) {
@@ -86,7 +123,7 @@ class IndexCalculatorTest {
                 .unit(tradingTerm.getCandleUnit().getSize())
                 .market(MarketType.of(coinType).getCode())
                 .toKst(now)
-                .count(60)
+                .count(200)
                 .build(),
             keyPairId
         );

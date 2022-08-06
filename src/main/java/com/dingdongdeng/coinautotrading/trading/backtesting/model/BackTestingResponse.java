@@ -31,7 +31,7 @@ public class BackTestingResponse {
 
         private BackTestingProcessStatus status;
         private double executionRate;
-        private Double marginPrice;
+        private double marginPrice;
         private Double marginRate;
         private double totalFee;
         private String eventMessage;

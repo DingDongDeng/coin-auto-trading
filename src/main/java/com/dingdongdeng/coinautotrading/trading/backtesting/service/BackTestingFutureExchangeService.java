@@ -126,7 +126,7 @@ public class BackTestingFutureExchangeService implements FutureExchangeService {
             .leverage(leverage)
             .liquidationPrice(getLiquidationPrice())
 
-            .rsi(indexCalculator.getRsi(candles))
+            .index(indexCalculator.getIndex(candles))
             .build();
     }
 

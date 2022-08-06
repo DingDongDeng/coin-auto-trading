@@ -117,7 +117,7 @@ public class UpbitSpotExchangeService implements SpotExchangeService {
             .candles(candles)
             .ticker(ticker)
 
-            .rsi(indexCalculator.getRsi(candles))
+            .index(indexCalculator.getIndex(candles))
             .build();
     }
 
@@ -144,7 +144,7 @@ public class UpbitSpotExchangeService implements SpotExchangeService {
                 .unit(tradingTerm.getCandleUnit().getSize())
                 .market(MarketType.of(param.getCoinType()).getCode())
                 .toKst(TradingTimeContext.now())
-                .count(60)
+                .count(200)
                 .build(),
             keyPairId
         );

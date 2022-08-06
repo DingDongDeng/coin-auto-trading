@@ -2,10 +2,12 @@ package com.dingdongdeng.coinautotrading.trading.strategy.model.type;
 
 import com.dingdongdeng.coinautotrading.common.type.MarketType;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyCore;
-import com.dingdongdeng.coinautotrading.trading.strategy.core.ScaleTradingRsiStrategyCore;
-import com.dingdongdeng.coinautotrading.trading.strategy.core.ScaleTradingRsiStrategyCoreParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.core.PrototypeFutureStrategyCore;
 import com.dingdongdeng.coinautotrading.trading.strategy.core.PrototypeFutureStrategyCoreParam;
+import com.dingdongdeng.coinautotrading.trading.strategy.core.ResistanceTradingStrategyCore;
+import com.dingdongdeng.coinautotrading.trading.strategy.core.ResistanceTradingStrategyCoreParam;
+import com.dingdongdeng.coinautotrading.trading.strategy.core.ScaleTradingRsiStrategyCore;
+import com.dingdongdeng.coinautotrading.trading.strategy.core.ScaleTradingRsiStrategyCoreParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreParam;
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -17,6 +19,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum StrategyCode {
     SCALE_TRADING_RSI("분할 매수(RSI기반, 손절없음)", MarketType.SPOT, ScaleTradingRsiStrategyCore.class, ScaleTradingRsiStrategyCoreParam.class),
+    RESISTANCE_TRADING("지지/저항선 기반 매매(손절있음)", MarketType.SPOT, ResistanceTradingStrategyCore.class, ResistanceTradingStrategyCoreParam.class),
     TEST_FUTURE("테스트 선물 전략", MarketType.FUTURE, PrototypeFutureStrategyCore.class, PrototypeFutureStrategyCoreParam.class),
     ;
 

@@ -67,7 +67,7 @@ public class StrategyFutureService implements StrategyService<FutureTradingInfo,
             .currentPrice(futureExchangeTradingInfo.getTicker().getMarkPrice())
             .liquidationPrice(futureExchangeTradingInfo.getLiquidationPrice())
             .leverage(futureExchangeTradingInfo.getLeverage())
-            .rsi(futureExchangeTradingInfo.getRsi())
+            .index(futureExchangeTradingInfo.getIndex())
             .build();
     }
 
