@@ -191,7 +191,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
 
     private boolean isBuyOrderTiming(double currentPrice, TradingResultPack<SpotTradingResult> tradingResultPack, Index index) {
         // 하락 추세는 매수하지 않음
-        if (index.getMacd() < 0) {
+        if (index.getRsi() < 0.45 || index.getMacd() < 0) {
             return false;
         }
 
