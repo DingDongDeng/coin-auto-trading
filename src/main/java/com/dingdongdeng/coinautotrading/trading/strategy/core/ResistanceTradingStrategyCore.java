@@ -44,11 +44,10 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         CoinType coinType = tradingInfo.getCoinType();
         TradingTerm tradingTerm = tradingInfo.getTradingTerm();
         Index index = tradingInfo.getIndex();
-        List<Double> resistancePriceList = index.getResistancePriceList();
 
         log.info("tradingInfo : {}", tradingInfo);
         log.info("{} :: coinType={}", identifyCode, coinType);
-        log.info("{} :: index={}", identifyCode, resistancePriceList);
+        log.info("{} :: index={}", identifyCode, index);
 
         // 자동매매 중 기억해야할 실시간 주문 정보(익절, 손절, 매수 주문 정보)
         List<SpotTradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
@@ -100,7 +99,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             }
 
             //익절 주문
-            if (isProfitOrderTiming(currentPrice, tradingResultPack, resistancePriceList)) {
+            if (isProfitOrderTiming(currentPrice, tradingResultPack, index)) {
                 log.info("{} :: 익절 주문 요청", identifyCode);
                 return List.of(
                     TradingTask.builder()
@@ -117,7 +116,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             }
 
             //손절 주문
-            if (isLossOrderTiming(currentPrice, tradingResultPack, resistancePriceList)) {
+            if (isLossOrderTiming(currentPrice, tradingResultPack, index)) {
                 log.info("{} :: 부분 또는 전부 손절 주문 요청", identifyCode);
                 return List.of(
                     TradingTask.builder()
@@ -137,7 +136,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         /*
          * 조건을 만족하면 매수 주문
          */
-        if (isBuyOrderTiming(tradingInfo.getCurrentPrice(), tradingResultPack, resistancePriceList, index.getRsi())) {
+        if (isBuyOrderTiming(tradingInfo.getCurrentPrice(), tradingResultPack, index)) {
             if (!isEnoughBalance(tradingInfo.getCurrentPrice(), tradingResultPack, tradingInfo.getBalance())) {
                 log.warn("{} :: 계좌가 매수 가능한 상태가 아님", identifyCode);
                 return List.of(new TradingTask());
@@ -190,8 +189,13 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         return true;
     }
 
-    private boolean isBuyOrderTiming(double currentPrice, TradingResultPack<SpotTradingResult> tradingResultPack, List<Double> resistancePriceList, double rsi) {
-        boolean isResistancePrice = resistancePriceList.stream()
+    private boolean isBuyOrderTiming(double currentPrice, TradingResultPack<SpotTradingResult> tradingResultPack, Index index) {
+        // 하락 추세는 매수하지 않음
+        if (index.getMacd() < 0) {
+            return false;
+        }
+
+        boolean isResistancePrice = index.getResistancePriceList().stream()
             .anyMatch(resistancePrice -> currentPrice < resistancePrice * (1 + param.getResistancePriceBuffer()) && currentPrice > resistancePrice);
 
         if (tradingResultPack.getBuyTradingResultList().isEmpty() && isResistancePrice) {
@@ -206,8 +210,8 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         return false;
     }
 
-    private boolean isProfitOrderTiming(double currentPrice, TradingResultPack<SpotTradingResult> tradingResultPack, List<Double> resistancePriceList) {
-        boolean isResistancePrice = resistancePriceList.stream()
+    private boolean isProfitOrderTiming(double currentPrice, TradingResultPack<SpotTradingResult> tradingResultPack, Index index) {
+        boolean isResistancePrice = index.getResistancePriceList().stream()
             .anyMatch(resistancePrice -> currentPrice > resistancePrice * (1 - param.getResistancePriceBuffer()) && currentPrice < resistancePrice);
 
         if (currentPrice > tradingResultPack.getAveragePrice() && isResistancePrice) {
@@ -216,10 +220,10 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         return false;
     }
 
-    private boolean isLossOrderTiming(double currentPrice, TradingResultPack<SpotTradingResult> tradingResultPack, List<Double> resistancePriceList) {
-        boolean isResistancePrice = resistancePriceList.stream()
-            .anyMatch(resistancePrice -> currentPrice < resistancePrice * (1 - param.getResistancePriceBuffer())
-                && currentPrice > resistancePrice * (1 - param.getResistancePriceBuffer() * 2));
+    private boolean isLossOrderTiming(double currentPrice, TradingResultPack<SpotTradingResult> tradingResultPack, Index index) {
+        boolean isResistancePrice = index.getResistancePriceList().stream()
+            .anyMatch(resistancePrice -> currentPrice < resistancePrice * (1 - param.getResistancePriceBuffer() / 2)
+                && currentPrice > resistancePrice * (1 - param.getResistancePriceBuffer()));
         if (currentPrice < tradingResultPack.getAveragePrice() && isResistancePrice) {
             return true;
         }
