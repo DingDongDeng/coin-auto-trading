@@ -22,14 +22,14 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class UpbitExchangeCandleService implements ExchangeCandleService {
+public class UpbitSpotExchangeCandleService implements ExchangeCandleService {
 
     private final CoinExchangeType COIN_EXCHANGE_TYPE = CoinExchangeType.UPBIT;
     private final UpbitClient upbitClient;
     private final int MAX_CHUNK_SIZE = 200;
     private final ExchangeCandleUtils candleUtils = new ExchangeCandleUtils(MAX_CHUNK_SIZE);
 
-    @Override //fixme 분봉만 지원
+    @Override
     public ExchangeCandles getCandles(CoinType coinType, CandleUnit candleUnit, LocalDateTime start, LocalDateTime end, String keyPairId) {
         /**
          * start를 기준으로 최대 캔들 200개까지 조회 가능
@@ -43,13 +43,14 @@ public class UpbitExchangeCandleService implements ExchangeCandleService {
 
         LocalDateTime limitedEndDateTime = candleUtils.getlimitedEndDateTime(candleUnit, start, end);
         int candleCount = candleUtils.getCandleCount(candleUnit, start, limitedEndDateTime);
-        List<CandleResponse> response = upbitClient.getMinuteCandle(
+        List<CandleResponse> response = upbitClient.getCandle(
             CandleRequest.builder()
                 .unit(candleUnit.getSize())
                 .market(MarketType.of(coinType).getCode())
                 .toKst(limitedEndDateTime)
                 .count(candleCount)
                 .build(),
+            candleUnit,
             keyPairId
         );
         Collections.reverse(response);

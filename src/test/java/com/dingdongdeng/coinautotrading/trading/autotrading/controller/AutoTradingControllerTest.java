@@ -185,7 +185,7 @@ class AutoTradingControllerTest {
             .title(title)
             .coinType(CoinType.ETHEREUM)
             .coinExchangeType(CoinExchangeType.UPBIT)
-            .tradingTerm(TradingTerm.SCALPING)
+            .tradingTerm(TradingTerm.SCALPING_15M)
             .strategyCode(StrategyCode.SCALE_TRADING_RSI)
             .keyPairId(keyPairId)
             .build();

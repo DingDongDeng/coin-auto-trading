@@ -8,7 +8,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum TradingTerm {
     EXTREME_SCALPING("극한의 스캘핑(1분봉 거래)", CandleUnit.UNIT_1M),
-    SCALPING("스캘핑(15분봉 거래)", CandleUnit.UNIT_15M),
+    SCALPING_15M("스캘핑(15분봉 거래)", CandleUnit.UNIT_15M),
+    SCALPING_60M("스캘핑(60분봉 거래)", CandleUnit.UNIT_60M),
+    SCALPING_240M("스캘핑(240분봉 거래)", CandleUnit.UNIT_240M),
     DAY("데이 (일봉 거래)", CandleUnit.UNIT_1D),
     SWING("스윙 (주봉 거래)", CandleUnit.UNIT_1W),
     ;

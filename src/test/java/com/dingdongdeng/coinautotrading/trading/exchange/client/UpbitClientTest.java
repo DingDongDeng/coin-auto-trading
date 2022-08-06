@@ -180,6 +180,20 @@ class UpbitClientTest {
     }
 
     @Test
+    public void 일봉_캔들_조회_테스트() {
+        LocalDateTime to = LocalDateTime.of(2022, 8, 9, 20, 9, 0);
+
+        CandleRequest request = CandleRequest.builder()
+            .market("KRW-ETH")
+            .toKst(to)
+            .count(2)
+            .build();
+
+        List<CandleResponse> response = upbitClient.getDayCandle(request, keyPairId);
+        log.info("result : {}", response);
+    }
+
+    @Test
     public void 주문_호가_조회_테스트() {
         List<OrderBookResponse> response = upbitClient.getOrderBook(
             OrderBookRequest.builder()

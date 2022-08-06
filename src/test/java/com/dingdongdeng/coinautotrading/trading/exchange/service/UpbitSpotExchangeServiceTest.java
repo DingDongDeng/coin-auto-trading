@@ -97,7 +97,7 @@ class UpbitSpotExchangeServiceTest {
         SpotExchangeTradingInfo spotExchangeTradingInfo = upbitSpotExchangeService.getTradingInformation(
             SpotExchangeTradingInfoParam.builder()
                 .coinType(CoinType.ETHEREUM)
-                .tradingTerm(TradingTerm.SCALPING)
+                .tradingTerm(TradingTerm.SCALPING_15M)
                 .build(),
             keyPairId
         );

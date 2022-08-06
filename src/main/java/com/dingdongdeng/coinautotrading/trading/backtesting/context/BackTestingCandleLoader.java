@@ -86,7 +86,7 @@ public class BackTestingCandleLoader {
 
     private void delay() {
         try {
-            Thread.sleep(500);
+            Thread.sleep(150);
         } catch (InterruptedException e) {
             log.error(e.getMessage(), e);
         }

@@ -8,7 +8,7 @@ import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.domain.entity.ExchangeKey;
 import com.dingdongdeng.coinautotrading.domain.service.ExchangeKeyService;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles.Candle;
-import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.impl.UpbitExchangeCandleService;
+import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.impl.UpbitSpotExchangeCandleService;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -26,7 +26,7 @@ class BackTestingCandleLoaderTest {
     @MockBean
     private ExchangeKeyService exchangeKeyService;
     @Autowired
-    private UpbitExchangeCandleService exchangeCandleService;
+    private UpbitSpotExchangeCandleService exchangeCandleService;
 
     @Value("${upbit.client.accessKey}")
     private String accessKey;
