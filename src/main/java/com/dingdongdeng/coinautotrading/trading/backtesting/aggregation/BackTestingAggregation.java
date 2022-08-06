@@ -62,7 +62,7 @@ public class BackTestingAggregation {
                     .result(
                         Result.builder()
                             .status(b.getStatus())
-                            .executionRate(Math.round((executionTime / totalTime) * 100) / 100.0)
+                            .executionRate(Math.round((executionTime / totalTime) * 10000) / 100.0)
                             .marginPrice(Math.round(recorder.getMarginPrice()))
                             .marginRate(Math.round(recorder.getMarginRate() * 100) / 100.0)
                             .totalFee(Math.round(recorder.getTotalFee()))
