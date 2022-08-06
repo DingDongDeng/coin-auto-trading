@@ -2,6 +2,8 @@ package com.dingdongdeng.coinautotrading.trading.index;
 
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles.Candle;
+import com.tictactec.ta.lib.Core;
+import com.tictactec.ta.lib.MInteger;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -18,10 +20,30 @@ import org.springframework.stereotype.Component;
 @Component
 public class IndexCalculator {
 
-    private final int RSI_STANDARD_PERIOD = 14;
-    private final double RESISTANCE_GAP = 0.02; // 2%
+    private final Core core = new Core(); // ta-lib
+
+    public double getMACD(ExchangeCandles candles) {
+        int FAST_PERIOD = 12;
+        int SLOW_PERIOD = 26;
+        int SIGNAL_PERIOD = 9;
+
+        List<Candle> candleList = candles.getCandleList();
+        int length = candleList.size();
+
+        double[] inReal = candleList.stream().mapToDouble(Candle::getTradePrice).toArray();
+        double[] outMACD = new double[inReal.length];
+        double[] outMACDSignal = new double[inReal.length];
+        double[] outMACDHist = new double[inReal.length];
+        MInteger outBegIdx = new MInteger();
+        MInteger outNBElement = new MInteger();
+
+        core.macd(0, candleList.size() - 1, inReal, FAST_PERIOD, SLOW_PERIOD, SIGNAL_PERIOD, outBegIdx, outNBElement, outMACD, outMACDSignal, outMACDHist);
+        return outMACDHist[length - SLOW_PERIOD - SIGNAL_PERIOD + 1];
+    }
 
     public List<Double> getResistancePrice(ExchangeCandles candles) {
+        double RESISTANCE_GAP = 0.02; // 2%
+
         Map<Double, Double> priceMap = new HashMap<>();
         for (Candle candle : candles.getCandleList()) {
             Double price = candle.getTradePrice();
@@ -67,9 +89,9 @@ public class IndexCalculator {
     // https://www.investopedia.com/terms/r/rsi.asp
     // https://rebro.kr/139
     public double getRsi(ExchangeCandles candles) {
+        int RSI_STANDARD_PERIOD = 14;
 
         List<Candle> candleList = candles.getCandleList();
-
         double U = 0d;
         double D = 0d;
         for (int i = 0; i < candleList.size(); i++) {

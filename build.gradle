@@ -52,6 +52,9 @@ dependencies {
 
     asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
 
+    // 보조 지표 계산을 위함
+    implementation 'com.tictactec:ta-lib:0.4.0'
+
     // test
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
