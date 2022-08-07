@@ -5,6 +5,7 @@ import com.dingdongdeng.coinautotrading.common.type.OrderState;
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import java.util.Arrays;
+import java.util.List;
 import java.util.NoSuchElementException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -61,18 +62,18 @@ public class UpbitEnum {
     @Getter
     @AllArgsConstructor
     public enum OrdType {
-        limit("지정가 주문", PriceType.LIMIT, null),
-        price("시장가 주문(매수)", PriceType.MARKET, OrderType.BUY),
-        market("시장가 주문(매도)", PriceType.MARKET, OrderType.SELL),
+        limit("지정가 주문", PriceType.LIMIT, List.of(OrderType.BUY, OrderType.SELL)),
+        price("시장가 주문(매수)", PriceType.MARKET, List.of(OrderType.BUY)),
+        market("시장가 주문(매도)", PriceType.MARKET, List.of(OrderType.SELL)),
         ;
         private String desc;
         private PriceType priceType;
-        private OrderType orderType;
+        private List<OrderType> orderTypeList;
 
         public static OrdType of(PriceType priceType, OrderType orderType) {
             return Arrays.stream(OrdType.values())
                 .filter(type -> type.getPriceType() == priceType)
-                .filter(type -> type.getOrderType() == orderType)
+                .filter(type -> type.getOrderTypeList().contains(orderType))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException(priceType.name()));
         }
