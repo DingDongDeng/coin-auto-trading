@@ -50,7 +50,8 @@ public class IndexCalculator {
     }
 
     public List<Double> getResistancePrice(ExchangeCandles candles) {
-        double RESISTANCE_GAP = 0.02; // 2%
+        double RESISTANCE_GAP = 0.05; // n% 퍼센트
+        int RESISTANCE_MAX_COUNT = 20;
 
         Map<Double, Double> priceMap = new HashMap<>();
         for (Candle candle : candles.getCandleList()) {
@@ -66,7 +67,7 @@ public class IndexCalculator {
         // 영향력 있는 지지/저항선을 추출
         List<Entry<Double, Double>> entryList = priceMap.entrySet().stream()
             .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-            .limit(20)
+            .limit(RESISTANCE_MAX_COUNT)
             .sorted(Map.Entry.comparingByKey())
             .collect(Collectors.toList());
 

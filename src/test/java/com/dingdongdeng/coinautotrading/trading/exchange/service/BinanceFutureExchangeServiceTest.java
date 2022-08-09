@@ -75,7 +75,7 @@ class BinanceFutureExchangeServiceTest {
     public void 조회(){
         FutureExchangeTradingInfoParam param = FutureExchangeTradingInfoParam.builder()
             .coinType(CoinType.BITCOIN)
-            .tradingTerm(TradingTerm.SCALPING)
+            .tradingTerm(TradingTerm.SCALPING_15M)
             .build();
 
         FutureExchangeTradingInfo response = binanceFutureExchangeService.getTradingInformation(param, keyPairId);

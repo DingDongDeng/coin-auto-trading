@@ -14,6 +14,7 @@ public enum CandleUnit {
     UNIT_15M("15분 봉", UnitType.MIN, 15),
     UNIT_30M("30분 봉", UnitType.MIN, 30),
     UNIT_60M("60분 봉", UnitType.MIN, 60),
+    UNIT_240M("240분 봉", UnitType.MIN, 240),
     UNIT_1D("1일 봉", UnitType.DAY, 1),
     UNIT_1W("1주 봉", UnitType.WEEK, 1),
     ;
