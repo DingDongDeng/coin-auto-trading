@@ -29,25 +29,23 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
      *  저항선 기반 매매
      *
      *  매수 시점
+     *  - 하락추세가 아닐때
      *  - 저항선에 지지 받을때
      *
      *  익절 시점
      *  - 저항선에 저항 받을때
      *
      *  손절 시점
-     *  - 저항선의 지지를 받지 못했을때
+     *  - 하지 않음
      */
     @Override
     public List<TradingTask> makeTradingTask(SpotTradingInfo tradingInfo, TradingResultPack<SpotTradingResult> tradingResultPack) {
         String identifyCode = tradingInfo.getIdentifyCode();
-        log.info("{} :: ---------------------------------------", identifyCode);
         CoinType coinType = tradingInfo.getCoinType();
         TradingTerm tradingTerm = tradingInfo.getTradingTerm();
         Index index = tradingInfo.getIndex();
 
         log.info("tradingInfo : {}", tradingInfo);
-        log.info("{} :: coinType={}", identifyCode, coinType);
-        log.info("{} :: index={}", identifyCode, index);
 
         // 자동매매 중 기억해야할 실시간 주문 정보(익절, 손절, 매수 주문 정보)
         List<SpotTradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
@@ -63,7 +61,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             }
             // 오래된 주문 건이 존재
             if (isTooOld(tradingResult)) {
-                log.info("{} :: 미체결 상태의 오래된 주문을 취소", identifyCode);
+                log.info(":: 미체결 상태의 오래된 주문을 취소");
                 return List.of(
                     TradingTask.builder()
                         .identifyCode(identifyCode)
@@ -79,7 +77,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
                 );
             }
             // 체결이 될때까지 기다리기 위해 아무것도 하지 않음
-            log.info("{} :: 미체결 건을 기다림", identifyCode);
+            log.info(":: 미체결 건을 기다림");
             return List.of();
         }
 
@@ -87,11 +85,11 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
          * 매수 주문이 체결된 후 현재 가격을 모니터링하다가 익절/손절 주문을 요청함
          */
         if (!buyTradingResultList.isEmpty()) {
-            log.info("{} :: 매수 주문이 체결된 상태임", identifyCode);
+            log.info(":: 매수 주문이 체결된 상태임");
             double currentPrice = tradingInfo.getCurrentPrice();
 
             if (!profitTradingResultList.isEmpty() || !lossTradingResultList.isEmpty()) {
-                log.info("{} :: 익절, 손절 주문이 체결되었음", identifyCode);
+                log.info(":: 익절, 손절 주문이 체결되었음");
                 //매수, 익절, 손절에 대한 정보를 모두 초기화
                 return List.of(
                     TradingTask.builder().isReset(true).build()
@@ -100,7 +98,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
 
             //익절 주문
             if (isProfitOrderTiming(currentPrice, tradingResultPack, index)) {
-                log.info("{} :: 익절 주문 요청", identifyCode);
+                log.info(":: 익절 주문 요청");
                 return List.of(
                     TradingTask.builder()
                         .identifyCode(identifyCode)
@@ -117,7 +115,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
 
             //손절 주문
             if (isLossOrderTiming(currentPrice, tradingResultPack, index)) {
-                log.info("{} :: 부분 또는 전부 손절 주문 요청", identifyCode);
+                log.info(":: 부분 또는 전부 손절 주문 요청");
                 return List.of(
                     TradingTask.builder()
                         .identifyCode(identifyCode)
@@ -138,11 +136,11 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
          */
         if (isBuyOrderTiming(tradingInfo.getCurrentPrice(), tradingResultPack, index)) {
             if (!isEnoughBalance(tradingInfo.getCurrentPrice(), tradingResultPack, tradingInfo.getBalance())) {
-                log.warn("{} :: 계좌가 매수 가능한 상태가 아님", identifyCode);
+                log.warn(":: 계좌가 매수 가능한 상태가 아님");
                 return List.of(new TradingTask());
             }
 
-            log.info("{} :: 매수 주문 요청", identifyCode);
+            log.info(":: 매수 주문 요청");
             double currentPrice = tradingInfo.getCurrentPrice();
             double volume = getVolumeForBuy(currentPrice, tradingResultPack);
             return List.of(
@@ -190,34 +188,64 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
     }
 
     private boolean isBuyOrderTiming(double currentPrice, TradingResultPack<SpotTradingResult> tradingResultPack, Index index) {
-        // 하락 추세는 매수하지 않음
+        List<SpotTradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
+        boolean isExsistBuyOrder = !buyTradingResultList.isEmpty();
+        boolean isResistancePrice = index.getResistancePriceList().stream()
+            .anyMatch(resistancePrice -> currentPrice < resistancePrice * (1 + param.getResistancePriceBuffer()) && currentPrice > resistancePrice);
+
+        // 하락 추세라면
         if (index.getRsi() < 0.45 || index.getMacd() < 0) {
             return false;
         }
 
-        boolean isResistancePrice = index.getResistancePriceList().stream()
-            .anyMatch(resistancePrice -> currentPrice < resistancePrice * (1 + param.getResistancePriceBuffer()) && currentPrice > resistancePrice);
-
-        if (tradingResultPack.getBuyTradingResultList().isEmpty() && isResistancePrice) {
-            return true;
+        // 지지받고 있지 않다면
+        if (!isResistancePrice) {
+            return false;
         }
 
-        // //손익율 계산(추매할때 사용했었음)
-        //double averagePrice = tradingResultPack.getAveragePrice();
-        //if ((averagePrice - currentPrice) / averagePrice > param.getBuyLossRate() && isResistancePrice) {
-        //    return true;
-        //}
-        return false;
+        // 주문한적이 있다면
+        if (isExsistBuyOrder) {
+
+            // 이익중이라면
+            if ((tradingResultPack.getAveragePrice() - currentPrice) < 0) {
+                return false;
+            }
+
+            SpotTradingResult lastBuyTradingResult = buyTradingResultList.get(buyTradingResultList.size() - 1);
+            // 마지막 주문보다 현재가가 높다면(추가 매수는 항상 더 낮은 가격으로 사야하기 때문)
+            if (lastBuyTradingResult.getPrice() <= currentPrice) {
+                return false;
+            }
+
+            // 마지막 주문의 가격 ~ 마지막 주문의 지지선 가격 사이는 주문하지 않음(같은 구간에 대해서 중복 주문이기 때문)
+            if (currentPrice <= lastBuyTradingResult.getPrice() && currentPrice >= lastBuyTradingResult.getPrice() * (1 - param.getResistancePriceBuffer())) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private boolean isProfitOrderTiming(double currentPrice, TradingResultPack<SpotTradingResult> tradingResultPack, Index index) {
         boolean isResistancePrice = index.getResistancePriceList().stream()
             .anyMatch(resistancePrice -> currentPrice > resistancePrice * (1 - param.getResistancePriceBuffer()) && currentPrice < resistancePrice);
 
-        if (currentPrice > tradingResultPack.getAveragePrice() && isResistancePrice) {
-            return true;
+        // 손실중이면
+        if (currentPrice < tradingResultPack.getAveragePrice()) {
+            return false;
         }
-        return false;
+
+        // 저항을 받는중이 아니면(더 오를 가능성이 있다면)
+        if (!isResistancePrice) {
+            return false;
+        }
+
+        // 아직 상승 추세라면
+        if (index.getMacd() > 0) {
+            return false;
+        }
+
+        return true;
     }
 
     private boolean isLossOrderTiming(double currentPrice, TradingResultPack<SpotTradingResult> tradingResultPack, Index index) {
@@ -239,7 +267,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         double averagePrice = tradingResultPack.getAveragePrice();
         double lossRate = ((averagePrice - currentPrice) / averagePrice); // 현재 손실율
 
-        return buyTradingResultList.isEmpty() ? param.getInitOrderPrice() / currentPrice : tradingResultPack.getVolume();
+        return param.getInitOrderPrice() / currentPrice;
     }
 
     private boolean isTooOld(SpotTradingResult tradingResult) {

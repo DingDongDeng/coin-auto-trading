@@ -2,6 +2,7 @@ package com.dingdongdeng.coinautotrading.trading.exchange.spot.client;
 
 import com.dingdongdeng.coinautotrading.common.client.ResponseHandler;
 import com.dingdongdeng.coinautotrading.common.client.util.QueryParamsConverter;
+import com.dingdongdeng.coinautotrading.common.type.CandleUnit;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitRequest.CandleRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitRequest.MarketCodeRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitRequest.OrderBookRequest;
@@ -131,6 +132,31 @@ public class UpbitClient {
         );
     }
 
+    public List<CandleResponse> getCandle(CandleRequest request, CandleUnit candleUnit, String keyPairId) {
+        switch (candleUnit) {
+            case UNIT_1D:
+                return this.getDayCandle(request, keyPairId);
+            default:
+                return this.getMinuteCandle(request, keyPairId);
+        }
+    }
+
+    public List<CandleResponse> getDayCandle(CandleRequest request, String keyPairId) {
+        return responseHandler.handle(
+            () -> upbitWebClient.get()
+                .uri(uriBuilder -> uriBuilder.path("/v1/candles/days")
+                    .queryParams(queryParamsConverter.convertMap(request))
+                    .build()
+                )
+                .headers(headers -> headers.addAll(makeHeaders(request, keyPairId)))
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<CandleResponse>>() {
+                })
+                .retry(3)
+                .block()
+        );
+    }
+
     public List<CandleResponse> getMinuteCandle(CandleRequest request, String keyPairId) {
         return responseHandler.handle(
             () -> upbitWebClient.get()
@@ -142,6 +168,7 @@ public class UpbitClient {
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<CandleResponse>>() {
                 })
+                .retry(3)
                 .block()
         );
     }

@@ -73,7 +73,7 @@ class IndexCalculatorTest {
     public void 저항선_계산_테스트() {
         //given
         CoinType coinType = CoinType.ETHEREUM;
-        TradingTerm tradingTerm = TradingTerm.SCALPING;
+        TradingTerm tradingTerm = TradingTerm.SCALPING_15M;
         LocalDateTime now = LocalDateTime.of(2022, 07, 24, 17, 30, 10);
         ExchangeCandles candles = getExchangeCandles(now, tradingTerm, coinType, keyPairId);
 
@@ -88,7 +88,7 @@ class IndexCalculatorTest {
     public void RSI_계산_테스트() {
         // given
         CoinType coinType = CoinType.ETHEREUM;
-        TradingTerm tradingTerm = TradingTerm.SCALPING;
+        TradingTerm tradingTerm = TradingTerm.SCALPING_15M;
         LocalDateTime now = LocalDateTime.of(2022, 04, 17, 13, 13, 10);
         ExchangeCandles candles = getExchangeCandles(now, tradingTerm, coinType, keyPairId);
 
@@ -105,7 +105,7 @@ class IndexCalculatorTest {
     public void MACD_계산_테스트() {
         // given
         CoinType coinType = CoinType.ETHEREUM;
-        TradingTerm tradingTerm = TradingTerm.SCALPING;
+        TradingTerm tradingTerm = TradingTerm.SCALPING_15M;
         LocalDateTime now = LocalDateTime.of(2022, 8, 6, 9, 45, 10);
         ExchangeCandles candles = getExchangeCandles(now, tradingTerm, coinType, keyPairId);
 

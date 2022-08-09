@@ -29,7 +29,6 @@ public class PrototypeFutureStrategyCore implements StrategyCore<FutureTradingIn
     @Override
     public List<TradingTask> makeTradingTask(FutureTradingInfo tradingInfo, TradingResultPack<FutureTradingResult> tradingResultPack) {
         String identifyCode = tradingInfo.getIdentifyCode();
-        log.info("{} :: ---------------------------------------", identifyCode);
         Index index = tradingInfo.getIndex();
         CoinType coinType = tradingInfo.getCoinType();
         TradingTerm tradingTerm = tradingInfo.getTradingTerm();
@@ -37,8 +36,6 @@ public class PrototypeFutureStrategyCore implements StrategyCore<FutureTradingIn
         ExchangeCandles candles = tradingInfo.getCandles();
 
         log.info("tradingInfo : {}", tradingInfo);
-        log.info("{} :: coinType={}", identifyCode, coinType);
-        log.info("{} :: rsi={}", identifyCode, rsi);
 
         // 자동매매 중 기억해야할 실시간 주문 정보(익절, 손절, 매수 주문 정보)
         List<FutureTradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
@@ -54,7 +51,7 @@ public class PrototypeFutureStrategyCore implements StrategyCore<FutureTradingIn
             }
             // 오래된 주문 건이 존재
             if (isTooOld(tradingResult)) {
-                log.info("{} :: 미체결 상태의 오래된 주문을 취소", identifyCode);
+                log.info(":: 미체결 상태의 오래된 주문을 취소");
                 return List.of(
                     TradingTask.builder()
                         .identifyCode(identifyCode)
@@ -70,7 +67,7 @@ public class PrototypeFutureStrategyCore implements StrategyCore<FutureTradingIn
                 );
             }
             // 체결이 될때까지 기다리기 위해 아무것도 하지 않음
-            log.info("{} :: 미체결 건을 기다림", identifyCode);
+            log.info(":: 미체결 건을 기다림");
             return List.of();
         }
 
@@ -78,11 +75,11 @@ public class PrototypeFutureStrategyCore implements StrategyCore<FutureTradingIn
          * 매수 주문이 체결된 후 현재 가격을 모니터링하다가 익절/손절 주문을 요청함
          */
         if (!buyTradingResultList.isEmpty()) {
-            log.info("{} :: 매수 주문이 체결된 상태임", identifyCode);
+            log.info(":: 매수 주문이 체결된 상태임");
             double currentPrice = tradingInfo.getCurrentPrice();
 
             if (!profitTradingResultList.isEmpty() || !lossTradingResultList.isEmpty()) {
-                log.info("{} :: 익절, 손절 주문이 체결되었음", identifyCode);
+                log.info(":: 익절, 손절 주문이 체결되었음");
                 //매수, 익절, 손절에 대한 정보를 모두 초기화
                 return List.of(
                     TradingTask.builder().isReset(true).build()
@@ -91,7 +88,7 @@ public class PrototypeFutureStrategyCore implements StrategyCore<FutureTradingIn
 
             //익절 주문
             if (isProfitOrderTiming(currentPrice, rsi, tradingResultPack)) {
-                log.info("{} :: 익절 주문 요청", identifyCode);
+                log.info(":: 익절 주문 요청");
                 return List.of(
                     TradingTask.builder()
                         .identifyCode(identifyCode)
@@ -108,7 +105,7 @@ public class PrototypeFutureStrategyCore implements StrategyCore<FutureTradingIn
 
             //손절 주문
             if (isLossOrderTiming(currentPrice, rsi, tradingResultPack, candles)) {
-                log.info("{} :: 부분 또는 전부 손절 주문 요청", identifyCode);
+                log.info(":: 부분 또는 전부 손절 주문 요청");
                 return List.of(
                     TradingTask.builder()
                         .identifyCode(identifyCode)
@@ -129,11 +126,11 @@ public class PrototypeFutureStrategyCore implements StrategyCore<FutureTradingIn
          */
         if (isBuyOrderTiming(rsi, tradingInfo.getCurrentPrice(), tradingResultPack, candles)) {
             if (!isEnoughBalance(tradingInfo.getCurrentPrice(), tradingResultPack, tradingInfo.getBalance())) {
-                log.warn("{} :: 계좌가 매수 가능한 상태가 아님", identifyCode);
+                log.warn(":: 계좌가 매수 가능한 상태가 아님");
                 return List.of(new TradingTask());
             }
 
-            log.info("{} :: 매수 주문 요청", identifyCode);
+            log.info(":: 매수 주문 요청");
             double currentPrice = tradingInfo.getCurrentPrice();
             double volume = buyTradingResultList.isEmpty() ? param.getOrderPrice() / currentPrice : tradingResultPack.getVolume() * param.getBuyVolumeRate();
             return List.of(

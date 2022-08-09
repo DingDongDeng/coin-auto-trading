@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 
 @Getter //fixme Strategy가 너무 외부에 많이 노출됨
 @Slf4j
@@ -24,7 +25,7 @@ public class Strategy<TI extends TradingInfo, TR extends TradingResult> {
 
     public Strategy(StrategyCode code, StrategyCore<TI, TR> core, StrategyService<TI, TR> service, StrategyStore<TR> store, StrategyRecorder<TR> recorder) {
         this.strategyCode = code;
-        this.identifyCode = code.name() + UUID.randomUUID();
+        this.identifyCode = code.name() + "-" + UUID.randomUUID();
         this.strategyCore = core;
         this.strategyService = service;
         this.strategyStore = store;
@@ -32,10 +33,13 @@ public class Strategy<TI extends TradingInfo, TR extends TradingResult> {
     }
 
     public void ready() {
+        MDC.put("identifyCode", identifyCode);
         strategyService.ready(strategyCore.getParam());
     }
 
     public void execute() {
+        MDC.put("executeId", UUID.randomUUID().toString());
+
         // 주문 정보 갱신 및 생성
         TradingResultPack<TR> tradingResultPack = strategyStore.get();
         TradingResultPack<TR> updatedTradingResultPack = strategyService.updateTradingResultPack(tradingResultPack);

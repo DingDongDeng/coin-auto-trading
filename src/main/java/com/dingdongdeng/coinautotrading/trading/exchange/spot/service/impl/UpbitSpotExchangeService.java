@@ -139,13 +139,14 @@ public class UpbitSpotExchangeService implements SpotExchangeService {
 
     private ExchangeCandles getExchangeCandles(SpotExchangeTradingInfoParam param, String keyPairId) {
         TradingTerm tradingTerm = param.getTradingTerm();
-        List<CandleResponse> response = upbitClient.getMinuteCandle(
+        List<CandleResponse> response = upbitClient.getCandle(
             CandleRequest.builder()
                 .unit(tradingTerm.getCandleUnit().getSize())
                 .market(MarketType.of(param.getCoinType()).getCode())
                 .toKst(TradingTimeContext.now())
                 .count(200)
                 .build(),
+            tradingTerm.getCandleUnit(),
             keyPairId
         );
         Collections.reverse(response);
