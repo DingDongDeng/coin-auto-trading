@@ -39,7 +39,7 @@ public class ExchangeKey {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "value")
+    @Column(name = "`value`")
     private String value;
 
     @Column(name = "user_id")
