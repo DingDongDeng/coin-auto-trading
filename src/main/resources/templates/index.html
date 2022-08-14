@@ -345,6 +345,7 @@
       this.refresh();
     },
     methods: {
+      /******* common *******/
       async refresh() {
         this.updateAllInformation();
       },
@@ -356,6 +357,12 @@
         this.type = this.resetTypeInfo();
         this.register.autoTrading.strategyCoreParamMetaList = await this.resetStrategyMeta(this.register.autoTrading.strategyCode);
       },
+      async resetTypeInfo() {
+        const response = await api.get("/type");
+        this.type = response.data.body;
+      },
+
+      /******* keyPair *******/
       addKeyInputBox() {
         this.register.keyPair.keyList.push({name: "", value: ""});
       },
@@ -366,16 +373,43 @@
         const response = await api.get("/user/" + userId + "/key/pair");
         return response.data.body;
       },
-      async getUserAutoTradingList(userId) {
-        const response = await api.get("/user/" + userId + "/autotrading");
-        return response.data.body;
-      },
-      async getUserBackTestingList(userId) {
-        const response = await api.get("/user/" + userId + "/backtesting");
+      async registerKeyPair(callback) {
+        const body = {
+          coinExchangeType: this.register.keyPair.coinExchangeType,
+          keyList: this.register.keyPair.keyList
+        };
+
+        const response = await api.post("/key/pair", body);
+        this.register.keyPair = this.resetKeyRegister();
+        callback();
         return response.data.body;
       },
       async deleteUserPairKey(pairKeyId, callback) {
         const response = await api.delete("/key/pair/" + pairKeyId);
+        callback();
+        return response.data.body;
+      },
+      resetKeyRegister() {
+        return {
+          coinExchangeType: "",
+          keyList: [
+            {
+              name: "",
+              value: ""
+            }
+          ]
+        }
+      },
+
+      /******* autoTrading *******/
+      async getUserAutoTradingList(userId) {
+        const response = await api.get("/user/" + userId + "/autotrading");
+        return response.data.body;
+      },
+      async registerAutoTrading(callback) {
+        const body = this.register.autoTrading;
+        const response = await api.post("/autotrading/register", body);
+        this.register.autoTrading = await this.resetAutoTradingRegister();
         callback();
         return response.data.body;
       },
@@ -397,22 +431,29 @@
         callback();
         return response.data.body;
       },
-      async registerKeyPair(callback) {
-        const body = {
-          coinExchangeType: this.register.keyPair.coinExchangeType,
-          keyList: this.register.keyPair.keyList
-        };
-
-        const response = await api.post("/key/pair", body);
-        this.register.keyPair = this.resetKeyRegister();
-        callback();
-        return response.data.body;
+      async resetAutoTradingRegister() {
+        return {
+          title: "",
+          coinType: "",
+          coinExchangeType: "",
+          tradingTerm: "",
+          strategyCode: "",
+          keyPairId: "",
+          strategyCoreParamMap: {},
+          strategyCoreParamMetaList: [],
+        }
       },
-      async registerAutoTrading(callback) {
-        const body = this.register.autoTrading;
-        const response = await api.post("/autotrading/register", body);
-        this.register.autoTrading = await this.resetAutoTradingRegister();
-        callback();
+      async resetStrategyMeta(strategyCode) {
+        if (strategyCode) {
+          const response = await api.get("/" + strategyCode + "/meta");
+          return response.data.body.paramMetaList;
+        }
+        return [];
+      },
+
+      /******* backTesting *******/
+      async getUserBackTestingList(userId) {
+        const response = await api.get("/user/" + userId + "/backtesting");
         return response.data.body;
       },
       async registerBackTesting(processorId, start, end, callback) {
@@ -431,29 +472,6 @@
         this.register.backTesting.autoTradingProcessorId = autoTradingProcessorId;
         this.register.backTesting.isVisible = !this.register.backTesting.isVisible;
       },
-      resetKeyRegister() {
-        return {
-          coinExchangeType: "",
-          keyList: [
-            {
-              name: "",
-              value: ""
-            }
-          ]
-        }
-      },
-      async resetAutoTradingRegister() {
-        return {
-          title: "",
-          coinType: "",
-          coinExchangeType: "",
-          tradingTerm: "",
-          strategyCode: "",
-          keyPairId: "",
-          strategyCoreParamMap: {},
-          strategyCoreParamMetaList: [],
-        }
-      },
       resetBackTestingRegister() {
         return {
           isVisible: false,
@@ -461,17 +479,6 @@
           start: "",
           end: "",
         }
-      },
-      async resetTypeInfo() {
-        const response = await api.get("/type");
-        this.type = response.data.body;
-      },
-      async resetStrategyMeta(strategyCode) {
-        if (strategyCode) {
-          const response = await api.get("/" + strategyCode + "/meta");
-          return response.data.body.paramMetaList;
-        }
-        return [];
       },
     },
   });
