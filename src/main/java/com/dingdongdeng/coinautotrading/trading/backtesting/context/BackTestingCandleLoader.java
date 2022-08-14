@@ -51,8 +51,7 @@ public class BackTestingCandleLoader {
 
             //다음에 새로 읽어야할 캔들리스트가 있는지 확인
             Candle lastCandle = candleList.get(cursor - 1);
-            if (lastCandle.getCandleDateTimeKst().isBefore(end)) { //fixme 초 떄문에 한번 더 조회됨 해결좀
-
+            if (lastCandle.getCandleDateTimeKst().isBefore(end.withSecond(0))) { //fixme 만약 1분보다 작은 단위의 캔들이 있다면 수정 필요
                 // 캔들 리스트를 새로 세팅하고, 커서를 초기화
                 candleList = getCandles(candleUnit, lastCandle.getCandleDateTimeKst(), end).getCandleList();
                 cursor = -1;
