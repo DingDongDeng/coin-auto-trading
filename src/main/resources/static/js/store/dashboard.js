@@ -45,13 +45,38 @@ export const useDashboardStore = Pinia.defineStore('dashboard', {
       backTestingList: []
     },
     register: {
-      keyPair: {},
-      autoTrading: {},
-      backTesting: {}
+      keyPair: {
+        coinExchangeType: "",
+        keyList: [
+          {
+            name: "",
+            value: ""
+          }
+        ]
+      },
+      autoTrading: {
+        title: "",
+        coinType: "",
+        coinExchangeType: "",
+        tradingTerm: "",
+        strategyCode: "",
+        keyPairId: "",
+        strategyCoreParamMap: {},
+        strategyCoreParamMetaList: [],
+      },
+      backTesting: {
+        isVisible: false,
+        autoTradingProcessorId: "",
+        start: "",
+        end: "",
+      }
     },
     type: {}
   }),
   actions: {
+    async reset() {
+      //$reset하고 refresh()하면 될듯
+    },
     async refresh() {
       this.user.keyPairList = await getUserKeyList();
       this.user.autoTradingList = await getUserAutoTradingList();
@@ -60,6 +85,7 @@ export const useDashboardStore = Pinia.defineStore('dashboard', {
       this.register.autoTrading.strategyCoreParamMetaList = await getStrategyMeta(
           this.register.autoTrading.strategyCode
       );
+      console.log("data ", this.type)
     }
   },
   getters: {}
