@@ -71,10 +71,8 @@ export const useDashboardStore = Pinia.defineStore('dashboard', {
     type: {}
   }),
   actions: {
-    async reset() {
-      //$reset하고 refresh()하면 될듯
-    },
     async refresh() {
+      this.$reset();
       this.user.keyPairList = await getUserKeyList();
       this.user.autoTradingList = await getUserAutoTradingList();
       this.user.backTestingList = await getUserBackTestingList();
@@ -82,7 +80,6 @@ export const useDashboardStore = Pinia.defineStore('dashboard', {
       this.register.autoTrading.strategyCoreParamMetaList = await getStrategyMeta(
           this.register.autoTrading.strategyCode
       );
-      console.log("data ", this.type)
     }
   },
   getters: {}
