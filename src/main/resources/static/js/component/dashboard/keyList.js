@@ -2,7 +2,7 @@ import {useDashboardStore} from '../../store/dashboard.js'
 
 export default Vue.component('user-key-list', {
   template: `
-<v-container>
+  <v-container>
     <h2> 키 리스트 </h2>
     <v-row justify="start">
       <v-col
@@ -86,16 +86,36 @@ export default Vue.component('user-key-list', {
       `,
   setup() {
     const dashboard = useDashboardStore();
-    const user = dashboard.user;
-    const register = dashboard.register;
-    const type = dashboard.type;
+    const {user, register, type, refresh} = Pinia.storeToRefs(dashboard)
 
     return {
       user,
       register,
-      type
+      type,
+      refresh
     }
   },
-  methods: {}
+  methods: {
+    addKeyInputBox() {
+      this.register.keyPair.keyList.push({name: "", value: ""});
+    },
+    deleteKeyInputBox(index) {
+      this.register.keyPair.keyList.splice(index, 1);
+    },
+    async registerKeyPair(callback) {
+      const body = {
+        coinExchangeType: this.register.keyPair.coinExchangeType,
+        keyList: this.register.keyPair.keyList
+      };
+      const response = await this.api.post("/key/pair", body);
+      callback();
+      return response.data.body;
+    },
+    async deleteUserPairKey(pairKeyId, callback) {
+      const response = await this.api.delete("/key/pair/" + pairKeyId);
+      callback();
+      return response.data.body;
+    }
+  }
 
 });
