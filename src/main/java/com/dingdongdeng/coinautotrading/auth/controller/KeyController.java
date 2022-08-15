@@ -23,7 +23,7 @@ public class KeyController {
 
     private final KeyService keyService;
 
-    @GetMapping("/user/{userId}/key/pair")
+    @GetMapping("/user/key/pair")
     public CommonResponse<List<KeyPairResponse>> getKeyList(@SessionAttribute String userId) {
         return CommonResponse.<List<KeyPairResponse>>builder()
             .body(keyService.getUserKeyList(userId))
