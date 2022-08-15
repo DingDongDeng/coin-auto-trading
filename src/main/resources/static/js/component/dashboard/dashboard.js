@@ -218,67 +218,11 @@ export default Vue.component('dashboard', {
       autoTrading,
       type,
       backTesting,
+      refresh: dashboard.refresh
     };
   }
   ,
   methods: {
-    /******* common *******/
-    async refresh() {
-      this.updateAllInformation();
-    },
-    async updateAllInformation() {
-      const userId = this.user.id;
-      this.user.keyPairList = await this.getUserKeyList(userId);
-      this.user.autoTradingList = await this.getUserAutoTradingList(userId);
-      this.user.backTestingList = await this.getUserBackTestingList(userId);
-      this.type = this.resetTypeInfo();
-      this.register.autoTrading.strategyCoreParamMetaList = await this.resetStrategyMeta(
-          this.register.autoTrading.strategyCode);
-    },
-    async resetTypeInfo() {
-      const response = await this.api.get("/type");
-      this.type = response.data.body;
-    },
-
-    /******* keyPair *******/
-    addKeyInputBox() {
-      this.register.keyPair.keyList.push({name: "", value: ""});
-    },
-    deleteKeyInputBox(index) {
-      this.register.keyPair.keyList.splice(index, 1);
-    },
-    async getUserKeyList(userId) {
-      const response = await this.api.get("/user/" + userId + "/key/pair");
-      return response.data.body;
-    },
-    async registerKeyPair(callback) {
-      const body = {
-        coinExchangeType: this.register.keyPair.coinExchangeType,
-        keyList: this.register.keyPair.keyList
-      };
-
-      const response = await this.api.post("/key/pair", body);
-      this.register.keyPair = this.resetKeyRegister();
-      callback();
-      return response.data.body;
-    },
-    async deleteUserPairKey(pairKeyId, callback) {
-      const response = await this.api.delete("/key/pair/" + pairKeyId);
-      callback();
-      return response.data.body;
-    },
-    resetKeyRegister() {
-      return {
-        coinExchangeType: "",
-        keyList: [
-          {
-            name: "",
-            value: ""
-          }
-        ]
-      }
-    },
-
     /******* autoTrading *******/
     async getUserAutoTradingList(userId) {
       const response = await this.api.get("/user/" + userId + "/autotrading");
