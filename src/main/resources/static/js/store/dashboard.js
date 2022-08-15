@@ -53,7 +53,6 @@ export const useDashboardStore = Pinia.defineStore('dashboard', {
   }),
   actions: {
     async refresh() {
-      console.log("test refresh")
       this.user.keyPairList = await getUserKeyList();
       this.user.autoTradingList = await getUserAutoTradingList();
       this.user.backTestingList = await getUserBackTestingList();
