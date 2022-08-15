@@ -1,10 +1,18 @@
-import api from "./api.js"
+import Vue from "./lib/vue.js"
+import Pinia from "./lib/pinia.js"
+import Axios from "./lib/axios.js"
 import dashboard from "./component/dashboard/dashboard.js"
 
-// global variable
-Vue.prototype.api = api.axios;
+const axios = Axios.create({
+  timeout: 5000,
+});
+axios.interceptors.response.use((response) => response, (error) => {
+  alert(error);
+  throw error;
+});
 
-// pinia : https://pinia.vuejs.org/getting-started.html#installation
+Vue.prototype.api = axios;
+
 Vue.use(Pinia.PiniaVuePlugin)
 
 new Vue({
