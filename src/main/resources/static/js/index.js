@@ -1,6 +1,3 @@
-import Vue from "./lib/vue.js"
-import Pinia from "./lib/pinia.js"
-import axios from "./lib/axios.js"
 import dashboard from "./component/dashboard/dashboard.js"
 
 Vue.prototype.api = axios;

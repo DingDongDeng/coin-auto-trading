@@ -1,7 +1,4 @@
-import Pinia from "../lib/pinia.js";
-import Axios from "../lib/axios.js";
-
-const api = Axios.create({
+const api = axios.create({
   timeout: 5000,
 });
 api.interceptors.response.use((response) => response, (error) => {
