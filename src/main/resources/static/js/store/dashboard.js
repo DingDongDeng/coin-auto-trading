@@ -26,14 +26,6 @@ async function getTypeInfo() {
   return response.data.body;
 }
 
-async function getStrategyMeta(strategyCode) {
-  if (strategyCode) {
-    const response = await api.get("/" + strategyCode + "/meta");
-    return response.data.body.paramMetaList;
-  }
-  return [];
-}
-
 export const useDashboardStore = Pinia.defineStore('dashboard', {
   state: () => ({
     user: {
@@ -81,9 +73,6 @@ export const useDashboardStore = Pinia.defineStore('dashboard', {
       this.user.autoTradingList = await getUserAutoTradingList();
       this.user.backTestingList = await getUserBackTestingList();
       this.type = await getTypeInfo();
-      this.register.autoTrading.strategyCoreParamMetaList = await getStrategyMeta(
-          this.register.autoTrading.strategyCode
-      );
     }
   },
   getters: {}

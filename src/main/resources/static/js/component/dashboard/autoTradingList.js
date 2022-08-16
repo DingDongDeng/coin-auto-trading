@@ -130,7 +130,7 @@ export default Vue.component('auto-trading-list', {
                 item-text="name"
                 item-value="value"
                 v-model="register.autoTrading.strategyCode"
-                @input="refresh"
+                @input="setStrategyMeta"
             ></v-select>
             <v-select
                 label="키 페어 ID를 선택해주세요."
@@ -181,7 +181,6 @@ export default Vue.component('auto-trading-list', {
     async registerAutoTrading(callback) {
       const body = this.register.autoTrading;
       const response = await this.api.post("/autotrading/register", body);
-      this.register.autoTrading = await this.resetAutoTradingRegister();
       callback();
       return response.data.body;
     },
@@ -205,6 +204,18 @@ export default Vue.component('auto-trading-list', {
           "/autotrading/" + autoTradingProcessorId + "/terminate", {});
       callback();
       return response.data.body;
+    },
+    async setStrategyMeta() {
+      this.register.autoTrading.strategyCoreParamMetaList = await this.getStrategyMeta(
+          this.register.autoTrading.strategyCode
+      );
+    },
+    async getStrategyMeta(strategyCode) {
+      if (strategyCode) {
+        const response = await this.api.get("/" + strategyCode + "/meta");
+        return response.data.body.paramMetaList;
+      }
+      return [];
     }
   }
 });
