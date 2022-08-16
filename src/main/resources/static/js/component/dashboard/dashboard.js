@@ -1,42 +1,13 @@
 import {useDashboardStore} from '../../store/dashboard.js'
 import dashboardGnb from "./dashboard-gnb.js"
-import userKeyList from "./keyList.js"
+import userKeyList from "./userKeyList.js"
+import backTestingRegisterModal from "./backTestingRegisterModal.js";
 
 export default Vue.component('dashboard', {
   template: `
 <v-container>
   <!-- 헤더 -->
   <dashboard-gnb/>
-  <!-- 모달 -->
-  <v-dialog
-      v-model="register.backTesting.isVisible"
-      width="500"
-  >
-    <v-card>
-      <v-toolbar dark color="primary">
-        <v-toolbar-title>백테스팅 실행</v-toolbar-title>
-      </v-toolbar>
-      <v-card-text>
-        <div>
-          시작일 : <input type="datetime-local" v-model="register.backTesting.start">
-        </div>
-        <div>
-          종료일 : <input type="datetime-local" v-model="register.backTesting.end">
-        </div>
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn
-            @click="registerBackTesting(register.backTesting.autoTradingProcessorId, register.backTesting.start, register.backTesting.end, refresh)"
-        > 실행
-        </v-btn>
-        <v-btn
-            @click="toggleBackTestingRegisterUI()"
-        > 취소
-        </v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
 
   <!-- 키 리스트 -->
   <userKeyList/> 
@@ -198,11 +169,15 @@ export default Vue.component('dashboard', {
       </v-col>
     </v-row>
   </v-container>
+  
+    <!-- 모달 -->
+  <backTestingRegisterModal/>
 </v-container>
 `,
   components: {
     dashboardGnb,
     userKeyList,
+    backTestingRegisterModal
   },
   setup() {
     const dashboard = useDashboardStore()
@@ -255,56 +230,7 @@ export default Vue.component('dashboard', {
           "/autotrading/" + autoTradingProcessorId + "/terminate", {});
       callback();
       return response.data.body;
-    },
-    async resetAutoTradingRegister() {
-      return {
-        title: "",
-        coinType: "",
-        coinExchangeType: "",
-        tradingTerm: "",
-        strategyCode: "",
-        keyPairId: "",
-        strategyCoreParamMap: {},
-        strategyCoreParamMetaList: [],
-      }
-    },
-    async resetStrategyMeta(strategyCode) {
-      if (strategyCode) {
-        const response = await this.api.get("/" + strategyCode + "/meta");
-        return response.data.body.paramMetaList;
-      }
-      return [];
-    },
-
-    /******* backTesting *******/
-    async getUserBackTestingList(userId) {
-      const response = await this.api.get("/user/" + userId + "/backtesting");
-      return response.data.body;
-    },
-    async registerBackTesting(processorId, start, end, callback) {
-      const body = {
-        autoTradingProcessorId: processorId,
-        start: start,
-        end: end
-      };
-
-      const response = await this.api.post("/backtesting", body);
-      this.register.backTesting = this.resetBackTestingRegister();
-      callback();
-      return response.data.body;
-    },
-    toggleBackTestingRegisterUI(autoTradingProcessorId) {
-      this.register.backTesting.autoTradingProcessorId = autoTradingProcessorId;
-      this.register.backTesting.isVisible = !this.register.backTesting.isVisible;
-    },
-    resetBackTestingRegister() {
-      return {
-        isVisible: false,
-        autoTradingProcessorId: "",
-        start: "",
-        end: "",
-      }
-    },
+    }
   }
 
 });
