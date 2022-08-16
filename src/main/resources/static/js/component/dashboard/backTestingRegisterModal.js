@@ -25,7 +25,7 @@ export default Vue.component('back-testing-register-modal', {
         > 실행
         </v-btn>
         <v-btn
-            @click="toggleBackTestingRegisterUI()"
+            @click="toggleBackTestingRegisterModal(this.register.backTesting.autoTradingProcessorId)"
         > 취소
         </v-btn>
       </v-card-actions>
@@ -34,10 +34,15 @@ export default Vue.component('back-testing-register-modal', {
       `,
   setup() {
     const dashboard = useDashboardStore();
-    const {register, refresh} = Pinia.storeToRefs(dashboard)
+    const {
+      register,
+      toggleBackTestingRegisterModal,
+      refresh
+    } = Pinia.storeToRefs(dashboard)
 
     return {
       register,
+      toggleBackTestingRegisterModal,
       refresh
     }
   },
@@ -52,11 +57,7 @@ export default Vue.component('back-testing-register-modal', {
       const response = await this.api.post("/backtesting", body);
       callback();
       return response.data.body;
-    },
-    toggleBackTestingRegisterUI(autoTradingProcessorId) {
-      this.register.backTesting.autoTradingProcessorId = autoTradingProcessorId;
-      this.register.backTesting.isVisible = !this.register.backTesting.isVisible;
-    },
+    }
   }
 
 });

@@ -71,6 +71,10 @@ export const useDashboardStore = Pinia.defineStore('dashboard', {
     type: {}
   }),
   actions: {
+    toggleBackTestingRegisterModal(autoTradingProcessorId) {
+      this.register.backTesting.autoTradingProcessorId = autoTradingProcessorId;
+      this.register.backTesting.isVisible = !this.register.backTesting.isVisible;
+    },
     async refresh() {
       this.$reset();
       this.user.keyPairList = await getUserKeyList();
