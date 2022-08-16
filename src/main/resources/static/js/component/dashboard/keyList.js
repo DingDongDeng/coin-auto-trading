@@ -1,6 +1,6 @@
 import {useDashboardStore} from '../../store/dashboard.js'
 
-export default Vue.component('user-key-list', {
+export default Vue.component('key-list', {
   template: `
   <v-container>
     <h2> 키 리스트 </h2>

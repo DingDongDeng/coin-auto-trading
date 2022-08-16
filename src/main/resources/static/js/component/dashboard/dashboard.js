@@ -1,16 +1,16 @@
 import {useDashboardStore} from '../../store/dashboard.js'
 import dashboardGnb from "./dashboard-gnb.js"
-import userKeyList from "./userKeyList.js"
+import keyList from "./keyList.js"
 import backTestingRegisterModal from "./backTestingRegisterModal.js";
 
 export default Vue.component('dashboard', {
   template: `
 <v-container>
   <!-- 헤더 -->
-  <dashboard-gnb/>
+  <dashboardGnb/>
 
   <!-- 키 리스트 -->
-  <userKeyList/> 
+  <keyList/> 
 
   <!-- 자동매매 리스트 -->
   <v-container>
@@ -176,7 +176,7 @@ export default Vue.component('dashboard', {
 `,
   components: {
     dashboardGnb,
-    userKeyList,
+    keyList,
     backTestingRegisterModal
   },
   setup() {
