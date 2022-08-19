@@ -1,6 +1,6 @@
 import {useDashboardStore} from '../store/dashboard.js'
 import backTestingRegisterModal from "./backTestingRegisterModal.js";
-import tradingChart from "./tradingChart.js";
+import tradingChart from "./chart/tradingChart.js";
 
 export default Vue.component('auto-trading-list', {
   template: `
