@@ -1,4 +1,4 @@
-import {useDashboardStore} from '../../store/dashboard.js'
+import {useDashboardStore} from '../store/dashboard.js'
 import dashboardGnb from "./dashboard-gnb.js"
 import keyList from "./keyList.js"
 import backTestingRegisterModal from "./backTestingRegisterModal.js";

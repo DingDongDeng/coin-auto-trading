@@ -1,4 +1,4 @@
-import {useDashboardStore} from '../../store/dashboard.js'
+import {useDashboardStore} from '../store/dashboard.js'
 
 export default Vue.component('key-list', {
   template: `

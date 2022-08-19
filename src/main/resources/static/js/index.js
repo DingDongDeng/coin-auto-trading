@@ -1,4 +1,4 @@
-import dashboard from "./component/dashboard/dashboard.js"
+import dashboard from "./component/dashboard.js"
 
 Vue.prototype.api = axios;
 
