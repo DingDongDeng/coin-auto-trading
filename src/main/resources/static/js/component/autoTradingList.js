@@ -1,4 +1,6 @@
 import {useDashboardStore} from '../store/dashboard.js'
+import backTestingRegisterModal from "./backTestingRegisterModal.js";
+import tradingChart from "./trading-chart.js";
 
 export default Vue.component('auto-trading-list', {
   template: `
@@ -72,6 +74,9 @@ export default Vue.component('auto-trading-list', {
                     </div>
                     <div>
                       수수료 : {{backTesting.result.totalFee}}원
+                    </div>
+                    <div>
+                      <tradingChart/>
                     </div>
                     <div>
                       히스토리 :
@@ -157,6 +162,10 @@ export default Vue.component('auto-trading-list', {
         </v-card>
       </v-col>
     </v-row>
+    
+    <!-- 모달 -->
+    <backTestingRegisterModal/>
+  
   </v-container>
       `,
   setup() {
@@ -176,6 +185,10 @@ export default Vue.component('auto-trading-list', {
       toggleBackTestingRegisterModal,
       refresh
     }
+  },
+  components: {
+    backTestingRegisterModal,
+    tradingChart
   },
   methods: {
     async registerAutoTrading(callback) {

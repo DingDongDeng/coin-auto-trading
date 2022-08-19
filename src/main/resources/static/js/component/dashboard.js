@@ -1,7 +1,6 @@
 import {useDashboardStore} from '../store/dashboard.js'
 import dashboardGnb from "./dashboard-gnb.js"
 import keyList from "./keyList.js"
-import backTestingRegisterModal from "./backTestingRegisterModal.js";
 import autoTradingList from "./autoTradingList.js";
 
 export default Vue.component('dashboard', {
@@ -15,16 +14,13 @@ export default Vue.component('dashboard', {
 
   <!-- 자동매매 리스트 -->
   <autoTradingList/>
-  
-  <!-- 모달 -->
-  <backTestingRegisterModal/>
+
 </v-container>
 `,
   components: {
     dashboardGnb,
     keyList,
-    autoTradingList,
-    backTestingRegisterModal
+    autoTradingList
   },
   created() {
     this.refresh();
