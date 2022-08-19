@@ -25,7 +25,7 @@ export default Vue.component('back-testing-register-modal', {
         > 실행
         </v-btn>
         <v-btn
-            @click="toggleBackTestingRegisterModal(this.register.backTesting.autoTradingProcessorId)"
+            @click="toggleBackTestingRegisterModal(register.backTesting.autoTradingProcessorId)"
         > 취소
         </v-btn>
       </v-card-actions>
