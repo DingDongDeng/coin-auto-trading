@@ -12,6 +12,7 @@ public class Recorder {
 
     private final String id = UUID.randomUUID().toString();
     private final List<RecordContext> recordContextList = new ArrayList<>();
+    private final int RECORD_CONTEXT_COUNT_LIMIT = 50000;
 
     private double totalBuyValue;
     private double totalProfitValue;
@@ -22,7 +23,7 @@ public class Recorder {
     private double marginRate; // 이익율
 
     public void record(RecordContext recordContext) {
-        recordContextList.add(recordContext);
+        this.addRecordContextList(recordContext);
 
         recordContext.getTradingResultList().forEach(tradingResult -> {
             OrderType orderType = tradingResult.getOrderType();
@@ -54,5 +55,12 @@ public class Recorder {
                 this.marginPrice = Math.round((totalProfitValue + totalLossValue - totalFee) - totalBuyValue);
             }
         });
+    }
+
+    private void addRecordContextList(RecordContext recordContext) {
+        this.recordContextList.add(recordContext);
+        if (this.recordContextList.size() > RECORD_CONTEXT_COUNT_LIMIT) {
+            this.recordContextList.remove(0);
+        }
     }
 }
