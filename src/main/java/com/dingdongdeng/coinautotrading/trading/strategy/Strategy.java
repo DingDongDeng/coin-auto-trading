@@ -22,7 +22,6 @@ public class Strategy<TI extends TradingInfo, TR extends TradingResult> {
     private final StrategyCore<TI, TR> strategyCore;
     private final StrategyService<TI, TR> strategyService;
     private final StrategyStore<TR> strategyStore;
-    private final StrategyRecorder<TR> strategyRecorder;
 
     public Strategy(StrategyCode code, StrategyCore<TI, TR> core, StrategyService<TI, TR> service, StrategyStore<TR> store) {
         this.strategyCode = code;
