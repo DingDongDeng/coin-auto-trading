@@ -34,8 +34,7 @@ public class StrategyFactory {
             );
             StrategyStore<SpotTradingResult> strategyStore = new StrategyStore<>();
             StrategyCore<SpotTradingInfo, SpotTradingResult> strategyCore = (StrategyCore<SpotTradingInfo, SpotTradingResult>) strategyCode.getStrategyCore(coreParam);
-            StrategyRecorder<SpotTradingResult> strategyRecorder = new StrategySpotRecorder();
-            return new Strategy<>(serviceParam.getStrategyCode(), strategyCore, strategyService, strategyStore, strategyRecorder);
+            return new Strategy<>(serviceParam.getStrategyCode(), strategyCore, strategyService, strategyStore);
         } else if (marketType == MarketType.FUTURE) {
             StrategyService<FutureTradingInfo, FutureTradingResult> strategyService = new StrategyFutureService(
                 serviceParam.getCoinType(),
@@ -45,8 +44,7 @@ public class StrategyFactory {
             );
             StrategyStore<FutureTradingResult> strategyStore = new StrategyStore<>();
             StrategyCore<FutureTradingInfo, FutureTradingResult> strategyCore = (StrategyCore<FutureTradingInfo, FutureTradingResult>) strategyCode.getStrategyCore(coreParam);
-            StrategyRecorder<FutureTradingResult> strategyRecorder = new StrategyFutureRecorder();
-            return new Strategy<>(serviceParam.getStrategyCode(), strategyCore, strategyService, strategyStore, strategyRecorder);
+            return new Strategy<>(serviceParam.getStrategyCode(), strategyCore, strategyService, strategyStore);
         } else {
             throw new RuntimeException("not found marketType");
         }
