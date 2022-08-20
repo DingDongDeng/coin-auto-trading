@@ -60,7 +60,6 @@ public class BackTestingService {
             .end(end)
             .strategy(backTestingStrategy)
             .backTestingContextLoader(contextLoader)
-            .duration(1000)
             .build();
 
         backTestingProcessor.start();
