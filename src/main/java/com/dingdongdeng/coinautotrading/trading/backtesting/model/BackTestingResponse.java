@@ -1,7 +1,9 @@
 package com.dingdongdeng.coinautotrading.trading.backtesting.model;
 
 import com.dingdongdeng.coinautotrading.trading.backtesting.model.type.BackTestingProcessStatus;
+import com.dingdongdeng.coinautotrading.trading.record.RecordContext;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,6 +37,6 @@ public class BackTestingResponse {
         private double marginPrice;
         private Double marginRate;
         private double totalFee;
-        private String eventMessage;
+        private List<RecordContext> recordContextList;
     }
 }

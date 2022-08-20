@@ -58,6 +58,7 @@ public class BackTestingAggregation {
                     .backTestingId(b.getId())
                     .userId(b.getUserId())
                     .autoTradingProcessorId(b.getAutoTradingProcessorId())
+                    .recorderId(recorder.getId())
                     .start(start)
                     .end(end)
                     .result(
@@ -67,7 +68,7 @@ public class BackTestingAggregation {
                             .marginPrice(recorder.getMarginPrice())
                             .marginRate(recorder.getMarginRate() * 100 / 100.0)
                             .totalFee(recorder.getTotalFee())
-                            .eventMessage(recorder.getEventMessage())
+                            .recordContextList(recorder.getRecordContextList())
                             .build()
                     )
                     .build();

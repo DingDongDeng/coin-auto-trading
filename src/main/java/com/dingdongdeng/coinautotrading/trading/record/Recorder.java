@@ -1,7 +1,6 @@
 package com.dingdongdeng.coinautotrading.trading.record;
 
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
-import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.TradingTag;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +20,6 @@ public class Recorder {
     private double totalFee;
     private double marginPrice; // 이익금
     private double marginRate; // 이익율
-    private String eventMessage = "";
 
     public void record(RecordContext recordContext) {
         recordContextList.add(recordContext);
@@ -55,15 +53,6 @@ public class Recorder {
                 // 이익금 소수점 반올림
                 this.marginPrice = Math.round((totalProfitValue + totalLossValue - totalFee) - totalBuyValue);
             }
-
-            this.addEventMessage(tradingResult);
         });
-    }
-
-    private void addEventMessage(TradingResult tradingResult) {
-        String tagName = tradingResult.getTradingTag().getDesc();
-        double price = tradingResult.getPrice();
-        double orderPrice = tradingResult.getPrice() * tradingResult.getVolume();
-        this.eventMessage += tradingResult.getCreatedAt() + "/" + tagName + " / " + price + " / " + orderPrice + "</br>\n";
     }
 }
