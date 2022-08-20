@@ -6,6 +6,7 @@ import com.dingdongdeng.coinautotrading.trading.autotrading.model.AutoTradingReg
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.type.AutoTradingProcessStatus;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.ExchangeService;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.selector.ExchangeServiceSelector;
+import com.dingdongdeng.coinautotrading.trading.record.Recorder;
 import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyFactory;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreParam;
@@ -53,6 +54,7 @@ public class AutoTradingService {
                 .status(AutoTradingProcessStatus.INIT)
                 .tradingTerm(request.getTradingTerm())
                 .strategy(strategy)
+                .recorder(new Recorder())
                 .duration(4000)
                 .slackSender(slackSender)
                 .build()

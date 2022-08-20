@@ -16,6 +16,7 @@ import lombok.ToString;
 public class BackTestingResponse {
 
     private String backTestingId;
+    private String recorderId;
     private String userId;
     private String autoTradingProcessorId;
     private LocalDateTime start;

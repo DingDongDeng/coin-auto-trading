@@ -10,6 +10,7 @@ import com.dingdongdeng.coinautotrading.trading.backtesting.model.BackTestingPro
 import com.dingdongdeng.coinautotrading.trading.backtesting.model.type.BackTestingExchangeFeeType;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.ExchangeService;
 import com.dingdongdeng.coinautotrading.trading.index.IndexCalculator;
+import com.dingdongdeng.coinautotrading.trading.record.Recorder;
 import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyFactory;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreFutureParam;
@@ -60,6 +61,7 @@ public class BackTestingService {
             .end(end)
             .strategy(backTestingStrategy)
             .backTestingContextLoader(contextLoader)
+            .recorder(new Recorder())
             .build();
 
         backTestingProcessor.start();

@@ -5,7 +5,10 @@ import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.autotrading.model.type.AutoTradingProcessStatus;
+import com.dingdongdeng.coinautotrading.trading.record.Recorder;
+import com.dingdongdeng.coinautotrading.trading.record.model.RecordContext;
 import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyExecuteResult;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import lombok.AllArgsConstructor;
@@ -33,6 +36,7 @@ public class AutoTradingProcessor {
     private AutoTradingProcessStatus status;
     private TradingTerm tradingTerm;
     private Strategy<?, ?> strategy;
+    private Recorder recorder;
     private long duration;
     private SlackSender slackSender;
 
@@ -59,7 +63,11 @@ public class AutoTradingProcessor {
             log.info("running autoTradingProcessor...");
             delay();
             try {
-                this.strategy.execute();
+                // 자동매매 사이클 실행
+                StrategyExecuteResult executeResult = this.strategy.execute();
+
+                // 기록
+                recorder.record(RecordContext.ofStrategyExecuteResult(executeResult));
             } catch (Exception e) {
                 log.error("strategy execute exception : {}", e.getMessage(), e);
                 slackSender.send("userId : " + userId + ", title : " + title + ", autoTradingProcessorId : " + id, e);

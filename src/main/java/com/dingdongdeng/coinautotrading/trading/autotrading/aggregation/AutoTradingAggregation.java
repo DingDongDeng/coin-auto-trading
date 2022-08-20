@@ -45,6 +45,7 @@ public class AutoTradingAggregation {
         return AutoTradingResponse.builder()
             .title(processor.getTitle())
             .processorId(processor.getId())
+            .recorderId(processor.getRecorder().getId())
             .processDuration(processor.getDuration())
             .processStatus(processor.getStatus())
             .userId(processor.getUserId())

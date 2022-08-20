@@ -7,7 +7,7 @@ import com.dingdongdeng.coinautotrading.trading.backtesting.model.BackTestingReq
 import com.dingdongdeng.coinautotrading.trading.backtesting.model.BackTestingResponse;
 import com.dingdongdeng.coinautotrading.trading.backtesting.model.BackTestingResponse.Result;
 import com.dingdongdeng.coinautotrading.trading.backtesting.service.BackTestingService;
-import com.dingdongdeng.coinautotrading.trading.strategy.StrategyRecorder;
+import com.dingdongdeng.coinautotrading.trading.record.Recorder;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -36,6 +36,7 @@ public class BackTestingAggregation {
 
         return BackTestingResponse.builder()
             .backTestingId(backTestingProcessor.getId())
+            .recorderId(backTestingProcessor.getRecorder().getId())
             .userId(backTestingProcessor.getUserId())
             .autoTradingProcessorId(backTestingProcessor.getAutoTradingProcessorId())
             .start(backTestingProcessor.getStart())
@@ -47,7 +48,7 @@ public class BackTestingAggregation {
     public List<BackTestingResponse> getResult(String userId) {
         return backTestingService.getBackTestingProcessorList(userId).stream()
             .map(b -> {
-                StrategyRecorder<?> recorder = b.getStrategy().getStrategyRecorder();
+                Recorder recorder = b.getRecorder();
                 LocalDateTime start = b.getStart();
                 LocalDateTime end = b.getEnd();
                 double totalTime = ChronoUnit.MINUTES.between(start, end);
