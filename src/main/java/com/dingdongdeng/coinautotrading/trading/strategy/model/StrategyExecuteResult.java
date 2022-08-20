@@ -1,5 +1,6 @@
 package com.dingdongdeng.coinautotrading.trading.strategy.model;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -8,5 +9,5 @@ import lombok.Getter;
 public class StrategyExecuteResult {
 
     private TradingInfo tradingInfo;
-    private TradingResultPack<? extends TradingResult> tradingResultPack;
+    private List<TradingResult> tradingResultList;
 }

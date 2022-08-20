@@ -7,6 +7,7 @@ import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.StrategyCode;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.Getter;
@@ -48,6 +49,7 @@ public class Strategy<TI extends TradingInfo, TR extends TradingResult> {
         List<TradingTask> tradingTaskList = strategyCore.makeTradingTask(tradingInfo, updatedTradingResultPack);
         log.info("tradingTaskList : {}", tradingTaskList);
 
+        List<TradingResult> tradingResultList = new ArrayList<>();
         tradingTaskList.forEach(tradingTask -> {
             // 모든 정보 초기화
             if (isReset(tradingTask)) {
@@ -60,6 +62,7 @@ public class Strategy<TI extends TradingInfo, TR extends TradingResult> {
                 TR orderTradingResult = strategyService.order(tradingTask);
                 strategyStore.save(orderTradingResult); // 주문 성공 건 정보 저장
                 strategyCore.handleOrderResult(orderTradingResult);
+                tradingResultList.add(orderTradingResult);
                 return;
             }
 
@@ -68,6 +71,7 @@ public class Strategy<TI extends TradingInfo, TR extends TradingResult> {
                 TR cancelTradingResult = strategyService.orderCancel(tradingTask);
                 strategyStore.delete(cancelTradingResult); // 주문 취소 건 정보 제거
                 strategyCore.handleOrderCancelResult(cancelTradingResult);
+                tradingResultList.add(cancelTradingResult);
                 return;
             }
 
@@ -75,7 +79,7 @@ public class Strategy<TI extends TradingInfo, TR extends TradingResult> {
             log.info("do nothing");
         });
 
-        return new StrategyExecuteResult(tradingInfo, strategyStore.get());
+        return new StrategyExecuteResult(tradingInfo, tradingResultList);
     }
 
     private boolean isReset(TradingTask tradingTask) {
