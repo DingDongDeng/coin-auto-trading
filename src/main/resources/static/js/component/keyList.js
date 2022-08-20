@@ -7,7 +7,7 @@ export default Vue.component('key-list', {
     <v-row justify="start">
       <v-col
           xs="12" sm="8" md="4" lg="3"
-          v-for="keyPair in user.keyPairList"
+          v-for="keyPair in user.keyPairList" :key="keyPair.pairId"
       >
         <v-card
             class="ma-3"
@@ -19,7 +19,7 @@ export default Vue.component('key-list', {
             <div>
               거래소 : {{keyPair.coinExchangeType}}
             </div>
-            <div v-for="key in keyPair.keyList">
+            <div v-for="(key, i) in keyPair.keyList" :key="i">
               <div>
                 키 이름 : {{key.name}}
               </div>
@@ -50,7 +50,7 @@ export default Vue.component('key-list', {
               <v-row
                   align="center"
                   justify="center"
-                  v-for="(key, i) in register.keyPair.keyList"
+                  v-for="(key, i) in register.keyPair.keyList" :key="i"
               >
                 <v-col cols="4">
                   <v-text-field

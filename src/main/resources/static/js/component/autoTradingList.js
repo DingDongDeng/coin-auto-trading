@@ -9,7 +9,7 @@ export default Vue.component('auto-trading-list', {
     <v-row justify="start">
       <v-col
           xs="12" sm="12" md="12" lg="12"
-          v-for="autoTrading in user.autoTradingList"
+          v-for="autoTrading in user.autoTradingList" :key="autoTrading.processorId"
       >
         <v-card
             class="ma-3"
@@ -50,7 +50,7 @@ export default Vue.component('auto-trading-list', {
                   </v-expansion-panel-content>
                 </v-expansion-panel>
                 <v-expansion-panel
-                    v-for="backTesting in user.backTestingList"
+                    v-for="backTesting in user.backTestingList" :key="backTesting.backTestingId"
                     v-if="backTesting.autoTradingProcessorId==autoTrading.processorId"
                 >
                   <v-expansion-panel-header>
@@ -146,7 +146,7 @@ export default Vue.component('auto-trading-list', {
                 v-model="register.autoTrading.keyPairId"
             ></v-select>
             <v-text-field
-                v-for="(value,key) in register.autoTrading.strategyCoreParamMetaList"
+                v-for="(value,key) in register.autoTrading.strategyCoreParamMetaList" :key="key"
                 :label="value.guideMessage"
                 v-model="register.autoTrading.strategyCoreParamMap[value.name]"
             ></v-text-field>
