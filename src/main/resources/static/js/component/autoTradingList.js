@@ -8,7 +8,7 @@ export default Vue.component('auto-trading-list', {
     <h2> 자동매매 리스트 </h2>
     <v-row justify="start">
       <v-col
-          xs="12" sm="8" md="4" lg="4"
+          xs="12" sm="12" md="12" lg="12"
           v-for="autoTrading in user.autoTradingList"
       >
         <v-card
@@ -54,7 +54,7 @@ export default Vue.component('auto-trading-list', {
                     v-if="backTesting.autoTradingProcessorId==autoTrading.processorId"
                 >
                   <v-expansion-panel-header>
-                    백테스팅 현황
+                    백테스팅 상세
                   </v-expansion-panel-header>
                   <v-expansion-panel-content>
                     <div>
