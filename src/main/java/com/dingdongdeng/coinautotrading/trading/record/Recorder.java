@@ -36,8 +36,6 @@ public class Recorder {
                     case PROFIT -> totalProfitValue -= tradingResult.getPrice() * tradingResult.getVolume();
                     case LOSS -> totalLossValue -= tradingResult.getPrice() * tradingResult.getVolume();
                 }
-                return;
-
             } else { // 주문(매수,매도) 일때
                 switch (tradingResult.getTradingTag()) {
                     case BUY -> totalBuyValue += tradingResult.getPrice() * tradingResult.getVolume();
