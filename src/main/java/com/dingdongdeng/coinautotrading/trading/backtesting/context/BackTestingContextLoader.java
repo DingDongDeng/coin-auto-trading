@@ -36,21 +36,21 @@ public class BackTestingContextLoader {
     }
 
     private BackTestingContext getNextContext() {
-        Candle candle = currentCandleLoader.getNextCandle();
-        if (Objects.isNull(candle)) {
+        Candle currentCandle = currentCandleLoader.getNextCandle();
+        if (Objects.isNull(currentCandle)) {
             return null;
         }
         return BackTestingContext.builder()
             .coinExchangeType(currentCandleLoader.getCoinExchangeType())
             .coinType(currentCandleLoader.getCoinType())
-            .currentPrice(candle.getTradePrice())
-            .now(candle.getCandleDateTimeKst())
-            .candles(getCandles(candle.getTradePrice(), candle.getCandleDateTimeKst()))
+            .currentPrice(currentCandle.getTradePrice())
+            .now(currentCandle.getCandleDateTimeKst())
+            .candles(this.getCandles(currentCandle)) // tradingTermCandleLoader를 사용해서 효율적으로 캔들 리스트를 생성
             .build();
     }
 
-    private ExchangeCandles getCandles(Double currentPrice, LocalDateTime currentTime) {
-        List<Candle> candleList = getTradingTermCandleList(currentPrice, currentTime);
+    private ExchangeCandles getCandles(Candle currentCandle) {
+        List<Candle> candleList = getTradingTermCandleList(currentCandle);
 
         return ExchangeCandles.builder()
             .coinExchangeType(tradingTermCandleLoader.getCoinExchangeType())
@@ -60,7 +60,10 @@ public class BackTestingContextLoader {
             .build();
     }
 
-    private List<Candle> getTradingTermCandleList(Double currentPrice, LocalDateTime currentTime) {
+    private List<Candle> getTradingTermCandleList(Candle currentCandle) {
+        LocalDateTime currentTime = currentCandle.getCandleDateTimeKst();
+        double currentPrice = currentCandle.getTradePrice();
+
         List<Candle> candleList = Optional.ofNullable(currentContext)
             .map(BackTestingContext::getCandles)
             .map(ExchangeCandles::getCandleList)
@@ -96,10 +99,18 @@ public class BackTestingContextLoader {
         }
 
         if (!isExistCurrentCandle(currentTime, candleList)) {
+            // 현재 시간에 해당하는 캔들이 없어서, 백테스팅에서 시간축으로 사용하는 캔들로 임의 생성
             candleList.add(
                 Candle.builder()
-                    .candleDateTimeKst(currentTime)
-                    .tradePrice(currentPrice)
+                    .candleDateTimeUtc(currentCandle.getCandleDateTimeUtc())
+                    .candleDateTimeKst(currentCandle.getCandleDateTimeKst())
+                    .openingPrice(currentCandle.getOpeningPrice())
+                    .highPrice(currentCandle.getHighPrice())
+                    .lowPrice(currentCandle.getLowPrice())
+                    .tradePrice(currentCandle.getTradePrice())
+                    .timestamp(currentCandle.getTimestamp())
+                    .candleAccTradePrice(currentCandle.getCandleAccTradePrice())
+                    .candleAccTradeVolume(currentCandle.getCandleAccTradeVolume())
                     .build()
             );
         }
