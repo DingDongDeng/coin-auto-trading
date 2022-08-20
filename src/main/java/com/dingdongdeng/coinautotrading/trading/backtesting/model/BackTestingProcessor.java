@@ -32,7 +32,6 @@ public class BackTestingProcessor {
     private LocalDateTime now;
     private Strategy<?, ?> strategy;
     private BackTestingContextLoader backTestingContextLoader;
-    private long duration;
 
     public void start() {
         CompletableFuture.runAsync(this::process);
