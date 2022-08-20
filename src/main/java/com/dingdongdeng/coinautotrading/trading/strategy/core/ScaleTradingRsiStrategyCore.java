@@ -5,7 +5,6 @@ import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
-import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.index.Index;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyCore;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.SpotTradingInfo;
@@ -47,7 +46,6 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore<SpotTradingInfo
         CoinType coinType = tradingInfo.getCoinType();
         TradingTerm tradingTerm = tradingInfo.getTradingTerm();
         double rsi = index.getRsi();
-        ExchangeCandles candles = tradingInfo.getCandles();
 
         log.info("tradingInfo : {}", tradingInfo);
 
@@ -118,7 +116,7 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore<SpotTradingInfo
             }
 
             //손절 주문
-            if (isLossOrderTiming(currentPrice, rsi, tradingResultPack, candles)) {
+            if (isLossOrderTiming(currentPrice, rsi, tradingResultPack)) {
                 log.info(":: 부분 또는 전부 손절 주문 요청");
                 return List.of(
                     TradingTask.builder()
@@ -138,7 +136,7 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore<SpotTradingInfo
         /*
          * 조건을 만족하면 매수 주문
          */
-        if (isBuyOrderTiming(rsi, tradingInfo.getCurrentPrice(), tradingResultPack, candles)) {
+        if (isBuyOrderTiming(rsi, tradingInfo.getCurrentPrice(), tradingResultPack)) {
             if (!isEnoughBalance(tradingInfo.getCurrentPrice(), tradingResultPack, tradingInfo.getBalance())) {
                 log.warn(":: 계좌가 매수 가능한 상태가 아님");
                 return List.of(new TradingTask());
@@ -190,7 +188,7 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore<SpotTradingInfo
         return true;
     }
 
-    private boolean isBuyOrderTiming(double rsi, double currentPrice, TradingResultPack tradingResultPack, ExchangeCandles candles) {
+    private boolean isBuyOrderTiming(double rsi, double currentPrice, TradingResultPack tradingResultPack) {
 
         if (rsi < param.getBuyRsi()) {
             if (tradingResultPack.getBuyTradingResultList().isEmpty()) {
@@ -220,7 +218,7 @@ public class ScaleTradingRsiStrategyCore implements StrategyCore<SpotTradingInfo
         return false;
     }
 
-    private boolean isLossOrderTiming(double currentPrice, double rsi, TradingResultPack tradingResultPack, ExchangeCandles candles) {
+    private boolean isLossOrderTiming(double currentPrice, double rsi, TradingResultPack tradingResultPack) {
         // 손절하지 않음
         return false;
     }
