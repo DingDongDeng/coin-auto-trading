@@ -13,6 +13,8 @@ public interface TradingResult {
 
     Double getVolume();
 
+    Double getFee();
+
     TradingTag getTradingTag();
 
     TradingTerm getTradingTerm();

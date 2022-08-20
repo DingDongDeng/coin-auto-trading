@@ -45,19 +45,27 @@ public class TradingResultPack<T extends TradingResult> {
         return list;
     }
 
-    public double getAveragePrice() {
-        double buyValueSum = buyTradingResultList.stream()
-            .mapToDouble(tradingResult -> tradingResult.getPrice() * tradingResult.getVolume())
-            .sum();
-        double profitValueSum = profitTradingResultList.stream()
-            .mapToDouble(tradingResult -> tradingResult.getPrice() * tradingResult.getVolume())
-            .sum();
-        double lossValueSum = lossTradingResultList.stream()
-            .mapToDouble(tradingResult -> tradingResult.getPrice() * tradingResult.getVolume())
-            .sum();
-        return (buyValueSum - profitValueSum - lossValueSum) / getVolume();
+    // 이익금
+    public double getMarginPrice() {
+        return this.getProfitValue() + this.getLossValue() - this.getBuyValue() - this.getFee();
     }
 
+    // 이익율(n%)
+    public double getMarginRate() {
+        return ((this.getProfitValue() + this.getLossValue() - this.getFee()) / this.getBuyValue()) * 100d - 100d;
+    }
+
+    // 수수료
+    public double getFee() {
+        return this.getAll().stream().filter(TradingResult::isDone).mapToDouble(TradingResult::getFee).sum();
+    }
+
+    // 평단
+    public double getAveragePrice() {
+        return (this.getBuyValue() - this.getProfitValue() - this.getLossValue()) / this.getVolume();
+    }
+
+    // 보유 수량
     public double getVolume() {
         double buyVolume = getBuyVolume();
         double profitVolume = getProfitVolume();
@@ -75,6 +83,24 @@ public class TradingResultPack<T extends TradingResult> {
 
     public double getLossVolume() {
         return lossTradingResultList.stream().mapToDouble(TradingResult::getVolume).sum();
+    }
+
+    public double getBuyValue() {
+        return buyTradingResultList.stream()
+            .mapToDouble(tradingResult -> tradingResult.getPrice() * tradingResult.getVolume())
+            .sum();
+    }
+
+    public double getProfitValue() {
+        return profitTradingResultList.stream()
+            .mapToDouble(tradingResult -> tradingResult.getPrice() * tradingResult.getVolume())
+            .sum();
+    }
+
+    public double getLossValue() {
+        return lossTradingResultList.stream()
+            .mapToDouble(tradingResult -> tradingResult.getPrice() * tradingResult.getVolume())
+            .sum();
     }
 
     private List<T> findTargetTradingResultList(TradingTag tag) {
