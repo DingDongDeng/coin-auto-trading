@@ -1,6 +1,7 @@
 package com.dingdongdeng.coinautotrading.trading.strategy;
 
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyExecuteResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
@@ -23,13 +24,12 @@ public class Strategy<TI extends TradingInfo, TR extends TradingResult> {
     private final StrategyStore<TR> strategyStore;
     private final StrategyRecorder<TR> strategyRecorder;
 
-    public Strategy(StrategyCode code, StrategyCore<TI, TR> core, StrategyService<TI, TR> service, StrategyStore<TR> store, StrategyRecorder<TR> recorder) {
+    public Strategy(StrategyCode code, StrategyCore<TI, TR> core, StrategyService<TI, TR> service, StrategyStore<TR> store) {
         this.strategyCode = code;
         this.identifyCode = code.name() + "-" + UUID.randomUUID();
         this.strategyCore = core;
         this.strategyService = service;
         this.strategyStore = store;
-        this.strategyRecorder = recorder;
     }
 
     public void ready() {
@@ -37,7 +37,7 @@ public class Strategy<TI extends TradingInfo, TR extends TradingResult> {
         strategyService.ready(strategyCore.getParam());
     }
 
-    public void execute() {
+    public StrategyExecuteResult execute() {
         MDC.put("executeId", UUID.randomUUID().toString());
 
         // 주문 정보 갱신 및 생성
@@ -60,7 +60,6 @@ public class Strategy<TI extends TradingInfo, TR extends TradingResult> {
             if (isOrder(tradingTask)) {
                 TR orderTradingResult = strategyService.order(tradingTask);
                 strategyStore.save(orderTradingResult); // 주문 성공 건 정보 저장
-                strategyRecorder.apply(orderTradingResult);
                 strategyCore.handleOrderResult(orderTradingResult);
                 return;
             }
@@ -69,7 +68,6 @@ public class Strategy<TI extends TradingInfo, TR extends TradingResult> {
             if (isOrderCancel(tradingTask)) {
                 TR cancelTradingResult = strategyService.orderCancel(tradingTask);
                 strategyStore.delete(cancelTradingResult); // 주문 취소 건 정보 제거
-                strategyRecorder.revert(cancelTradingResult);
                 strategyCore.handleOrderCancelResult(cancelTradingResult);
                 return;
             }
@@ -77,6 +75,8 @@ public class Strategy<TI extends TradingInfo, TR extends TradingResult> {
             // 아무것도 하지 않음
             log.info("do nothing");
         });
+
+        return new StrategyExecuteResult(tradingInfo, strategyStore.get());
     }
 
     private boolean isReset(TradingTask tradingTask) {
