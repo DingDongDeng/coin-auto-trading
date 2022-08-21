@@ -74,8 +74,6 @@ export default Vue.component('trading-chart', {
       immediate: true,
       deep: true,
       handler(recordContextList, oldValue) {
-        //fixme 여따가 추가해볼까? this.width = this.$el.parentElement.offsetWidth; // 부모 컴포넌트 길이 만큼
-
         if (!recordContextList) {
           return;
         }
