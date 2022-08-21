@@ -65,6 +65,12 @@ export default Vue.component('trading-chart', {
   },
   mounted() {
     window.addEventListener('resize', this.onResize)
+
+    // vuetify가 width를 0으로 덮어써서 비동기로 호출하게함
+    setTimeout(() => {
+      this.width = this.$el.parentElement.offsetWidth;
+      this.height = 500;
+    }, 0);
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.onResize)
@@ -107,7 +113,7 @@ export default Vue.component('trading-chart', {
           for (let trade of recordContext.tradingResultList) {
             //fixme 편하게 하려고 일단 timestamp 이렇게 해놨음
             tradesOnchart.data.push(
-                [timestamp, trade.orderType == 'BUY' ? 0 : 1, trade.price]);
+                [timestamp, trade.orderType === 'BUY' ? 0 : 1, trade.price]);
           }
 
           // 보조지표 세팅
