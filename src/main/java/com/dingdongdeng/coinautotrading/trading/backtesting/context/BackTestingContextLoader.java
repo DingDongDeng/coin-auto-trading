@@ -80,8 +80,15 @@ public class BackTestingContextLoader {
             if (!isExistCurrentCandle(currentTime, candleList)) {
                 candleList.add(
                     Candle.builder()
-                        .candleDateTimeKst(currentTime)
-                        .tradePrice(currentPrice)
+                        .candleDateTimeUtc(currentCandle.getCandleDateTimeUtc())
+                        .candleDateTimeKst(currentCandle.getCandleDateTimeKst())
+                        .openingPrice(currentCandle.getOpeningPrice())
+                        .highPrice(currentCandle.getHighPrice())
+                        .lowPrice(currentCandle.getLowPrice())
+                        .tradePrice(currentCandle.getTradePrice())
+                        .timestamp(currentCandle.getTimestamp())
+                        .candleAccTradePrice(currentCandle.getCandleAccTradePrice())
+                        .candleAccTradeVolume(currentCandle.getCandleAccTradeVolume())
                         .build()
                 );
             }
