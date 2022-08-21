@@ -6,10 +6,9 @@ export default Vue.component('trading-chart', {
   props: {
     recordContextList: Array
   },
-  template:   //    :overlays="overlays"
+  template:
       `
 <trading-vue :data="charts" :width="this.width" :height="this.height"
-
     :color-back="colors.colorBack"
     :color-grid="colors.colorGrid"
     :color-text="colors.colorText">
@@ -32,9 +31,11 @@ export default Vue.component('trading-chart', {
     getTradesOnchart() {
       return {
         name: "Trades",
-        type: "PerfectTrades",
+        type: "Trades",
         data: [],
-        settings: {}
+        settings: {
+          markerSize: 4,
+        },
       }
     },
     getRsiOffchart() {
@@ -138,8 +139,7 @@ export default Vue.component('trading-chart', {
         colorBack: '#fff',
         colorGrid: '#eee',
         colorText: '#333',
-      },
-      //overlays: [tradesOverlay]
+      }
     }
   }
 });
