@@ -6,11 +6,10 @@ export default Vue.component('trading-chart', {
   props: {
     recordContextList: Array
   },
-  template:
+  template:   //    :overlays="overlays"
       `
-<!--:overlays="overlays" fixme 이거 안에 넣어야함 -->
-<trading-vue :data="chart" :width="this.width" :height="this.height"
-    
+<trading-vue :data="charts" :width="this.width" :height="this.height"
+
     :color-back="colors.colorBack"
     :color-grid="colors.colorGrid"
     :color-text="colors.colorText">
@@ -23,7 +22,45 @@ export default Vue.component('trading-chart', {
     onResize(event) {
       this.width = this.$el.parentElement.offsetWidth; // 부모 컴포넌트 길이 만큼
       this.height = window.innerHeight;
+    },
+    getChart() {
+      return {
+        type: "Candles",
+        data: []
+      };
+    },
+    getTradesOnchart() {
+      return {
+        name: "Trades",
+        type: "PerfectTrades",
+        data: [],
+        settings: {}
+      }
+    },
+    getRsiOffchart() {
+      return {
+        name: "RSI",
+        type: "RSI",
+        data: [],
+        settings: {
+          upper: 70,
+          lower: 30
+        }
+      }
+          ;
+    },
+    getMacdOffchart() {
+      return {
+        name: "MACD",
+        type: "RSI", //FIXME 찾아봐야함
+        data: [],
+        settings: {
+          upper: 25,
+          lower: -25
+        }
+      };
     }
+
   },
   mounted() {
     window.addEventListener('resize', this.onResize)
@@ -36,51 +73,26 @@ export default Vue.component('trading-chart', {
       immediate: true,
       deep: true,
       handler(recordContextList, oldValue) {
+        //fixme 여따가 추가해볼까? this.width = this.$el.parentElement.offsetWidth; // 부모 컴포넌트 길이 만큼
+
         if (!recordContextList) {
           return;
         }
-        const chart = {
-          type: "Candles",
-          data: []
-        };
-        const onchart = [
-          /*{
-            name: "Trades",
-            type: "PerfectTrades",
-            data: [
-              [1552550400000, 1, 3935.4046923289475],
-            ],
-            settings: {}
-          }*/
-        ];
-        const rsiOffchart = {
-              name: "RSI",
-              type: "RSI",
-              data: [],
-              settings: {
-                upper: 70,
-                lower: 30
-              }
-            }
-        ;
 
-        const macdOffchart = {
-              name: "MACD",
-              type: "RSI", //FIXME 찾아봐야함
-              data: [],
-              settings: {
-                upper: 25,
-                lower: -25
-              }
-            }
-        ;
-        const offchart = [rsiOffchart, macdOffchart]
+        // 차트 초기화
+        const chart = this.getChart();
+        const tradesOnchart = this.getTradesOnchart();
+        const onchart = [tradesOnchart];
+        const rsiOffchart = this.getRsiOffchart();
+        const macdOffchart = this.getMacdOffchart();
+        const offchart = [rsiOffchart, macdOffchart];
 
+        // 차트 데이터 세팅
         for (let recordContext of recordContextList) {
           const candle = recordContext.currentCandle;
           const timestamp = candle.timestamp;
 
-          // chart 세팅
+          // 캔들 세팅
           chart.data.push(
               [
                 timestamp,
@@ -92,20 +104,30 @@ export default Vue.component('trading-chart', {
               ]
           )
 
-          // offchart 세팅(보조지표)
+          // 주문 세팅
+          for (let trade of recordContext.tradingResultList) {
+            //fixme 편하게 하려고 일단 timestamp 이렇게 해놨음
+            tradesOnchart.data.push(
+                [timestamp, trade.orderType == 'BUY' ? 0 : 1, trade.price]);
+          }
+
+          // 보조지표 세팅
           rsiOffchart.data.push([timestamp, recordContext.index.rsi * 100])
           macdOffchart.data.push([timestamp, recordContext.index.macd])
         }
 
-        this.chart = {chart, onchart, offchart}
+        this.charts = {chart, onchart, offchart}
       }
     }
 
   },
   data() {
     return {
-      chart: {
-        chart: {},
+      charts: {
+        chart: {
+          type: "Candles",
+          data: []
+        },
         onchart: [],
         offchart: []
       }
@@ -117,7 +139,7 @@ export default Vue.component('trading-chart', {
         colorGrid: '#eee',
         colorText: '#333',
       },
-      //overlays: [Grin]  fixme 이것도 수정해야함 퍼펙트트레이드스 인가 뭔가
+      //overlays: [tradesOverlay]
     }
   }
 });
