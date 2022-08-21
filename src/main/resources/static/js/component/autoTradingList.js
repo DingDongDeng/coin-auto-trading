@@ -76,7 +76,7 @@ export default Vue.component('auto-trading-list', {
                       수수료 : {{backTesting.result.totalFee}}원
                     </div>
                     <div>
-                      <tradingChart recordContextList="backTesting.result.recordContextList"/>
+                      <tradingChart :recordContextList="backTesting.result.recordContextList"/>
                     </div>
                   </v-expansion-panel-content>
                 </v-expansion-panel>
