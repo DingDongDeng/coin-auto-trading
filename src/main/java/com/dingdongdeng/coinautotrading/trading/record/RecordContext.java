@@ -5,7 +5,9 @@ import com.dingdongdeng.coinautotrading.trading.index.Index;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyExecuteResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -22,7 +24,7 @@ public class RecordContext {
         return new RecordContext(
             tradingInfo.getCandles().getLatest(0),
             tradingInfo.getIndex(),
-            executeResult.getTradingResultList()
+            Objects.isNull(executeResult.getTradingResultList()) ? new ArrayList<>() : executeResult.getTradingResultList()
         );
     }
 }
