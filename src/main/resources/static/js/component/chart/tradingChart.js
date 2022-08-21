@@ -20,7 +20,7 @@ export default Vue.component('trading-chart', {
   methods: {
     onResize(event) {
       this.width = this.$el.parentElement.offsetWidth; // 부모 컴포넌트 길이 만큼
-      this.height = window.innerHeight;
+      this.height = 500;
     },
     getChart() {
       return {
