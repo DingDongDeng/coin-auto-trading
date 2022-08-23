@@ -4,7 +4,7 @@
 
 export default Vue.component('trading-chart', {
   props: {
-    recordContextList: Array
+    recordContextList: Array,
   },
   template:
       `
@@ -76,67 +76,15 @@ export default Vue.component('trading-chart', {
     window.removeEventListener('resize', this.onResize)
   },
   watch: {
-    recordContextList: {
-      immediate: true,
+    myNumber: {
       deep: true,
-      handler(recordContextList, oldValue) {
-        if (!recordContextList) {
-          return;
-        }
-
-        // 차트 초기화
-        const chart = this.getChart();
-        const tradesOnchart = this.getTradesOnchart();
-        const onchart = [tradesOnchart];
-        const rsiOffchart = this.getRsiOffchart();
-        const macdOffchart = this.getMacdOffchart();
-        const offchart = [rsiOffchart, macdOffchart];
-
-        // 차트 데이터 세팅
-        for (let recordContext of recordContextList) {
-          const candle = recordContext.currentCandle;
-          const timestamp = candle.timestamp;
-
-          // 캔들 세팅
-          chart.data.push(
-              [
-                timestamp,
-                candle.openingPrice,
-                candle.highPrice,
-                candle.lowPrice,
-                candle.tradePrice,
-                candle.candleAccTradeVolume
-              ]
-          )
-
-          // 주문 세팅
-          for (let trade of recordContext.tradingResultList) {
-            //fixme 편하게 하려고 일단 timestamp 이렇게 해놨음
-            tradesOnchart.data.push(
-                [timestamp, trade.orderType === 'BUY' ? 0 : 1, trade.price]);
-          }
-
-          // 보조지표 세팅
-          rsiOffchart.data.push([timestamp, recordContext.index.rsi * 100])
-          macdOffchart.data.push([timestamp, recordContext.index.macd])
-        }
-
-        this.charts = {chart, onchart, offchart}
+      handler(newValue, oldValue) {
+        console.log('되냐? ', newValue + "," + oldValue);
       }
     }
-
   },
   data() {
     return {
-      charts: {
-        chart: {
-          type: "Candles",
-          data: []
-        },
-        onchart: [],
-        offchart: []
-      }
-      ,
       width: window.innerWidth,
       height: window.innerHeight,
       colors: {
@@ -144,6 +92,60 @@ export default Vue.component('trading-chart', {
         colorGrid: '#eee',
         colorText: '#333',
       }
+    }
+  },
+  computed: {
+    charts() {
+      const recordContextList = this.recordContextList;
+      if (!recordContextList) {
+        return {
+          chart: {
+            type: "Candles",
+            data: []
+          },
+          onchart: [],
+          offchart: []
+        };
+      }
+
+      // 차트 초기화
+      const chart = this.getChart();
+      const tradesOnchart = this.getTradesOnchart();
+      const onchart = [tradesOnchart];
+      const rsiOffchart = this.getRsiOffchart();
+      const macdOffchart = this.getMacdOffchart();
+      const offchart = [rsiOffchart, macdOffchart];
+
+      // 차트 데이터 세팅
+      for (let recordContext of recordContextList) {
+        const candle = recordContext.currentCandle;
+        const timestamp = candle.timestamp;
+
+        // 캔들 세팅
+        chart.data.push(
+            [
+              timestamp,
+              candle.openingPrice,
+              candle.highPrice,
+              candle.lowPrice,
+              candle.tradePrice,
+              candle.candleAccTradeVolume
+            ]
+        )
+
+        // 주문 세팅
+        for (let trade of recordContext.tradingResultList) {
+          //fixme 편하게 하려고 일단 timestamp 이렇게 해놨음
+          tradesOnchart.data.push(
+              [timestamp, trade.orderType === 'BUY' ? 0 : 1, trade.price]);
+        }
+
+        // 보조지표 세팅
+        rsiOffchart.data.push([timestamp, recordContext.index.rsi * 100])
+        macdOffchart.data.push([timestamp, recordContext.index.macd])
+      }
+
+      return {chart, onchart, offchart};
     }
   }
 });
