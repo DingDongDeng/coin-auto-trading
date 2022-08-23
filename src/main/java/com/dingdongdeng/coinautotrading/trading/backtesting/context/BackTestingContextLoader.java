@@ -2,6 +2,7 @@ package com.dingdongdeng.coinautotrading.trading.backtesting.context;
 
 import com.dingdongdeng.coinautotrading.common.type.CandleUnit;
 import com.dingdongdeng.coinautotrading.common.type.CandleUnit.UnitType;
+import com.dingdongdeng.coinautotrading.trading.backtesting.model.VirtualCandle;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles.Candle;
 import java.time.LocalDateTime;
@@ -50,7 +51,7 @@ public class BackTestingContextLoader {
     }
 
     private ExchangeCandles getCandles(Candle currentCandle) {
-        List<Candle> candleList = getTradingTermCandleList(currentCandle);
+        List<Candle> candleList = this.getTradingTermCandleList(currentCandle);
 
         return ExchangeCandles.builder()
             .coinExchangeType(tradingTermCandleLoader.getCoinExchangeType())
@@ -62,7 +63,6 @@ public class BackTestingContextLoader {
 
     private List<Candle> getTradingTermCandleList(Candle currentCandle) {
         LocalDateTime currentTime = currentCandle.getCandleDateTimeKst();
-        double currentPrice = currentCandle.getTradePrice();
 
         List<Candle> candleList = Optional.ofNullable(currentContext)
             .map(BackTestingContext::getCandles)
@@ -78,26 +78,15 @@ public class BackTestingContextLoader {
             }
 
             if (!isExistCurrentCandle(currentTime, candleList)) {
-                candleList.add(
-                    Candle.builder()
-                        .candleDateTimeUtc(currentCandle.getCandleDateTimeUtc())
-                        .candleDateTimeKst(currentCandle.getCandleDateTimeKst())
-                        .openingPrice(currentCandle.getOpeningPrice())
-                        .highPrice(currentCandle.getHighPrice())
-                        .lowPrice(currentCandle.getLowPrice())
-                        .tradePrice(currentCandle.getTradePrice())
-                        .timestamp(currentCandle.getTimestamp())
-                        .candleAccTradePrice(currentCandle.getCandleAccTradePrice())
-                        .candleAccTradeVolume(currentCandle.getCandleAccTradeVolume())
-                        .build()
-                );
+                candleList.add(this.createVirtualCandle(currentCandle));
             }
 
             return candleList;
         }
 
-        if (hasVirtualCandle(candleList)) {
-            candleList.remove(candleList.size() - 1);
+        Candle lastCandle = candleList.get(candleList.size() - 1);
+        if (isVirtualCandle(lastCandle)) {
+            candleList.remove(lastCandle);
         }
 
         while (isNeedNextTradingTermCandle(candleList.get(candleList.size() - 1), currentTime)) {
@@ -107,19 +96,7 @@ public class BackTestingContextLoader {
 
         if (!isExistCurrentCandle(currentTime, candleList)) {
             // 현재 시간에 해당하는 캔들이 없어서, 백테스팅에서 시간축으로 사용하는 캔들로 임의 생성
-            candleList.add(
-                Candle.builder()
-                    .candleDateTimeUtc(currentCandle.getCandleDateTimeUtc())
-                    .candleDateTimeKst(currentCandle.getCandleDateTimeKst())
-                    .openingPrice(currentCandle.getOpeningPrice())
-                    .highPrice(currentCandle.getHighPrice())
-                    .lowPrice(currentCandle.getLowPrice())
-                    .tradePrice(currentCandle.getTradePrice())
-                    .timestamp(currentCandle.getTimestamp())
-                    .candleAccTradePrice(currentCandle.getCandleAccTradePrice())
-                    .candleAccTradeVolume(currentCandle.getCandleAccTradeVolume())
-                    .build()
-            );
+            candleList.add(this.createVirtualCandle(currentCandle));
         }
 
         return candleList;
@@ -148,7 +125,24 @@ public class BackTestingContextLoader {
         return candleList.get(candleList.size() - 1).getCandleDateTimeKst().equals(currentTime);
     }
 
-    private boolean hasVirtualCandle(List<Candle> candleList) {
-        return Objects.isNull(candleList.get(candleList.size() - 1).getTimestamp());
+    private boolean isVirtualCandle(Candle candle) {
+        if (Objects.isNull(candle)) {
+            return false;
+        }
+        return candle instanceof VirtualCandle;
+    }
+
+    private VirtualCandle createVirtualCandle(Candle currentCandle) {
+        return VirtualCandle.virtualCandleBuilder()
+            .candleDateTimeUtc(currentCandle.getCandleDateTimeUtc())
+            .candleDateTimeKst(currentCandle.getCandleDateTimeKst())
+            .openingPrice(currentCandle.getOpeningPrice())
+            .highPrice(currentCandle.getHighPrice())
+            .lowPrice(currentCandle.getLowPrice())
+            .tradePrice(currentCandle.getTradePrice())
+            .timestamp(currentCandle.getTimestamp())
+            .candleAccTradePrice(currentCandle.getCandleAccTradePrice())
+            .candleAccTradeVolume(currentCandle.getCandleAccTradeVolume())
+            .build();
     }
 }
