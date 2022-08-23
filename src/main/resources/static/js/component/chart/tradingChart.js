@@ -75,14 +75,6 @@ export default Vue.component('trading-chart', {
   beforeDestroy() {
     window.removeEventListener('resize', this.onResize)
   },
-  watch: {
-    myNumber: {
-      deep: true,
-      handler(newValue, oldValue) {
-        console.log('되냐? ', newValue + "," + oldValue);
-      }
-    }
-  },
   data() {
     return {
       width: window.innerWidth,
