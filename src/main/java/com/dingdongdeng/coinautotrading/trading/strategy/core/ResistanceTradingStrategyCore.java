@@ -226,6 +226,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         return true;
     }
 
+    // fixme 익절 타이밍을 더 좋게 만들어야함
     private boolean isProfitOrderTiming(double currentPrice, TradingResultPack<SpotTradingResult> tradingResultPack, Index index) {
         boolean isResistancePrice = index.getResistancePriceList().stream()
             .anyMatch(resistancePrice -> currentPrice > resistancePrice * (1 - param.getResistancePriceBuffer()) && currentPrice < resistancePrice);
@@ -249,16 +250,27 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
     }
 
     private boolean isLossOrderTiming(double currentPrice, TradingResultPack<SpotTradingResult> tradingResultPack, Index index) {
-        if (true) { // 손절안함
+
+        // 손절안함
+        if (true) {
             return false;
         }
+
         boolean isResistancePrice = index.getResistancePriceList().stream()
             .anyMatch(resistancePrice -> currentPrice < resistancePrice * (1 - param.getResistancePriceBuffer() / 2)
                 && currentPrice > resistancePrice * (1 - param.getResistancePriceBuffer()));
-        if (currentPrice < tradingResultPack.getAveragePrice() && isResistancePrice) {
-            return true;
+
+        //손실중이 아니라면
+        if (currentPrice > tradingResultPack.getAveragePrice()) {
+            return false;
         }
-        return false;
+
+        // 지지를 받고 있다면 (더 안내려가고 오를 가능성이 있다면)
+        if (!isResistancePrice) {
+            return false;
+        }
+
+        return true;
     }
 
     private double getVolumeForBuy(double currentPrice, TradingResultPack<SpotTradingResult> tradingResultPack) {
