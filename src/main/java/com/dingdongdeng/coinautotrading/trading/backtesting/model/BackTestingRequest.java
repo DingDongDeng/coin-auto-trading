@@ -1,5 +1,6 @@
 package com.dingdongdeng.coinautotrading.trading.backtesting.model;
 
+import com.dingdongdeng.coinautotrading.common.type.CandleUnit;
 import java.time.LocalDateTime;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -24,7 +25,8 @@ public class BackTestingRequest {
         @NotNull
         @DateTimeFormat(pattern = "yyyy-MM-ddTHH:mm:ss")
         private LocalDateTime end;
-
+        @NotNull
+        private CandleUnit baseCandleUnit;
     }
 
 }

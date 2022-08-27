@@ -17,11 +17,21 @@ export default Vue.component('back-testing-register-modal', {
         <div>
           종료일 : <input type="datetime-local" v-model="register.backTesting.end">
         </div>
+        <div>
+          <v-select
+              label="테스트에 사용할 캔들 단위를 선택해주세요."
+              solo
+              :items="type.candleUnitList"
+              item-text="name"
+              item-value="value"
+              v-model="register.backTesting.baseCandleUnit"
+          ></v-select>        
+        </div>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn
-            @click="registerBackTesting(register.backTesting.autoTradingProcessorId, register.backTesting.start, register.backTesting.end, refresh)"
+            @click="registerBackTesting(register.backTesting.autoTradingProcessorId, register.backTesting.start, register.backTesting.end, register.backTesting.baseCandleUnit, refresh)"
         > 실행
         </v-btn>
         <v-btn
@@ -37,21 +47,25 @@ export default Vue.component('back-testing-register-modal', {
     const {
       register,
       toggleBackTestingRegisterModal,
+      type,
       refresh
     } = Pinia.storeToRefs(dashboard)
 
     return {
       register,
       toggleBackTestingRegisterModal,
+      type,
       refresh
     }
   },
   methods: {
-    async registerBackTesting(processorId, start, end, callback) {
+    async registerBackTesting(autoTradingProcessorId, start, end,
+        baseCandleUnit, callback) {
       const body = {
-        autoTradingProcessorId: processorId,
-        start: start,
-        end: end
+        autoTradingProcessorId,
+        start,
+        end,
+        baseCandleUnit
       };
 
       const response = await this.api.post("/backtesting", body);

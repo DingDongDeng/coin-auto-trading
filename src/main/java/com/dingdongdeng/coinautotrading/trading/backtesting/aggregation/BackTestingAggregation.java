@@ -32,7 +32,7 @@ public class BackTestingAggregation {
             .findFirst()
             .orElseThrow(() -> new RuntimeException("백테스팅 하기 위한 자동매매를 찾지 못했습니다."));
 
-        BackTestingProcessor backTestingProcessor = backTestingService.doTest(autoTradingProcessor, request.getStart(), request.getEnd());
+        BackTestingProcessor backTestingProcessor = backTestingService.doTest(autoTradingProcessor, request.getStart(), request.getEnd(), request.getBaseCandleUnit());
 
         return BackTestingResponse.builder()
             .backTestingId(backTestingProcessor.getId())

@@ -1,5 +1,6 @@
 package com.dingdongdeng.coinautotrading.trading.backtesting.service;
 
+import com.dingdongdeng.coinautotrading.common.type.CandleUnit;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.MarketType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
@@ -33,13 +34,13 @@ public class BackTestingService {
     private final IndexCalculator indexCalculator;
     private final Map<String, BackTestingProcessor> backTestingProcessorMap; //fixme 한번 래핑해서 다루기, 자동매매 삭제됐을때 얘도 삭제좀;
 
-    public BackTestingProcessor doTest(AutoTradingProcessor autoTradingProcessor, LocalDateTime start, LocalDateTime end) {
+    public BackTestingProcessor doTest(AutoTradingProcessor autoTradingProcessor, LocalDateTime start, LocalDateTime end, CandleUnit baseCandleUnit) {
 
         Strategy<?, ?> strategy = autoTradingProcessor.getStrategy();
         String keyPairdId = strategy.getStrategyService().getKeyPairId();
         TradingTerm tradingTerm = autoTradingProcessor.getTradingTerm();
 
-        BackTestingContextLoader contextLoader = backTestingContextLoaderFactory.create(autoTradingProcessor, start, end);
+        BackTestingContextLoader contextLoader = backTestingContextLoaderFactory.create(autoTradingProcessor, start, end, baseCandleUnit);
 
         ExchangeService backTestingExchangeService = makeBackTestingExchangeService(contextLoader, autoTradingProcessor);
 

@@ -1,6 +1,7 @@
 package com.dingdongdeng.coinautotrading.endpoint.controller;
 
 import com.dingdongdeng.coinautotrading.common.model.CommonResponse;
+import com.dingdongdeng.coinautotrading.common.type.CandleUnit;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
@@ -37,6 +38,7 @@ public class DashboardController {
                     .coinExchangeTypeList(TypeInfoTemplate.listOf(CoinExchangeType.toMap()))
                     .tradingTermList(TypeInfoTemplate.listOf(TradingTerm.toMap()))
                     .strategyCodeList(TypeInfoTemplate.listOf(StrategyCode.toMap()))
+                    .candleUnitList(TypeInfoTemplate.listOf(CandleUnit.toMap()))
                     .build()
             )
             .message("get type info success")
@@ -55,6 +57,7 @@ public class DashboardController {
         private List<TypeInfoTemplate> coinExchangeTypeList;
         private List<TypeInfoTemplate> tradingTermList;
         private List<TypeInfoTemplate> strategyCodeList;
+        private List<TypeInfoTemplate> candleUnitList;
 
         @ToString
         @Getter

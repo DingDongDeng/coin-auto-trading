@@ -58,6 +58,7 @@ export const useDashboardStore = Pinia.defineStore('dashboard', {
         autoTradingProcessorId: "",
         start: "",
         end: "",
+        baseCandleUnit: ""
       }
     },
     type: {}
