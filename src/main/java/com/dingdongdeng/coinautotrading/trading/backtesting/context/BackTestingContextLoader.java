@@ -141,13 +141,6 @@ public class BackTestingContextLoader {
         return candleList.get(candleList.size() - 1).getCandleDateTimeKst().equals(currentTime);
     }
 
-    private boolean isVirtualCandle(Candle candle) {
-        if (Objects.isNull(candle)) {
-            return false;
-        }
-        return candle instanceof VirtualCandle;
-    }
-
     private List<Candle> addVirtualCandle(List<Candle> candleList, Candle currentCandle, CandleUnit candleUnit) {
 
         VirtualCandle virtualCandle = VirtualCandle.virtualCandleBuilder()
@@ -184,7 +177,7 @@ public class BackTestingContextLoader {
                     candleList.remove(lastCandle);
                 }
 
-                // 캔들의 시간이 자정이라면, 가상 캔들이라도 필수 캔들로써 사용되어야함(날짜가 바뀌는 시점의 마지막 가상 캔들이라 삭제되면 안됨)
+                // 캔들의 시간이 자정(UTC)이라면, 가상 캔들이라도 필수 캔들로써 사용되어야함(날짜가 바뀌는 시점의 마지막 가상 캔들이라 삭제되면 안됨)
                 boolean isMidnight = virtualCandle.getCandleDateTimeKst().toLocalTime().equals(LocalTime.of(9, 0, 0)); // UTC + 09:00
                 if (isMidnight) {
                     virtualCandle.setRequired(true);
