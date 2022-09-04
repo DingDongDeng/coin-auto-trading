@@ -55,7 +55,7 @@ public class AutoTradingService {
                 .tradingTerm(request.getTradingTerm())
                 .strategy(strategy)
                 .recorder(new Recorder())
-                .duration(4000)
+                .duration(coreParam.getProcessDuration())
                 .slackSender(slackSender)
                 .build()
         );
