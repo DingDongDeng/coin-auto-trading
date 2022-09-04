@@ -38,6 +38,22 @@ export default Vue.component('trading-chart', {
         },
       }
     },
+    getResistanceOnchartList() {
+      const resistanceOnchartList = [];
+      for (let i = 0; i < 20; i++) {
+        resistanceOnchartList.push(
+            {
+              name: "Resistance" + (i + 1),
+              type: "EMA",
+              data: [],
+              settings: {
+                "color": "#42b28a"
+              },
+            }
+        )
+      }
+      return resistanceOnchartList;
+    },
     getRsiOffchart() {
       return {
         name: "RSI",
@@ -101,14 +117,24 @@ export default Vue.component('trading-chart', {
       }
 
       // 차트 초기화
+
+      // chart
       const chart = this.getChart();
+
+      // onchart
       const tradesOnchart = this.getTradesOnchart();
+      const resistanceOnchartList = this.getResistanceOnchartList();
       const onchart = [tradesOnchart];
+      for (let resistanceOnchart of resistanceOnchartList) {
+        onchart.push(resistanceOnchart);
+      }
+
+      // offchart
       const rsiOffchart = this.getRsiOffchart();
       const macdOffchart = this.getMacdOffchart();
       const offchart = [rsiOffchart, macdOffchart];
 
-      // 차트 데이터 세팅
+      // 차트들 데이터 세팅
       for (let recordContext of recordContextList) {
         const candle = recordContext.currentCandle;
         const timestamp = candle.timestamp;
@@ -127,14 +153,20 @@ export default Vue.component('trading-chart', {
 
         // 주문 세팅
         for (let trade of recordContext.tradingResultList) {
-          //fixme 편하게 하려고 일단 timestamp 이렇게 해놨음
           tradesOnchart.data.push(
               [timestamp, trade.orderType === 'BUY' ? 0 : 1, trade.price]);
         }
 
         // 보조지표 세팅
-        rsiOffchart.data.push([timestamp, recordContext.index.rsi * 100])
-        macdOffchart.data.push([timestamp, recordContext.index.macd])
+        rsiOffchart.data.push([timestamp, recordContext.index.rsi * 100]);
+        macdOffchart.data.push([timestamp, recordContext.index.macd]);
+        for (let i = 0; i < resistanceOnchartList.length; i++) {
+          if (i < recordContext.index.resistancePriceList.length) {
+            resistanceOnchartList[i].data.push(
+                [timestamp, recordContext.index.resistancePriceList[i]]
+            );
+          }
+        }
       }
 
       return {chart, onchart, offchart};
