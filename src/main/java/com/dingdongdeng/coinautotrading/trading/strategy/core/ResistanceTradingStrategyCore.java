@@ -226,7 +226,6 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         return true;
     }
 
-    // fixme 익절 타이밍을 더 좋게 만들어야함
     private boolean isProfitOrderTiming(double currentPrice, TradingResultPack<SpotTradingResult> tradingResultPack, Index index) {
         boolean isResistancePrice = index.getResistancePriceList().stream()
             .anyMatch(resistancePrice -> currentPrice > resistancePrice * (1 - param.getResistancePriceBuffer()) && currentPrice < resistancePrice);
@@ -242,9 +241,9 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
 
         // 아직 상승 추세라면
-        if (index.getMacd() > 0) {
-            return false;
-        }
+        //if (index.getMacd() > 0) {
+        //    return false;
+        //}
 
         return true;
     }
