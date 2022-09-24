@@ -154,7 +154,7 @@ export default Vue.component('trading-chart', {
         // 주문 세팅
         for (let trade of recordContext.tradingResultList) {
           tradesOnchart.data.push(
-              [timestamp, trade.orderType === 'BUY' ? 0 : 1, trade.price]);
+              [timestamp, trade.orderType === 'BUY' ? 1 : 0, trade.price]);
         }
 
         // 보조지표 세팅
