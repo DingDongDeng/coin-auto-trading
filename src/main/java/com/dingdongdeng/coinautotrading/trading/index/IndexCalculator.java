@@ -56,7 +56,7 @@ public class IndexCalculator {
 
     private double getCurrentUptrendHighest(double[] outMACDHist) {
         double highestMacd = 0;
-        for (int i = outMACDHist.length - 1; i >= 0; i++) {
+        for (int i = outMACDHist.length - 1; i >= 0; i--) {
             if (outMACDHist[i] < 0) {
                 break;
             }
