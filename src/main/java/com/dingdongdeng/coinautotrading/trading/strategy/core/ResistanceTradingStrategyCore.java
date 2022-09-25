@@ -181,17 +181,22 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             .anyMatch(resistancePrice -> currentPrice < resistancePrice * (1 + param.getResistancePriceBuffer()) && currentPrice > resistancePrice);
 
         // 하락 추세라면
-        if (index.getMacd() < 0 || index.getRsi() < 0.35) {
+        if (index.getMacd().getCurrent() < 0 || index.getRsi() < 0.35) {
+            return false;
+        }
+
+        // 지지받고 있지 않다면
+        if (!isResistancePrice) {
+            return false;
+        }
+
+        // 상승 추세가 약해지고 있다면
+        if (index.getMacd().getCurrentUptrendHighest() * 0.7 > index.getMacd().getCurrent()) {
             return false;
         }
 
         // 주문한적이 있다면
         if (isExsistBuyOrder) {
-
-            // 지지받고 있지 않다면
-            if (!isResistancePrice) {
-                return false;
-            }
 
             // 이익중이라면
             if ((tradingResultPack.getAveragePrice() - currentPrice) < 0) {
@@ -232,8 +237,8 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         //    return false;
         //}
 
-        // 아직 상승 추세라면
-        if (index.getMacd() > 0) {
+        // 상승 추세가 아직 유지되고 있다면
+        if (index.getMacd().getCurrentUptrendHighest() * 0.7 < index.getMacd().getCurrent()) {
             return false;
         }
 
@@ -256,8 +261,8 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
-        // 오를 여지가 있다면
-        if (index.getMacd() > 0) {
+        // 상승 추세가 아직 유지되고 있다면
+        if (index.getMacd().getCurrentUptrendHighest() * 0.7 < index.getMacd().getCurrent()) {
             return false;
         }
 
