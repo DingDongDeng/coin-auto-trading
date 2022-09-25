@@ -2,6 +2,7 @@ package com.dingdongdeng.coinautotrading.trading.index;
 
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles.Candle;
+import com.dingdongdeng.coinautotrading.trading.index.Index.Macd;
 import com.tictactec.ta.lib.Core;
 import com.tictactec.ta.lib.MInteger;
 import java.util.Collections;
@@ -30,7 +31,7 @@ public class IndexCalculator {
             .build();
     }
 
-    public double getMACD(ExchangeCandles candles) {
+    public Macd getMACD(ExchangeCandles candles) {
         int FAST_PERIOD = 12;
         int SLOW_PERIOD = 26;
         int SIGNAL_PERIOD = 9;
@@ -46,7 +47,24 @@ public class IndexCalculator {
         MInteger outNBElement = new MInteger();
 
         core.macd(0, candleList.size() - 1, inReal, FAST_PERIOD, SLOW_PERIOD, SIGNAL_PERIOD, outBegIdx, outNBElement, outMACD, outMACDSignal, outMACDHist);
-        return outMACDHist[length - SLOW_PERIOD - SIGNAL_PERIOD + 1];
+
+        return Macd.builder()
+            .current(outMACDHist[length - SLOW_PERIOD - SIGNAL_PERIOD + 1])
+            .currentUptrendHighest(this.getCurrentUptrendHighest(outMACDHist))
+            .build();
+    }
+
+    private double getCurrentUptrendHighest(double[] outMACDHist) {
+        double highestMacd = 0;
+        for (int i = outMACDHist.length - 1; i >= 0; i++) {
+            if (outMACDHist[i] < 0) {
+                break;
+            }
+            if (outMACDHist[i] >= highestMacd) {
+                highestMacd = outMACDHist[i];
+            }
+        }
+        return highestMacd;
     }
 
     public List<Double> getResistancePrice(ExchangeCandles candles) {
