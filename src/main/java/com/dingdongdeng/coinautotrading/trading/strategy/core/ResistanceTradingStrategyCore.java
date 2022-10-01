@@ -253,8 +253,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
 
         // 상승 추세가 아직 유지되고 있고, 지지선을 안넘었다면
-        if (index.getMacd().getCurrentUptrendHighest() * 0.7 < index.getMacd().getCurrent()
-            && currentPrice >= lastBuyTradingResult.getPrice() * (1 - param.getResistancePriceBuffer() * 2)) {
+        if (index.getMacd().getCurrentUptrendHighest() * 0.7 < index.getMacd().getCurrent()) {
             return false;
         }
 
