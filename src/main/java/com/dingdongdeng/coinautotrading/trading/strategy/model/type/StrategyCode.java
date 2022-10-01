@@ -16,7 +16,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum StrategyCode {
-    RESISTANCE_TRADING("지지/저항선 기반 매매(손절없음)", MarketType.SPOT, ResistanceTradingStrategyCore.class, ResistanceTradingStrategyCoreParam.class),
+    RESISTANCE_TRADING("지지/저항선 기반 매매", MarketType.SPOT, ResistanceTradingStrategyCore.class, ResistanceTradingStrategyCoreParam.class),
     TEST_FUTURE("테스트 선물 전략", MarketType.FUTURE, PrototypeFutureStrategyCore.class, PrototypeFutureStrategyCoreParam.class),
     ;
 
