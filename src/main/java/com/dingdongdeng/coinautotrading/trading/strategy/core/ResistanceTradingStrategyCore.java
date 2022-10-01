@@ -181,7 +181,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             .anyMatch(resistancePrice -> currentPrice < resistancePrice * (1 + param.getResistancePriceBuffer()) && currentPrice > resistancePrice);
 
         // 하락 추세라면
-        if (index.getMacd().getCurrent() < 0 || index.getRsi() < 0.35) {
+        if (index.getMacd().getCurrent() < 1000 || index.getRsi() < 0.30) {
             return false;
         }
 
@@ -219,8 +219,6 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
     }
 
     private boolean isProfitOrderTiming(double currentPrice, TradingResultPack<SpotTradingResult> tradingResultPack, Index index) {
-        boolean isResistancePrice = index.getResistancePriceList().stream()
-            .anyMatch(resistancePrice -> currentPrice > resistancePrice * (1 - param.getResistancePriceBuffer()) && currentPrice < resistancePrice);
 
         // 매수 주문한적이 없다면
         if (tradingResultPack.getBuyTradingResultList().isEmpty()) {
@@ -232,11 +230,6 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
-        // 저항을 받는중이 아니면(더 오를 가능성이 있다면)
-        //if (!isResistancePrice) {
-        //    return false;
-        //}
-
         // 상승 추세가 아직 유지되고 있다면
         if (index.getMacd().getCurrentUptrendHighest() * 0.7 < index.getMacd().getCurrent()) {
             return false;
@@ -246,10 +239,8 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
     }
 
     private boolean isLossOrderTiming(double currentPrice, TradingResultPack<SpotTradingResult> tradingResultPack, Index index) {
-
-        boolean isResistancePrice = index.getResistancePriceList().stream()
-            .anyMatch(resistancePrice -> currentPrice < resistancePrice * (1 - param.getResistancePriceBuffer() / 2)
-                && currentPrice > resistancePrice * (1 - param.getResistancePriceBuffer()));
+        List<SpotTradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
+        SpotTradingResult lastBuyTradingResult = buyTradingResultList.get(buyTradingResultList.size() - 1);
 
         // 매수 주문한적이 없다면
         if (tradingResultPack.getBuyTradingResultList().isEmpty()) {
@@ -261,13 +252,9 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
-        // 상승 추세가 아직 유지되고 있다면
-        if (index.getMacd().getCurrentUptrendHighest() * 0.7 < index.getMacd().getCurrent()) {
-            return false;
-        }
-
-        // 지지선을 안넘었다면
-        if (!isResistancePrice) {
+        // 상승 추세가 아직 유지되고 있고, 지지선을 안넘었다면
+        if (index.getMacd().getCurrentUptrendHighest() * 0.7 < index.getMacd().getCurrent()
+            && currentPrice >= lastBuyTradingResult.getPrice() * (1 - param.getResistancePriceBuffer() * 2)) {
             return false;
         }
 
