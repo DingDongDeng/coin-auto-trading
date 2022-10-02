@@ -171,7 +171,7 @@ class KeyControllerTest {
             .when(keyService).getUserKeyList(Mockito.any());
 
         MvcResult result = this.mockMvc.perform(
-            RestDocumentationRequestBuilders.get("/user/{userId}/key/pair", userId)
+            RestDocumentationRequestBuilders.get("/user/key/pair", userId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("userId", userId)
         )

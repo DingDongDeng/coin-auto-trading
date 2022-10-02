@@ -1,14 +1,14 @@
 plugins {
-    id 'org.springframework.boot' version '2.6.2'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'org.springframework.boot' version '2.7.2'
+    id 'io.spring.dependency-management' version '1.0.12.RELEASE'
     id "org.asciidoctor.jvm.convert" version "3.3.2"
-    id 'com.google.cloud.tools.jib' version '3.2.0'
+    id 'com.google.cloud.tools.jib' version '3.2.1'
     id 'java'
 }
 
 group = 'com.dingdongdeng'
 version = '1.2.2-RELEASE'
-sourceCompatibility = '11'
+sourceCompatibility = '17'
 
 configurations {
     asciidoctorExt
@@ -87,6 +87,11 @@ asciidoctor {
 }
 
 jib { // https://github.com/GoogleContainerTools/jib/tree/master/jib-gradle-plugin
+    from {
+        //https://github.com/GoogleContainerTools/jib/tree/master/jib-gradle-plugin#from-closure
+        //https://github.com/GoogleContainerTools/jib/tree/master/jib-gradle-plugin#setting-the-base-image
+        image = 'eclipse-temurin:17-jre'
+    }
     container {
         creationTime = "USE_CURRENT_TIMESTAMP"
     }

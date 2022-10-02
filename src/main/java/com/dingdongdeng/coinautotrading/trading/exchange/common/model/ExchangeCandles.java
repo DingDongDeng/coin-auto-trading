@@ -5,6 +5,7 @@ import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -22,6 +23,7 @@ public class ExchangeCandles {
 
     @ToString
     @Getter
+    @AllArgsConstructor
     @Builder
     public static class Candle {
 

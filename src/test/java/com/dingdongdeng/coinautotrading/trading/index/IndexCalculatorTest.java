@@ -13,6 +13,7 @@ import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.UpbitClient
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitEnum.MarketType;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitRequest.CandleRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitResponse.CandleResponse;
+import com.dingdongdeng.coinautotrading.trading.index.Index.Macd;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -110,11 +111,11 @@ class IndexCalculatorTest {
         ExchangeCandles candles = getExchangeCandles(now, tradingTerm, coinType, keyPairId);
 
         // when
-        double macd = calculator.getMACD(candles);
+        Macd macd = calculator.getMACD(candles);
 
         // then
         log.info("result : {}", macd);
-        assertEquals(macd, 3399.4713725503443);
+        assertEquals(macd.getCurrent(), 3399.4713725503443);
     }
 
     private ExchangeCandles getExchangeCandles(LocalDateTime now, TradingTerm tradingTerm, CoinType coinType, String keyPairId) {

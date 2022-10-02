@@ -1,6 +1,7 @@
 package com.dingdongdeng.coinautotrading.trading.backtesting.context;
 
 import com.dingdongdeng.coinautotrading.common.type.CandleUnit;
+import com.dingdongdeng.coinautotrading.common.type.CandleUnit.UnitType;
 import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.CoinType;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.ExchangeCandleService;
@@ -51,8 +52,7 @@ public class BackTestingCandleLoader {
 
             //다음에 새로 읽어야할 캔들리스트가 있는지 확인
             Candle lastCandle = candleList.get(cursor - 1);
-            if (lastCandle.getCandleDateTimeKst().isBefore(end)) { //fixme 초 떄문에 한번 더 조회됨 해결좀
-
+            if (!isNeedNextCandle(this.candleUnit, lastCandle.getCandleDateTimeKst(), this.end)) {
                 // 캔들 리스트를 새로 세팅하고, 커서를 초기화
                 candleList = getCandles(candleUnit, lastCandle.getCandleDateTimeKst(), end).getCandleList();
                 cursor = -1;
@@ -73,6 +73,18 @@ public class BackTestingCandleLoader {
 
         // start, end 사이의 캔들을 모두 읽음
         return null;
+    }
+
+    private boolean isNeedNextCandle(CandleUnit candleUnit, LocalDateTime lastCandleTime, LocalDateTime end) {
+        UnitType unitType = candleUnit.getUnitType();
+        int size = candleUnit.getSize();
+
+        LocalDateTime adjustEndTime = switch (unitType) {
+            case MIN -> lastCandleTime.plusMinutes(size);
+            case DAY -> lastCandleTime.plusMinutes(24 * 60);
+            default -> throw new RuntimeException("failed set adjustEndTime");
+        };
+        return adjustEndTime.isAfter(end);
     }
 
     private ExchangeCandles getCandles(CandleUnit candleUnit, LocalDateTime start, LocalDateTime end) {

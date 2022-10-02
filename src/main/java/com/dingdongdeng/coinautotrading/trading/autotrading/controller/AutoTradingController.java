@@ -22,7 +22,7 @@ public class AutoTradingController {
 
     private final AutoTradingAggregation autoTradingAggregation;
 
-    @GetMapping("/user/{userId}/autotrading")
+    @GetMapping("/user/autotrading")
     public CommonResponse<List<AutoTradingResponse>> getList(@SessionAttribute String userId) {
         return CommonResponse.<List<AutoTradingResponse>>builder()
             .body(autoTradingAggregation.getUserProcessorList(userId))

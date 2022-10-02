@@ -7,7 +7,7 @@ import com.dingdongdeng.coinautotrading.trading.backtesting.model.BackTestingReq
 import com.dingdongdeng.coinautotrading.trading.backtesting.model.BackTestingResponse;
 import com.dingdongdeng.coinautotrading.trading.backtesting.model.BackTestingResponse.Result;
 import com.dingdongdeng.coinautotrading.trading.backtesting.service.BackTestingService;
-import com.dingdongdeng.coinautotrading.trading.strategy.StrategyRecorder;
+import com.dingdongdeng.coinautotrading.trading.record.Recorder;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -32,10 +32,11 @@ public class BackTestingAggregation {
             .findFirst()
             .orElseThrow(() -> new RuntimeException("백테스팅 하기 위한 자동매매를 찾지 못했습니다."));
 
-        BackTestingProcessor backTestingProcessor = backTestingService.doTest(autoTradingProcessor, request.getStart(), request.getEnd());
+        BackTestingProcessor backTestingProcessor = backTestingService.doTest(autoTradingProcessor, request.getStart(), request.getEnd(), request.getBaseCandleUnit());
 
         return BackTestingResponse.builder()
             .backTestingId(backTestingProcessor.getId())
+            .recorderId(backTestingProcessor.getRecorder().getId())
             .userId(backTestingProcessor.getUserId())
             .autoTradingProcessorId(backTestingProcessor.getAutoTradingProcessorId())
             .start(backTestingProcessor.getStart())
@@ -47,7 +48,7 @@ public class BackTestingAggregation {
     public List<BackTestingResponse> getResult(String userId) {
         return backTestingService.getBackTestingProcessorList(userId).stream()
             .map(b -> {
-                StrategyRecorder<?> recorder = b.getStrategy().getStrategyRecorder();
+                Recorder recorder = b.getRecorder();
                 LocalDateTime start = b.getStart();
                 LocalDateTime end = b.getEnd();
                 double totalTime = ChronoUnit.MINUTES.between(start, end);
@@ -57,15 +58,17 @@ public class BackTestingAggregation {
                     .backTestingId(b.getId())
                     .userId(b.getUserId())
                     .autoTradingProcessorId(b.getAutoTradingProcessorId())
+                    .recorderId(recorder.getId())
                     .start(start)
                     .end(end)
                     .result(
                         Result.builder()
                             .status(b.getStatus())
                             .executionRate(Math.round((executionTime / totalTime) * 10000) / 100.0)
-                            .marginPrice(Math.round(recorder.getMarginPrice()))
-                            .marginRate(Math.round(recorder.getMarginRate() * 100) / 100.0)
-                            .totalFee(Math.round(recorder.getTotalFee()))
+                            .marginPrice(recorder.getMarginPrice())
+                            .marginRate(recorder.getMarginRate() * 100 / 100.0)
+                            .totalFee(recorder.getTotalFee())
+                            .recordContextList(recorder.getRecordContextList())
                             .eventMessage(recorder.getEventMessage())
                             .build()
                     )

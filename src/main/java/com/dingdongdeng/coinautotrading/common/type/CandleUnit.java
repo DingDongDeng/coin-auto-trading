@@ -1,5 +1,6 @@
 package com.dingdongdeng.coinautotrading.common.type;
 
+import java.util.EnumMap;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -28,5 +29,13 @@ public enum CandleUnit {
         DAY,
         WEEK,
         ;
+    }
+
+    public static EnumMap<CandleUnit, String> toMap() {
+        EnumMap<CandleUnit, String> map = new EnumMap<>(CandleUnit.class);
+        for (CandleUnit value : CandleUnit.values()) {
+            map.put(value, value.getDesc());
+        }
+        return map;
     }
 }
