@@ -180,15 +180,13 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         boolean isResistancePrice = index.getResistancePriceList().stream()
             .anyMatch(resistancePrice -> currentPrice < resistancePrice * (1 + param.getResistancePriceBuffer()) && currentPrice > resistancePrice);
 
-        /**
-         * FIXME 음 손실은 안나는거 같은데....
-         *  손익비, 승률에 대한 분석이 필요함
-         *  Record 관련 클래스를 고도화해서 분석을 해보자
-         *  ++) 가능하다면 chart.js에다가도 표현을 하고.... 그리고 차트 한번에 하나만 보이더라 개선해보자
-         */
-
         // 하락 추세라면
         if (index.getMacd().getCurrent() < 1000 || index.getRsi() < 0.30) {
+            return false;
+        }
+
+        // 과열 상태라면
+        if (index.getRsi() > 0.7) {
             return false;
         }
 
@@ -198,7 +196,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
 
         // 상승 추세가 약해지고 있다면
-        if (index.getMacd().getCurrentUptrendHighest() * 0.7 > index.getMacd().getCurrent()) {
+        if (index.getMacd().getCurrentUptrendHighest() * 0.8 > index.getMacd().getCurrent()) {
             return false;
         }
 
@@ -238,7 +236,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
 
         // 상승 추세가 아직 유지되고 있다면
-        if (index.getMacd().getCurrentUptrendHighest() * 0.7 < index.getMacd().getCurrent()) {
+        if (index.getMacd().getCurrentUptrendHighest() * 0.8 < index.getMacd().getCurrent()) {
             return false;
         }
 
@@ -257,7 +255,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
-        // 상승 추세가 아직 유지되고 있고, 지지선을 안넘었다면
+        // 상승 추세가 아직 유지되고 있다면
         if (index.getMacd().getCurrentUptrendHighest() * 0.7 < index.getMacd().getCurrent()) {
             return false;
         }
