@@ -62,7 +62,11 @@ public class TradingResultPack<T extends TradingResult> {
 
     // 평단
     public double getAveragePrice() {
-        return (this.getBuyValue() - this.getProfitValue() - this.getLossValue()) / this.getVolume();
+        double volume = this.getVolume();
+        if (volume == 0) {
+            return 0;
+        }
+        return (this.getBuyValue() - this.getProfitValue() - this.getLossValue()) / volume;
     }
 
     // 보유 수량

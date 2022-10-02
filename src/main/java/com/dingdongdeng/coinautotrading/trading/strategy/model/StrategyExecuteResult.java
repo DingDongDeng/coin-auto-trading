@@ -9,5 +9,6 @@ import lombok.Getter;
 public class StrategyExecuteResult {
 
     private TradingInfo tradingInfo;
+    private TradingResultPack<? extends TradingResult> tradingResultPack;
     private List<TradingResult> tradingResultList;
 }

@@ -38,5 +38,6 @@ public class BackTestingResponse {
         private Double marginRate;
         private double totalFee;
         private List<RecordContext> recordContextList;
+        private String eventMessage;
     }
 }

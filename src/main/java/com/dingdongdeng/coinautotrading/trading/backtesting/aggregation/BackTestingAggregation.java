@@ -69,6 +69,7 @@ public class BackTestingAggregation {
                             .marginRate(recorder.getMarginRate() * 100 / 100.0)
                             .totalFee(recorder.getTotalFee())
                             .recordContextList(recorder.getRecordContextList())
+                            .eventMessage(recorder.getEventMessage())
                             .build()
                     )
                     .build();

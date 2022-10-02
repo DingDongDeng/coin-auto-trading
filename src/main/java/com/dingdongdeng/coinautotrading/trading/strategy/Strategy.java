@@ -79,7 +79,7 @@ public class Strategy<TI extends TradingInfo, TR extends TradingResult> {
             log.info("do nothing");
         });
 
-        return new StrategyExecuteResult(tradingInfo, tradingResultList);
+        return new StrategyExecuteResult(tradingInfo, strategyStore.get(), tradingResultList);
     }
 
     private boolean isReset(TradingTask tradingTask) {

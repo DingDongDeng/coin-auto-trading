@@ -78,10 +78,13 @@ export default Vue.component('auto-trading-list', {
                     <div>
                       <tradingChart :recordContextList="backTesting.result.recordContextList"/>
                     </div>
+                    <div>
+                      주요 이벤트 :
+                      <div v-html="backTesting.result.eventMessage"/>
+                    </div>
                   </v-expansion-panel-content>
                 </v-expansion-panel>
               </v-expansion-panels>
-
             </div>
           </v-card-text>
           <v-card-actions>

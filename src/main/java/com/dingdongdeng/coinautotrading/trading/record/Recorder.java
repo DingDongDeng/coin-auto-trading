@@ -21,6 +21,8 @@ public class Recorder {
     private double totalFee;
     private double marginPrice; // 이익금
     private double marginRate; // 이익율
+    private String eventMessageFormat = "%20s / %5s / %10s <br>";
+    private String eventMessage = String.format(eventMessageFormat, "시간", "주문", "현재가");
 
     public void record(RecordContext recordContext) {
         this.addRecordContextList(recordContext);
@@ -54,6 +56,15 @@ public class Recorder {
                 // 이익금 소수점 반올림
                 this.marginPrice = Math.round((totalProfitValue + totalLossValue - totalFee) - totalBuyValue);
             }
+
+            // 메세지 기록
+            double currentPrice = recordContext.getCurrentPrice();
+            eventMessage += String.format(
+                eventMessageFormat,
+                recordContext.getCurrentDateTime(),
+                tradingTag.getDesc(),
+                currentPrice
+            );
         });
     }
 
