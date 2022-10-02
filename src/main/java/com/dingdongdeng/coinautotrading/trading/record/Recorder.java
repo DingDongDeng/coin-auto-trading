@@ -2,17 +2,24 @@ package com.dingdongdeng.coinautotrading.trading.record;
 
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.TradingTag;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 import lombok.Getter;
 
 @Getter
 public class Recorder {
 
     private final String id = UUID.randomUUID().toString();
-    private final List<RecordContext> recordContextList = new ArrayList<>();
-    private final int RECORD_CONTEXT_COUNT_LIMIT = 50000;
+    /**
+     * fixme
+     *  인메모리에서 들고있으면 안되고 다른 방법 필요
+     *  저장 h2에다가 하고(파일 디비쓰면 메모리도 절약!)
+     *  클라에서 차트 보여주느라 컨슈밍해야하는 얘들은 redis에서 읽고 다읽으면 h2에서 보충(contextLoader랑 같은 맥락이겠네)
+     *  ++) 굳이 레디스 쓰기싫으면 인메모리에다가 저장하고.... 구현체만 나중에라도 바꿀수있게 래핑만해두자
+     */
+    private final List<RecordContext> recordContextList = new CopyOnWriteArrayList<>(); //fixme 어휴 이거 꼭써야해?
+    private final int RECORD_CONTEXT_COUNT_LIMIT = 300000; // 1일 1440개 약 3~4일 치 //fixme autotradingProcessor도 쌓일꺼니까 개수 조절해야함
 
     private double totalBuyValue;
     private double totalProfitValue;
