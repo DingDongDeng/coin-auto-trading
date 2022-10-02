@@ -26,4 +26,8 @@ public class ResistanceTradingStrategyCoreParam implements StrategyCoreParam {
 
     @GuideMessage("미체결 주문 취소를 위한 대기 시간(second)을 입력해주세요. ex) 30")
     private int tooOldOrderTimeSeconds;  // 초(second)
+
+    @GuideMessage("프로세스 동작 주기(milliseconds)")
+    private int processDuration;  // milliseconds
+
 }

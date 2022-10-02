@@ -3,7 +3,10 @@ package com.dingdongdeng.coinautotrading.trading.backtesting.model;
 import com.dingdongdeng.coinautotrading.trading.backtesting.context.BackTestingContextLoader;
 import com.dingdongdeng.coinautotrading.trading.backtesting.model.type.BackTestingProcessStatus;
 import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
+import com.dingdongdeng.coinautotrading.trading.record.RecordContext;
+import com.dingdongdeng.coinautotrading.trading.record.Recorder;
 import com.dingdongdeng.coinautotrading.trading.strategy.Strategy;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyExecuteResult;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -32,7 +35,7 @@ public class BackTestingProcessor {
     private LocalDateTime now;
     private Strategy<?, ?> strategy;
     private BackTestingContextLoader backTestingContextLoader;
-    private long duration;
+    private Recorder recorder;
 
     public void start() {
         CompletableFuture.runAsync(this::process);
@@ -48,7 +51,10 @@ public class BackTestingProcessor {
                 this.now = backTestingContextLoader.getCurrentContext().getNow();
 
                 // 백테스팅 사이클 실행
-                strategy.execute();
+                StrategyExecuteResult executeResult = strategy.execute();
+
+                // 기록
+                recorder.record(RecordContext.ofStrategyExecuteResult(executeResult));
             }
         } catch (Exception e) {
             log.error("backTesting error : ", e); //fixme 여기서 로깅하지 않도록 수정

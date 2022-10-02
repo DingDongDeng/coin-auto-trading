@@ -12,5 +12,14 @@ public class Index {
 
     private double rsi;
     private List<Double> resistancePriceList;
-    private double macd;
+    private Macd macd;
+
+    @ToString
+    @Getter
+    @Builder
+    public static class Macd {
+
+        private double current;
+        private double currentUptrendHighest; // 현재 상승 추세에서 가장 높은 macd (상승 추세가 아니라면 0)
+    }
 }

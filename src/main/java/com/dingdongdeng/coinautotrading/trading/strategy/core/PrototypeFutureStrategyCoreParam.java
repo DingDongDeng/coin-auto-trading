@@ -42,4 +42,6 @@ public class PrototypeFutureStrategyCoreParam implements StrategyCoreFutureParam
     @GuideMessage("분할 매수를 할때 수량 비율(1를 설정하면 분할 매수할때마다 보유 물량의 1배를 매수)")
     private double buyVolumeRate;
 
+    @GuideMessage("프로세스 동작 주기(milliseconds)")
+    private int processDuration;  // milliseconds
 }

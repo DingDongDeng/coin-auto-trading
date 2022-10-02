@@ -1,11 +1,13 @@
 package com.dingdongdeng.coinautotrading.trading.strategy;
 
 import com.dingdongdeng.coinautotrading.common.type.OrderType;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyExecuteResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.StrategyCode;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.Getter;
@@ -21,15 +23,13 @@ public class Strategy<TI extends TradingInfo, TR extends TradingResult> {
     private final StrategyCore<TI, TR> strategyCore;
     private final StrategyService<TI, TR> strategyService;
     private final StrategyStore<TR> strategyStore;
-    private final StrategyRecorder<TR> strategyRecorder;
 
-    public Strategy(StrategyCode code, StrategyCore<TI, TR> core, StrategyService<TI, TR> service, StrategyStore<TR> store, StrategyRecorder<TR> recorder) {
+    public Strategy(StrategyCode code, StrategyCore<TI, TR> core, StrategyService<TI, TR> service, StrategyStore<TR> store) {
         this.strategyCode = code;
         this.identifyCode = code.name() + "-" + UUID.randomUUID();
         this.strategyCore = core;
         this.strategyService = service;
         this.strategyStore = store;
-        this.strategyRecorder = recorder;
     }
 
     public void ready() {
@@ -37,7 +37,7 @@ public class Strategy<TI extends TradingInfo, TR extends TradingResult> {
         strategyService.ready(strategyCore.getParam());
     }
 
-    public void execute() {
+    public StrategyExecuteResult execute() {
         MDC.put("executeId", UUID.randomUUID().toString());
 
         // 주문 정보 갱신 및 생성
@@ -49,6 +49,7 @@ public class Strategy<TI extends TradingInfo, TR extends TradingResult> {
         List<TradingTask> tradingTaskList = strategyCore.makeTradingTask(tradingInfo, updatedTradingResultPack);
         log.info("tradingTaskList : {}", tradingTaskList);
 
+        List<TradingResult> tradingResultList = new ArrayList<>();
         tradingTaskList.forEach(tradingTask -> {
             // 모든 정보 초기화
             if (isReset(tradingTask)) {
@@ -60,8 +61,8 @@ public class Strategy<TI extends TradingInfo, TR extends TradingResult> {
             if (isOrder(tradingTask)) {
                 TR orderTradingResult = strategyService.order(tradingTask);
                 strategyStore.save(orderTradingResult); // 주문 성공 건 정보 저장
-                strategyRecorder.apply(orderTradingResult);
                 strategyCore.handleOrderResult(orderTradingResult);
+                tradingResultList.add(orderTradingResult);
                 return;
             }
 
@@ -69,14 +70,16 @@ public class Strategy<TI extends TradingInfo, TR extends TradingResult> {
             if (isOrderCancel(tradingTask)) {
                 TR cancelTradingResult = strategyService.orderCancel(tradingTask);
                 strategyStore.delete(cancelTradingResult); // 주문 취소 건 정보 제거
-                strategyRecorder.revert(cancelTradingResult);
                 strategyCore.handleOrderCancelResult(cancelTradingResult);
+                tradingResultList.add(cancelTradingResult);
                 return;
             }
 
             // 아무것도 하지 않음
             log.info("do nothing");
         });
+
+        return new StrategyExecuteResult(tradingInfo, strategyStore.get(), tradingResultList);
     }
 
     private boolean isReset(TradingTask tradingTask) {

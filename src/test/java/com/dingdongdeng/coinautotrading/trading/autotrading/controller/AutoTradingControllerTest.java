@@ -139,7 +139,7 @@ class AutoTradingControllerTest {
             .when(autoTradingAggregation).getUserProcessorList(Mockito.any());
 
         MvcResult result = this.mockMvc.perform(
-            RestDocumentationRequestBuilders.get("/user/{userId}/autotrading", userId)
+            RestDocumentationRequestBuilders.get("/user/autotrading", userId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("userId", userId)
         )

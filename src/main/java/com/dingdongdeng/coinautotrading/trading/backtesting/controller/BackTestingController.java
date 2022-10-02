@@ -28,7 +28,7 @@ public class BackTestingController {
             .build();
     }
 
-    @GetMapping("/user/{userId}/backtesting")
+    @GetMapping("/user/backtesting")
     public CommonResponse<List<BackTestingResponse>> getResult(@SessionAttribute String userId) {
         return CommonResponse.<List<BackTestingResponse>>builder()
             .body(backTestingAggregation.getResult(userId))
