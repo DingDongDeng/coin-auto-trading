@@ -214,8 +214,11 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
                 return false;
             }
 
-            // 마지막 주문의 가격 ~ 마지막 주문의 지지선 가격 사이는 주문하지 않음(같은 구간에 대해서 중복 주문이기 때문)
-            if (currentPrice <= lastBuyTradingResult.getPrice() && currentPrice >= lastBuyTradingResult.getPrice() * (1 - param.getResistancePriceBuffer())) {
+            // 마지막 주문의 가격 ~ 마지막 주문의 지지선 가격 사이는 주문하지 않음
+            // - 같은 구간에 대한 무의미한 중복 매수를 방어하기 위함
+            // - 중복 주문 필터를 위해 버퍼를 두었음
+            if (currentPrice <= lastBuyTradingResult.getPrice() * (1 + param.getResistancePriceBuffer())
+                && currentPrice >= lastBuyTradingResult.getPrice() * (1 - param.getResistancePriceBuffer())) {
                 return false;
             }
         }
