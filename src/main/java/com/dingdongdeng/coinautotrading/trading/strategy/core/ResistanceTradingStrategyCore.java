@@ -206,7 +206,15 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
 
         // 주문한적이 있다면
         if (isExsistBuyOrder) {
-            log.info("매수 주문한적이 있음");
+            /**
+             * FIXME
+             *  아래 추가 매수 조건에서, 중복 매수가 되는 케이스가 있음
+             *  중복 주문 방지 로직이 기능이 못하는 것으로 짐작됨
+             *  관련 케이스 해결 필요 그때까지 추가 매수 관련 조건은 막도록함
+             */
+            if (true) {
+                return false;
+            }
 
             // 이익중이라면
             if ((tradingResultPack.getAveragePrice() - currentPrice) < 0) {
