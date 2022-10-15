@@ -163,7 +163,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
     }
 
     private boolean isEnoughBalance(double currentPrice, TradingResultPack<SpotTradingResult> tradingResultPack, double balance) {
-        if (balance < param.getAccountBalanceLimit()) {
+        if (balance <= param.getAccountBalanceLimit()) {
             return false;
         }
 
