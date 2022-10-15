@@ -163,7 +163,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
     }
 
     private boolean isEnoughBalance(double currentPrice, TradingResultPack<SpotTradingResult> tradingResultPack, double balance) {
-        if (balance < param.getAccountBalanceLimit()) {
+        if (balance <= param.getAccountBalanceLimit()) {
             return false;
         }
 
@@ -182,35 +182,50 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
 
         // 하락 추세라면
         if (index.getMacd().getCurrent() < 1000 || index.getRsi() < 0.30) {
+            log.info("하락 추세, macd={}, rsi={}", index.getMacd().getCurrent(), index.getRsi());
             return false;
         }
 
         // 과열 상태라면
         if (index.getRsi() > 0.7) {
+            log.info("과열 상태, rsi={}", index.getRsi());
             return false;
         }
 
         // 지지받고 있지 않다면
         if (!isResistancePrice) {
+            log.info("지지 받고 있지 않음, resistancePriceList={}", index.getResistancePriceList());
             return false;
         }
 
         // 상승 추세가 약해지고 있다면
         if (index.getMacd().getCurrentUptrendHighest() * 0.8 > index.getMacd().getCurrent()) {
+            log.info("상승 추세가 약해지고 있음, currentUptrendHighest={}, macdCurrent={}", index.getMacd().getCurrentUptrendHighest(), index.getMacd().getCurrent());
             return false;
         }
 
         // 주문한적이 있다면
         if (isExsistBuyOrder) {
+            /**
+             * FIXME
+             *  아래 추가 매수 조건에서, 중복 매수가 되는 케이스가 있음
+             *  중복 주문 방지 로직이 기능이 못하는 것으로 짐작됨
+             *  관련 케이스 해결 필요 그때까지 추가 매수 관련 조건은 막도록함
+             */
+            if (true) {
+                return false;
+            }
 
             // 이익중이라면
             if ((tradingResultPack.getAveragePrice() - currentPrice) < 0) {
+                log.info("이익중, averagePrice={}, currentPrice={}", tradingResultPack.getAveragePrice(), currentPrice);
                 return false;
             }
 
             SpotTradingResult lastBuyTradingResult = buyTradingResultList.get(buyTradingResultList.size() - 1);
             // 마지막 주문보다 현재가가 높다면(추가 매수는 항상 더 낮은 가격으로 사야하기 때문)
             if (lastBuyTradingResult.getPrice() <= currentPrice) {
+                log.info("추가 매수하기에는 현재가가 높음, lastBuyTradingResult.price={}, currentPrice={}", lastBuyTradingResult.getPrice(), currentPrice);
                 return false;
             }
 
@@ -219,10 +234,13 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             // - 중복 주문 필터를 위해 버퍼를 두었음
             if (currentPrice <= lastBuyTradingResult.getPrice() * (1 + param.getResistancePriceBuffer())
                 && currentPrice >= lastBuyTradingResult.getPrice() * (1 - param.getResistancePriceBuffer())) {
+                log.info("중복 주문 방지, currentPrice={}, lastBuyTradingResult.price={}, param.resistancePriceBuffer={}", currentPrice, lastBuyTradingResult.getPrice(),
+                    param.getResistancePriceBuffer());
                 return false;
             }
         }
 
+        log.info("매수 조건 만족");
         return true;
     }
 
