@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import lombok.Getter;
 import lombok.ToString;
@@ -163,9 +164,12 @@ public class UpbitResponse {
         private State state; // 주문 상태
         @JsonProperty("market")
         private String market; // 마켓의 유일키
-        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+        // 업비트가 갑자기 날짜포멧이 달라지더니 자기 맘대로 주기 시작했음...(22.11.04 부터)
+        //@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+        //@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssz")
+        //@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSz")
         @JsonProperty("created_at")
-        private LocalDateTime createdAt; // 주문 생성 시간
+        private String createdAt; // 주문 생성 시간
         @JsonProperty("volume")
         private Double volume; // 사용자가 입력한 주문 양
         @JsonProperty("remaining_volume")
@@ -184,6 +188,14 @@ public class UpbitResponse {
         private Long tradeCount; // 해당 주문에 걸린 체결 수
         @JsonProperty("trades")
         private List<TradeResponse> tradeList; // 체결
+
+        /*
+         * 업비트 API가 갑자기, 날짜 포멧을 이상하게 내려줌 (22.11.4쯤부터...)
+         * 그래서 이를 보완하기 위해 String으로 응답을 받고, 실제 서비스 로직에서는 getter를 이용해 LocalDateTime으로 다룸
+         */
+        public LocalDateTime getCreatedAt() {
+            return LocalDateTime.parse(createdAt.substring(0, 19), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+        }
     }
 
     @ToString

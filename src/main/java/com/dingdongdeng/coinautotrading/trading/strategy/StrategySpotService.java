@@ -85,7 +85,7 @@ public class StrategySpotService implements StrategyService<SpotTradingInfo, Spo
 
     @Override
     public TradingResultPack<SpotTradingResult> updateTradingResultPack(TradingResultPack<SpotTradingResult> tradingResultPack) {
-        return new TradingResultPack<SpotTradingResult>(
+        return new TradingResultPack<>(
             updateTradingResultList(tradingResultPack.getBuyTradingResultList()),
             updateTradingResultList(tradingResultPack.getProfitTradingResultList()),
             updateTradingResultList(tradingResultPack.getLossTradingResultList())
