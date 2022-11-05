@@ -27,6 +27,7 @@ binance:
 spring:
   profiles:
     active: test
+
   jpa:
     open-in-view: false
     hibernate:
@@ -48,6 +49,10 @@ spring:
   redis:
     host: localhost
     port: 6370
+
+  quartz:
+    auto-startup: false
+
   h2:
     console:
       enabled: true
