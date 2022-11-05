@@ -68,7 +68,7 @@ public class IndexCalculator {
     }
 
     public List<Double> getResistancePrice(ExchangeCandles candles) {
-        double RESISTANCE_GAP = 0.05; // n% 퍼센트
+        double RESISTANCE_GAP = 0.01; // n% 퍼센트
         int RESISTANCE_MAX_COUNT = 20;
 
         Map<Double, Double> priceMap = new HashMap<>();
