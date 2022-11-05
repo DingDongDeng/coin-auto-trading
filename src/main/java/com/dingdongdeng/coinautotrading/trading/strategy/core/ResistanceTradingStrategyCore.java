@@ -196,7 +196,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
 
         // 지지받고 있지 않다면
         if (!isResistancePrice) {
-            log.info("[매수 조건] 지지 받고 있지 않음, resistancePriceList={}", index.getResistancePriceList());
+            log.info("[매수 조건] 지지 받고 있지 않음, resistancePriceList={}, currentPrice={}", index.getResistancePriceList(), currentPrice);
             return false;
         }
 
