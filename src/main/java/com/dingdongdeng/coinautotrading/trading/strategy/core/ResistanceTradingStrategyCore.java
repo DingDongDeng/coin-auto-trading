@@ -122,14 +122,16 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
          * 조건을 만족하면 매수 주문
          */
         if (isBuyOrderTiming(tradingInfo.getCurrentPrice(), tradingResultPack, index)) {
-            if (!isEnoughBalance(tradingInfo.getCurrentPrice(), tradingResultPack, tradingInfo.getBalance())) {
+
+            double currentPrice = tradingInfo.getCurrentPrice();
+            double volume = getVolumeForBuy(currentPrice, tradingResultPack);
+
+            if (!isEnoughBalance(tradingInfo.getCurrentPrice(), volume, tradingInfo.getBalance())) {
                 log.warn(":: 계좌가 매수 가능한 상태가 아님");
                 return List.of(new TradingTask());
             }
 
             log.info(":: 매수 주문 요청");
-            double currentPrice = tradingInfo.getCurrentPrice();
-            double volume = getVolumeForBuy(currentPrice, tradingResultPack);
             return List.of(
                 TradingTask.builder()
                     .identifyCode(identifyCode)
@@ -162,12 +164,12 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         return this.param;
     }
 
-    private boolean isEnoughBalance(double currentPrice, TradingResultPack<SpotTradingResult> tradingResultPack, double balance) {
+    private boolean isEnoughBalance(double currentPrice, double buyOrderVolume, double balance) {
         if (balance <= param.getAccountBalanceLimit()) {
             return false;
         }
 
-        if (tradingResultPack.getVolume() * currentPrice > balance) {
+        if (buyOrderVolume * currentPrice > balance) {
             return false;
         }
 
