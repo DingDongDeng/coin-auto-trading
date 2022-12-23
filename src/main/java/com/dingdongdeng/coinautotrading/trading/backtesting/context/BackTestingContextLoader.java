@@ -34,6 +34,18 @@ public class BackTestingContextLoader {
      */
     private final BackTestingCandleLoader tradingTermCandleLoader;
 
+    /*
+    백테스팅 상에서 현재 시점의 캔들 정보들을 임시적으로 저장하고 이후에 각종 지표를 계산하기 위함
+    예를 들어, 백테스팅을 위한 가상 캔들을 만들때 1분봉 200개를 조합하면 200분 동안의 누적거래량, 누적 거래금액을 알 수 있음
+     */
+    private final BackTestingTradingTermCalculator tradingTermCalculator;
+
+    public BackTestingContextLoader(BackTestingCandleLoader currentCandleLoader, BackTestingCandleLoader tradingTermCandleLoader) {
+        this.currentCandleLoader = currentCandleLoader;
+        this.tradingTermCandleLoader = tradingTermCandleLoader;
+        this.tradingTermCalculator = new BackTestingTradingTermCalculator(this.tradingTermCandleLoader.getCandleUnit());
+    }
+
     @Getter
     @Setter(AccessLevel.PRIVATE)
     private BackTestingContext currentContext;
@@ -107,6 +119,11 @@ public class BackTestingContextLoader {
         if (!isNeedVirtualCandle(currentTime, tradingTermCandleList)) {
             // 현재 시간에 해당하는 캔들이 없어서, 가상 캔들을 현재를 의미하는 캔들로 생성하여 추가함
             tradingTermCandleList = this.addVirtualCandle(tradingTermCandleList, currentCandle, this.tradingTermCandleLoader.getCandleUnit());
+
+            // 오래된 캔들 제거
+            while (tradingTermCandleList.size() > 200) {
+                tradingTermCandleList.remove(0);
+            }
         }
 
         // 모델 생성
@@ -143,6 +160,13 @@ public class BackTestingContextLoader {
 
     private List<Candle> addVirtualCandle(List<Candle> candleList, Candle currentCandle, CandleUnit candleUnit) {
 
+        // 누적 거래 금액, 누적 거래량 계산
+        tradingTermCalculator.add(currentCandle); //FIXME 초기화 로직 필요(처음에 N개 다 채워놓고 시작해야함)
+        LocalDateTime from = candleList.get(candleList.size() - 1).getCandleDateTimeKst();
+        LocalDateTime to = currentCandle.getCandleDateTimeKst();
+        double accTradePrice = tradingTermCalculator.getCandleAccTradePrice(from, to);
+        double accTradeVolume = tradingTermCalculator.getCandleAccTradeVolume(from, to);
+
         VirtualCandle virtualCandle = VirtualCandle.virtualCandleBuilder()
             .candleDateTimeUtc(currentCandle.getCandleDateTimeUtc())
             .candleDateTimeKst(currentCandle.getCandleDateTimeKst())
@@ -151,8 +175,8 @@ public class BackTestingContextLoader {
             .lowPrice(currentCandle.getLowPrice())
             .tradePrice(currentCandle.getTradePrice())
             .timestamp(currentCandle.getTimestamp())
-            .candleAccTradePrice(currentCandle.getCandleAccTradePrice())
-            .candleAccTradeVolume(currentCandle.getCandleAccTradeVolume())
+            .candleAccTradePrice(accTradePrice)
+            .candleAccTradeVolume(accTradeVolume)
             .required(false)
             .build();
 
