@@ -18,7 +18,7 @@ public class ExchangeCandles {
     private CoinExchangeType coinExchangeType;
     private CoinType coinType;
     private CandleUnit candleUnit; // 분 단위(유닛)
-    private List<Candle> candleList;
+    private List<Candle> candleList; // 가장 마지막 캔들은 현재 시점에 대한 캔들
 
 
     @ToString

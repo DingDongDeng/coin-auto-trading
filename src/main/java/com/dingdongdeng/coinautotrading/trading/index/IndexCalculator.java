@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class IndexCalculator {
 
+    // document : https://mrjbq7.github.io/ta-lib/doc_index.html
     private final Core core = new Core(); // ta-lib
 
     public Index getIndex(ExchangeCandles candles) {
@@ -37,7 +38,6 @@ public class IndexCalculator {
         int SIGNAL_PERIOD = 9;
 
         List<Candle> candleList = candles.getCandleList();
-        int length = candleList.size();
 
         double[] inReal = candleList.stream().mapToDouble(Candle::getTradePrice).toArray();
         double[] outMACD = new double[inReal.length];
@@ -46,10 +46,10 @@ public class IndexCalculator {
         MInteger outBegIdx = new MInteger();
         MInteger outNBElement = new MInteger();
 
-        core.macd(0, candleList.size() - 1, inReal, FAST_PERIOD, SLOW_PERIOD, SIGNAL_PERIOD, outBegIdx, outNBElement, outMACD, outMACDSignal, outMACDHist);
+        core.macd(0, inReal.length - 1, inReal, FAST_PERIOD, SLOW_PERIOD, SIGNAL_PERIOD, outBegIdx, outNBElement, outMACD, outMACDSignal, outMACDHist);
 
         return Macd.builder()
-            .current(outMACDHist[length - SLOW_PERIOD - SIGNAL_PERIOD + 1])
+            .current(outMACDHist[outNBElement.value - 1])
             .currentUptrendHighest(this.getCurrentUptrendHighest(outMACDHist))
             .build();
     }
@@ -90,16 +90,16 @@ public class IndexCalculator {
             .collect(Collectors.toList());
 
         // 저항선 간의 간격이 가깝지 않도록 필터
-        for (int i = 0; i < entryList.size(); i++) {
-            Entry<Double, Double> currentEntry = entryList.get(i);
-            for (int j = i + 1; j < entryList.size(); j++) {
-                Entry<Double, Double> nextEntry = entryList.get(j);
-                if (currentEntry.getKey() * (1 + RESISTANCE_GAP) > nextEntry.getKey()) {
-                    entryList.remove(nextEntry);
-                    j--;
-                }
-            }
-        }
+        // for (int i = 0; i < entryList.size(); i++) {
+        //     Entry<Double, Double> currentEntry = entryList.get(i);
+        //     for (int j = i + 1; j < entryList.size(); j++) {
+        //         Entry<Double, Double> nextEntry = entryList.get(j);
+        //         if (currentEntry.getKey() * (1 + RESISTANCE_GAP) > nextEntry.getKey()) {
+        //             entryList.remove(nextEntry);
+        //             j--;
+        //         }
+        //     }
+        // }
 
         // 필터 이후에 현재가격 기준으로 저항선이 없다면 추가
         double currentPrice = candles.getLatest(0).getTradePrice();
