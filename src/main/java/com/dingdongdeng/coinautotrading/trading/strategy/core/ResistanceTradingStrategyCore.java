@@ -195,6 +195,14 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
 
         // 지지받고 있지 않다면
+        ExchangeCandles candles = tradingInfo.getCandles();
+        double averagePrice = (
+            candles.getLatest(0).getTradePrice() + candles.getLatest(0).getOpeningPrice()
+                + candles.getLatest(1).getTradePrice() + candles.getLatest(1).getOpeningPrice()
+                + candles.getLatest(2).getTradePrice() + candles.getLatest(2).getOpeningPrice()
+        ) / 6.0;
+        boolean isResistancePrice = index.getResistancePriceList().stream()
+            .anyMatch(resistancePrice -> averagePrice < resistancePrice * (1 + param.getResistancePriceBuffer()) && averagePrice > resistancePrice);
         if (!isResistancePrice) {
             log.info("[매수 조건] 지지 받고 있지 않음, resistancePriceList={}, averagePrice={}", index.getResistancePriceList(), averagePrice);
             return false;
