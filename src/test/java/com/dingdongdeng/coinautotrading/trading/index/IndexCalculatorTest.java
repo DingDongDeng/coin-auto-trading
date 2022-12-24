@@ -118,6 +118,22 @@ class IndexCalculatorTest {
         assertEquals(macd.getCurrent(), 3399.4713725503443);
     }
 
+    @Test
+    public void MACD_계산_테스트2() {
+        // given
+        CoinType coinType = CoinType.ETHEREUM;
+        TradingTerm tradingTerm = TradingTerm.SCALPING_240M;
+        LocalDateTime now = LocalDateTime.of(2022, 12, 24, 13, 0, 10);
+        ExchangeCandles candles = getExchangeCandles(now, tradingTerm, coinType, keyPairId);
+
+        // when
+        Macd macd = calculator.getMACD(candles);
+
+        // then
+        log.info("result : {}", macd);
+        assertEquals(2205.1025093942594, macd.getCurrent());
+    }
+
     private ExchangeCandles getExchangeCandles(LocalDateTime now, TradingTerm tradingTerm, CoinType coinType, String keyPairId) {
         List<CandleResponse> response = upbitClient.getMinuteCandle(
             CandleRequest.builder()

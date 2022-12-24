@@ -4,6 +4,7 @@ import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles.Candle;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.UpbitClient;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitEnum.MarketType;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitEnum.OrdType;
@@ -28,9 +29,12 @@ import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.Spot
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeTradingInfo;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeTradingInfoParam;
 import com.dingdongdeng.coinautotrading.trading.index.IndexCalculator;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -92,11 +96,26 @@ public class UpbitSpotExchangeService implements SpotExchangeService {
     public SpotExchangeTradingInfo getTradingInformation(SpotExchangeTradingInfoParam param, String keyPairId) {
         log.info("upbit process : get trading information param = {}", param);
 
+        // 현재가 정보 조회
+        SpotExchangeTicker ticker = getExchangeTicker(param, keyPairId);
+
         // 캔들 정보 조회
         ExchangeCandles candles = getExchangeCandles(param, keyPairId);
 
-        // 현재가 정보 조회
-        SpotExchangeTicker ticker = getExchangeTicker(param, keyPairId);
+        // 캔들 정보에 현재 정보를 추가
+        candles.getCandleList().add(
+            Candle.builder()
+                .candleDateTimeUtc(null)
+                .candleDateTimeKst(convertTime(ticker.getTimestamp()))
+                .openingPrice(ticker.getOpeningPrice())
+                .highPrice(ticker.getHighPrice())
+                .lowPrice(ticker.getLowPrice())
+                .tradePrice(ticker.getTradePrice())
+                .timestamp(ticker.getTimestamp())
+                .candleAccTradePrice(ticker.getAccTradePrice())
+                .candleAccTradeVolume(ticker.getTradeVolume())
+                .build()
+        );
 
         // 계좌 정보 조회
         //fixme findFirst에 원화만 오는게 아니라 balance가 큰 순서인것 같은니 수정해야 될듯?
@@ -228,5 +247,9 @@ public class UpbitSpotExchangeService implements SpotExchangeService {
             .lowest52WeekDate(response.getLowest52WeekDate())
             .timestamp(response.getTimestamp())
             .build();
+    }
+
+    private LocalDateTime convertTime(Long timestamp) {
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), TimeZone.getDefault().toZoneId());
     }
 }

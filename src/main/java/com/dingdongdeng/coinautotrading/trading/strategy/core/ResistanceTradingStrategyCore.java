@@ -5,11 +5,13 @@ import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.index.Index;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyCore;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.SpotTradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.SpotTradingResult;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreParam;
+import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.TradingTag;
@@ -121,7 +123,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         /*
          * 조건을 만족하면 매수 주문
          */
-        if (isBuyOrderTiming(tradingInfo.getCurrentPrice(), tradingResultPack, index)) {
+        if (isBuyOrderTiming(tradingInfo.getCurrentPrice(), tradingInfo, tradingResultPack, index)) {
 
             double currentPrice = tradingInfo.getCurrentPrice();
             double volume = getVolumeForBuy(currentPrice, tradingResultPack);
@@ -176,11 +178,9 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         return true;
     }
 
-    private boolean isBuyOrderTiming(double currentPrice, TradingResultPack<SpotTradingResult> tradingResultPack, Index index) {
+    private boolean isBuyOrderTiming(double currentPrice, TradingInfo tradingInfo, TradingResultPack<SpotTradingResult> tradingResultPack, Index index) {
         List<SpotTradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
         boolean isExsistBuyOrder = !buyTradingResultList.isEmpty();
-        boolean isResistancePrice = index.getResistancePriceList().stream()
-            .anyMatch(resistancePrice -> currentPrice < resistancePrice * (1 + param.getResistancePriceBuffer()) && currentPrice > resistancePrice);
 
         // 하락 추세라면
         if (index.getMacd().getCurrent() < 1000 || index.getRsi() < 0.30) {
@@ -195,8 +195,16 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
 
         // 지지받고 있지 않다면
+        ExchangeCandles candles = tradingInfo.getCandles();
+        double averagePrice = (
+            candles.getLatest(0).getTradePrice() + candles.getLatest(0).getOpeningPrice()
+                + candles.getLatest(1).getTradePrice() + candles.getLatest(1).getOpeningPrice()
+                + candles.getLatest(2).getTradePrice() + candles.getLatest(2).getOpeningPrice()
+        ) / 6.0;
+        boolean isResistancePrice = index.getResistancePriceList().stream()
+            .anyMatch(resistancePrice -> averagePrice < resistancePrice * (1 + param.getResistancePriceBuffer()) && averagePrice > resistancePrice);
         if (!isResistancePrice) {
-            log.info("[매수 조건] 지지 받고 있지 않음, resistancePriceList={}, currentPrice={}", index.getResistancePriceList(), currentPrice);
+            log.info("[매수 조건] 지지 받고 있지 않음, resistancePriceList={}, averagePrice={}", index.getResistancePriceList(), averagePrice);
             return false;
         }
 
