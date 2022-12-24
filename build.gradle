@@ -1,4 +1,5 @@
 plugins {
+    //TODO spring boot 3.0.0으로 가봅시다 ㅎㅅㅎ
     id 'org.springframework.boot' version '2.7.2'
     id 'io.spring.dependency-management' version '1.0.12.RELEASE'
     id "org.asciidoctor.jvm.convert" version "3.3.2"
