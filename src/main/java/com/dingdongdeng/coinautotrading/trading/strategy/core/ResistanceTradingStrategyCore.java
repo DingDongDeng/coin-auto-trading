@@ -86,7 +86,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             }
 
             //익절 주문
-            if (isProfitOrderTiming(currentPrice, tradingResultPack, index)) {
+            if (isProfitOrderTiming(currentPrice, tradingInfo, tradingResultPack, index)) {
                 log.info(":: 익절 주문 요청");
                 return List.of(
                     TradingTask.builder()
@@ -103,7 +103,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             }
 
             //손절 주문
-            if (isLossOrderTiming(currentPrice, tradingResultPack, index)) {
+            if (isLossOrderTiming(currentPrice, tradingInfo, tradingResultPack, index)) {
                 log.info(":: 부분 또는 전부 손절 주문 요청");
                 return List.of(
                     TradingTask.builder()
@@ -181,6 +181,12 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
     private boolean isBuyOrderTiming(double currentPrice, TradingInfo tradingInfo, TradingResultPack<SpotTradingResult> tradingResultPack, Index index) {
         List<SpotTradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
         boolean isExsistBuyOrder = !buyTradingResultList.isEmpty();
+        ExchangeCandles candles = tradingInfo.getCandles();
+        double averagePrice = (
+            candles.getLatest(0).getTradePrice() + candles.getLatest(0).getOpeningPrice()
+                + candles.getLatest(1).getTradePrice() + candles.getLatest(1).getOpeningPrice()
+                + candles.getLatest(2).getTradePrice() + candles.getLatest(2).getOpeningPrice()
+        ) / 6.0;
 
         // 하락 추세라면
         if (index.getMacd().getCurrent() < 1000 || index.getRsi() < 0.30) {
@@ -194,17 +200,19 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
-        // 지지받고 있지 않다면
-        ExchangeCandles candles = tradingInfo.getCandles();
-        double averagePrice = (
-            candles.getLatest(0).getTradePrice() + candles.getLatest(0).getOpeningPrice()
-                + candles.getLatest(1).getTradePrice() + candles.getLatest(1).getOpeningPrice()
-                + candles.getLatest(2).getTradePrice() + candles.getLatest(2).getOpeningPrice()
-        ) / 6.0;
-        boolean isResistancePrice = index.getResistancePriceList().stream()
-            .anyMatch(resistancePrice -> averagePrice < resistancePrice * (1 + param.getResistancePriceBuffer()) && averagePrice > resistancePrice);
-        if (!isResistancePrice) {
+        // 지지 받고 있지 않다면
+        boolean isSupportPrice = index.getResistancePriceList().stream()
+            .anyMatch(resistancePrice -> averagePrice < (resistancePrice + param.getResistancePriceBuffer()) && averagePrice > resistancePrice);
+        if (!isSupportPrice) {
             log.info("[매수 조건] 지지 받고 있지 않음, resistancePriceList={}, averagePrice={}", index.getResistancePriceList(), averagePrice);
+            return false;
+        }
+
+        // 저항 받고 있다면
+        boolean isResistancePrice = index.getResistancePriceList().stream()
+            .anyMatch(resistancePrice -> averagePrice > (resistancePrice - param.getResistancePriceBuffer()) && averagePrice < resistancePrice);
+        if (isResistancePrice) {
+            log.info("[매수 조건] 저항 받고 있음, resistancePriceList={}, averagePrice={}", index.getResistancePriceList(), averagePrice);
             return false;
         }
 
@@ -243,8 +251,8 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             // 마지막 주문의 가격 ~ 마지막 주문의 지지선 가격 사이는 주문하지 않음
             // - 같은 구간에 대한 무의미한 중복 매수를 방어하기 위함
             // - 중복 주문 필터를 위해 버퍼를 두었음
-            if (currentPrice <= lastBuyTradingResult.getPrice() * (1 + param.getResistancePriceBuffer())
-                && currentPrice >= lastBuyTradingResult.getPrice() * (1 - param.getResistancePriceBuffer())) {
+            if (currentPrice <= (lastBuyTradingResult.getPrice() + param.getResistancePriceBuffer())
+                && currentPrice >= (lastBuyTradingResult.getPrice() - param.getResistancePriceBuffer())) {
                 log.info("[매수 조건] 중복 주문 방지, currentPrice={}, lastBuyTradingResult.price={}, param.resistancePriceBuffer={}", currentPrice, lastBuyTradingResult.getPrice(),
                     param.getResistancePriceBuffer());
                 return false;
@@ -255,7 +263,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         return true;
     }
 
-    private boolean isProfitOrderTiming(double currentPrice, TradingResultPack<SpotTradingResult> tradingResultPack, Index index) {
+    private boolean isProfitOrderTiming(double currentPrice, TradingInfo tradingInfo, TradingResultPack<SpotTradingResult> tradingResultPack, Index index) {
 
         // 매수 주문한적이 없다면
         if (tradingResultPack.getBuyTradingResultList().isEmpty()) {
@@ -275,11 +283,19 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
+        // 지지 받고 있다면
+        boolean isSupportPrice = index.getResistancePriceList().stream()
+            .anyMatch(resistancePrice -> currentPrice < (resistancePrice + param.getResistancePriceBuffer()) && currentPrice > resistancePrice);
+        if (isSupportPrice) {
+            log.info("[익절 조건] 지지 받고 있음, resistancePriceList={}, averagePrice={}", index.getResistancePriceList(), currentPrice);
+            return false;
+        }
+
         log.info("[익절 조건] 익절 조건 만족");
         return true;
     }
 
-    private boolean isLossOrderTiming(double currentPrice, TradingResultPack<SpotTradingResult> tradingResultPack, Index index) {
+    private boolean isLossOrderTiming(double currentPrice, TradingInfo tradingInfo, TradingResultPack<SpotTradingResult> tradingResultPack, Index index) {
 
         // 매수 주문한적이 없다면
         if (tradingResultPack.getBuyTradingResultList().isEmpty()) {
@@ -296,6 +312,20 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         // 상승 추세가 아직 유지되고 있다면
         if (index.getMacd().getCurrentUptrendHighest() * 0.7 < index.getMacd().getCurrent()) {
             log.info("[손절 조건] 상승 추세가 유지되고 있음, currentUptrendHighest={}, macd={}", index.getMacd().getCurrentUptrendHighest(), index.getMacd().getCurrent());
+            return false;
+        }
+
+        // 지지 받고 있다면
+        ExchangeCandles candles = tradingInfo.getCandles();
+        double averagePrice = (
+            candles.getLatest(0).getTradePrice() + candles.getLatest(0).getOpeningPrice()
+                + candles.getLatest(1).getTradePrice() + candles.getLatest(1).getOpeningPrice()
+                + candles.getLatest(2).getTradePrice() + candles.getLatest(2).getOpeningPrice()
+        ) / 6.0;
+        boolean isSupportPrice = index.getResistancePriceList().stream()
+            .anyMatch(resistancePrice -> averagePrice < (resistancePrice + param.getResistancePriceBuffer()) && averagePrice > resistancePrice);
+        if (!isSupportPrice) {
+            log.info("[손절 조건] 지지 받고 있음, resistancePriceList={}, averagePrice={}", index.getResistancePriceList(), averagePrice);
             return false;
         }
 
