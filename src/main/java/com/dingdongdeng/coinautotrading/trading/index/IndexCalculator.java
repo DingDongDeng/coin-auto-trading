@@ -68,9 +68,9 @@ public class IndexCalculator {
     }
 
     public List<Double> getResistancePrice(ExchangeCandles candles) {
-        double RESISTANCE_GAP = 0.01; // n% 퍼센트
         int RESISTANCE_MAX_COUNT = 20;
 
+        // 가격대별 거래량을 통해 지지/저항선을 추출
         Map<Double, Double> priceMap = new HashMap<>();
         for (Candle candle : candles.getCandleList()) {
             Double price = candle.getTradePrice();
@@ -82,34 +82,28 @@ public class IndexCalculator {
             }
         }
 
-        // 영향력 있는 지지/저항선을 추출
-        List<Entry<Double, Double>> entryList = priceMap.entrySet().stream()
-            .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+        // 거래량이 많은 지지/저항선을 추출
+        List<Entry<Double, Double>> priceEntryList = priceMap.entrySet().stream()
+            .sorted(Collections.reverseOrder(Entry.comparingByValue()))
             .limit(RESISTANCE_MAX_COUNT)
-            .sorted(Map.Entry.comparingByKey())
-            .collect(Collectors.toList());
+            .sorted(Entry.comparingByKey())
+            .toList();
 
-        // 저항선 간의 간격이 가깝지 않도록 필터
-        // for (int i = 0; i < entryList.size(); i++) {
-        //     Entry<Double, Double> currentEntry = entryList.get(i);
-        //     for (int j = i + 1; j < entryList.size(); j++) {
-        //         Entry<Double, Double> nextEntry = entryList.get(j);
-        //         if (currentEntry.getKey() * (1 + RESISTANCE_GAP) > nextEntry.getKey()) {
-        //             entryList.remove(nextEntry);
-        //             j--;
-        //         }
-        //     }
-        // }
-
-        // 필터 이후에 현재가격 기준으로 저항선이 없다면 추가
-        double currentPrice = candles.getLatest(0).getTradePrice();
-        double filteredLastResistancePrice = entryList.get(entryList.size() - 1).getKey(); // 필터링 된 후 마지막 저항선 가격
-        if (currentPrice > filteredLastResistancePrice) {
-            //필터링 되어 저항선이 없다면 간격 조절을 위해 RESISTANCE_GAP만큼 임의 생성
-            entryList.add(Map.entry(filteredLastResistancePrice * (1 + RESISTANCE_GAP), 0d));
+        // 지지/저항선간의 간격이 큰 것들을 추출
+        Map<Double, Double> diffMap = new HashMap<>();
+        for (int i = 0; i < priceEntryList.size() - 1; i++) {
+            double currentPrice = priceEntryList.get(i).getKey();
+            double nextPrice = priceEntryList.get(i + 1).getKey();
+            double diffPrice = nextPrice - currentPrice;
+            diffMap.put(currentPrice, diffPrice);
         }
+        List<Entry<Double, Double>> diffEntryList = diffMap.entrySet().stream()
+            .sorted(Collections.reverseOrder(Entry.comparingByValue()))
+            .limit(RESISTANCE_MAX_COUNT / 2)
+            .sorted(Entry.comparingByKey())
+            .toList();
 
-        return entryList.stream().map(Entry::getKey).collect(Collectors.toList());
+        return diffEntryList.stream().map(Entry::getKey).collect(Collectors.toList());
     }
 
     // RSI(지수 가중 이동 평균)
