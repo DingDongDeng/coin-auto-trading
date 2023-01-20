@@ -2,16 +2,13 @@ package com.dingdongdeng.coinautotrading.trading.backtesting.context;
 
 import com.dingdongdeng.coinautotrading.common.type.CandleUnit;
 import com.dingdongdeng.coinautotrading.common.type.CandleUnit.UnitType;
-import com.dingdongdeng.coinautotrading.trading.backtesting.model.VirtualCandle;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles.Candle;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -77,6 +74,7 @@ public class BackTestingContextLoader {
             .coinType(this.currentCandleLoader.getCoinType())
             .currentPrice(currentCandle.getTradePrice())
             .now(currentCandle.getCandleDateTimeKst())
+            .currentCandle(currentCandle)
             .candles(candles)
             .build();
     }
@@ -88,9 +86,6 @@ public class BackTestingContextLoader {
     private ExchangeCandles getCandles(Candle currentCandle, List<Candle> tradingTermCandleList) {
 
         LocalDateTime currentTime = currentCandle.getCandleDateTimeKst();
-
-        // 백테스팅에 필수적인 캔들만 남김 (가상 캔들 중 백테스팅 데이터로 취급할 필요가 없는 것들을 제거함)
-        tradingTermCandleList = this.filterRequired(tradingTermCandleList);
 
         // 초기화(최초 한번만 실행됨)
         if (tradingTermCandleList.isEmpty()) {
@@ -109,17 +104,6 @@ public class BackTestingContextLoader {
                 lastCandle = this.tradingTermCandleLoader.getNextCandle();
                 tradingTermCandleList.add(lastCandle);
             }
-            // 오래된 캔들 제거
-            while (tradingTermCandleList.size() > 200) {
-                tradingTermCandleList.remove(0);
-            }
-        }
-
-        // 실제와 유사한 캔들 정보를 만들기 위해 가상 캔들을 추가함
-        if (!isNeedVirtualCandle(currentTime, tradingTermCandleList)) {
-            // 현재 시간에 해당하는 캔들이 없어서, 가상 캔들을 현재를 의미하는 캔들로 생성하여 추가함
-            tradingTermCandleList = this.addVirtualCandle(tradingTermCandleList, currentCandle, this.tradingTermCandleLoader.getCandleUnit());
-
             // 오래된 캔들 제거
             while (tradingTermCandleList.size() > 200) {
                 tradingTermCandleList.remove(0);
@@ -152,57 +136,5 @@ public class BackTestingContextLoader {
         } else {
             throw new RuntimeException("not found allow unitType");
         }
-    }
-
-    private boolean isNeedVirtualCandle(LocalDateTime currentTime, List<Candle> candleList) {
-        return candleList.get(candleList.size() - 1).getCandleDateTimeKst().equals(currentTime);
-    }
-
-    private List<Candle> addVirtualCandle(List<Candle> candleList, Candle currentCandle, CandleUnit candleUnit) {
-
-        // 누적 거래 금액, 누적 거래량 계산
-        tradingTermCalculator.add(currentCandle); //FIXME 초기화 로직 필요(처음에 N개 다 채워놓고 시작해야함)
-        LocalDateTime from = candleList.get(candleList.size() - 1).getCandleDateTimeKst();
-        LocalDateTime to = currentCandle.getCandleDateTimeKst();
-        double accTradePrice = tradingTermCalculator.getCandleAccTradePrice(from, to);
-        double accTradeVolume = tradingTermCalculator.getCandleAccTradeVolume(from, to);
-
-        VirtualCandle virtualCandle = VirtualCandle.virtualCandleBuilder()
-            .candleDateTimeUtc(currentCandle.getCandleDateTimeUtc())
-            .candleDateTimeKst(currentCandle.getCandleDateTimeKst())
-            .openingPrice(currentCandle.getOpeningPrice())
-            .highPrice(currentCandle.getHighPrice())
-            .lowPrice(currentCandle.getLowPrice())
-            .tradePrice(currentCandle.getTradePrice())
-            .timestamp(currentCandle.getTimestamp())
-            .candleAccTradePrice(accTradePrice)
-            .candleAccTradeVolume(accTradeVolume)
-            .required(false)
-            .build();
-
-        switch (candleUnit.getUnitType()) {
-            case MIN -> candleList.add(virtualCandle);
-            case DAY -> {
-                // 캔들의 시간이 자정(UTC)이라면, 가상 캔들이라도 필수 캔들로써 사용되어야함(날짜가 바뀌는 시점의 마지막 가상 캔들이라 삭제되면 안됨)
-                boolean isMidnight = virtualCandle.getCandleDateTimeKst().toLocalTime().equals(LocalTime.of(9, 0, 0)); // UTC + 09:00
-                if (isMidnight) {
-                    virtualCandle.setRequired(true);
-                }
-                // 현재 날짜를 의미하는 가상 캔들을 추가
-                candleList.add(virtualCandle);
-            }
-        }
-        return candleList;
-    }
-
-    private List<Candle> filterRequired(List<Candle> candleList) {
-        return candleList.stream().filter(
-            candle -> {
-                if (candle instanceof VirtualCandle) {
-                    return ((VirtualCandle) candle).isRequired();
-                }
-                return true;
-            }
-        ).collect(Collectors.toList());
     }
 }

@@ -6,6 +6,7 @@ import com.dingdongdeng.coinautotrading.trading.backtesting.context.BackTestingC
 import com.dingdongdeng.coinautotrading.trading.backtesting.context.BackTestingContextLoader;
 import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles.Candle;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.SpotExchangeService;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeOrder;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeOrderCancel;
@@ -16,6 +17,7 @@ import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.Spot
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeTradingInfo;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeTradingInfoParam;
 import com.dingdongdeng.coinautotrading.trading.index.IndexCalculator;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -111,8 +113,35 @@ public class BackTestingSpotExchangeService implements SpotExchangeService {
     public SpotExchangeTradingInfo getTradingInformation(SpotExchangeTradingInfoParam param, String keyPairId) {
         BackTestingContext context = contextLoader.getCurrentContext();
         double currentPrice = context.getCurrentPrice();
-        ExchangeCandles candles = context.getCandles();
+        Candle currentCandle = context.getCurrentCandle();
+        ExchangeCandles candles = this.deepCopyCandles(context.getCandles());
 
+        // 현재가 정보 조회
+        SpotExchangeTicker ticker = SpotExchangeTicker.builder()
+            .tradePrice(currentPrice)
+            .openingPrice(currentCandle.getOpeningPrice())
+            .highPrice(currentCandle.getHighPrice())
+            .lowPrice(currentCandle.getLowPrice())
+            .tradePrice(currentCandle.getTradePrice())
+            .timestamp(null)
+            .build();
+
+        // 캔들 정보에 현재 정보가 없다면 추가
+        if (!candles.getLatest(0).getCandleDateTimeKst().isEqual(currentCandle.getCandleDateTimeKst())) {
+            candles.getCandleList().add(
+                Candle.builder()
+                    .candleDateTimeUtc(currentCandle.getCandleDateTimeUtc())
+                    .candleDateTimeKst(currentCandle.getCandleDateTimeKst())
+                    .openingPrice(ticker.getOpeningPrice())
+                    .highPrice(ticker.getHighPrice())
+                    .lowPrice(ticker.getLowPrice())
+                    .tradePrice(ticker.getTradePrice())
+                    .timestamp(ticker.getTimestamp())
+                    .candleAccTradePrice(null)
+                    .candleAccTradeVolume(null)
+                    .build()
+            );
+        }
         return SpotExchangeTradingInfo.builder()
             .coinType(param.getCoinType())
             .coinExchangeType(getCoinExchangeType())
@@ -126,7 +155,7 @@ public class BackTestingSpotExchangeService implements SpotExchangeService {
             .unitCurrency(null)
 
             .candles(candles)
-            .ticker(SpotExchangeTicker.builder().tradePrice(currentPrice).build())
+            .ticker(ticker)
 
             .index(indexCalculator.getIndex(candles))
             .build();
@@ -142,5 +171,13 @@ public class BackTestingSpotExchangeService implements SpotExchangeService {
         return null;
     }
 
+    private ExchangeCandles deepCopyCandles(ExchangeCandles candles) {
+        return ExchangeCandles.builder()
+            .coinExchangeType(candles.getCoinExchangeType())
+            .coinType(candles.getCoinType())
+            .candleUnit(candles.getCandleUnit())
+            .candleList(new ArrayList<>(candles.getCandleList()))
+            .build();
+    }
 
 }
