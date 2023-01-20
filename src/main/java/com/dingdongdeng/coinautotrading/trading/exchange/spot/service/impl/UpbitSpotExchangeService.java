@@ -112,8 +112,8 @@ public class UpbitSpotExchangeService implements SpotExchangeService {
                 .lowPrice(ticker.getLowPrice())
                 .tradePrice(ticker.getTradePrice())
                 .timestamp(ticker.getTimestamp())
-                .candleAccTradePrice(ticker.getAccTradePrice())
-                .candleAccTradeVolume(ticker.getTradeVolume())
+                .candleAccTradePrice(null)
+                .candleAccTradeVolume(null)
                 .build()
         );
 
