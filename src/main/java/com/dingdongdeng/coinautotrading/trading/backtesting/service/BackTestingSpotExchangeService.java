@@ -123,7 +123,7 @@ public class BackTestingSpotExchangeService implements SpotExchangeService {
             .highPrice(currentCandle.getHighPrice())
             .lowPrice(currentCandle.getLowPrice())
             .tradePrice(currentCandle.getTradePrice())
-            .timestamp(null)
+            .timestamp(currentCandle.getTimestamp())
             .build();
 
         // 캔들 정보에 현재 정보가 없다면 추가
@@ -139,6 +139,7 @@ public class BackTestingSpotExchangeService implements SpotExchangeService {
                     .timestamp(ticker.getTimestamp())
                     .candleAccTradePrice(null)
                     .candleAccTradeVolume(null)
+                    .timestamp(ticker.getTimestamp())
                     .build()
             );
         }
