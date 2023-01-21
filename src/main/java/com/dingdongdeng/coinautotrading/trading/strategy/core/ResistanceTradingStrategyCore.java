@@ -210,24 +210,25 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
 
         // 저항 받고 있다면
-        double resistancePrice = this.getResistancePrice(movingAveragePrice, index);
-        if (movingAveragePrice < resistancePrice && movingAveragePrice > (resistancePrice - param.getResistancePriceBuffer())) {
-            log.info("[매수 조건] 저항 받고 있음, resistancePriceList={}, averagePrice={}", index.getResistancePriceList(), movingAveragePrice);
-            return false;
-        }
+//        double resistancePrice = this.getResistancePrice(movingAveragePrice, index);
+//        if (movingAveragePrice < resistancePrice && movingAveragePrice > (resistancePrice - param.getResistancePriceBuffer())) {
+//            log.info("[매수 조건] 저항 받고 있음, resistancePriceList={}, averagePrice={}", index.getResistancePriceList(), movingAveragePrice);
+//            return false;
+//        }
 
         // 익절 포텐셜과 손절 포텐셜이 2:1 비율 이하라면
-        double prevSupportPrice = this.getSupportPrice(movingAveragePrice, 1, index);
-        double profitPotential = resistancePrice - supportPrice;
-        double lossPotential = supportPrice - prevSupportPrice;
-        if (profitPotential < lossPotential * 2) {
-            log.info("[매수 조건] 익절 포텐셜이 높지 않음, resistancePrice={}, supportPrice={}, prevSupportPrice={}", resistancePrice, supportPrice, prevSupportPrice);
-            return false;
-        }
+//        double prevSupportPrice = this.getSupportPrice(movingAveragePrice, 1, index);
+//        double profitPotential = resistancePrice - supportPrice;
+//        double lossPotential = supportPrice - prevSupportPrice;
+//        if (profitPotential < lossPotential * 2) {
+//            log.info("[매수 조건] 익절 포텐셜이 높지 않음, resistancePrice={}, supportPrice={}, prevSupportPrice={}", resistancePrice, supportPrice, prevSupportPrice);
+//            return false;
+//        }
 
         // 주문한적이 있다면
         if (isExsistBuyOrder) {
             if (true) {
+                log.info("[추가 매수 조건] 추가 매수 안함");
                 return false;
             }
             if (buyTradingResultList.size() > 1) {
@@ -278,17 +279,19 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
-        // 상승 추세가 아직 유지되고 있다면
-        if (index.getMacd().getCurrentUptrendHighest() * 0.8 < index.getMacd().getCurrent()) {
-            log.info("[익절 조건] 상승 추세가 유지되고 있음, currentUptrendHighest={}, macd={}", index.getMacd().getCurrentUptrendHighest(), index.getMacd().getCurrent());
+        // 지지 받고 있다면
+        List<SpotTradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
+        SpotTradingResult lastBuyTradingResult = buyTradingResultList.get(buyTradingResultList.size() - 1);
+        double movingAveragePrice = this.getMovingAveragePrice(tradingInfo.getCandles());
+        double supportPrice = this.getSupportPrice(lastBuyTradingResult.getPrice(), 0, index);
+        if (movingAveragePrice > supportPrice) {
+            log.info("[익절 조건] 지지 받고 있음, resistancePriceList={}, movingAveragePrice={}", index.getResistancePriceList(), movingAveragePrice);
             return false;
         }
 
-        // 지지 받고 있다면
-        boolean isSupportPrice = index.getResistancePriceList().stream()
-            .anyMatch(resistancePrice -> currentPrice < (resistancePrice + param.getResistancePriceBuffer()) && currentPrice > resistancePrice);
-        if (isSupportPrice) {
-            log.info("[익절 조건] 지지 받고 있음, resistancePriceList={}, averagePrice={}", index.getResistancePriceList(), currentPrice);
+        // 상승 추세가 아직 유지되고 있다면
+        if (index.getMacd().getCurrentUptrendHighest() * 0.8 < index.getMacd().getCurrent()) {
+            log.info("[익절 조건] 상승 추세가 유지되고 있음, currentUptrendHighest={}, macd={}", index.getMacd().getCurrentUptrendHighest(), index.getMacd().getCurrent());
             return false;
         }
 
