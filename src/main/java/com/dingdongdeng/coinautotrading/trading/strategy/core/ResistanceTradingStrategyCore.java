@@ -284,7 +284,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         SpotTradingResult lastBuyTradingResult = buyTradingResultList.get(buyTradingResultList.size() - 1);
         double movingAveragePrice = this.getMovingAveragePrice(tradingInfo.getCandles());
         double supportPrice = this.getSupportPrice(lastBuyTradingResult.getPrice(), 0, index);
-        if (movingAveragePrice > supportPrice) {
+        if (movingAveragePrice > supportPrice && movingAveragePrice < (supportPrice + param.getResistancePriceBuffer())) {
             log.info("[익절 조건] 지지 받고 있음, resistancePriceList={}, movingAveragePrice={}", index.getResistancePriceList(), movingAveragePrice);
             return false;
         }
