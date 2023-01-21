@@ -216,9 +216,11 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
-        // 익절 포텐셜이 높지 않다면
+        // 익절 포텐셜과 손절 포텐셜이 2:1 비율 이하라면
         double prevSupportPrice = this.getSupportPrice(movingAveragePrice, 1, index);
-        if ((resistancePrice - supportPrice) < (supportPrice - prevSupportPrice)) {
+        double profitPotential = resistancePrice - supportPrice;
+        double lossPotential = supportPrice - prevSupportPrice;
+        if (profitPotential < lossPotential * 2) {
             log.info("[매수 조건] 익절 포텐셜이 높지 않음, resistancePrice={}, supportPrice={}, prevSupportPrice={}", resistancePrice, supportPrice, prevSupportPrice);
             return false;
         }
