@@ -190,6 +190,12 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
+        // 상승 추세가 약해지고 있다면
+        if (index.getMacd().getCurrentUptrendHighest() * 0.8 > index.getMacd().getCurrent()) {
+            log.info("[매수 조건] 상승 추세가 약해지고 있음, currentUptrendHighest={}, macdCurrent={}", index.getMacd().getCurrentUptrendHighest(), index.getMacd().getCurrent());
+            return false;
+        }
+
         // 과열 상태라면
         if (index.getRsi() > 0.7) {
             log.info("[매수 조건] 과열 상태, rsi={}", index.getRsi());
@@ -210,14 +216,18 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
-        // 상승 추세가 약해지고 있다면
-        if (index.getMacd().getCurrentUptrendHighest() * 0.8 > index.getMacd().getCurrent()) {
-            log.info("[매수 조건] 상승 추세가 약해지고 있음, currentUptrendHighest={}, macdCurrent={}", index.getMacd().getCurrentUptrendHighest(), index.getMacd().getCurrent());
+        // 익절 포텐셜이 높지 않다면
+        double prevSupportPrice = this.getSupportPrice(movingAveragePrice, 1, index);
+        if ((resistancePrice - supportPrice) < (supportPrice - prevSupportPrice)) {
+            log.info("[매수 조건] 익절 포텐셜이 높지 않음, resistancePrice={}, supportPrice={}, prevSupportPrice={}", resistancePrice, supportPrice, prevSupportPrice);
             return false;
         }
 
         // 주문한적이 있다면
         if (isExsistBuyOrder) {
+            if (true) {
+                return false;
+            }
             if (buyTradingResultList.size() > 1) {
                 log.info("[추가 매수 조건] 이미 추가 매수를 하였음");
                 return false;
@@ -237,8 +247,8 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             }
 
             // 마지막으로 매수했던 지지선의 바로 아래 지지선이 아니라면
-            double prevSupportPrice = this.getSupportPrice(lastBuyTradingResult.getPrice(), 1, index);
-            if (movingAveragePrice < prevSupportPrice || movingAveragePrice > (prevSupportPrice + param.getResistancePriceBuffer())) {
+            double prevSupportPrice_ = this.getSupportPrice(lastBuyTradingResult.getPrice(), 1, index);
+            if (movingAveragePrice < prevSupportPrice_ || movingAveragePrice > (prevSupportPrice_ + param.getResistancePriceBuffer())) {
                 log.info("[추가 매수 조건] 마지막 매수의 아래 아래 지지선이 아님, movingAveragePrice={}, lastBuyTradingResult.price={}, param.resistancePriceBuffer={}", movingAveragePrice,
                     lastBuyTradingResult.getPrice(),
                     param.getResistancePriceBuffer());
@@ -273,11 +283,6 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
 
         // 지지 받고 있다면
-        /**
-         * FIXME currentPrice -> averagePrice로 바꿔보자
-         *  double supportPrice = this.getSupportPrice(averagePrice, index);
-         *         if (averagePrice > supportPrice && averagePrice < (supportPrice + param.getResistancePriceBuffer())) {
-         */
         boolean isSupportPrice = index.getResistancePriceList().stream()
             .anyMatch(resistancePrice -> currentPrice < (resistancePrice + param.getResistancePriceBuffer()) && currentPrice > resistancePrice);
         if (isSupportPrice) {
@@ -360,7 +365,6 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
     }
 
     private double getMovingAveragePrice(ExchangeCandles candles) {
-        //FIXME 가중치를 줘볼까??? 최근 캔들일수록 더 영향력을 주는거지
         double averagePrice = (
             candles.getLatest(0).getTradePrice() + candles.getLatest(0).getOpeningPrice()
                 + candles.getLatest(1).getTradePrice() + candles.getLatest(1).getOpeningPrice()
