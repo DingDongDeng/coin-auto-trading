@@ -257,11 +257,9 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
     }
 
     private boolean isProfitOrderTiming(double currentPrice, TradingInfo tradingInfo, TradingResultPack<SpotTradingResult> tradingResultPack, Index index) {
-        List<SpotTradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
-        SpotTradingResult lastBuyTradingResult = buyTradingResultList.get(buyTradingResultList.size() - 1);
         double movingAveragePrice = this.getMovingAveragePrice(tradingInfo.getCandles());
-        double supportPrice = this.getSupportPrice(lastBuyTradingResult.getPrice(), 0, index);
-        double resistancePrice = this.getResistancePrice(lastBuyTradingResult.getPrice(), index);
+        double supportPrice = this.getSupportPrice(movingAveragePrice, 0, index);
+        double resistancePrice = this.getResistancePrice(movingAveragePrice, index);
         double prevSupportPrice = this.getSupportPrice(movingAveragePrice, 1, index);
         double profitPotential = resistancePrice - supportPrice;
         double lossPotential = supportPrice - prevSupportPrice;
@@ -296,11 +294,9 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
     }
 
     private boolean isLossOrderTiming(double currentPrice, TradingInfo tradingInfo, TradingResultPack<SpotTradingResult> tradingResultPack, Index index) {
-        List<SpotTradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
-        SpotTradingResult lastBuyTradingResult = buyTradingResultList.get(buyTradingResultList.size() - 1);
         double movingAveragePrice = this.getMovingAveragePrice(tradingInfo.getCandles());
-        double resistancePrice = this.getResistancePrice(lastBuyTradingResult.getPrice(), index);
-        double supportPrice = this.getSupportPrice(lastBuyTradingResult.getPrice(), 0, index);
+        double resistancePrice = this.getResistancePrice(movingAveragePrice, index);
+        double supportPrice = this.getSupportPrice(movingAveragePrice, 0, index);
         double prevSupportPrice = this.getSupportPrice(movingAveragePrice, 1, index);
         double profitPotential = resistancePrice - supportPrice;
         double lossPotential = supportPrice - prevSupportPrice;
