@@ -51,6 +51,7 @@ public class IndexCalculator {
         return Macd.builder()
             .current(outMACDHist[outNBElement.value - 1])
             .currentUptrendHighest(this.getCurrentUptrendHighest(outMACDHist))
+            .currentDowntrendLowest(this.getCurrentDowntrendHighest(outMACDHist))
             .build();
     }
 
@@ -65,6 +66,19 @@ public class IndexCalculator {
             }
         }
         return highestMacd;
+    }
+
+    private double getCurrentDowntrendHighest(double[] outMACDHist) {
+        double lowestMacd = 0;
+        for (int i = outMACDHist.length - 1; i >= 0; i--) {
+            if (outMACDHist[i] > 0) {
+                break;
+            }
+            if (outMACDHist[i] <= lowestMacd) {
+                lowestMacd = outMACDHist[i];
+            }
+        }
+        return lowestMacd;
     }
 
     public List<Double> getResistancePrice(ExchangeCandles candles) {
