@@ -183,10 +183,18 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         boolean isExsistBuyOrder = !buyTradingResultList.isEmpty();
         ExchangeCandles candles = tradingInfo.getCandles();
         double movingAveragePrice = this.getMovingAveragePrice(candles);
+        double movingResistancePrice = this.getResistancePrice(movingAveragePrice, index);
+        double movingSupportPrice = this.getSupportPrice(movingAveragePrice, 0, index);
 
         // 하락 추세라면
         if (index.getMacd().getCurrent() < 1000 || index.getRsi() < 0.30) {
             log.info("[매수 조건] 하락 추세, macd={}, rsi={}", index.getMacd().getCurrent(), index.getRsi());
+            return false;
+        }
+
+        // 저항 받고 있다면
+        if (movingAveragePrice < movingResistancePrice && movingAveragePrice > (movingResistancePrice - param.getResistancePriceBuffer())) {
+            log.info("[매수 조건] 저항 받고 있음, resistancePriceList={}, averagePrice={}", index.getResistancePriceList(), movingAveragePrice);
             return false;
         }
 
@@ -197,16 +205,13 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
 
         // 지지 받고 있지 않다면
-        double supportPrice = this.getSupportPrice(movingAveragePrice, 0, index);
-        if (movingAveragePrice > (supportPrice + param.getResistancePriceBuffer()) || movingAveragePrice < supportPrice) {
+        if (movingAveragePrice > (movingSupportPrice + param.getResistancePriceBuffer()) || movingAveragePrice < movingSupportPrice) {
+            // 저항선이 없음
+            if (movingResistancePrice == Integer.MAX_VALUE) {
+                log.info("[매수 조건] 매수 조건 만족, 저항선이 없음");
+                return true;
+            }
             log.info("[매수 조건] 지지 받고 있지 않음, resistancePriceList={}, averagePrice={}", index.getResistancePriceList(), movingAveragePrice);
-            return false;
-        }
-
-        // 저항 받고 있다면
-        double resistancePrice = this.getResistancePrice(movingAveragePrice, index);
-        if (movingAveragePrice < resistancePrice && movingAveragePrice > (resistancePrice - param.getResistancePriceBuffer())) {
-            log.info("[매수 조건] 저항 받고 있음, resistancePriceList={}, averagePrice={}", index.getResistancePriceList(), movingAveragePrice);
             return false;
         }
 
