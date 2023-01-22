@@ -182,9 +182,11 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         List<SpotTradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
         boolean isExsistBuyOrder = !buyTradingResultList.isEmpty();
         ExchangeCandles candles = tradingInfo.getCandles();
+
         double movingAveragePrice = this.getMovingAveragePrice(candles);
         double movingResistancePrice = this.getResistancePrice(movingAveragePrice, index);
         double movingSupportPrice = this.getSupportPrice(movingAveragePrice, 0, index);
+        double movingPrevSupportPrice = this.getSupportPrice(movingAveragePrice, 1, index);
 
         // 추가 매수 안함
         if (isExsistBuyOrder) {
@@ -207,6 +209,13 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         // 상승 추세가 약해지고 있다면
         if (index.getMacd().getCurrentUptrendHighest() * 0.8 > index.getMacd().getCurrent()) {
             log.info("[매수 조건] 상승 추세가 약해지고 있음, currentUptrendHighest={}, macdCurrent={}", index.getMacd().getCurrentUptrendHighest(), index.getMacd().getCurrent());
+            return false;
+        }
+
+        // 지지선 아래를 바쳐주는 지지선이 없다면(리스크가 너무 큼)
+        if (movingPrevSupportPrice == 0) {
+            log.info("[매수 조건] 지지선 아래에 다른 지지선이 없음, resistancePriceList={}, movingPrevSupportPrice={}, movingAveragePrice={}", index.getResistancePriceList(), movingPrevSupportPrice,
+                movingAveragePrice);
             return false;
         }
 
@@ -234,8 +243,8 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
                 return false;
             }
 
-            SpotTradingResult lastBuyTradingResult = buyTradingResultList.get(buyTradingResultList.size() - 1);
             // 마지막 주문보다 현재가가 높다면(추가 매수는 항상 더 낮은 가격으로 사야하기 때문)
+            SpotTradingResult lastBuyTradingResult = buyTradingResultList.get(buyTradingResultList.size() - 1);
             if (lastBuyTradingResult.getPrice() <= currentPrice) {
                 log.info("[추가 매수 조건] 추가 매수하기에는 현재가가 높음, lastBuyTradingResult.price={}, currentPrice={}", lastBuyTradingResult.getPrice(), currentPrice);
                 return false;
