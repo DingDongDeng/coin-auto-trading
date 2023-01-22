@@ -262,6 +262,9 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         SpotTradingResult lastBuyTradingResult = buyTradingResultList.get(buyTradingResultList.size() - 1);
         double resistancePrice = this.getResistancePrice(lastBuyTradingResult.getPrice(), index);
         double supportPrice = this.getSupportPrice(lastBuyTradingResult.getPrice(), 0, index);
+        double prevSupportPrice = this.getSupportPrice(lastBuyTradingResult.getPrice(), 1, index);
+        double profitPotential = resistancePrice - supportPrice;
+        double lossPotential = supportPrice - prevSupportPrice;
 
         double movingAveragePrice = this.getMovingAveragePrice(tradingInfo.getCandles());
         double movingSupportPrice = this.getSupportPrice(movingAveragePrice, 0, index);
@@ -292,6 +295,12 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         double rate = movingLossPotential > movingProfitPotential ? 0.8 : 0.6;
         if (index.getMacd().getCurrentUptrendHighest() * rate < index.getMacd().getCurrent()) {
             log.info("[익절 조건] 상승 추세가 유지되고 있음, currentUptrendHighest={}, macd={}", index.getMacd().getCurrentUptrendHighest(), index.getMacd().getCurrent());
+            return false;
+        }
+
+        // 최소 익절금액은 감수했던 손절 리스크보다는 커야함
+        if ((currentPrice - tradingResultPack.getAveragePrice()) < lossPotential) {
+            log.info("[익절 조건] 최소 익절 금액이 감수했던 리스크 금액보다 작음 , 익절금액={}, lossPotential={}", currentPrice - tradingResultPack.getAveragePrice(), lossPotential);
             return false;
         }
 
