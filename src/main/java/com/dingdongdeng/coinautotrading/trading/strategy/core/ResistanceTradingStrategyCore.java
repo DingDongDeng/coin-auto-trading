@@ -285,12 +285,6 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
-        // 지지 받고 있다면
-        if (movingAveragePrice > supportPrice && movingAveragePrice < (supportPrice + param.getResistancePriceBuffer())) {
-            log.info("[익절 조건] 지지 받고 있음, resistancePriceList={}, movingAveragePrice={}", index.getResistancePriceList(), movingAveragePrice);
-            return false;
-        }
-
         // 상승 추세가 아직 유지되고 있다면
         double rate = movingLossPotential > movingProfitPotential ? 0.8 : 0.6;
         if (index.getMacd().getCurrentUptrendHighest() * rate < index.getMacd().getCurrent()) {
