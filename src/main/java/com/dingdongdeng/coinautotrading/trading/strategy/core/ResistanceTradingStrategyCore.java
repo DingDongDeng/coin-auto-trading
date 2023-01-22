@@ -187,6 +187,8 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         double movingResistancePrice = this.getResistancePrice(movingAveragePrice, index);
         double movingSupportPrice = this.getSupportPrice(movingAveragePrice, 0, index);
         double movingPrevSupportPrice = this.getSupportPrice(movingAveragePrice, 1, index);
+        double movingProfitPotential = movingResistancePrice - movingSupportPrice;
+        double movingLossPotential = movingSupportPrice - movingPrevSupportPrice;
 
         // 추가 매수 안함
         if (isExsistBuyOrder) {
@@ -216,6 +218,12 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         if (movingPrevSupportPrice == 0) {
             log.info("[매수 조건] 지지선 아래에 다른 지지선이 없음, resistancePriceList={}, movingPrevSupportPrice={}, movingAveragePrice={}", index.getResistancePriceList(), movingPrevSupportPrice,
                 movingAveragePrice);
+            return false;
+        }
+
+        // 손절 포텐셜이 더 크다면 매수하지 않음
+        if (movingLossPotential > movingProfitPotential) {
+            log.info("[매수 조건] 손절 포텐셜이 더 큼, movingLossPotential={}, movingProfitPotential={}", movingLossPotential, movingProfitPotential);
             return false;
         }
 
