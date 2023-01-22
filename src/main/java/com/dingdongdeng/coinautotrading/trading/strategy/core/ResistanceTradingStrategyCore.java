@@ -203,10 +203,10 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
 
         // 저항 받고 있다면
-        if (movingAveragePrice < movingResistancePrice && movingAveragePrice > (movingResistancePrice - param.getResistancePriceBuffer())) {
-            log.info("[매수 조건] 저항 받고 있음, resistancePriceList={}, averagePrice={}", index.getResistancePriceList(), movingAveragePrice);
-            return false;
-        }
+//        if (movingAveragePrice < movingResistancePrice && movingAveragePrice > (movingResistancePrice - param.getResistancePriceBuffer())) {
+//            log.info("[매수 조건] 저항 받고 있음, resistancePriceList={}, averagePrice={}", index.getResistancePriceList(), movingAveragePrice);
+//            return false;
+//        }
 
         // 상승 추세가 약해지고 있다면
         if (index.getMacd().getCurrentUptrendHighest() * 0.8 > index.getMacd().getCurrent()) {
@@ -222,10 +222,10 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
 
         // 손절 포텐셜이 더 크다면 매수하지 않음
-        if (movingLossPotential > movingProfitPotential) {
-            log.info("[매수 조건] 손절 포텐셜이 더 큼, movingLossPotential={}, movingProfitPotential={}", movingLossPotential, movingProfitPotential);
-            return false;
-        }
+//        if (movingLossPotential > movingProfitPotential * 1.5) {
+//            log.info("[매수 조건] 손절 포텐셜이 더 큼, movingLossPotential={}, movingProfitPotential={}", movingLossPotential, movingProfitPotential);
+//            return false;
+//        }
 
         // 지지 받고 있지 않다면
         if (movingAveragePrice > (movingSupportPrice + param.getResistancePriceBuffer()) || movingAveragePrice < movingSupportPrice) {
