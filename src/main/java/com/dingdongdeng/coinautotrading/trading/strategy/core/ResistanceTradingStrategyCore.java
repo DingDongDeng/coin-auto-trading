@@ -299,7 +299,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
 
         // 최소 익절금액은 감수했던 손절 리스크보다는 커야함
-        if ((currentPrice - tradingResultPack.getAveragePrice()) < lossPotential) {
+        if (prevSupportPrice != 0 && ((currentPrice - tradingResultPack.getAveragePrice()) < lossPotential)) {
             log.info("[익절 조건] 최소 익절 금액이 감수했던 리스크 금액보다 작음 , 익절금액={}, lossPotential={}", currentPrice - tradingResultPack.getAveragePrice(), lossPotential);
             return false;
         }
