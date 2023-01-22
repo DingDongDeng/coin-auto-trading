@@ -196,12 +196,6 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
-        // 과열 상태라면
-        if (index.getRsi() > 0.7) {
-            log.info("[매수 조건] 과열 상태, rsi={}", index.getRsi());
-            return false;
-        }
-
         // 지지 받고 있지 않다면
         double supportPrice = this.getSupportPrice(movingAveragePrice, 0, index);
         if (movingAveragePrice > (supportPrice + param.getResistancePriceBuffer()) || movingAveragePrice < supportPrice) {
