@@ -324,8 +324,8 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
 
         // 두번째 지지선까지 하락하지 않았다면
-        if (currentPrice > prevSupportPrice) {
-            log.info("[손절 조건] 두번째 지지선까지는 하락하지 않음, resistancePriceList={}, currentPrice={}", index.getResistancePriceList(), currentPrice);
+        if (movingAveragePrice > prevSupportPrice) {
+            log.info("[손절 조건] 두번째 지지선까지는 하락하지 않음, resistancePriceList={}, movingAveragePrice={}", index.getResistancePriceList(), movingAveragePrice);
             return false;
         }
 
