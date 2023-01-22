@@ -294,6 +294,8 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
     }
 
     private boolean isLossOrderTiming(double currentPrice, TradingInfo tradingInfo, TradingResultPack<SpotTradingResult> tradingResultPack, Index index) {
+        List<SpotTradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
+        SpotTradingResult lastBuyTradingResult = buyTradingResultList.get(buyTradingResultList.size() - 1);
         double movingAveragePrice = this.getMovingAveragePrice(tradingInfo.getCandles());
         double resistancePrice = this.getResistancePrice(movingAveragePrice, index);
         double supportPrice = this.getSupportPrice(movingAveragePrice, 0, index);
@@ -313,9 +315,9 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
-        // 지지 받고 있다면
-        if (movingAveragePrice > supportPrice) {
-            log.info("[손절 조건] 지지 받고 있음, resistancePriceList={}, movingAveragePrice={}", index.getResistancePriceList(), movingAveragePrice);
+        // 두번째 지지선까지 하락하지 않았다면
+        if (movingAveragePrice > this.getSupportPrice(lastBuyTradingResult.getPrice(), 1, index)) {
+            log.info("[손절 조건] 두번째 지지선까지는 하락하지 않음, resistancePriceList={}, movingAveragePrice={}", index.getResistancePriceList(), movingAveragePrice);
             return false;
         }
 
