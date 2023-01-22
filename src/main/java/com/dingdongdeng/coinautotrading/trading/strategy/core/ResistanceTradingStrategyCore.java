@@ -186,6 +186,12 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         double movingResistancePrice = this.getResistancePrice(movingAveragePrice, index);
         double movingSupportPrice = this.getSupportPrice(movingAveragePrice, 0, index);
 
+        // 추가 매수 안함
+        if (isExsistBuyOrder) {
+            log.info("[추가 매수 조건] 추가 매수 안함");
+            return false;
+        }
+
         // 하락 추세라면
         if (index.getMacd().getCurrent() < 1000 || index.getRsi() < 0.30) {
             log.info("[매수 조건] 하락 추세, macd={}, rsi={}", index.getMacd().getCurrent(), index.getRsi());
@@ -217,10 +223,6 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
 
         // 주문한적이 있다면
         if (isExsistBuyOrder) {
-            if (true) {
-                log.info("[추가 매수 조건] 추가 매수 안함");
-                return false;
-            }
             if (buyTradingResultList.size() > 1) {
                 log.info("[추가 매수 조건] 이미 추가 매수를 하였음");
                 return false;
