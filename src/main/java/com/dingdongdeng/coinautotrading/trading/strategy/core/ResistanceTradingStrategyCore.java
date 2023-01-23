@@ -334,23 +334,27 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
-        // 두번째 지지선이 존재하지 않으면, 익절 포텐셜 만큼을 손절 라인으로 사용하여 그곳까지 도달하지 않았다면 손절하지 않음
-        if (prevSupportPrice == 0 && resistancePrice != Integer.MAX_VALUE && movingAveragePrice > (supportPrice - profitPotential)) {
-            log.info("[손절 조건] 익절 포텐셜만큼을 손절 라인으로 가짐, 이 라인까지 도달하지 않았음, movingAveragePrice={}, 익절포텐셜={}", movingAveragePrice, movingSupportPrice - movingProfitPotential);
-            return false;
+        // 1순위 : 두번째 지지선이 존재하지 않으면, 익절 포텐셜 만큼을 손절 라인으로 사용하여 그곳까지 도달하지 않았다면 손절하지 않음
+        if (prevSupportPrice == 0 && resistancePrice != Integer.MAX_VALUE) {
+            if (movingAveragePrice > (supportPrice - profitPotential)) {
+                log.info("[손절 조건] 익절 포텐셜만큼을 손절 라인으로 가짐, 이 라인까지 도달하지 않았음, movingAveragePrice={}, 익절포텐셜={}", movingAveragePrice, movingSupportPrice - movingProfitPotential);
+                return false;
+            }
         }
-
-        // 두번째 지지선이 존재하고, 그곳까지 하락하지 않았다면
-        if (prevSupportPrice != 0 && movingAveragePrice > prevSupportPrice) {
-            log.info("[손절 조건] 두번째 지지선까지는 하락하지 않음, resistancePriceList={}, movingAveragePrice={}", index.getResistancePriceList(), movingAveragePrice);
-            return false;
+        // 2순위 : 두번째 지지선이 존재하고, 그곳까지 하락하지 않았다면
+        else if (prevSupportPrice != 0) {
+            if (movingAveragePrice > prevSupportPrice) {
+                log.info("[손절 조건] 두번째 지지선까지는 하락하지 않음, resistancePriceList={}, movingAveragePrice={}", index.getResistancePriceList(), movingAveragePrice);
+                return false;
+            }
         }
-
-        // 상승 추세가 아직 유지되고 있다면
-        double rate = movingLossPotential > movingProfitPotential ? 0.8 : 0.6;
-        if (index.getMacd().getCurrentUptrendHighest() * rate < index.getMacd().getCurrent()) {
-            log.info("[손절 조건] 상승 추세가 유지되고 있음, currentUptrendHighest={}, macd={}", index.getMacd().getCurrentUptrendHighest(), index.getMacd().getCurrent());
-            return false;
+        // 3순위 : 상승 추세가 아직 유지되고 있다면
+        else {
+            double rate = movingLossPotential > movingProfitPotential ? 0.8 : 0.6;
+            if (index.getMacd().getCurrentUptrendHighest() * rate < index.getMacd().getCurrent()) {
+                log.info("[손절 조건] 상승 추세가 유지되고 있음, currentUptrendHighest={}, macd={}", index.getMacd().getCurrentUptrendHighest(), index.getMacd().getCurrent());
+                return false;
+            }
         }
 
         log.info("[손절 조건] 손절 조건 만족");
