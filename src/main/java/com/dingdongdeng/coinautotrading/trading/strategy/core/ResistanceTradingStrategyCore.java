@@ -198,13 +198,13 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
 
         // 하락 추세라면
-        if (macd < 0 || index.getRsi() < 0.30) {
+        if (macd < 100 || index.getRsi() < 0.30) {
             log.info("[매수 조건] 하락 추세, macd={}, rsi={}", macd, index.getRsi());
             return false;
         }
 
         // 상승 초기가 아니라면 (macd가 음수에서 양수로 전환되는 시점이 아니라면)
-        if (index.getMacd().getLatestMacd(2) < 0) {
+        if (index.getMacd().getLatestMacd(1) > 0) {
             log.info("[매수 조건] 상승 초기가 아님, macd={}, prevMacd={}", macd, index.getMacd().getLatestMacd(1));
             return false;
         }
