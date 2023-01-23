@@ -56,6 +56,7 @@ public class BackTestingProcessor {
                 // 기록
                 recorder.record(RecordContext.ofStrategyExecuteResult(executeResult));
             }
+            //fixme 무한루프 방지를 위한 안전장치 필요
         } catch (Exception e) {
             log.error("backTesting error : ", e); //fixme 여기서 로깅하지 않도록 수정
             this.status = BackTestingProcessStatus.FAILED;
