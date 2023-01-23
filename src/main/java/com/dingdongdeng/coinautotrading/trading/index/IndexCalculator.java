@@ -5,6 +5,7 @@ import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCa
 import com.dingdongdeng.coinautotrading.trading.index.Index.Macd;
 import com.tictactec.ta.lib.Core;
 import com.tictactec.ta.lib.MInteger;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -51,6 +52,8 @@ public class IndexCalculator {
         return Macd.builder()
             .current(outMACDHist[outNBElement.value - 1])
             .currentUptrendHighest(this.getCurrentUptrendHighest(outMACDHist))
+            .currentDowntrendLowest(this.getCurrentDowntrendHighest(outMACDHist))
+            .macds(Arrays.copyOfRange(outMACDHist, 0, outNBElement.value))
             .build();
     }
 
@@ -65,6 +68,19 @@ public class IndexCalculator {
             }
         }
         return highestMacd;
+    }
+
+    private double getCurrentDowntrendHighest(double[] outMACDHist) {
+        double lowestMacd = 0;
+        for (int i = outMACDHist.length - 1; i >= 0; i--) {
+            if (outMACDHist[i] > 0) {
+                break;
+            }
+            if (outMACDHist[i] <= lowestMacd) {
+                lowestMacd = outMACDHist[i];
+            }
+        }
+        return lowestMacd;
     }
 
     public List<Double> getResistancePrice(ExchangeCandles candles) {
