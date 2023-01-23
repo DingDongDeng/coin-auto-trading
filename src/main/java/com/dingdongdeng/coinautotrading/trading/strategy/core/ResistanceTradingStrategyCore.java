@@ -202,7 +202,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
 
         // 하락 추세라면
-        if (macd < 100) {
+        if (macd < 0) {
             log.info("[매수 조건] 하락 추세, macd={}", macd);
             return false;
         }
