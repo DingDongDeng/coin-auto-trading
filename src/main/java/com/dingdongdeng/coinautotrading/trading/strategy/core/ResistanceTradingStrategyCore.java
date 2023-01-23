@@ -204,7 +204,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
 
         // 상승 초기가 아니라면 (macd가 음수에서 양수로 전환되는 시점이 아니라면)
-        if (index.getMacd().getLatestMacd(1) < 0) {
+        if (index.getMacd().getLatestMacd(2) < 0) {
             log.info("[매수 조건] 상승 초기가 아님, macd={}, prevMacd={}", macd, index.getMacd().getLatestMacd(1));
             return false;
         }
