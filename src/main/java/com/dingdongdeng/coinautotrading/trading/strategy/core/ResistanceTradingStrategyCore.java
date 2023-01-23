@@ -203,15 +203,15 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
-        // 상승 초기가 아니라면 (macd가 음수에서 양수로 전환되는 시점이 아니라면)
-        if (index.getMacd().getLatestMacd(1) > 0) {
-            log.info("[매수 조건] 상승 초기가 아님, macd={}, prevMacd={}", macd, index.getMacd().getLatestMacd(1));
-            return false;
-        }
-
         // 상승 추세가 약해지고 있다면
         if (index.getMacd().getCurrentUptrendHighest() * 0.8 > macd) {
             log.info("[매수 조건] 상승 추세가 약해지고 있음, currentUptrendHighest={}, macdCurrent={}", index.getMacd().getCurrentUptrendHighest(), index.getMacd().getCurrent());
+            return false;
+        }
+
+        // macd가 하락에서 상승으로 전환되는 극 초기에는 매수하지 않음
+        if (index.getMacd().getLatestMacd(1) < 100) {
+            log.info("[매수 조건] 하락에서 상승으로 전환되는 극 초기에는 매수하지 않음, macd={}, prevMacd={}", macd, index.getMacd().getLatestMacd(1));
             return false;
         }
 
