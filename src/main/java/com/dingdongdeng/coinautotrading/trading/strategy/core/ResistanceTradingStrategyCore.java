@@ -210,9 +210,9 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
 
         // 지지 받고 있지 않다면
         if (movingAveragePrice > (movingSupportPrice + param.getResistancePriceBuffer()) || movingAveragePrice < movingSupportPrice) {
-            // 저항선이 없음
-            if (movingResistancePrice == Integer.MAX_VALUE) {
-                log.info("[매수 조건] 매수 조건 만족, 저항선이 없음");
+            // 저항선이 없고, 충분히 상승세여야 함
+            if (movingResistancePrice == Integer.MAX_VALUE && index.getMacd().getCurrent() > 2000) {
+                log.info("[매수 조건] 매수 조건 만족, 저항선이 없고 충분히 상승세, macd={}", index.getMacd().getCurrent());
                 return true;
             }
             log.info("[매수 조건] 지지 받고 있지 않음, resistancePriceList={}, averagePrice={}", index.getResistancePriceList(), movingAveragePrice);
