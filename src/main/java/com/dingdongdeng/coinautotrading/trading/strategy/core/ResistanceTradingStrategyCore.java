@@ -34,8 +34,6 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         TradingTerm tradingTerm = tradingInfo.getTradingTerm();
         Index index = tradingInfo.getIndex();
 
-        log.info("tradingInfo : {}", tradingInfo);
-
         // 자동매매 중 기억해야할 실시간 주문 정보(익절, 손절, 매수 주문 정보)
         List<SpotTradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
         List<SpotTradingResult> profitTradingResultList = tradingResultPack.getProfitTradingResultList();
