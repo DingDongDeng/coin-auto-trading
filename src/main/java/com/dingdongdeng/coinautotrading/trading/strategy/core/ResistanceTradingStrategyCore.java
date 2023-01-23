@@ -195,9 +195,21 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
+        // 과매도 상태
+        if (index.getRsi() < 0.3) {
+            log.info("[매수 조건] 과매도 상태, rsi={}", index.getRsi());
+            return false;
+        }
+
         // 하락 추세라면
-        if (macd < 100 || index.getRsi() < 0.30) {
-            log.info("[매수 조건] 하락 추세, macd={}, rsi={}", macd, index.getRsi());
+        if (macd < 0) {
+            log.info("[매수 조건] 하락 추세, macd={}", macd);
+            return false;
+        }
+
+        // 유의미한 해석이 불가함
+        if (index.getMacd().getCurrentUptrendHighest() < 1000) {
+            log.info("[매수 조건] highestMacd의 유의미한 해석을 하기에 값이 작음, highestMace={}", index.getMacd().getCurrentUptrendHighest());
             return false;
         }
 
