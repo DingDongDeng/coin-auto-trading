@@ -310,7 +310,13 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
     private boolean isLossOrderTiming(double currentPrice, TradingInfo tradingInfo, TradingResultPack<SpotTradingResult> tradingResultPack, Index index) {
         List<SpotTradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
         SpotTradingResult lastBuyTradingResult = buyTradingResultList.get(buyTradingResultList.size() - 1);
+
+        double resistancePrice = this.getResistancePrice(lastBuyTradingResult.getPrice(), index);
+        double supportPrice = this.getSupportPrice(lastBuyTradingResult.getPrice(), 0, index);
         double prevSupportPrice = this.getSupportPrice(lastBuyTradingResult.getPrice(), 1, index);
+        double profitPotential = resistancePrice - supportPrice;
+        double lossPotential = supportPrice - prevSupportPrice;
+
         double movingAveragePrice = this.getMovingAveragePrice(tradingInfo.getCandles());
         double movingResistancePrice = this.getResistancePrice(movingAveragePrice, index);
         double movingSupportPrice = this.getSupportPrice(movingAveragePrice, 0, index);
@@ -330,7 +336,13 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
-        // 두번째 지지선까지 하락하지 않았다면
+        // 두번째 지지선이 존재하지 않으면, 익절 포텐셜 만큼을 손절 라인으로 사용하여 그곳까지 도달하지 않았다면 손절하지 않음
+        if (prevSupportPrice == 0 && resistancePrice != Integer.MAX_VALUE && movingAveragePrice > (supportPrice - profitPotential)) {
+            log.info("[손절 조건] 익절 포텐셜만큼을 손절 라인으로 가짐, 이 라인까지 도달하지 않았음, movingAveragePrice={}, 익절포텐셜={}", movingAveragePrice, movingSupportPrice - movingProfitPotential);
+            return false;
+        }
+
+        // 두번째 지지선이 존재하고, 그곳까지 하락하지 않았다면
         if (prevSupportPrice != 0 && movingAveragePrice > prevSupportPrice) {
             log.info("[손절 조건] 두번째 지지선까지는 하락하지 않음, resistancePriceList={}, movingAveragePrice={}", index.getResistancePriceList(), movingAveragePrice);
             return false;
