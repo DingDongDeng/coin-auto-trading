@@ -183,6 +183,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         boolean isExsistBuyOrder = !buyTradingResultList.isEmpty();
         ExchangeCandles candles = tradingInfo.getCandles();
 
+        double macd = index.getMacd().getCurrent();
         double movingAveragePrice = this.getMovingAveragePrice(candles);
         double movingResistancePrice = this.getResistancePrice(movingAveragePrice, index);
         double movingSupportPrice = this.getSupportPrice(movingAveragePrice, 0, index);
@@ -197,13 +198,19 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
 
         // 하락 추세라면
-        if (index.getMacd().getCurrent() < 1000 || index.getRsi() < 0.30) {
-            log.info("[매수 조건] 하락 추세, macd={}, rsi={}", index.getMacd().getCurrent(), index.getRsi());
+        if (macd < 0 || index.getRsi() < 0.30) {
+            log.info("[매수 조건] 하락 추세, macd={}, rsi={}", macd, index.getRsi());
+            return false;
+        }
+
+        // 상승 초기가 아니라면 (macd가 음수에서 양수로 전환되는 시점이 아니라면)
+        if (index.getMacd().getLatestMacd(1) < 0) {
+            log.info("[매수 조건] 상승 초기가 아님, macd={}, prevMacd={}", macd, index.getMacd().getLatestMacd(1));
             return false;
         }
 
         // 상승 추세가 약해지고 있다면
-        if (index.getMacd().getCurrentUptrendHighest() * 0.8 > index.getMacd().getCurrent()) {
+        if (index.getMacd().getCurrentUptrendHighest() * 0.8 > macd) {
             log.info("[매수 조건] 상승 추세가 약해지고 있음, currentUptrendHighest={}, macdCurrent={}", index.getMacd().getCurrentUptrendHighest(), index.getMacd().getCurrent());
             return false;
         }
@@ -211,7 +218,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         // 지지 받고 있지 않다면
         if (movingAveragePrice > (movingSupportPrice + param.getResistancePriceBuffer()) || movingAveragePrice < movingSupportPrice) {
             // 저항선이 없고, 충분히 상승세여야 함
-            if (movingResistancePrice == Integer.MAX_VALUE && index.getMacd().getCurrent() > 2000) {
+            if (movingResistancePrice == Integer.MAX_VALUE) {
                 log.info("[매수 조건] 매수 조건 만족, 저항선이 없고 충분히 상승세, macd={}", index.getMacd().getCurrent());
                 return true;
             }

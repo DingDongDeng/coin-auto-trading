@@ -5,6 +5,7 @@ import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCa
 import com.dingdongdeng.coinautotrading.trading.index.Index.Macd;
 import com.tictactec.ta.lib.Core;
 import com.tictactec.ta.lib.MInteger;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +53,7 @@ public class IndexCalculator {
             .current(outMACDHist[outNBElement.value - 1])
             .currentUptrendHighest(this.getCurrentUptrendHighest(outMACDHist))
             .currentDowntrendLowest(this.getCurrentDowntrendHighest(outMACDHist))
+            .macds(Arrays.copyOfRange(outMACDHist, 0, outNBElement.value))
             .build();
     }
 
