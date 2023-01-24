@@ -53,8 +53,8 @@ public class IndexCalculator {
             .hist(outMACDHist[outNBElement.value - 1])
             .signal(outMACDSignal[outNBElement.value - 1])
             .macd(outMACD[outNBElement.value - 1])
-            .currentUptrendHighest(this.getCurrentUptrendHighest(outMACDHist))
-            .currentDowntrendLowest(this.getCurrentDowntrendHighest(outMACDHist))
+            .currentUptrendHighestHist(this.getCurrentUptrendHighest(outMACDHist))
+            .currentDowntrendLowestHist(this.getCurrentDowntrendHighest(outMACDHist))
             .hists(Arrays.copyOfRange(outMACDHist, 0, outNBElement.value))
             .build();
     }

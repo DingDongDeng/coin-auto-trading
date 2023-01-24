@@ -205,20 +205,20 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
 
         // 상승 추세가 아니라면
-        if (macdHist < 0 || macdSignal < 0 || macdMacd < 0) {
+        if (macdHist < 0) {
             log.info("[매수 조건] 하락 추세, hist={}, signal={}, macd={}", macdHist, macdSignal, macdMacd);
             return false;
         }
 
         // 유의미한 해석이 불가함
-        if (index.getMacd().getCurrentUptrendHighest() < 1000) {
-            log.info("[매수 조건] highestMacd의 유의미한 해석을 하기에 값이 작음, highestMace={}", index.getMacd().getCurrentUptrendHighest());
+        if (index.getMacd().getCurrentUptrendHighestHist() < 1000) {
+            log.info("[매수 조건] highestMacd의 유의미한 해석을 하기에 값이 작음, highestMace={}", index.getMacd().getCurrentUptrendHighestHist());
             return false;
         }
 
         // 상승 추세가 약해지고 있다면
-        if (index.getMacd().getCurrentUptrendHighest() * 0.8 > macdHist) {
-            log.info("[매수 조건] 상승 추세가 약해지고 있음, currentUptrendHighest={}, macdCurrent={}", index.getMacd().getCurrentUptrendHighest(), index.getMacd().getHist());
+        if (index.getMacd().getCurrentUptrendHighestHist() * 0.8 > macdHist) {
+            log.info("[매수 조건] 상승 추세가 약해지고 있음, currentUptrendHighestHist={}, macdCurrent={}", index.getMacd().getCurrentUptrendHighestHist(), index.getMacd().getHist());
             return false;
         }
 
@@ -305,8 +305,8 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
 
         // 상승 추세가 아직 유지되고 있다면
         double rate = movingLossPotential > movingProfitPotential ? 0.8 : 0.6;
-        if (index.getMacd().getCurrentUptrendHighest() * rate < index.getMacd().getHist()) {
-            log.info("[익절 조건] 상승 추세가 유지되고 있음, currentUptrendHighest={}, macd={}", index.getMacd().getCurrentUptrendHighest(), index.getMacd().getHist());
+        if (index.getMacd().getCurrentUptrendHighestHist() * rate < index.getMacd().getHist()) {
+            log.info("[익절 조건] 상승 추세가 유지되고 있음, currentUptrendHighestHist={}, macd={}", index.getMacd().getCurrentUptrendHighestHist(), index.getMacd().getHist());
             return false;
         }
 
@@ -366,8 +366,8 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         // 3순위 : 상승 추세가 아직 유지되고 있다면
         else {
             double rate = movingLossPotential > movingProfitPotential ? 0.8 : 0.6;
-            if (index.getMacd().getCurrentUptrendHighest() * rate < index.getMacd().getHist()) {
-                log.info("[손절 조건] 상승 추세가 유지되고 있음, currentUptrendHighest={}, macd={}", index.getMacd().getCurrentUptrendHighest(), index.getMacd().getHist());
+            if (index.getMacd().getCurrentUptrendHighestHist() * rate < index.getMacd().getHist()) {
+                log.info("[손절 조건] 상승 추세가 유지되고 있음, currentUptrendHighestHist={}, macd={}", index.getMacd().getCurrentUptrendHighestHist(), index.getMacd().getHist());
                 return false;
             }
         }

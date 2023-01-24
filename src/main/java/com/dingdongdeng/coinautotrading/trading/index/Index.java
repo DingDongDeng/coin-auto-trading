@@ -22,8 +22,8 @@ public class Index {
         private double hist;
         private double signal;
         private double macd;
-        private double currentUptrendHighest; // 현재 상승 추세에서 가장 높은 hist (상승 추세가 아니라면 0)
-        private double currentDowntrendLowest; // 현재 하락 추세에서 가장 낮은 hist (하락 추세가 아니라면 0)
+        private double currentUptrendHighestHist; // 현재 상승 추세에서 가장 높은 hist (상승 추세가 아니라면 0)
+        private double currentDowntrendLowestHist; // 현재 하락 추세에서 가장 낮은 hist (하락 추세가 아니라면 0)
         private double[] hists;
 
         public double getLatestHist(int index) {
