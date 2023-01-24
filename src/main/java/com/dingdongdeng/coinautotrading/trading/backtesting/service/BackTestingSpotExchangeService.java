@@ -116,33 +116,21 @@ public class BackTestingSpotExchangeService implements SpotExchangeService {
         Candle currentCandle = context.getCurrentCandle();
         ExchangeCandles candles = this.deepCopyCandles(context.getCandles());
 
-        // 현재가 정보 조회
-        SpotExchangeTicker ticker = SpotExchangeTicker.builder()
-            .tradePrice(currentPrice)
-            .openingPrice(currentCandle.getOpeningPrice())
-            .highPrice(currentCandle.getHighPrice())
-            .lowPrice(currentCandle.getLowPrice())
-            .tradePrice(currentCandle.getTradePrice())
-            .timestamp(currentCandle.getTimestamp())
-            .build();
+        // 캔들 정보에 현재 정보 추가
+        candles.getCandleList().add(
+            Candle.builder()
+                .candleDateTimeUtc(currentCandle.getCandleDateTimeUtc())
+                .candleDateTimeKst(currentCandle.getCandleDateTimeKst())
+                .openingPrice(currentCandle.getOpeningPrice())
+                .highPrice(currentCandle.getHighPrice())
+                .lowPrice(currentCandle.getLowPrice())
+                .tradePrice(currentCandle.getTradePrice())
+                .timestamp(currentCandle.getTimestamp())
+                .candleAccTradePrice(null)
+                .candleAccTradeVolume(null)
+                .build()
+        );
 
-        // 캔들 정보에 현재 정보가 없다면 추가
-        if (!candles.getLatest(0).getCandleDateTimeKst().isEqual(currentCandle.getCandleDateTimeKst())) {
-            candles.getCandleList().add(
-                Candle.builder()
-                    .candleDateTimeUtc(currentCandle.getCandleDateTimeUtc())
-                    .candleDateTimeKst(currentCandle.getCandleDateTimeKst())
-                    .openingPrice(ticker.getOpeningPrice())
-                    .highPrice(ticker.getHighPrice())
-                    .lowPrice(ticker.getLowPrice())
-                    .tradePrice(ticker.getTradePrice())
-                    .timestamp(ticker.getTimestamp())
-                    .candleAccTradePrice(null)
-                    .candleAccTradeVolume(null)
-                    .timestamp(ticker.getTimestamp())
-                    .build()
-            );
-        }
         return SpotExchangeTradingInfo.builder()
             .coinType(param.getCoinType())
             .coinExchangeType(getCoinExchangeType())
@@ -156,7 +144,9 @@ public class BackTestingSpotExchangeService implements SpotExchangeService {
             .unitCurrency(null)
 
             .candles(candles)
-            .ticker(ticker)
+            .ticker(SpotExchangeTicker.builder()
+                .tradePrice(currentPrice)
+                .build())
 
             .index(indexCalculator.getIndex(candles))
             .build();

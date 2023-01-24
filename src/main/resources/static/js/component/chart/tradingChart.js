@@ -159,7 +159,7 @@ export default Vue.component('trading-chart', {
 
         // 보조지표 세팅
         rsiOffchart.data.push([timestamp, recordContext.index.rsi * 100]);
-        macdOffchart.data.push([timestamp, recordContext.index.macd.current]);
+        macdOffchart.data.push([timestamp, recordContext.index.macd.hist]);
         for (let i = 0; i < resistanceOnchartList.length; i++) {
           if (i < recordContext.index.resistancePriceList.length) {
             resistanceOnchartList[i].data.push(
