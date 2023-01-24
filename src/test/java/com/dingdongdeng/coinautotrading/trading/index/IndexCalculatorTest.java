@@ -115,7 +115,7 @@ class IndexCalculatorTest {
 
         // then
         log.info("result : {}", macd);
-        assertEquals(macd.getCurrent(), 3399.4713725503443);
+        assertEquals(macd.getHist(), 3399.4713725503443);
     }
 
     @Test
@@ -131,7 +131,7 @@ class IndexCalculatorTest {
 
         // then
         log.info("result : {}", macd);
-        assertEquals(2205.1025093942594, macd.getCurrent());
+        assertEquals(2205.1025093942594, macd.getHist());
     }
 
     private ExchangeCandles getExchangeCandles(LocalDateTime now, TradingTerm tradingTerm, CoinType coinType, String keyPairId) {

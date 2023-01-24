@@ -50,10 +50,12 @@ public class IndexCalculator {
         core.macd(0, inReal.length - 1, inReal, FAST_PERIOD, SLOW_PERIOD, SIGNAL_PERIOD, outBegIdx, outNBElement, outMACD, outMACDSignal, outMACDHist);
 
         return Macd.builder()
-            .current(outMACDHist[outNBElement.value - 1])
-            .currentUptrendHighest(this.getCurrentUptrendHighest(outMACDHist))
-            .currentDowntrendLowest(this.getCurrentDowntrendHighest(outMACDHist))
-            .macds(Arrays.copyOfRange(outMACDHist, 0, outNBElement.value))
+            .hist(outMACDHist[outNBElement.value - 1])
+            .signal(outMACDSignal[outNBElement.value - 1])
+            .macd(outMACD[outNBElement.value - 1])
+            .currentUptrendHighestHist(this.getCurrentUptrendHighest(outMACDHist))
+            .currentDowntrendLowestHist(this.getCurrentDowntrendHighest(outMACDHist))
+            .hists(Arrays.copyOfRange(outMACDHist, 0, outNBElement.value))
             .build();
     }
 

@@ -19,13 +19,15 @@ public class Index {
     @Builder
     public static class Macd {
 
-        private double current;
-        private double currentUptrendHighest; // 현재 상승 추세에서 가장 높은 macd (상승 추세가 아니라면 0)
-        private double currentDowntrendLowest; // 현재 하락 추세에서 가장 낮은 macd (하락 추세가 아니라면 0)
-        private double[] macds;
+        private double hist;
+        private double signal;
+        private double macd;
+        private double currentUptrendHighestHist; // 현재 상승 추세에서 가장 높은 hist (상승 추세가 아니라면 0)
+        private double currentDowntrendLowestHist; // 현재 하락 추세에서 가장 낮은 hist (하락 추세가 아니라면 0)
+        private double[] hists;
 
-        public double getLatestMacd(int index) {
-            return macds[macds.length - 1 - index];
+        public double getLatestHist(int index) {
+            return hists[hists.length - 1 - index];
         }
     }
 }
