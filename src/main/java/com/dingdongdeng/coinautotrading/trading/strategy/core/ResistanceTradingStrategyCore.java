@@ -413,10 +413,9 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
     }
 
     private double getMovingAveragePrice(ExchangeCandles candles) {
-        return (candles.getLatest(0).getTradePrice()
-            + candles.getLatest(1).getTradePrice()
-            + candles.getLatest(2).getTradePrice()
-        ) / 3.0;
+        return (candles.getLatest(1).getTradePrice()
+            + candles.getLatest(0).getTradePrice()
+        ) / 2.0;
     }
 
     private boolean isTooOld(SpotTradingResult tradingResult) {
