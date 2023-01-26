@@ -17,9 +17,11 @@ import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.Spot
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeTradingInfo;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.service.model.SpotExchangeTradingInfoParam;
 import com.dingdongdeng.coinautotrading.trading.index.IndexCalculator;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,6 +38,10 @@ public class BackTestingSpotExchangeService implements SpotExchangeService {
     private double exchangeFeeRate;
     @Default
     private Map<String, SpotExchangeOrder> orderMap = new HashMap<>();
+
+    // 누적 거래량 계산을 위한 필드
+    private LocalDateTime snapshotCandleDateTime;
+    private double snapshotCandleAccTradeVolume;
 
     @Override
     public SpotExchangeOrder order(SpotExchangeOrderParam param, String keyPairId) {
@@ -116,7 +122,15 @@ public class BackTestingSpotExchangeService implements SpotExchangeService {
         Candle currentCandle = context.getCurrentCandle();
         ExchangeCandles candles = this.deepCopyCandles(context.getCandles());
 
-        // 캔들 정보에 현재 정보 추가
+        // 캔들 정보에 현재 정보 추가 (누적 거래량 계산을 위한 로직)
+        Candle lastCandle = candles.getCandleList().get(candles.getCandleList().size() - 1);
+        if (Objects.nonNull(this.snapshotCandleDateTime) && lastCandle.getCandleDateTimeKst().isEqual(this.snapshotCandleDateTime)) {
+            this.snapshotCandleAccTradeVolume += currentCandle.getCandleAccTradeVolume();
+        } else {
+            this.snapshotCandleDateTime = lastCandle.getCandleDateTimeKst();
+            this.snapshotCandleAccTradeVolume = currentCandle.getCandleAccTradeVolume();
+        }
+        candles.getCandleList().remove(lastCandle);
         candles.getCandleList().add(
             Candle.builder()
                 .candleDateTimeUtc(currentCandle.getCandleDateTimeUtc())
@@ -127,7 +141,7 @@ public class BackTestingSpotExchangeService implements SpotExchangeService {
                 .tradePrice(currentCandle.getTradePrice())
                 .timestamp(currentCandle.getTimestamp())
                 .candleAccTradePrice(null)
-                .candleAccTradeVolume(null)
+                .candleAccTradeVolume(this.snapshotCandleAccTradeVolume)
                 .build()
         );
 
