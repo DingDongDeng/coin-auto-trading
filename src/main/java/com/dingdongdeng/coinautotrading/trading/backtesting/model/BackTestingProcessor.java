@@ -54,7 +54,7 @@ public class BackTestingProcessor {
                 StrategyExecuteResult executeResult = strategy.execute();
 
                 // 기록
-                recorder.record(RecordContext.ofStrategyExecuteResult(executeResult));
+                recorder.record(RecordContext.ofStrategyExecuteResult(executeResult, backTestingContextLoader.getCurrentContext().getCurrentCandle()));
             }
             //fixme 무한루프 방지를 위한 안전장치 필요
         } catch (Exception e) {
