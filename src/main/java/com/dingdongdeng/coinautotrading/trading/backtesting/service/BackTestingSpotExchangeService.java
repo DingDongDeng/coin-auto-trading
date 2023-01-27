@@ -133,8 +133,8 @@ public class BackTestingSpotExchangeService implements SpotExchangeService {
         } else {
             this.snapshotCandleDateTime = lastCandle.getCandleDateTimeKst();
             this.snapshotCandleAccTradeVolume = currentCandle.getCandleAccTradeVolume();
-            this.highPrice = 0;
-            this.lowPrice = Double.MAX_VALUE;
+            this.highPrice = currentCandle.getHighPrice();
+            this.lowPrice = currentCandle.getLowPrice();
         }
         candles.getCandleList().remove(lastCandle);
         candles.getCandleList().add(
