@@ -42,6 +42,8 @@ public class BackTestingSpotExchangeService implements SpotExchangeService {
     // 누적 거래량 계산을 위한 필드
     private LocalDateTime snapshotCandleDateTime;
     private double snapshotCandleAccTradeVolume;
+    private double highPrice;
+    private double lowPrice = Double.MAX_VALUE;
 
     @Override
     public SpotExchangeOrder order(SpotExchangeOrderParam param, String keyPairId) {
@@ -126,18 +128,22 @@ public class BackTestingSpotExchangeService implements SpotExchangeService {
         Candle lastCandle = candles.getCandleList().get(candles.getCandleList().size() - 1);
         if (Objects.nonNull(this.snapshotCandleDateTime) && lastCandle.getCandleDateTimeKst().isEqual(this.snapshotCandleDateTime)) {
             this.snapshotCandleAccTradeVolume += currentCandle.getCandleAccTradeVolume();
+            this.highPrice = Math.max(this.highPrice, currentPrice);
+            this.lowPrice = Math.min(this.lowPrice, currentPrice);
         } else {
             this.snapshotCandleDateTime = lastCandle.getCandleDateTimeKst();
             this.snapshotCandleAccTradeVolume = currentCandle.getCandleAccTradeVolume();
+            this.highPrice = 0;
+            this.lowPrice = Double.MAX_VALUE;
         }
         candles.getCandleList().remove(lastCandle);
         candles.getCandleList().add(
             Candle.builder()
                 .candleDateTimeUtc(currentCandle.getCandleDateTimeUtc())
                 .candleDateTimeKst(currentCandle.getCandleDateTimeKst())
-                .openingPrice(currentCandle.getOpeningPrice())
-                .highPrice(currentCandle.getHighPrice())
-                .lowPrice(currentCandle.getLowPrice())
+                .openingPrice(lastCandle.getOpeningPrice())
+                .highPrice(this.highPrice)
+                .lowPrice(this.lowPrice)
                 .tradePrice(currentCandle.getTradePrice())
                 .timestamp(currentCandle.getTimestamp())
                 .candleAccTradePrice(null)
