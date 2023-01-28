@@ -66,10 +66,21 @@ export default Vue.component('trading-chart', {
       }
           ;
     },
-    getMacdOffchart() {
+    getMacdHistOffchart() {
       return {
-        name: "MACD",
+        name: "MACD_HIST",
         type: "RSI", //FIXME 찾아봐야함
+        data: [],
+        settings: {
+          upper: 25,
+          lower: -25
+        }
+      };
+    },
+    getMacdMacdOffchart() {
+      return {
+        name: "MACD_MACD",
+        type: "RSI",
         data: [],
         settings: {
           upper: 25,
@@ -131,8 +142,9 @@ export default Vue.component('trading-chart', {
 
       // offchart
       const rsiOffchart = this.getRsiOffchart();
-      const macdOffchart = this.getMacdOffchart();
-      const offchart = [rsiOffchart, macdOffchart];
+      const macdHistOffchart = this.getMacdHistOffchart();
+      const macdMacdOffchart = this.getMacdMacdOffchart()
+      const offchart = [rsiOffchart, macdHistOffchart, macdMacdOffchart];
 
       // 차트들 데이터 세팅
       for (let recordContext of recordContextList) {
@@ -159,7 +171,8 @@ export default Vue.component('trading-chart', {
 
         // 보조지표 세팅
         rsiOffchart.data.push([timestamp, recordContext.index.rsi * 100]);
-        macdOffchart.data.push([timestamp, recordContext.index.macd.hist]);
+        macdHistOffchart.data.push([timestamp, recordContext.index.macd.hist]);
+        macdMacdOffchart.data.push([timestamp, recordContext.index.macd.macd]);
         for (let i = 0; i < resistanceOnchartList.length; i++) {
           if (i < recordContext.index.resistancePriceList.length) {
             resistanceOnchartList[i].data.push(
