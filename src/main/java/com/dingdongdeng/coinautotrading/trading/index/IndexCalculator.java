@@ -66,7 +66,7 @@ public class IndexCalculator {
         // 가격대별 거래량을 통해 지지/저항선을 추출
         Map<Double, Double> priceMap = new HashMap<>();
         for (Candle candle : candles.getCandleList()) {
-            Double price = candle.getTradePrice();
+            Double price = Math.floor(candle.getTradePrice() / 1000) * 1000;
             Double volume = Objects.isNull(candle.getCandleAccTradeVolume()) ? 0 : candle.getCandleAccTradeVolume();
             if (Objects.isNull(priceMap.get(price))) {
                 priceMap.put(price, volume);
