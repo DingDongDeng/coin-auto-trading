@@ -139,8 +139,8 @@ public class BackTestingSpotExchangeService implements SpotExchangeService {
         candles.getCandleList().remove(lastCandle);
         candles.getCandleList().add(
             Candle.builder()
-                .candleDateTimeUtc(currentCandle.getCandleDateTimeUtc())
-                .candleDateTimeKst(currentCandle.getCandleDateTimeKst())
+                .candleDateTimeUtc(lastCandle.getCandleDateTimeUtc())
+                .candleDateTimeKst(lastCandle.getCandleDateTimeKst())
                 .openingPrice(lastCandle.getOpeningPrice())
                 .highPrice(this.highPrice)
                 .lowPrice(this.lowPrice)
