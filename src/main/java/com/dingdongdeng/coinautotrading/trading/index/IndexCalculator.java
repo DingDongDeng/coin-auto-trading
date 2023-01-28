@@ -53,36 +53,10 @@ public class IndexCalculator {
             .hist(outMACDHist[outNBElement.value - 1])
             .signal(outMACDSignal[outNBElement.value - 1])
             .macd(outMACD[outNBElement.value - 1])
-            .currentUptrendHighestHist(this.getCurrentUptrendHighest(outMACDHist))
-            .currentDowntrendLowestHist(this.getCurrentDowntrendHighest(outMACDHist))
             .hists(Arrays.copyOfRange(outMACDHist, 0, outNBElement.value))
+            .macds(Arrays.copyOfRange(outMACD, 0, outNBElement.value))
+            .signals(Arrays.copyOfRange(outMACDSignal, 0, outNBElement.value))
             .build();
-    }
-
-    private double getCurrentUptrendHighest(double[] outMACDHist) {
-        double highestMacd = 0;
-        for (int i = outMACDHist.length - 1; i >= 0; i--) {
-            if (outMACDHist[i] < 0) {
-                break;
-            }
-            if (outMACDHist[i] >= highestMacd) {
-                highestMacd = outMACDHist[i];
-            }
-        }
-        return highestMacd;
-    }
-
-    private double getCurrentDowntrendHighest(double[] outMACDHist) {
-        double lowestMacd = 0;
-        for (int i = outMACDHist.length - 1; i >= 0; i--) {
-            if (outMACDHist[i] > 0) {
-                break;
-            }
-            if (outMACDHist[i] <= lowestMacd) {
-                lowestMacd = outMACDHist[i];
-            }
-        }
-        return lowestMacd;
     }
 
     public List<Double> getResistancePrice(ExchangeCandles candles) {
