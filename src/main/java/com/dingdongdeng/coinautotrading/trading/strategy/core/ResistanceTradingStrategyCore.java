@@ -233,7 +233,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
 
         // 방향성이 나오지 않았다면
-        if (Math.abs(index.getMacd().getHist()) > 1000) {
+        if (!isDecidedDirection(currentPrice, lastBuyTradingResult.getPrice())) {
             log.info("[익절 조건] 방향성이 나오지 않음, hist={}", index.getMacd().getHist());
             return false;
         }
@@ -283,7 +283,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
 
         // 방향성이 나오지 않았다면
-        if (Math.abs(index.getMacd().getHist()) > 1000) {
+        if (!isDecidedDirection(currentPrice, lastBuyTradingResult.getPrice())) {
             log.info("[손절 조건] 방향성이 나오지 않음, hist={}", index.getMacd().getHist());
             return false;
         }
@@ -344,6 +344,10 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
         log.warn("저항선 찾지 못함");
         return Integer.MAX_VALUE;
+    }
+
+    private boolean isDecidedDirection(double currentPrice, double buyPrice) {
+        return Math.abs(currentPrice - buyPrice) > 30000;
     }
 
     private boolean isTooOld(SpotTradingResult tradingResult) {
