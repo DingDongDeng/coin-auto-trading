@@ -40,7 +40,7 @@ export default Vue.component('trading-chart', {
     },
     getResistanceOnchartList() {
       const resistanceOnchartList = [];
-      for (let i = 0; i < 20; i++) {
+      for (let i = 0; i < 10; i++) {
         resistanceOnchartList.push(
             {
               name: "Resistance" + (i + 1),
