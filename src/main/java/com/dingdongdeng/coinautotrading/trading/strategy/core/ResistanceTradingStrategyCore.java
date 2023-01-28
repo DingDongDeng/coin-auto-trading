@@ -207,12 +207,6 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
-        // 지지 받고 있지 않다면
-        if (currentPrice > (supportPrice + param.getResistancePriceBuffer())) {
-            log.info("[매수 조건] 지지 받고 있지 않음, resistancePriceList={}, currentPrice={}", index.getResistancePriceList(), currentPrice);
-            return false;
-        }
-
         log.info("[매수 조건] 매수 조건 만족");
         return true;
     }
@@ -238,19 +232,28 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
-        // 상승 추세가 아직 유지되고 있다면
-        double macdMacd = index.getMacd().getMacd();
-        double uptrendHighestMacd = index.getMacd().getCurrentUptrendHighestMacd();
-        if (uptrendHighestMacd * 0.9 < macdMacd) {
-            log.info("[익절 조건] 상승 추세 유지 중, uptrendHighestMacd={}, macdMacd={}", uptrendHighestMacd, macdMacd);
+        // 방향성이 나오지 않았다면
+        if (Math.abs(index.getMacd().getHist()) > 1000) {
+            log.info("[익절 조건] 방향성이 나오지 않음, hist={}", index.getMacd().getHist());
             return false;
         }
 
-        // 최소 익절금액은 3만원 보다 커야함(지지/저항선간의 최소 간격을 고려)
-        int minProfitAmount = 30000;
-        if (currentPrice - tradingResultPack.getAveragePrice() < minProfitAmount) {
-            log.info("[익절 조건] 최소 익절 금액에 도달하지 못함, minProfitAmount={}", minProfitAmount);
-            return false;
+        if (index.getMacd().getMacd() < 0) {
+            // 상승 추세 유지 중 (hist)
+            double macdHist = index.getMacd().getHist();
+            double uptrendHighestHist = index.getMacd().getCurrentUptrendHighestHist();
+            if (uptrendHighestHist * 0.9 < macdHist) {
+                log.info("[익절 조건] 상승 추세 유지 중, uptrendHighestHist={}, macdHist={}", uptrendHighestHist, macdHist);
+                return false;
+            }
+        } else {
+            // 상승 추세 유지 중 (macd)
+            double macdMacd = index.getMacd().getMacd();
+            double uptrendHighestMacd = index.getMacd().getCurrentUptrendHighestMacd();
+            if (uptrendHighestMacd * 0.9 < macdMacd) {
+                log.info("[익절 조건] 상승 추세 유지 중, uptrendHighestMacd={}, macdMacd={}", uptrendHighestMacd, macdMacd);
+                return false;
+            }
         }
 
         log.info("[익절 조건] 익절 조건 만족");
@@ -279,11 +282,28 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
-        // 지지 받고 있다면 (버퍼 3만원, 지지/저항 최소 간격 고려)
-        int bufferPrice = 30000;
-        if (supportPrice - bufferPrice < currentPrice) {
-            log.info("[손절 조건] 지지선이 무너짐, supportPrice={}", supportPrice);
+        // 방향성이 나오지 않았다면
+        if (Math.abs(index.getMacd().getHist()) > 1000) {
+            log.info("[손절 조건] 방향성이 나오지 않음, hist={}", index.getMacd().getHist());
             return false;
+        }
+
+        if (index.getMacd().getMacd() < 0) {
+            // 상승 추세 유지 중 (hist)
+            double macdHist = index.getMacd().getHist();
+            double uptrendHighestHist = index.getMacd().getCurrentUptrendHighestHist();
+            if (uptrendHighestHist * 0.9 < macdHist) {
+                log.info("[손절 조건] 상승 추세 유지 중, uptrendHighestHist={}, macdHist={}", uptrendHighestHist, macdHist);
+                return false;
+            }
+        } else {
+            // 상승 추세가 유지 중 (macd)
+            double macdMacd = index.getMacd().getMacd();
+            double uptrendHighestMacd = index.getMacd().getCurrentUptrendHighestMacd();
+            if (uptrendHighestMacd * 0.9 < macdMacd) {
+                log.info("[손절 조건] 상승 추세 유지 중, uptrendHighestMacd={}, macdMacd={}", uptrendHighestMacd, macdMacd);
+                return false;
+            }
         }
 
         log.info("[손절 조건] 손절 조건 만족");
