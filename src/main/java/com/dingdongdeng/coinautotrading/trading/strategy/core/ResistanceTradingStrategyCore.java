@@ -188,10 +188,6 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         double macdSignal = index.getMacd().getSignal();
         double macdMacd = index.getMacd().getMacd();
 
-        double resistancePrice = this.getResistancePrice(currentPrice, index);
-        double supportPrice = this.getSupportPrice(currentPrice, 0, index);
-        double prevSupportPrice = this.getSupportPrice(currentPrice, 1, index);
-
         // 추가 매수 안함
         if (isExsistBuyOrder) {
             log.info("[추가 매수 조건] 추가 매수 안함");
@@ -224,11 +220,8 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
     private boolean isProfitOrderTiming(double currentPrice, TradingInfo tradingInfo, TradingResultPack<SpotTradingResult> tradingResultPack, Index index) {
         List<SpotTradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
         SpotTradingResult lastBuyTradingResult = buyTradingResultList.get(buyTradingResultList.size() - 1);
-        double resistancePrice = this.getResistancePrice(lastBuyTradingResult.getPrice(), index);
-        double supportPrice = this.getSupportPrice(lastBuyTradingResult.getPrice(), 0, index);
-        double prevSupportPrice = this.getSupportPrice(lastBuyTradingResult.getPrice(), 1, index);
-        double profitPotential = resistancePrice - supportPrice;
-        double lossPotential = supportPrice - prevSupportPrice;
+
+        double trendDynamicRate = this.getTrendDynamicRate(tradingInfo, index);
 
         // 매수 주문한적이 없다면
         if (tradingResultPack.getBuyTradingResultList().isEmpty()) {
@@ -252,7 +245,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             // 상승 추세 유지 중 (hist)
             double macdHist = index.getMacd().getHist();
             double uptrendHighestHist = index.getMacd().getCurrentUptrendHighestHist();
-            if (uptrendHighestHist * 0.9 < macdHist) {
+            if (uptrendHighestHist * trendDynamicRate < macdHist) {
                 log.info("[익절 조건] 상승 추세 유지 중, uptrendHighestHist={}, macdHist={}", uptrendHighestHist, macdHist);
                 return false;
             }
@@ -260,7 +253,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             // 상승 추세 유지 중 (macd)
             double macdMacd = index.getMacd().getMacd();
             double uptrendHighestMacd = index.getMacd().getCurrentUptrendHighestMacd();
-            if (uptrendHighestMacd * 0.9 < macdMacd) {
+            if (uptrendHighestMacd * trendDynamicRate < macdMacd) {
                 log.info("[익절 조건] 상승 추세 유지 중, uptrendHighestMacd={}, macdMacd={}", uptrendHighestMacd, macdMacd);
                 return false;
             }
@@ -274,11 +267,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         List<SpotTradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
         SpotTradingResult lastBuyTradingResult = buyTradingResultList.get(buyTradingResultList.size() - 1);
 
-        double resistancePrice = this.getResistancePrice(lastBuyTradingResult.getPrice(), index);
-        double supportPrice = this.getSupportPrice(lastBuyTradingResult.getPrice(), 0, index);
-        double prevSupportPrice = this.getSupportPrice(lastBuyTradingResult.getPrice(), 1, index);
-        double profitPotential = resistancePrice - supportPrice;
-        double lossPotential = supportPrice - prevSupportPrice;
+        double trendDynamicRate = this.getTrendDynamicRate(tradingInfo, index);
 
         // 매수 주문한적이 없다면
         if (tradingResultPack.getBuyTradingResultList().isEmpty()) {
@@ -302,7 +291,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             // 상승 추세 유지 중 (hist)
             double macdHist = index.getMacd().getHist();
             double uptrendHighestHist = index.getMacd().getCurrentUptrendHighestHist();
-            if (uptrendHighestHist * 0.9 < macdHist) {
+            if (uptrendHighestHist * trendDynamicRate < macdHist) {
                 log.info("[손절 조건] 상승 추세 유지 중, uptrendHighestHist={}, macdHist={}", uptrendHighestHist, macdHist);
                 return false;
             }
@@ -310,7 +299,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             // 상승 추세가 유지 중 (macd)
             double macdMacd = index.getMacd().getMacd();
             double uptrendHighestMacd = index.getMacd().getCurrentUptrendHighestMacd();
-            if (uptrendHighestMacd * 0.9 < macdMacd) {
+            if (uptrendHighestMacd * trendDynamicRate < macdMacd) {
                 log.info("[손절 조건] 상승 추세 유지 중, uptrendHighestMacd={}, macdMacd={}", uptrendHighestMacd, macdMacd);
                 return false;
             }
@@ -329,35 +318,12 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         return param.getInitOrderPrice() / currentPrice;
     }
 
-    private double getSupportPrice(double standardPrice, int next, Index index) {
-        int nextCount = 0;
-        for (int i = index.getResistancePriceList().size() - 1; i >= 0; i--) {
-            double supportPrice = index.getResistancePriceList().get(i);
-            if (standardPrice > supportPrice) {
-                if (nextCount < next) {
-                    nextCount++;
-                    continue;
-                }
-                return supportPrice;
-            }
-
-        }
-        log.warn("지지선 찾지 못함");
-        return 0;
-    }
-
-    private double getResistancePrice(double standardPrice, Index index) {
-        for (Double resistancePrice : index.getResistancePriceList()) {
-            if (standardPrice < resistancePrice) {
-                return resistancePrice;
-            }
-        }
-        log.warn("저항선 찾지 못함");
-        return Integer.MAX_VALUE;
-    }
-
     private boolean isDecidedDirection(double currentPrice, double buyPrice) {
         return Math.abs(currentPrice - buyPrice) > 30000;
+    }
+
+    private double getTrendDynamicRate(TradingInfo tradingInfo, Index index) {
+        return 0.9;
     }
 
     private boolean isTooOld(SpotTradingResult tradingResult) {
