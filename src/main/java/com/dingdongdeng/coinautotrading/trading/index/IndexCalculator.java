@@ -60,6 +60,7 @@ public class IndexCalculator {
     }
 
     public List<Double> getResistancePrice(ExchangeCandles candles) {
+        double RESISTANCE_GAP = 0.02; // n% 퍼센트
         int RESISTANCE_MAX_COUNT = 20;
 
         // 가격대별 거래량을 통해 지지/저항선을 추출
@@ -79,7 +80,19 @@ public class IndexCalculator {
             .sorted(Collections.reverseOrder(Entry.comparingByValue()))
             .limit(RESISTANCE_MAX_COUNT)
             .sorted(Entry.comparingByKey())
-            .toList();
+            .collect(Collectors.toList());
+
+        // 저항선 간의 간격이 가깝지 않도록 필터
+        for (int i = 0; i < priceEntryList.size(); i++) {
+            Entry<Double, Double> currentEntry = priceEntryList.get(i);
+            for (int j = i + 1; j < priceEntryList.size(); j++) {
+                Entry<Double, Double> nextEntry = priceEntryList.get(j);
+                if (currentEntry.getKey() * (1 + RESISTANCE_GAP) > nextEntry.getKey()) {
+                    priceEntryList.remove(nextEntry);
+                    j--;
+                }
+            }
+        }
 
         // 지지/저항선간의 간격이 큰 것들을 추출
         Map<Double, Double> diffMap = new HashMap<>();
