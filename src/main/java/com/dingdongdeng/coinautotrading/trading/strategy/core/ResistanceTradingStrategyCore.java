@@ -185,12 +185,9 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         double macdSignal = index.getMacd().getSignal();
         double macdMacd = index.getMacd().getMacd();
 
-        double movingAveragePrice = this.getMovingAveragePrice(candles);
-        double movingResistancePrice = this.getResistancePrice(movingAveragePrice, index);
-        double movingSupportPrice = this.getSupportPrice(movingAveragePrice, 0, index);
-        double movingPrevSupportPrice = this.getSupportPrice(movingAveragePrice, 1, index);
-        double movingProfitPotential = movingResistancePrice - movingSupportPrice;
-        double movingLossPotential = movingSupportPrice - movingPrevSupportPrice;
+        double resistancePrice = this.getResistancePrice(currentPrice, index);
+        double supportPrice = this.getSupportPrice(currentPrice, 0, index);
+        double prevSupportPrice = this.getSupportPrice(currentPrice, 1, index);
 
         // 추가 매수 안함
         if (isExsistBuyOrder) {
@@ -198,77 +195,22 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
-        // 과매도 상태
-        if (index.getRsi() < 0.3) {
-            log.info("[매수 조건] 과매도 상태, rsi={}", index.getRsi());
-            return false;
-        }
-
         // 상승 추세가 아니라면
         if (macdHist < 0) {
-            log.info("[매수 조건] 하락 추세, hist={}, signal={}, macd={}", macdHist, macdSignal, macdMacd);
+            log.info("[매수 조건] 하락 추세, hist={}", macdHist);
             return false;
         }
 
-        // 유의미한 해석이 불가함
-        if (index.getMacd().getCurrentUptrendHighestHist() < 1000) {
-            log.info("[매수 조건] highestMacd의 유의미한 해석을 하기에 값이 작음, highestMace={}", index.getMacd().getCurrentUptrendHighestHist());
-            return false;
-        }
-
-        // 상승 추세가 약해지고 있다면
-        if (index.getMacd().getCurrentUptrendHighestHist() * 0.8 > macdHist) {
-            log.info("[매수 조건] 상승 추세가 약해지고 있음, currentUptrendHighestHist={}, macdCurrent={}", index.getMacd().getCurrentUptrendHighestHist(), index.getMacd().getHist());
-            return false;
-        }
-
-        // macd가 하락에서 상승으로 전환되는 극 초기에는 매수하지 않음
-        if (index.getMacd().getLatestHist(1) < 100) {
-            log.info("[매수 조건] 하락에서 상승으로 전환되는 극 초기에는 매수하지 않음, macd={}, prevMacd={}", macdHist, index.getMacd().getLatestHist(1));
+        // macd가 이미 상승중이라면 매수하지 않음
+        if (index.getMacd().getLatestHist(1) > 100) {
+            log.info("[매수 조건] 하락에서 상승으로 이미 전환되었다면 매수하지 않음, macd={}, prevMacd={}", macdHist, index.getMacd().getLatestHist(1));
             return false;
         }
 
         // 지지 받고 있지 않다면
-        if (movingAveragePrice > (movingSupportPrice + param.getResistancePriceBuffer()) || movingAveragePrice < movingSupportPrice) {
-            // 저항선이 없고, 충분히 상승세여야 함
-            if (movingResistancePrice == Integer.MAX_VALUE) {
-                log.info("[매수 조건] 매수 조건 만족, 저항선이 없고 충분히 상승세, macd={}", index.getMacd().getHist());
-                return true;
-            }
-            log.info("[매수 조건] 지지 받고 있지 않음, resistancePriceList={}, averagePrice={}", index.getResistancePriceList(), movingAveragePrice);
+        if (currentPrice > (supportPrice + param.getResistancePriceBuffer())) {
+            log.info("[매수 조건] 지지 받고 있지 않음, resistancePriceList={}, currentPrice={}", index.getResistancePriceList(), currentPrice);
             return false;
-        }
-
-        // 주문한적이 있다면
-        if (isExsistBuyOrder) {
-            if (buyTradingResultList.size() > 1) {
-                log.info("[추가 매수 조건] 이미 추가 매수를 하였음");
-                return false;
-            }
-
-            // 이익중이라면
-            if ((tradingResultPack.getAveragePrice() - currentPrice) < 0) {
-                log.info("[추가 매수 조건] 이익중, averagePrice={}, currentPrice={}", tradingResultPack.getAveragePrice(), currentPrice);
-                return false;
-            }
-
-            // 마지막 주문보다 현재가가 높다면(추가 매수는 항상 더 낮은 가격으로 사야하기 때문)
-            SpotTradingResult lastBuyTradingResult = buyTradingResultList.get(buyTradingResultList.size() - 1);
-            if (lastBuyTradingResult.getPrice() <= currentPrice) {
-                log.info("[추가 매수 조건] 추가 매수하기에는 현재가가 높음, lastBuyTradingResult.price={}, currentPrice={}", lastBuyTradingResult.getPrice(), currentPrice);
-                return false;
-            }
-
-            // 마지막으로 매수했던 지지선의 바로 아래 지지선이 아니라면
-            double prevSupportPrice_ = this.getSupportPrice(lastBuyTradingResult.getPrice(), 1, index);
-            if (movingAveragePrice < prevSupportPrice_ || movingAveragePrice > (prevSupportPrice_ + param.getResistancePriceBuffer())) {
-                log.info("[추가 매수 조건] 마지막 매수의 아래 아래 지지선이 아님, movingAveragePrice={}, lastBuyTradingResult.price={}, param.resistancePriceBuffer={}", movingAveragePrice,
-                    lastBuyTradingResult.getPrice(),
-                    param.getResistancePriceBuffer());
-                return false;
-            }
-            log.info("[추가 매수 조건] 추가 매수 조건 만족");
-            return true;
         }
 
         log.info("[매수 조건] 매수 조건 만족");
@@ -284,13 +226,6 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         double profitPotential = resistancePrice - supportPrice;
         double lossPotential = supportPrice - prevSupportPrice;
 
-        double movingAveragePrice = this.getMovingAveragePrice(tradingInfo.getCandles());
-        double movingSupportPrice = this.getSupportPrice(movingAveragePrice, 0, index);
-        double movingResistancePrice = this.getResistancePrice(movingAveragePrice, index);
-        double movingPrevSupportPrice = this.getSupportPrice(movingAveragePrice, 1, index);
-        double movingProfitPotential = movingResistancePrice - movingSupportPrice;
-        double movingLossPotential = movingSupportPrice - movingPrevSupportPrice;
-
         // 매수 주문한적이 없다면
         if (tradingResultPack.getBuyTradingResultList().isEmpty()) {
             log.info("[익절 조건] 매수 주문 한적이 없음");
@@ -304,15 +239,17 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
 
         // 상승 추세가 아직 유지되고 있다면
-        double rate = movingLossPotential > movingProfitPotential ? 0.8 : 0.6;
-        if (index.getMacd().getCurrentUptrendHighestHist() * rate < index.getMacd().getHist()) {
-            log.info("[익절 조건] 상승 추세가 유지되고 있음, currentUptrendHighestHist={}, macd={}", index.getMacd().getCurrentUptrendHighestHist(), index.getMacd().getHist());
+        double macdMacd = index.getMacd().getMacd();
+        double uptrendHighestMacd = index.getMacd().getCurrentUptrendHighestMacd();
+        if (uptrendHighestMacd * 0.9 < macdMacd) {
+            log.info("[익절 조건] 상승 추세 유지 중, uptrendHighestMacd={}, macdMacd={}", uptrendHighestMacd, macdMacd);
             return false;
         }
 
-        // 최소 익절금액은 감수했던 손절 리스크보다는 커야함
-        if (prevSupportPrice != 0 && ((currentPrice - tradingResultPack.getAveragePrice()) < lossPotential)) {
-            log.info("[익절 조건] 최소 익절 금액이 감수했던 리스크 금액보다 작음 , 익절금액={}, lossPotential={}", currentPrice - tradingResultPack.getAveragePrice(), lossPotential);
+        // 최소 익절금액은 3만원 보다 커야함(지지/저항선간의 최소 간격을 고려)
+        int minProfitAmount = 30000;
+        if (currentPrice - tradingResultPack.getAveragePrice() < minProfitAmount) {
+            log.info("[익절 조건] 최소 익절 금액에 도달하지 못함, minProfitAmount={}", minProfitAmount);
             return false;
         }
 
@@ -330,13 +267,6 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         double profitPotential = resistancePrice - supportPrice;
         double lossPotential = supportPrice - prevSupportPrice;
 
-        double movingAveragePrice = this.getMovingAveragePrice(tradingInfo.getCandles());
-        double movingResistancePrice = this.getResistancePrice(movingAveragePrice, index);
-        double movingSupportPrice = this.getSupportPrice(movingAveragePrice, 0, index);
-        double movingPrevSupportPrice = this.getSupportPrice(movingAveragePrice, 1, index);
-        double movingProfitPotential = movingResistancePrice - movingSupportPrice;
-        double movingLossPotential = movingSupportPrice - movingPrevSupportPrice;
-
         // 매수 주문한적이 없다면
         if (tradingResultPack.getBuyTradingResultList().isEmpty()) {
             log.info("[손절 조건] 매수 주문한적이 없음");
@@ -349,27 +279,11 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
-        // 1순위 : 두번째 지지선이 존재하지 않으면, 익절 포텐셜 만큼을 손절 라인으로 사용하여 그곳까지 도달하지 않았다면 손절하지 않음
-        if (prevSupportPrice == 0 && resistancePrice != Integer.MAX_VALUE) {
-            if (movingAveragePrice > (supportPrice - profitPotential)) {
-                log.info("[손절 조건] 익절 포텐셜만큼을 손절 라인으로 가짐, 이 라인까지 도달하지 않았음, movingAveragePrice={}, 익절포텐셜={}", movingAveragePrice, movingSupportPrice - movingProfitPotential);
-                return false;
-            }
-        }
-        // 2순위 : 두번째 지지선이 존재하고, 그곳까지 하락하지 않았다면
-        else if (prevSupportPrice != 0) {
-            if (movingAveragePrice > prevSupportPrice) {
-                log.info("[손절 조건] 두번째 지지선까지는 하락하지 않음, resistancePriceList={}, movingAveragePrice={}", index.getResistancePriceList(), movingAveragePrice);
-                return false;
-            }
-        }
-        // 3순위 : 상승 추세가 아직 유지되고 있다면
-        else {
-            double rate = movingLossPotential > movingProfitPotential ? 0.8 : 0.6;
-            if (index.getMacd().getCurrentUptrendHighestHist() * rate < index.getMacd().getHist()) {
-                log.info("[손절 조건] 상승 추세가 유지되고 있음, currentUptrendHighestHist={}, macd={}", index.getMacd().getCurrentUptrendHighestHist(), index.getMacd().getHist());
-                return false;
-            }
+        // 지지 받고 있다면 (버퍼 3만원, 지지/저항 최소 간격 고려)
+        int bufferPrice = 30000;
+        if (supportPrice - bufferPrice < currentPrice) {
+            log.info("[손절 조건] 지지선이 무너짐, supportPrice={}", supportPrice);
+            return false;
         }
 
         log.info("[손절 조건] 손절 조건 만족");
@@ -410,12 +324,6 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
         log.warn("저항선 찾지 못함");
         return Integer.MAX_VALUE;
-    }
-
-    private double getMovingAveragePrice(ExchangeCandles candles) {
-        return (candles.getLatest(1).getTradePrice()
-            + candles.getLatest(0).getTradePrice()
-        ) / 2.0;
     }
 
     private boolean isTooOld(SpotTradingResult tradingResult) {
