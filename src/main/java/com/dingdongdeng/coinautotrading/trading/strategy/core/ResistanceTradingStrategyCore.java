@@ -6,6 +6,7 @@ import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles.Candle;
 import com.dingdongdeng.coinautotrading.trading.index.Index;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyCore;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.SpotTradingInfo;
@@ -15,6 +16,7 @@ import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.TradingTag;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
@@ -26,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingInfo, SpotTradingResult> {
 
     private final ResistanceTradingStrategyCoreParam param;
+    private LocalDateTime lastBuyOrderDateTime;
 
     @Override
     public List<TradingTask> makeTradingTask(SpotTradingInfo tradingInfo, TradingResultPack<SpotTradingResult> tradingResultPack) {
@@ -151,7 +154,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
 
     @Override
     public void handleOrderResult(SpotTradingResult tradingResult) {
-
+        this.lastBuyOrderDateTime = tradingResult.getCreatedAt();
     }
 
     @Override
@@ -204,6 +207,13 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         // macd가 이미 상승중이라면 매수하지 않음
         if (index.getMacd().getLatestHist(1) > 100) {
             log.info("[매수 조건] 하락에서 상승으로 이미 전환되었다면 매수하지 않음, macd={}, prevMacd={}", macdHist, index.getMacd().getLatestHist(1));
+            return false;
+        }
+
+        // 이미 매수했던 적이 있는 사이클이라면
+        Candle currentCandle = candles.getLatest(0);
+        if (Objects.nonNull(this.lastBuyOrderDateTime) && currentCandle.getCandleDateTimeKst().isBefore(this.lastBuyOrderDateTime)) {
+            log.info("[매수 조건] 이미 매수했던 적이 있는 사이클");
             return false;
         }
 
