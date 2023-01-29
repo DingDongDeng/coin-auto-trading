@@ -207,7 +207,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
 
         // 이미 매수했던 적이 있는 사이클이라면
-        Candle currentCandle = candles.getLatest(0);
+        Candle currentCandle = candles.getLatest(0); //fixme 스냅샷으로 날짜 말고 uppertrendHighest쓰자
         if (Objects.nonNull(this.lastBuyOrderDateTime) && currentCandle.getCandleDateTimeKst().isBefore(this.lastBuyOrderDateTime)) {
             log.info("[매수 조건] 이미 매수했던 적이 있는 사이클");
             return false;
@@ -221,7 +221,9 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         List<SpotTradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
         SpotTradingResult lastBuyTradingResult = buyTradingResultList.get(buyTradingResultList.size() - 1);
 
-        double trendDynamicRate = this.getTrendDynamicRate(tradingInfo, index);
+        double bbandsUpper = index.getBollingerBands().getUpper();
+        double bbandsMiddle = index.getBollingerBands().getMiddle();
+        double bbandsLower = index.getBollingerBands().getLower();
 
         // 매수 주문한적이 없다면
         if (tradingResultPack.getBuyTradingResultList().isEmpty()) {
@@ -235,28 +237,10 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
-        // 방향성이 나오지 않았다면
-        if (!isDecidedDirection(currentPrice, lastBuyTradingResult.getPrice())) {
-            log.info("[익절 조건] 방향성이 나오지 않음, hist={}", index.getMacd().getHist());
+        // 저항선에 도달하지 않았다면
+        if (bbandsUpper > currentPrice) {
+            log.info("[익절 조건] 저항선에 도달하지 않으면 익절하지 않음, upper={}, currentPrice={}", bbandsUpper, currentPrice);
             return false;
-        }
-
-        if (index.getMacd().getMacd() < 0) {
-            // 상승 추세 유지 중 (hist)
-            double macdHist = index.getMacd().getHist();
-            double uptrendHighestHist = index.getMacd().getCurrentUptrendHighestHist();
-            if (uptrendHighestHist * trendDynamicRate < macdHist) {
-                log.info("[익절 조건] 상승 추세 유지 중, uptrendHighestHist={}, macdHist={}", uptrendHighestHist, macdHist);
-                return false;
-            }
-        } else {
-            // 상승 추세 유지 중 (macd)
-            double macdMacd = index.getMacd().getMacd();
-            double uptrendHighestMacd = index.getMacd().getCurrentUptrendHighestMacd();
-            if (uptrendHighestMacd * trendDynamicRate < macdMacd) {
-                log.info("[익절 조건] 상승 추세 유지 중, uptrendHighestMacd={}, macdMacd={}", uptrendHighestMacd, macdMacd);
-                return false;
-            }
         }
 
         log.info("[익절 조건] 익절 조건 만족");
@@ -267,7 +251,9 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         List<SpotTradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
         SpotTradingResult lastBuyTradingResult = buyTradingResultList.get(buyTradingResultList.size() - 1);
 
-        double trendDynamicRate = this.getTrendDynamicRate(tradingInfo, index);
+        double bbandsUpper = index.getBollingerBands().getUpper();
+        double bbandsMiddle = index.getBollingerBands().getMiddle();
+        double bbandsLower = index.getBollingerBands().getLower();
 
         // 매수 주문한적이 없다면
         if (tradingResultPack.getBuyTradingResultList().isEmpty()) {
@@ -281,28 +267,10 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
-        // 방향성이 나오지 않았다면
-        if (!isDecidedDirection(currentPrice, lastBuyTradingResult.getPrice())) {
-            log.info("[손절 조건] 방향성이 나오지 않음, hist={}", index.getMacd().getHist());
+        // 지지받고 있다면
+        if (bbandsLower < currentPrice) {
+            log.info("[손절 조건] 지지 받고 있음, lower={}, currentPrice={}", bbandsLower, currentPrice);
             return false;
-        }
-
-        if (index.getMacd().getMacd() < 0) {
-            // 상승 추세 유지 중 (hist)
-            double macdHist = index.getMacd().getHist();
-            double uptrendHighestHist = index.getMacd().getCurrentUptrendHighestHist();
-            if (uptrendHighestHist * trendDynamicRate < macdHist) {
-                log.info("[손절 조건] 상승 추세 유지 중, uptrendHighestHist={}, macdHist={}", uptrendHighestHist, macdHist);
-                return false;
-            }
-        } else {
-            // 상승 추세가 유지 중 (macd)
-            double macdMacd = index.getMacd().getMacd();
-            double uptrendHighestMacd = index.getMacd().getCurrentUptrendHighestMacd();
-            if (uptrendHighestMacd * trendDynamicRate < macdMacd) {
-                log.info("[손절 조건] 상승 추세 유지 중, uptrendHighestMacd={}, macdMacd={}", uptrendHighestMacd, macdMacd);
-                return false;
-            }
         }
 
         log.info("[손절 조건] 손절 조건 만족");
@@ -316,14 +284,6 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         double lossRate = ((averagePrice - currentPrice) / averagePrice); // 현재 손실율
 
         return param.getInitOrderPrice() / currentPrice;
-    }
-
-    private boolean isDecidedDirection(double currentPrice, double buyPrice) {
-        return Math.abs(currentPrice - buyPrice) > 30000;
-    }
-
-    private double getTrendDynamicRate(TradingInfo tradingInfo, Index index) {
-        return 0.9;
     }
 
     private boolean isTooOld(SpotTradingResult tradingResult) {
