@@ -184,6 +184,10 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         boolean isExsistBuyOrder = !buyTradingResultList.isEmpty();
         ExchangeCandles candles = tradingInfo.getCandles();
 
+        double bbandsUpper = index.getBollingerBands().getUpper();
+        double bbandsMiddle = index.getBollingerBands().getMiddle();
+        double bbandsLower = index.getBollingerBands().getLower();
+
         double macdHist = index.getMacd().getHist();
         double macdSignal = index.getMacd().getSignal();
         double macdMacd = index.getMacd().getMacd();
@@ -203,6 +207,12 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         // macd가 이미 상승중이라면 매수하지 않음
         if (index.getMacd().getLatestHist(1) > 100) {
             log.info("[매수 조건] 하락에서 상승으로 이미 전환되었다면 매수하지 않음, macd={}, prevMacd={}", macdHist, index.getMacd().getLatestHist(1));
+            return false;
+        }
+
+        // 볼린저밴드 middle 아래가 아니라면 매수하지 않음
+        if (bbandsMiddle < currentPrice) {
+            log.info("[매수 조건] 볼린저 밴드 중앙선보다는 싸게 사야함, middle={}, currentPrice={}", bbandsMiddle, currentPrice);
             return false;
         }
 
@@ -238,7 +248,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
 
         // 저항선에 도달하지 않았다면
-        if (bbandsUpper > currentPrice) {
+        if ((bbandsUpper * 0.99) > currentPrice) {
             log.info("[익절 조건] 저항선에 도달하지 않으면 익절하지 않음, upper={}, currentPrice={}", bbandsUpper, currentPrice);
             return false;
         }
