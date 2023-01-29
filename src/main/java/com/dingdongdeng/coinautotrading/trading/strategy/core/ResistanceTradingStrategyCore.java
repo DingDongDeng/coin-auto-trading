@@ -192,6 +192,8 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         double macdSignal = index.getMacd().getSignal();
         double macdMacd = index.getMacd().getMacd();
 
+        //
+
         // 추가 매수 안함
         if (isExsistBuyOrder) {
             log.info("[추가 매수 조건] 추가 매수 안함");
