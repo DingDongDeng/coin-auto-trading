@@ -54,6 +54,40 @@ export default Vue.component('trading-chart', {
       }
       return resistanceOnchartList;
     },
+    getBollingerBands() {
+      const bollingerBandsOnchartList = [];
+      bollingerBandsOnchartList.push(
+          {
+            name: "bbands upper",
+            type: "EMA",
+            data: [],
+            settings: {
+              "color": "#FF5733"
+            },
+          }
+      );
+      bollingerBandsOnchartList.push(
+          {
+            name: "bbands middle",
+            type: "EMA",
+            data: [],
+            settings: {
+              "color": "#21871C"
+            },
+          }
+      );
+      bollingerBandsOnchartList.push(
+          {
+            name: "bbands lower",
+            type: "EMA",
+            data: [],
+            settings: {
+              "color": "#3347FF"
+            },
+          }
+      );
+      return bollingerBandsOnchartList;
+    },
     getRsiOffchart() {
       return {
         name: "RSI",
@@ -134,11 +168,16 @@ export default Vue.component('trading-chart', {
 
       // onchart
       const tradesOnchart = this.getTradesOnchart();
-      const resistanceOnchartList = this.getResistanceOnchartList();
       const onchart = [tradesOnchart];
-      for (let resistanceOnchart of resistanceOnchartList) {
-        onchart.push(resistanceOnchart);
-      }
+      const bollingerBandsOnchartList = this.getBollingerBands();
+      onchart.push(bollingerBandsOnchartList[0]); // upper
+      onchart.push(bollingerBandsOnchartList[1]); // middle
+      onchart.push(bollingerBandsOnchartList[2]); // lower
+      const resistanceOnchartList = this.getResistanceOnchartList();
+      // 지지/저항 차트에서 생략
+      //for (let resistanceOnchart of resistanceOnchartList) {
+      //  onchart.push(resistanceOnchart);
+      //}
 
       // offchart
       const rsiOffchart = this.getRsiOffchart();
@@ -180,6 +219,12 @@ export default Vue.component('trading-chart', {
             );
           }
         }
+        bollingerBandsOnchartList[0].data.push(
+            [timestamp, recordContext.index.bollingerBands.upper])
+        bollingerBandsOnchartList[1].data.push(
+            [timestamp, recordContext.index.bollingerBands.middle])
+        bollingerBandsOnchartList[2].data.push(
+            [timestamp, recordContext.index.bollingerBands.lower])
       }
 
       return {chart, onchart, offchart};
