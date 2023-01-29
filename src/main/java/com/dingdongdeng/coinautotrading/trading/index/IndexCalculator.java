@@ -2,8 +2,8 @@ package com.dingdongdeng.coinautotrading.trading.index;
 
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles.Candle;
-import com.dingdongdeng.coinautotrading.trading.index.Index.Macd;
 import com.tictactec.ta.lib.Core;
+import com.tictactec.ta.lib.MAType;
 import com.tictactec.ta.lib.MInteger;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,6 +30,31 @@ public class IndexCalculator {
             .rsi(this.getRsi(candles))
             .resistancePriceList(this.getResistancePrice(candles))
             .macd(this.getMACD(candles))
+            .bollingerBands(this.getBollingerBands(candles))
+            .build();
+    }
+
+    public BollingerBands getBollingerBands(ExchangeCandles candles) {
+        MAType MA_TYPE = MAType.Sma;
+        int TIME_PERIOD = 20;
+        int NB_DEV_UP = 2;
+        int NB_DEV_DOWN = 2;
+
+        List<Candle> candleList = candles.getCandleList();
+
+        double[] inReal = candleList.stream().mapToDouble(Candle::getTradePrice).toArray();
+        double[] outRealUpperBand = new double[inReal.length];
+        double[] outRealMiddleBand = new double[inReal.length];
+        double[] outRealLowerBand = new double[inReal.length];
+        MInteger outBegIdx = new MInteger();
+        MInteger outNBElement = new MInteger();
+
+        core.bbands(0, inReal.length - 1, inReal, TIME_PERIOD, NB_DEV_UP, NB_DEV_DOWN, MA_TYPE, outBegIdx, outNBElement, outRealUpperBand, outRealMiddleBand, outRealLowerBand);
+
+        return BollingerBands.builder()
+            .upper(outRealUpperBand[outNBElement.value - 1])
+            .middle(outRealMiddleBand[outNBElement.value - 1])
+            .lower(outRealLowerBand[outNBElement.value - 1])
             .build();
     }
 
