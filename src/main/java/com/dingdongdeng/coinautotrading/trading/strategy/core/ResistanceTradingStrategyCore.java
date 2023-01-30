@@ -207,7 +207,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         double currentDowntrendLowestHist = index.getMacd().getCurrentDowntrendLowestHist();
 
         // 볼린저 밴드 하단 아래로 내려간 시간 기록
-        if (bbandsLower - param.getConditionPriceBuffer() > currentPrice) {
+        if (bbandsLower - param.getProfitConditionPriceBuffer() > currentPrice) {
             this.recentOutOfLowerDateTime = TradingTimeContext.now();
         }
 
@@ -238,7 +238,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
 
         // 볼린저밴드 lower 근처가 아니라면
-        if (bbandsLower + param.getConditionPriceBuffer() < currentPrice || bbandsLower - param.getConditionPriceBuffer() > currentPrice) {
+        if (bbandsLower + param.getProfitConditionPriceBuffer() < currentPrice || bbandsLower - param.getProfitConditionPriceBuffer() > currentPrice) {
             log.info("[매수 조건] 볼린저 밴드 하단선 근처가 아니라면, lower={}, currentPrice={}, macd={}", bbandsLower, currentPrice, macdMacd);
             return false;
         }
@@ -279,20 +279,10 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
-        // 하락 추세 일때
-        if (macdHist < 0) {
-            if ((bbandsMiddle - param.getConditionPriceBuffer()) > currentPrice) {
-                log.info("[익절 조건] 저항선에 도달하지 않으면 익절하지 않음, middle={}, currentPrice={}", bbandsMiddle, currentPrice);
-                return false;
-            }
-        }
-        // 상승 추세일때
-        else {
-            // 저항선에 도달하지 않았다면
-            if ((bbandsUpper - param.getConditionPriceBuffer()) > currentPrice) {
-                log.info("[익절 조건] 저항선에 도달하지 않으면 익절하지 않음, upper={}, currentPrice={}", bbandsUpper, currentPrice);
-                return false;
-            }
+        // 목표 저항선까지 도달하지 않았다면
+        if ((bbandsMiddle - param.getProfitConditionPriceBuffer()) > currentPrice) {
+            log.info("[익절 조건] 저항선에 도달하지 않으면 익절하지 않음, middle={}, currentPrice={}", bbandsMiddle, currentPrice);
+            return false;
         }
 
         log.info("[익절 조건] 익절 조건 만족");
