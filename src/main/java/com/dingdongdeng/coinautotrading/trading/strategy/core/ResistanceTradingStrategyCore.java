@@ -206,8 +206,10 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         double macdMacd = index.getMacd().getMacd();
         double currentDowntrendLowestHist = index.getMacd().getCurrentDowntrendLowestHist();
 
+        double lowerBufferPrice = getBufferPrice(bbandsUpper, bbandsLower, 0.05);
+
         // 볼린저 밴드 하단 아래로 내려간 시간 기록
-        if (bbandsLower - param.getProfitConditionPriceBuffer() > currentPrice) {
+        if (bbandsLower - lowerBufferPrice > currentPrice) {
             this.recentOutOfLowerDateTime = TradingTimeContext.now();
         }
 
@@ -218,14 +220,14 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
 
         // 포지션 종료 후 유예시간을 가져야함
-        if (isEnoughBufferTime(positionCompletedDateTime)) {
+        if (!isEnoughBufferTime(positionCompletedDateTime)) {
             log.info("[매수 조건] 포지션 정리 후 유예시간을 가져야함, bufferTime={}, positionCompletedDateTime={}, now={}", param.getConditionTimeBuffer(), positionCompletedDateTime,
                 TradingTimeContext.now());
             return false;
         }
 
         // 볼린저 밴드 하단으로 내려갔다면 유예시간을 가져야함(하락의 가능성이 큼)
-        if (isEnoughBufferTime(recentOutOfLowerDateTime)) {
+        if (!isEnoughBufferTime(recentOutOfLowerDateTime)) {
             log.info("[매수 조건] 볼린저 밴드 하단으로 내려갔다면 유예시간을 가져야함, bufferTime={}, recentOutOfLowerDateTime={}, now={}", param.getConditionTimeBuffer(), recentOutOfLowerDateTime,
                 TradingTimeContext.now());
             return false;
@@ -238,8 +240,8 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
 
         // 볼린저밴드 lower 근처가 아니라면
-        if (bbandsLower + param.getProfitConditionPriceBuffer() < currentPrice || bbandsLower - param.getProfitConditionPriceBuffer() > currentPrice) {
-            log.info("[매수 조건] 볼린저 밴드 하단선 근처가 아니라면, lower={}, currentPrice={}, macd={}", bbandsLower, currentPrice, macdMacd);
+        if (bbandsLower + lowerBufferPrice < currentPrice || bbandsLower - lowerBufferPrice > currentPrice) {
+            log.info("[매수 조건] 볼린저 밴드 하단선 근처가 아니라면, lower={}, currentPrice={}, bufferPrice={}, macd={}", bbandsLower, currentPrice, lowerBufferPrice, macdMacd);
             return false;
         }
 
@@ -268,7 +270,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
 
         // 포지션 진입 후 유예시간을 충분히 갖지 않았다면
         LocalDateTime lastBuyOrderDateTime = lastBuyTradingResult.getCreatedAt();
-        if (isEnoughBufferTime(lastBuyOrderDateTime)) {
+        if (!isEnoughBufferTime(lastBuyOrderDateTime)) {
             log.info("[익절 조건] 방향성이 나올때까지 충분한 유예시간을 갖지 못함, lastBuyOrderDateTime={}, currentDateTime={}", lastBuyOrderDateTime, TradingTimeContext.now());
             return false;
         }
@@ -280,8 +282,9 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
 
         // 목표 저항선까지 도달하지 않았다면
-        if ((bbandsMiddle - param.getProfitConditionPriceBuffer()) > currentPrice) {
-            log.info("[익절 조건] 저항선에 도달하지 않으면 익절하지 않음, middle={}, currentPrice={}", bbandsMiddle, currentPrice);
+        double profitBufferPrice = getBufferPrice(bbandsUpper, bbandsLower, 0.1);
+        if ((bbandsMiddle - profitBufferPrice) > currentPrice) {
+            log.info("[익절 조건] 저항선에 도달하지 않으면 익절하지 않음, middle={}, bufferPrice={}, currentPrice={}", bbandsMiddle, profitBufferPrice, currentPrice);
             return false;
         }
 
@@ -309,7 +312,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
 
         // 포지션 진입 후 유예시간을 충분히 갖지 않았다면
         LocalDateTime lastBuyOrderDateTime = lastBuyTradingResult.getCreatedAt();
-        if (isEnoughBufferTime(lastBuyOrderDateTime)) {
+        if (!isEnoughBufferTime(lastBuyOrderDateTime)) {
             log.info("[손절 조건] 방향성이 나올때까지 충분한 유예시간을 갖지 못함, lastBuyOrderDateTime={}, currentDateTime={}", lastBuyOrderDateTime, TradingTimeContext.now());
             return false;
         }
@@ -321,8 +324,9 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
 
         // 지지받고 있다면
-        if (bbandsLower < currentPrice) {
-            log.info("[손절 조건] 지지 받고 있음, lower={}, currentPrice={}", bbandsLower, currentPrice);
+        double lowerBufferPrice = getBufferPrice(bbandsUpper, bbandsLower, 0.05);
+        if (bbandsLower - lowerBufferPrice < currentPrice) {
+            log.info("[손절 조건] 지지 받고 있음, lower={}, bufferPrice={}, currentPrice={}", bbandsLower, lowerBufferPrice, currentPrice);
             return false;
         }
 
@@ -340,7 +344,14 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
     }
 
     private boolean isEnoughBufferTime(LocalDateTime standard) {
-        return (Objects.nonNull(standard) && TradingTimeContext.now().isBefore(standard.plusMinutes(param.getConditionTimeBuffer())));
+        if (Objects.isNull(standard)) {
+            return true;
+        }
+        return TradingTimeContext.now().isAfter(standard.plusMinutes(param.getConditionTimeBuffer()));
+    }
+
+    private double getBufferPrice(double bbandsUpper, double bbandsLower, double rate) {
+        return (bbandsUpper - bbandsLower) * rate;
     }
 
     private boolean isTooOld(SpotTradingResult tradingResult) {

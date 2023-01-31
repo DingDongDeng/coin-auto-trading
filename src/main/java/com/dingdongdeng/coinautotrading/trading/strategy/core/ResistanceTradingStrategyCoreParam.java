@@ -18,15 +18,6 @@ public class ResistanceTradingStrategyCoreParam implements StrategyCoreParam {
     @GuideMessage("최초 주문할 금액을 입력해주세요. ex) 40000")
     private double initOrderPrice; // 처음에 주문할 금액
 
-    @GuideMessage("매수 조건 버퍼 금액 ex) 10000")
-    private double buyConditionPriceBuffer;
-
-    @GuideMessage("익절 조건 버퍼 금액 ex) 20000")
-    private double profitConditionPriceBuffer;
-
-    @GuideMessage("손절절 조건 버퍼 금액 ex) 10000")
-    private double lossConditionPriceBuffer;
-
     @GuideMessage("조건 버퍼 시간(n분을 설정하면 주문 조건을 만족하더라도 n분의 버퍼를 둠) ex) 240")
     private int conditionTimeBuffer;
 
