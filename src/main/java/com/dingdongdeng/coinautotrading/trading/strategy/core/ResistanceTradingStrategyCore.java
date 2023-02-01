@@ -226,6 +226,12 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
+        // 이미 상승 추세라면
+        if (macdHist > 0) {
+            log.info("[매수 조건] 이미 상승 추세, hist={}", macdHist);
+            return false;
+        }
+
         // 볼린저 밴드 하단으로 내려갔다면 유예시간을 가져야함(하락의 가능성이 큼)
         if (!isEnoughBufferTime(recentOutOfLowerDateTime)) {
             log.info("[매수 조건] 볼린저 밴드 하단으로 내려갔다면 유예시간을 가져야함, bufferTime={}, recentOutOfLowerDateTime={}, now={}", param.getConditionTimeBuffer(), recentOutOfLowerDateTime,
