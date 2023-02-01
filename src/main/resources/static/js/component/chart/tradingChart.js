@@ -122,9 +122,9 @@ export default Vue.component('trading-chart', {
         }
       };
     },
-    getObvdOffchart() {
+    getObvHistOffchart() {
       return {
-        name: "OBV_DIFF",
+        name: "OBV_HIST",
         type: "RSI",
         data: [],
         settings: {
@@ -194,9 +194,9 @@ export default Vue.component('trading-chart', {
       const rsiOffchart = this.getRsiOffchart();
       const macdHistOffchart = this.getMacdHistOffchart();
       const macdMacdOffchart = this.getMacdMacdOffchart();
-      const obvOffchart = this.getObvdOffchart();
+      const obvHistOffchart = this.getObvHistOffchart();
       const offchart = [rsiOffchart, macdHistOffchart, macdMacdOffchart,
-        obvOffchart];
+        obvHistOffchart];
 
       // 차트들 데이터 세팅
       for (let recordContext of recordContextList) {
@@ -225,7 +225,7 @@ export default Vue.component('trading-chart', {
         rsiOffchart.data.push([timestamp, recordContext.index.rsi * 100]);
         macdHistOffchart.data.push([timestamp, recordContext.index.macd.hist]);
         macdMacdOffchart.data.push([timestamp, recordContext.index.macd.macd]);
-        obvOffchart.data.push([timestamp, recordContext.index.obv.diff]);
+        obvHistOffchart.data.push([timestamp, recordContext.index.obv.hist]);
         for (let i = 0; i < resistanceOnchartList.length; i++) {
           if (i < recordContext.index.resistancePriceList.length) {
             resistanceOnchartList[i].data.push(

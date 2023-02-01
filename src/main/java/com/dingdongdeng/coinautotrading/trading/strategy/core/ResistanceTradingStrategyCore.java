@@ -263,7 +263,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         double bbandsMiddle = index.getBollingerBands().getMiddle();
         double bbandsLower = index.getBollingerBands().getLower();
 
-        double obvDiff = index.getObv().getDiff();
+        double obvHist = index.getObv().getHist();
 
         // 매수 주문한적이 없다면
         if (tradingResultPack.getBuyTradingResultList().isEmpty()) {
@@ -285,7 +285,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
 
         // 목표 저항선까지 도달하지 않았다면
-        double targetProfitPrice = obvDiff > 0 ? bbandsUpper : (bbandsMiddle - getBufferPrice(bbandsUpper, bbandsLower, 0.1));
+        double targetProfitPrice = obvHist > 0 ? bbandsUpper : (bbandsMiddle - getBufferPrice(bbandsUpper, bbandsLower, 0.1));
         if (targetProfitPrice > currentPrice) {
             log.info("[익절 조건] 저항선에 도달하지 않으면 익절하지 않음, targetProfitPrice={}, currentPrice={}", targetProfitPrice, currentPrice);
             return false;

@@ -37,18 +37,26 @@ public class IndexCalculator {
 
     public Obv getObv(ExchangeCandles candles) {
         List<Candle> candleList = candles.getCandleList();
-        double[] inReal = candleList.stream().mapToDouble(Candle::getTradePrice).toArray();
-        double[] inVolume = candleList.stream().mapToDouble(Candle::getCandleAccTradeVolume).toArray();
-        MInteger outBegIdx = new MInteger();
-        MInteger outNBElement = new MInteger();
-        double[] outReal = new double[inReal.length];
 
-        core.obv(0, inReal.length - 1, inReal, inVolume, outBegIdx, outNBElement, outReal);
+        // obv 계산
+        double[] obvInReal = candleList.stream().mapToDouble(Candle::getTradePrice).toArray();
+        double[] obvInVolume = candleList.stream().mapToDouble(Candle::getCandleAccTradeVolume).toArray();
+        MInteger obvOutBegIdx = new MInteger();
+        MInteger obvOutNBElement = new MInteger();
+        double[] obvOutReal = new double[obvInReal.length];
+        core.obv(0, obvInReal.length - 1, obvInReal, obvInVolume, obvOutBegIdx, obvOutNBElement, obvOutReal);
+
+        // obv 시그널 계산
+        int TIME_PERIOD = 10;
+        double[] signalInReal = obvOutReal;
+        MInteger signalOutBegIdx = new MInteger();
+        MInteger signalOutNBElement = new MInteger();
+        double[] signalOutReal = new double[signalInReal.length];
+        core.ema(0, signalInReal.length - 1, signalInReal, TIME_PERIOD, signalOutBegIdx, signalOutNBElement, signalOutReal);
 
         return Obv.builder()
-            .obv(outReal[outNBElement.value - 1])
-            .prevObv(outReal[outNBElement.value - 2])
-            .diff(outReal[outNBElement.value - 1] - outReal[outNBElement.value - 2])
+            .obv(obvOutReal[obvOutNBElement.value - 1])
+            .hist(obvOutReal[obvOutNBElement.value - 1] - signalOutReal[signalOutNBElement.value - 1])
             .build();
     }
 

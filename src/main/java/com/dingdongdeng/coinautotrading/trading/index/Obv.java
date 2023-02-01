@@ -10,6 +10,6 @@ import lombok.ToString;
 public class Obv {
 
     private double obv;
-    private double prevObv;
-    private double diff;
+    private double signal;
+    private double hist;
 }
