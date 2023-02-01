@@ -43,6 +43,7 @@ public class BackTestingSpotExchangeService implements SpotExchangeService {
     private LocalDateTime snapshotCandleDateTime;
     private double snapshotCandleAccTradeVolume;
     private double highPrice;
+    @Default
     private double lowPrice = Double.MAX_VALUE;
 
     @Override

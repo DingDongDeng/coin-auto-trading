@@ -151,6 +151,23 @@ class IndexCalculatorTest {
         assertEquals(1949819, Math.round(bollingerBands.getLower()));
     }
 
+    @Test
+    public void obv_계산_테스트() {
+        // given
+        CoinType coinType = CoinType.ETHEREUM;
+        TradingTerm tradingTerm = TradingTerm.SCALPING_240M;
+        LocalDateTime now = LocalDateTime.of(2023, 1, 29, 1, 1, 10);
+        ExchangeCandles candles = getExchangeCandles(now, tradingTerm, coinType, keyPairId);
+
+        // when
+        Obv obv = calculator.getObv(candles);
+
+        // then
+        log.info("result : {}", obv);
+        assertEquals(60075, Math.round(obv.getObv()));
+        assertEquals(61556, Math.round(obv.getPrevObv()));
+    }
+
     private ExchangeCandles getExchangeCandles(LocalDateTime now, TradingTerm tradingTerm, CoinType coinType, String keyPairId) {
         List<CandleResponse> response = upbitClient.getMinuteCandle(
             CandleRequest.builder()

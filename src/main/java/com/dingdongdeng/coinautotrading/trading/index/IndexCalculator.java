@@ -31,6 +31,24 @@ public class IndexCalculator {
             .resistancePriceList(this.getResistancePrice(candles))
             .macd(this.getMACD(candles))
             .bollingerBands(this.getBollingerBands(candles))
+            .obv(this.getObv(candles))
+            .build();
+    }
+
+    public Obv getObv(ExchangeCandles candles) {
+        List<Candle> candleList = candles.getCandleList();
+        double[] inReal = candleList.stream().mapToDouble(Candle::getTradePrice).toArray();
+        double[] inVolume = candleList.stream().mapToDouble(Candle::getCandleAccTradeVolume).toArray();
+        MInteger outBegIdx = new MInteger();
+        MInteger outNBElement = new MInteger();
+        double[] outReal = new double[inReal.length];
+
+        core.obv(0, inReal.length - 1, inReal, inVolume, outBegIdx, outNBElement, outReal);
+
+        return Obv.builder()
+            .obv(outReal[outNBElement.value - 1])
+            .prevObv(outReal[outNBElement.value - 2])
+            .diff(outReal[outNBElement.value - 1] - outReal[outNBElement.value - 2])
             .build();
     }
 

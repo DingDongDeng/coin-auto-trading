@@ -14,4 +14,5 @@ public class Index {
     private List<Double> resistancePriceList;
     private Macd macd;
     private BollingerBands bollingerBands;
+    private Obv obv;
 }
