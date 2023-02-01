@@ -165,6 +165,7 @@ class IndexCalculatorTest {
         // then
         log.info("result : {}", obv);
         assertEquals(60075, Math.round(obv.getObv()));
+        assertEquals(-4835, Math.round(obv.getHist()));
     }
 
     private ExchangeCandles getExchangeCandles(LocalDateTime now, TradingTerm tradingTerm, CoinType coinType, String keyPairId) {
