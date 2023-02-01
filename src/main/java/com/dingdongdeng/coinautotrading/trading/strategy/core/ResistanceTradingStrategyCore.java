@@ -233,16 +233,10 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
-        // 이미 상승 추세라면
-        if (macdHist > 0) {
-            log.info("[매수 조건] 이미 상승 추세, hist={}", macdHist);
-            return false;
-        }
-
         // 볼린저밴드 lower 근처가 아니라면
         double lowerBufferPrice = bufferPrice;
         if (bbandsLower + lowerBufferPrice < currentPrice || bbandsLower - lowerBufferPrice > currentPrice) {
-            log.info("[매수 조건] 볼린저 밴드 하단선 근처가 아니라면, lower={}, currentPrice={}, bufferPrice={}, macd={}", bbandsLower, currentPrice, lowerBufferPrice, macdMacd);
+            log.info("[매수 조건] 볼린저 밴드 하단선 근처가 아니라면, lower={}, currentPrice={}, bufferPrice={}", bbandsLower, currentPrice, lowerBufferPrice);
             return false;
         }
 
