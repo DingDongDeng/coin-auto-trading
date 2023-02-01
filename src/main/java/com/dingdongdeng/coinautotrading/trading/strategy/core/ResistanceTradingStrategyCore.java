@@ -206,10 +206,10 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         double macdMacd = index.getMacd().getMacd();
         double currentDowntrendLowestHist = index.getMacd().getCurrentDowntrendLowestHist();
 
-        double lowerBufferPrice = getBufferPrice(bbandsUpper, bbandsLower, 0.05);
+        double bufferPrice = 10000;
 
         // 볼린저 밴드 하단 아래로 내려간 시간 기록
-        if (bbandsLower - lowerBufferPrice > currentPrice) {
+        if (bbandsLower - bufferPrice > currentPrice) {
             this.recentOutOfLowerDateTime = TradingTimeContext.now();
         }
 
@@ -240,6 +240,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
 
         // 볼린저밴드 lower 근처가 아니라면
+        double lowerBufferPrice = bufferPrice;
         if (bbandsLower + lowerBufferPrice < currentPrice || bbandsLower - lowerBufferPrice > currentPrice) {
             log.info("[매수 조건] 볼린저 밴드 하단선 근처가 아니라면, lower={}, currentPrice={}, bufferPrice={}, macd={}", bbandsLower, currentPrice, lowerBufferPrice, macdMacd);
             return false;
@@ -262,6 +263,8 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         double bbandsMiddle = index.getBollingerBands().getMiddle();
         double bbandsLower = index.getBollingerBands().getLower();
 
+        double obvDiff = index.getObv().getDiff();
+
         // 매수 주문한적이 없다면
         if (tradingResultPack.getBuyTradingResultList().isEmpty()) {
             log.info("[익절 조건] 매수 주문 한적이 없음");
@@ -282,9 +285,9 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         }
 
         // 목표 저항선까지 도달하지 않았다면
-        double profitBufferPrice = getBufferPrice(bbandsUpper, bbandsLower, 0.1);
-        if ((bbandsMiddle - profitBufferPrice) > currentPrice) {
-            log.info("[익절 조건] 저항선에 도달하지 않으면 익절하지 않음, middle={}, bufferPrice={}, currentPrice={}", bbandsMiddle, profitBufferPrice, currentPrice);
+        double targetProfitPrice = obvDiff > 0 ? bbandsUpper : (bbandsMiddle - getBufferPrice(bbandsUpper, bbandsLower, 0.1));
+        if (targetProfitPrice > currentPrice) {
+            log.info("[익절 조건] 저항선에 도달하지 않으면 익절하지 않음, targetProfitPrice={}, currentPrice={}", targetProfitPrice, currentPrice);
             return false;
         }
 
