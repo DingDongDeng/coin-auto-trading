@@ -200,6 +200,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         double bbandsUpper = index.getBollingerBands().getUpper();
         double bbandsMiddle = index.getBollingerBands().getMiddle();
         double bbandsLower = index.getBollingerBands().getLower();
+        double bbandsHeightHist = index.getBollingerBands().getHeightHist();
 
         double macdHist = index.getMacd().getHist();
         double macdSignal = index.getMacd().getSignal();
@@ -229,6 +230,12 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         // 이미 상승 추세라면
         if (macdHist > 0) {
             log.info("[매수 조건] 이미 상승 추세, hist={}", macdHist);
+            return false;
+        }
+
+        // 볼린저 밴드의 변동성이 점점 줄어들고 있다면
+        if (bbandsHeightHist < 0) {
+            log.info("[매수 조건] 볼린저 밴드의 변동성이 점점 줄어들고 있음, bbandsHeightHist={}", bbandsHeightHist);
             return false;
         }
 
