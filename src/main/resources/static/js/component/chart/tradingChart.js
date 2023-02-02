@@ -131,7 +131,18 @@ export default Vue.component('trading-chart', {
           upper: 25,
           lower: -25
         }
-      };
+      }
+    },
+    getBollingerBandsHeightHistOffchart() {
+      return {
+        name: "BBANDS_HEIGHT_HIST",
+        type: "RSI",
+        data: [],
+        settings: {
+          upper: 25,
+          lower: -25
+        }
+      }
     }
 
   },
@@ -195,8 +206,9 @@ export default Vue.component('trading-chart', {
       const macdHistOffchart = this.getMacdHistOffchart();
       const macdMacdOffchart = this.getMacdMacdOffchart();
       const obvHistOffchart = this.getObvHistOffchart();
+      const bollingerBandsHeightHistOffchart = this.getBollingerBandsHeightHistOffchart();
       const offchart = [rsiOffchart, macdHistOffchart, macdMacdOffchart,
-        obvHistOffchart];
+        obvHistOffchart, bollingerBandsHeightHistOffchart];
 
       // 차트들 데이터 세팅
       for (let recordContext of recordContextList) {
@@ -226,6 +238,8 @@ export default Vue.component('trading-chart', {
         macdHistOffchart.data.push([timestamp, recordContext.index.macd.hist]);
         macdMacdOffchart.data.push([timestamp, recordContext.index.macd.macd]);
         obvHistOffchart.data.push([timestamp, recordContext.index.obv.hist]);
+        bollingerBandsHeightHistOffchart.data.push(
+            [timestamp, recordContext.index.bollingerBands.heightHist])
         for (let i = 0; i < resistanceOnchartList.length; i++) {
           if (i < recordContext.index.resistancePriceList.length) {
             resistanceOnchartList[i].data.push(

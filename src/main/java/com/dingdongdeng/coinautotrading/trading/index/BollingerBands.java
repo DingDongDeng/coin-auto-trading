@@ -12,4 +12,6 @@ public class BollingerBands {
     private double upper;
     private double middle;
     private double lower;
+    private double height;
+    private double heightHist;
 }

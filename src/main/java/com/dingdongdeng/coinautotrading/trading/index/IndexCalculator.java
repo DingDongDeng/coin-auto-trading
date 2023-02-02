@@ -61,26 +61,43 @@ public class IndexCalculator {
     }
 
     public BollingerBands getBollingerBands(ExchangeCandles candles) {
+        List<Candle> candleList = candles.getCandleList();
+
+        // 볼린저 밴드 계산
         MAType MA_TYPE = MAType.Sma;
         int TIME_PERIOD = 20;
         int NB_DEV_UP = 2;
         int NB_DEV_DOWN = 2;
+        double[] bbandsInReal = candleList.stream().mapToDouble(Candle::getTradePrice).toArray();
+        double[] bbandsOutRealUpperBand = new double[bbandsInReal.length];
+        double[] bbandsOutRealMiddleBand = new double[bbandsInReal.length];
+        double[] bbandsOutRealLowerBand = new double[bbandsInReal.length];
+        MInteger bbandsOutBegIdx = new MInteger();
+        MInteger bbandsOutNBElement = new MInteger();
 
-        List<Candle> candleList = candles.getCandleList();
+        core.bbands(0, bbandsInReal.length - 1, bbandsInReal, TIME_PERIOD, NB_DEV_UP, NB_DEV_DOWN, MA_TYPE, bbandsOutBegIdx, bbandsOutNBElement, bbandsOutRealUpperBand,
+            bbandsOutRealMiddleBand, bbandsOutRealLowerBand);
 
-        double[] inReal = candleList.stream().mapToDouble(Candle::getTradePrice).toArray();
-        double[] outRealUpperBand = new double[inReal.length];
-        double[] outRealMiddleBand = new double[inReal.length];
-        double[] outRealLowerBand = new double[inReal.length];
-        MInteger outBegIdx = new MInteger();
-        MInteger outNBElement = new MInteger();
+        // 볼린저 밴드 높이 계산
+        double[] bbandsOutRealHeight = new double[bbandsOutNBElement.value];
+        for (int i = 0; i < bbandsOutRealHeight.length; i++) {
+            bbandsOutRealHeight[i] = bbandsOutRealUpperBand[i] - bbandsOutRealLowerBand[i];
+        }
 
-        core.bbands(0, inReal.length - 1, inReal, TIME_PERIOD, NB_DEV_UP, NB_DEV_DOWN, MA_TYPE, outBegIdx, outNBElement, outRealUpperBand, outRealMiddleBand, outRealLowerBand);
+        // 볼린저 밴드 높이 시그널 계산
+        int SIGNAL_TIME_PERIOD = 10;
+        double[] signalInReal = bbandsOutRealHeight;
+        MInteger signalOutBegIdx = new MInteger();
+        MInteger signalOutNBElement = new MInteger();
+        double[] signalOutReal = new double[signalInReal.length];
+        core.ema(0, signalInReal.length - 1, signalInReal, SIGNAL_TIME_PERIOD, signalOutBegIdx, signalOutNBElement, signalOutReal);
 
         return BollingerBands.builder()
-            .upper(outRealUpperBand[outNBElement.value - 1])
-            .middle(outRealMiddleBand[outNBElement.value - 1])
-            .lower(outRealLowerBand[outNBElement.value - 1])
+            .upper(bbandsOutRealUpperBand[bbandsOutNBElement.value - 1])
+            .middle(bbandsOutRealMiddleBand[bbandsOutNBElement.value - 1])
+            .lower(bbandsOutRealLowerBand[bbandsOutNBElement.value - 1])
+            .height(bbandsOutRealHeight[bbandsOutNBElement.value - 1])
+            .heightHist(bbandsOutRealHeight[bbandsOutNBElement.value - 1] - signalOutReal[signalOutNBElement.value - 1])
             .build();
     }
 
