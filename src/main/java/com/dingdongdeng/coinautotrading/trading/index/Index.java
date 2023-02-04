@@ -15,5 +15,5 @@ public class Index {
     private Macd macd;
     private BollingerBands bollingerBands;
     private Obv obv;
-    private Mv mv;
+    private Ma ma;
 }

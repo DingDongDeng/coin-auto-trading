@@ -177,11 +177,11 @@ class IndexCalculatorTest {
         ExchangeCandles candles = getExchangeCandles(now, tradingTerm, coinType, keyPairId);
 
         // when
-        Mv mv = calculator.getMv(candles);
+        Ma ma = calculator.getMv(candles);
 
         // then
-        log.info("result : {}", mv);
-        assertEquals(1767750, Math.round(mv.getSma200()));
+        log.info("result : {}", ma);
+        assertEquals(1767750, Math.round(ma.getSma200()));
     }
 
     private ExchangeCandles getExchangeCandles(LocalDateTime now, TradingTerm tradingTerm, CoinType coinType, String keyPairId) {

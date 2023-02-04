@@ -7,7 +7,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @Builder
-public class Mv {
+public class Ma {
 
     private double sma200;
 }
