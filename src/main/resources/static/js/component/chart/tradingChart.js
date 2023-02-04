@@ -54,7 +54,7 @@ export default Vue.component('trading-chart', {
       }
       return resistanceOnchartList;
     },
-    getBollingerBands() {
+    getBollingerBandsOnchartList() {
       const bollingerBandsOnchartList = [];
       bollingerBandsOnchartList.push(
           {
@@ -87,6 +87,20 @@ export default Vue.component('trading-chart', {
           }
       );
       return bollingerBandsOnchartList;
+    },
+    getMaOnchartList() {
+      const mvOnchartList = [];
+      mvOnchartList.push(
+          {
+            name: "SMA 200",
+            type: "EMA",
+            data: [],
+            settings: {
+              "color": "#6D23A5FF"
+            },
+          }
+      );
+      return mvOnchartList;
     },
     getRsiOffchart() {
       return {
@@ -191,7 +205,9 @@ export default Vue.component('trading-chart', {
       // onchart
       const tradesOnchart = this.getTradesOnchart();
       const onchart = [tradesOnchart];
-      const bollingerBandsOnchartList = this.getBollingerBands();
+      const maOnchartList = this.getMaOnchartList();
+      onchart.push(maOnchartList[0]); // sma200
+      const bollingerBandsOnchartList = this.getBollingerBandsOnchartList();
       onchart.push(bollingerBandsOnchartList[0]); // upper
       onchart.push(bollingerBandsOnchartList[1]); // middle
       onchart.push(bollingerBandsOnchartList[2]); // lower
@@ -233,13 +249,15 @@ export default Vue.component('trading-chart', {
               [timestamp, trade.orderType === 'BUY' ? 1 : 0, trade.price]);
         }
 
-        // 보조지표 세팅
+        // 보조지표 세팅(offChart)
         rsiOffchart.data.push([timestamp, recordContext.index.rsi * 100]);
         macdHistOffchart.data.push([timestamp, recordContext.index.macd.hist]);
         macdMacdOffchart.data.push([timestamp, recordContext.index.macd.macd]);
         obvHistOffchart.data.push([timestamp, recordContext.index.obv.hist]);
         bollingerBandsHeightHistOffchart.data.push(
             [timestamp, recordContext.index.bollingerBands.heightHist])
+
+        // 보조지표 세팅(onChart)
         for (let i = 0; i < resistanceOnchartList.length; i++) {
           if (i < recordContext.index.resistancePriceList.length) {
             resistanceOnchartList[i].data.push(
@@ -253,6 +271,7 @@ export default Vue.component('trading-chart', {
             [timestamp, recordContext.index.bollingerBands.middle])
         bollingerBandsOnchartList[2].data.push(
             [timestamp, recordContext.index.bollingerBands.lower])
+        maOnchartList[0].data.push([timestamp, recordContext.index.ma.sma200])
       }
 
       return {chart, onchart, offchart};
