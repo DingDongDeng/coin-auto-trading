@@ -17,15 +17,20 @@ public class TrendSwitchTradingStrategyCore implements StrategyCore<SpotTradingI
 
     private final TrendSwitchTradingStrategyCoreParam param;
 
-    private final BBandsTradingStrategyCore bBandsTradingStrategyCore = new BBandsTradingStrategyCore(
-        BBandsTradingStrategyCoreParam.builder()
-            .initOrderPrice(param.getInitOrderPrice())
-            .conditionTimeBuffer(param.getConditionTimeBuffer())
-            .accountBalanceLimit(param.getAccountBalanceLimit())
-            .tooOldOrderTimeSeconds(param.getTooOldOrderTimeSeconds())
-            .processDuration(param.getProcessDuration())
-            .build()
-    );
+    private final BBandsTradingStrategyCore bBandsTradingStrategyCore;
+
+    public TrendSwitchTradingStrategyCore(TrendSwitchTradingStrategyCoreParam param) {
+        this.param = param;
+        this.bBandsTradingStrategyCore = new BBandsTradingStrategyCore(
+            BBandsTradingStrategyCoreParam.builder()
+                .initOrderPrice(param.getInitOrderPrice())
+                .conditionTimeBuffer(param.getConditionTimeBuffer())
+                .accountBalanceLimit(param.getAccountBalanceLimit())
+                .tooOldOrderTimeSeconds(param.getTooOldOrderTimeSeconds())
+                .processDuration(param.getProcessDuration())
+                .build()
+        );
+    }
 
     @Override
     public List<TradingTask> makeTradingTask(SpotTradingInfo tradingInfo, TradingResultPack<SpotTradingResult> tradingResultPack) {
@@ -36,7 +41,7 @@ public class TrendSwitchTradingStrategyCore implements StrategyCore<SpotTradingI
         // 상승장이라면
         if (sma200 < currentPrice) {
             log.info("[분기 조건] 상승 추세");
-            return null; //TODO 상승 전략
+            return List.of(); //TODO 상승 전략
         } else {
             log.info("[분기 조건] 하락 및 횡보 추세");
             return bBandsTradingStrategyCore.makeTradingTask(tradingInfo, tradingResultPack);
