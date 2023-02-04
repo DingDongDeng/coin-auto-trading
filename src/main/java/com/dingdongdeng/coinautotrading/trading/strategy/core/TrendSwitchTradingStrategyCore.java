@@ -52,8 +52,11 @@ public class TrendSwitchTradingStrategyCore implements StrategyCore<SpotTradingI
         if (sma200 < currentPrice) {
             log.info("[분기 조건] 상승 추세");
             return resistanceTradingStrategyCore.makeTradingTask(tradingInfo, tradingResultPack);
+        } else if (false) { //FIXME 추세 구분 고도화 필요
+            log.info("[분기 조건] 횡보 추세");
+            return bBandsTradingStrategyCore.makeTradingTask(tradingInfo, tradingResultPack);
         } else {
-            log.info("[분기 조건] 하락 및 횡보 추세");
+            log.info("[분기 조건] 하락 추세");
             return bBandsTradingStrategyCore.makeTradingTask(tradingInfo, tradingResultPack);
         }
     }
