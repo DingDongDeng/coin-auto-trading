@@ -207,8 +207,6 @@ public class BBandsTradingStrategyCore implements StrategyCore<SpotTradingInfo, 
         double macdMacd = index.getMacd().getMacd();
         double currentDowntrendLowestHist = index.getMacd().getCurrentDowntrendLowestHist();
 
-        double sma200 = index.getMa().getSma200();
-
         double bufferPrice = 10000;
 
         // 볼린저 밴드 하단 아래로 내려간 시간 기록
@@ -232,12 +230,6 @@ public class BBandsTradingStrategyCore implements StrategyCore<SpotTradingInfo, 
         // 이미 상승 추세라면
         if (macdHist > 0) {
             log.info("[매수 조건] 이미 상승 추세, hist={}", macdHist);
-            return false;
-        }
-
-        // 상승장이라면
-        if (sma200 < currentPrice) {
-            log.info("[매수 조건] 상승장이라면 매수 안함, sma200={}, currentPrice={}", sma200, currentPrice);
             return false;
         }
 
