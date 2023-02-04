@@ -168,6 +168,22 @@ class IndexCalculatorTest {
         assertEquals(-4835, Math.round(obv.getHist()));
     }
 
+    @Test
+    public void SMA200_계산_테스트() {
+        // given
+        CoinType coinType = CoinType.ETHEREUM;
+        TradingTerm tradingTerm = TradingTerm.SCALPING_240M;
+        LocalDateTime now = LocalDateTime.of(2023, 1, 29, 1, 1, 10);
+        ExchangeCandles candles = getExchangeCandles(now, tradingTerm, coinType, keyPairId);
+
+        // when
+        Mv mv = calculator.getMv(candles);
+
+        // then
+        log.info("result : {}", mv);
+        assertEquals(1767750, Math.round(mv.getSma200()));
+    }
+
     private ExchangeCandles getExchangeCandles(LocalDateTime now, TradingTerm tradingTerm, CoinType coinType, String keyPairId) {
         List<CandleResponse> response = upbitClient.getMinuteCandle(
             CandleRequest.builder()

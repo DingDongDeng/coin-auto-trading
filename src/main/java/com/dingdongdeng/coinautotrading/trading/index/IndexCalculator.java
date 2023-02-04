@@ -32,6 +32,22 @@ public class IndexCalculator {
             .macd(this.getMACD(candles))
             .bollingerBands(this.getBollingerBands(candles))
             .obv(this.getObv(candles))
+            .mv(this.getMv(candles))
+            .build();
+    }
+
+    public Mv getMv(ExchangeCandles candles) {
+        List<Candle> candleList = candles.getCandleList();
+        double[] inReal = candleList.stream().mapToDouble(Candle::getTradePrice).toArray();
+
+        // SMA 200
+        int SMA200_TIME_PERIOD = 200;
+        MInteger sma200OutBegIdx = new MInteger();
+        MInteger sma200OutNBElement = new MInteger();
+        double[] sma200OutReal = new double[inReal.length];
+        core.sma(0, inReal.length - 1, inReal, SMA200_TIME_PERIOD, sma200OutBegIdx, sma200OutNBElement, sma200OutReal);
+        return Mv.builder()
+            .sma200(sma200OutReal[sma200OutNBElement.value - 1])
             .build();
     }
 
