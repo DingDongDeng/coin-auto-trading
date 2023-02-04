@@ -52,7 +52,7 @@ public class IndexCalculator {
         MInteger signalOutBegIdx = new MInteger();
         MInteger signalOutNBElement = new MInteger();
         double[] signalOutReal = new double[signalInReal.length];
-        core.ema(0, signalInReal.length - 1, signalInReal, TIME_PERIOD, signalOutBegIdx, signalOutNBElement, signalOutReal);
+        core.sma(0, signalInReal.length - 1, signalInReal, TIME_PERIOD, signalOutBegIdx, signalOutNBElement, signalOutReal);
 
         return Obv.builder()
             .obv(obvOutReal[obvOutNBElement.value - 1])
@@ -90,7 +90,7 @@ public class IndexCalculator {
         MInteger signalOutBegIdx = new MInteger();
         MInteger signalOutNBElement = new MInteger();
         double[] signalOutReal = new double[signalInReal.length];
-        core.ema(0, signalInReal.length - 1, signalInReal, SIGNAL_TIME_PERIOD, signalOutBegIdx, signalOutNBElement, signalOutReal);
+        core.sma(0, signalInReal.length - 1, signalInReal, SIGNAL_TIME_PERIOD, signalOutBegIdx, signalOutNBElement, signalOutReal);
 
         return BollingerBands.builder()
             .upper(bbandsOutRealUpperBand[bbandsOutNBElement.value - 1])
