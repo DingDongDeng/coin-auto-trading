@@ -200,14 +200,14 @@ public class BBandsTradingStrategyCore implements StrategyCore<SpotTradingInfo, 
         double bbandsUpper = index.getBollingerBands().getUpper();
         double bbandsMiddle = index.getBollingerBands().getMiddle();
         double bbandsLower = index.getBollingerBands().getLower();
+        double bbandsHeight = index.getBollingerBands().getHeight();
         double bbandsHeightHist = index.getBollingerBands().getHeightHist();
 
         double macdHist = index.getMacd().getHist();
         double macdSignal = index.getMacd().getSignal();
         double macdMacd = index.getMacd().getMacd();
-        double currentDowntrendLowestHist = index.getMacd().getCurrentDowntrendLowestHist();
 
-        double bufferPrice = 10000;
+        double bufferPrice = getBufferPrice(bbandsHeight);
 
         // 볼린저 밴드 하단 아래로 내려간 시간 기록
         if (bbandsLower - bufferPrice > currentPrice) {
@@ -234,7 +234,7 @@ public class BBandsTradingStrategyCore implements StrategyCore<SpotTradingInfo, 
         }
 
         // 볼린저 밴드의 변동성이 점점 줄어들고 있다면
-        if (bbandsHeightHist < 0) {
+        if (bbandsHeightHist < 0) { //fixme -N보다 작을때로해보자
             log.info("[매수 조건] 볼린저 밴드의 변동성이 점점 줄어들고 있음, bbandsHeightHist={}", bbandsHeightHist);
             return false;
         }
@@ -247,9 +247,8 @@ public class BBandsTradingStrategyCore implements StrategyCore<SpotTradingInfo, 
         }
 
         // 볼린저밴드 lower 근처가 아니라면
-        double lowerBufferPrice = bufferPrice;
-        if (bbandsLower + lowerBufferPrice < currentPrice || bbandsLower - lowerBufferPrice > currentPrice) {
-            log.info("[매수 조건] 볼린저 밴드 하단선 근처가 아니라면, lower={}, currentPrice={}, bufferPrice={}", bbandsLower, currentPrice, lowerBufferPrice);
+        if (bbandsLower + bufferPrice < currentPrice || bbandsLower - bufferPrice > currentPrice) {
+            log.info("[매수 조건] 볼린저 밴드 하단선 근처가 아니라면, lower={}, currentPrice={}, bufferPrice={}", bbandsLower, currentPrice, bufferPrice);
             return false;
         }
 
@@ -269,6 +268,7 @@ public class BBandsTradingStrategyCore implements StrategyCore<SpotTradingInfo, 
         double bbandsUpper = index.getBollingerBands().getUpper();
         double bbandsMiddle = index.getBollingerBands().getMiddle();
         double bbandsLower = index.getBollingerBands().getLower();
+        double bbandsHeight = index.getBollingerBands().getHeight();
 
         double obvHist = index.getObv().getHist();
 
@@ -292,7 +292,7 @@ public class BBandsTradingStrategyCore implements StrategyCore<SpotTradingInfo, 
         }
 
         // 목표 저항선까지 도달하지 않았다면
-        double targetProfitPrice = obvHist > 0 ? bbandsUpper : (bbandsMiddle - getBufferPrice(bbandsUpper, bbandsLower, 0.1));
+        double targetProfitPrice = obvHist > 0 ? bbandsUpper : (bbandsMiddle - getBufferPrice(bbandsHeight, 0.1));
         if (targetProfitPrice > currentPrice) {
             log.info("[익절 조건] 저항선에 도달하지 않으면 익절하지 않음, targetProfitPrice={}, currentPrice={}", targetProfitPrice, currentPrice);
             return false;
@@ -313,6 +313,9 @@ public class BBandsTradingStrategyCore implements StrategyCore<SpotTradingInfo, 
         double bbandsUpper = index.getBollingerBands().getUpper();
         double bbandsMiddle = index.getBollingerBands().getMiddle();
         double bbandsLower = index.getBollingerBands().getLower();
+        double bbandsHeight = index.getBollingerBands().getHeight();
+
+        double bufferPrice = getBufferPrice(bbandsHeight, 0.1);
 
         // 매수 주문한적이 없다면
         if (tradingResultPack.getBuyTradingResultList().isEmpty()) {
@@ -333,10 +336,15 @@ public class BBandsTradingStrategyCore implements StrategyCore<SpotTradingInfo, 
             return false;
         }
 
+        // 가격이 5만원 이상 떨어졌다면 바로 손절
+        if (tradingResultPack.getAveragePrice() - currentPrice > tradingResultPack.getAveragePrice() * 0.03) {
+            log.info("[손절 조건] 손절 조건 만족, 가격이 크게 떨어짐, averagePrice={}, currentPrice={}", tradingResultPack.getAveragePrice(), currentPrice);
+            return true;
+        }
+
         // 지지받고 있다면
-        double lowerBufferPrice = getBufferPrice(bbandsUpper, bbandsLower, 0.05);
-        if (bbandsLower - lowerBufferPrice < currentPrice) {
-            log.info("[손절 조건] 지지 받고 있음, lower={}, bufferPrice={}, currentPrice={}", bbandsLower, lowerBufferPrice, currentPrice);
+        if (bbandsLower - bufferPrice < currentPrice) {
+            log.info("[손절 조건] 지지 받고 있음, lower={}, bufferPrice={}, currentPrice={}", bbandsLower, bufferPrice, currentPrice);
             return false;
         }
 
@@ -360,8 +368,12 @@ public class BBandsTradingStrategyCore implements StrategyCore<SpotTradingInfo, 
         return TradingTimeContext.now().isAfter(standard.plusMinutes(param.getConditionTimeBuffer()));
     }
 
-    private double getBufferPrice(double bbandsUpper, double bbandsLower, double rate) {
-        return (bbandsUpper - bbandsLower) * rate;
+    private double getBufferPrice(double bbandsHeight, double rate) {
+        return bbandsHeight * rate;
+    }
+
+    private double getBufferPrice(double bbandsHeight) {
+        return (bbandsHeight / 10) > 20000 ? 20000 : 10000;
     }
 
     private boolean isTooOld(SpotTradingResult tradingResult) {

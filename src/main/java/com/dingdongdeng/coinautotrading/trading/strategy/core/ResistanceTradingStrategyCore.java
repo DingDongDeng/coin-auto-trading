@@ -228,7 +228,7 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
-        // 지지 받고 있지 않다면
+        // 지지 받고 있지 않다면 //fixme 가격의 퍼센트를 버퍼로 사용하자
         if (movingAveragePrice > (movingSupportPrice + param.getResistancePriceBuffer()) || movingAveragePrice < movingSupportPrice) {
             // 저항선이 없고, 충분히 상승세여야 함
             if (movingResistancePrice == Integer.MAX_VALUE) {
