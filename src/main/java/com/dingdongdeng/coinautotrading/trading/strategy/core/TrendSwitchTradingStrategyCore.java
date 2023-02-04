@@ -18,6 +18,7 @@ public class TrendSwitchTradingStrategyCore implements StrategyCore<SpotTradingI
     private final TrendSwitchTradingStrategyCoreParam param;
 
     private final BBandsTradingStrategyCore bBandsTradingStrategyCore;
+    private final ResistanceTradingStrategyCore resistanceTradingStrategyCore;
 
     public TrendSwitchTradingStrategyCore(TrendSwitchTradingStrategyCoreParam param) {
         this.param = param;
@@ -25,6 +26,15 @@ public class TrendSwitchTradingStrategyCore implements StrategyCore<SpotTradingI
             BBandsTradingStrategyCoreParam.builder()
                 .initOrderPrice(param.getInitOrderPrice())
                 .conditionTimeBuffer(param.getConditionTimeBuffer())
+                .accountBalanceLimit(param.getAccountBalanceLimit())
+                .tooOldOrderTimeSeconds(param.getTooOldOrderTimeSeconds())
+                .processDuration(param.getProcessDuration())
+                .build()
+        );
+        this.resistanceTradingStrategyCore = new ResistanceTradingStrategyCore(
+            ResistanceTradingStrategyCoreParam.builder()
+                .initOrderPrice(param.getInitOrderPrice())
+                .resistancePriceBuffer(param.getConditionTimeBuffer())
                 .accountBalanceLimit(param.getAccountBalanceLimit())
                 .tooOldOrderTimeSeconds(param.getTooOldOrderTimeSeconds())
                 .processDuration(param.getProcessDuration())
@@ -41,7 +51,7 @@ public class TrendSwitchTradingStrategyCore implements StrategyCore<SpotTradingI
         // 상승장이라면
         if (sma200 < currentPrice) {
             log.info("[분기 조건] 상승 추세");
-            return List.of(); //TODO 상승 전략
+            return resistanceTradingStrategyCore.makeTradingTask(tradingInfo, tradingResultPack);
         } else {
             log.info("[분기 조건] 하락 및 횡보 추세");
             return bBandsTradingStrategyCore.makeTradingTask(tradingInfo, tradingResultPack);
@@ -50,11 +60,13 @@ public class TrendSwitchTradingStrategyCore implements StrategyCore<SpotTradingI
 
     @Override
     public void handleOrderResult(SpotTradingResult tradingResult) {
+        resistanceTradingStrategyCore.handleOrderResult(tradingResult);
         bBandsTradingStrategyCore.handleOrderResult(tradingResult);
     }
 
     @Override
     public void handleOrderCancelResult(SpotTradingResult tradingResult) {
+        resistanceTradingStrategyCore.handleOrderCancelResult(tradingResult);
         bBandsTradingStrategyCore.handleOrderCancelResult(tradingResult);
     }
 
