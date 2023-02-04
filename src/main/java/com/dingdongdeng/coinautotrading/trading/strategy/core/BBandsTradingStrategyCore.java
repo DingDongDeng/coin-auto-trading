@@ -24,9 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingInfo, SpotTradingResult> {
+public class BBandsTradingStrategyCore implements StrategyCore<SpotTradingInfo, SpotTradingResult> {
 
-    private final ResistanceTradingStrategyCoreParam param;
+    private final BBandsTradingStrategyCoreParam param;
 
     // 매수,익절,손절 조건에 도달하였다고 해서 바로 수행하지 않고, 방향성 확인을 위해 버퍼 시간을 둠
     private LocalDateTime positionInitDateTime;

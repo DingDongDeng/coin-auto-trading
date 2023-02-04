@@ -13,7 +13,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ResistanceTradingStrategyCoreParam implements StrategyCoreParam {
+public class BBandsTradingStrategyCoreParam implements StrategyCoreParam {
 
     @GuideMessage("최초 주문할 금액을 입력해주세요. ex) 40000")
     private double initOrderPrice; // 처음에 주문할 금액
