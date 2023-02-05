@@ -18,10 +18,7 @@ public class TrendSwitchTradingStrategyCoreParam implements StrategyCoreParam {
     @GuideMessage("최초 주문할 금액을 입력해주세요. ex) 40000")
     private double initOrderPrice; // 처음에 주문할 금액
 
-    @GuideMessage("지지저항 전략 : 저항선 버퍼 금액(n원을 설정하면 저항/지지선 기준으로 n원의 버퍼를 둠) ex) 3000")
-    private double resistancePriceBuffer;
-
-    @GuideMessage("볼린저밴드 전략 : 조건 버퍼 시간(n분을 설정하면 주문 조건을 만족하더라도 n분의 버퍼를 둠) ex) 240")
+    @GuideMessage("주문 버퍼 시간(주문이 체결되면 n분의 버퍼를 둠) ex) 240")
     private int conditionTimeBuffer;
 
     @GuideMessage("계좌 안전 금액을 입력해주세요.")
