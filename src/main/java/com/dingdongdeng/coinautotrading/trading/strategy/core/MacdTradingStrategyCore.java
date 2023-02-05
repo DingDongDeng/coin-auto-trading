@@ -5,7 +5,6 @@ import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
-import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.index.Index;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyCore;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.SpotTradingInfo;
@@ -15,6 +14,7 @@ import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingInfo;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.type.TradingTag;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
@@ -23,9 +23,12 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingInfo, SpotTradingResult> {
+public class MacdTradingStrategyCore implements StrategyCore<SpotTradingInfo, SpotTradingResult> {
 
-    private final ResistanceTradingStrategyCoreParam param;
+    private final MacdTradingStrategyCoreParam param;
+
+    // 매수,익절,손절 조건에 도달하였다고 해서 바로 수행하지 않고, 방향성 확인을 위해 버퍼 시간을 둠
+    private LocalDateTime positionCompletedDateTime;
 
     @Override
     public List<TradingTask> makeTradingTask(SpotTradingInfo tradingInfo, TradingResultPack<SpotTradingResult> tradingResultPack) {
@@ -151,12 +154,16 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
 
     @Override
     public void handleOrderResult(SpotTradingResult tradingResult) {
-
+        if (List.of(TradingTag.PROFIT, TradingTag.LOSS).contains(tradingResult.getTradingTag())) {
+            this.positionCompletedDateTime = tradingResult.getCreatedAt();
+        }
     }
 
     @Override
     public void handleOrderCancelResult(SpotTradingResult tradingResult) {
-
+        if (List.of(TradingTag.PROFIT, TradingTag.LOSS).contains(tradingResult.getTradingTag())) {
+            this.positionCompletedDateTime = null;
+        }
     }
 
     @Override
@@ -179,18 +186,12 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
     private boolean isBuyOrderTiming(double currentPrice, TradingInfo tradingInfo, TradingResultPack<SpotTradingResult> tradingResultPack, Index index) {
         List<SpotTradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
         boolean isExsistBuyOrder = !buyTradingResultList.isEmpty();
-        ExchangeCandles candles = tradingInfo.getCandles();
 
         double macdHist = index.getMacd().getHist();
         double macdSignal = index.getMacd().getSignal();
         double macdMacd = index.getMacd().getMacd();
 
-        double movingAveragePrice = this.getMovingAveragePrice(candles);
-        double movingResistancePrice = this.getResistancePrice(movingAveragePrice, index);
-        double movingSupportPrice = this.getSupportPrice(movingAveragePrice, 0, index);
-        double movingPrevSupportPrice = this.getSupportPrice(movingAveragePrice, 1, index);
-        double movingProfitPotential = movingResistancePrice - movingSupportPrice;
-        double movingLossPotential = movingSupportPrice - movingPrevSupportPrice;
+        double obvHist = index.getObv().getHist();
 
         // 추가 매수 안함
         if (isExsistBuyOrder) {
@@ -198,9 +199,10 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
-        // 과매도 상태
-        if (index.getRsi() < 0.3) {
-            log.info("[매수 조건] 과매도 상태, rsi={}", index.getRsi());
+        // 포지션 종료 후 유예시간을 가져야함
+        if (!isEnoughBufferTime(positionCompletedDateTime)) {
+            log.info("[매수 조건] 포지션 정리 후 유예시간을 가져야함, bufferTime={}, positionCompletedDateTime={}, now={}", param.getConditionTimeBuffer(), positionCompletedDateTime,
+                TradingTimeContext.now());
             return false;
         }
 
@@ -210,66 +212,17 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
-        // 유의미한 해석이 불가함
-        if (index.getMacd().getCurrentUptrendHighestHist() < 1000) {
-            log.info("[매수 조건] highestMacd의 유의미한 해석을 하기에 값이 작음, highestMace={}", index.getMacd().getCurrentUptrendHighestHist());
+        // 거래량이 하락중이라면
+        if (obvHist < 0) {
+            log.info("[매수 조건] 거래량이 하락 중, obvHist={}", obvHist);
             return false;
         }
 
-        // 상승 추세가 약해지고 있다면
-        if (index.getMacd().getCurrentUptrendHighestHist() * 0.8 > macdHist) {
-            log.info("[매수 조건] 상승 추세가 약해지고 있음, currentUptrendHighestHist={}, macdCurrent={}", index.getMacd().getCurrentUptrendHighestHist(), index.getMacd().getHist());
-            return false;
-        }
-
-        // macd가 하락에서 상승으로 전환되는 극 초기에는 매수하지 않음
-        if (index.getMacd().getLatestHist(1) < 100) {
-            log.info("[매수 조건] 하락에서 상승으로 전환되는 극 초기에는 매수하지 않음, macd={}, prevMacd={}", macdHist, index.getMacd().getLatestHist(1));
-            return false;
-        }
-
-        // 지지 받고 있지 않다면 //fixme 가격의 퍼센트를 버퍼로 사용하자
-        if (movingAveragePrice > (movingSupportPrice + param.getResistancePriceBuffer()) || movingAveragePrice < movingSupportPrice) {
-            // 저항선이 없고, 충분히 상승세여야 함
-            if (movingResistancePrice == Integer.MAX_VALUE) {
-                log.info("[매수 조건] 매수 조건 만족, 저항선이 없고 충분히 상승세, macd={}", index.getMacd().getHist());
-                return true;
-            }
-            log.info("[매수 조건] 지지 받고 있지 않음, resistancePriceList={}, averagePrice={}", index.getResistancePriceList(), movingAveragePrice);
-            return false;
-        }
-
-        // 주문한적이 있다면
-        if (isExsistBuyOrder) {
-            if (buyTradingResultList.size() > 1) {
-                log.info("[추가 매수 조건] 이미 추가 매수를 하였음");
-                return false;
-            }
-
-            // 이익중이라면
-            if ((tradingResultPack.getAveragePrice() - currentPrice) < 0) {
-                log.info("[추가 매수 조건] 이익중, averagePrice={}, currentPrice={}", tradingResultPack.getAveragePrice(), currentPrice);
-                return false;
-            }
-
-            // 마지막 주문보다 현재가가 높다면(추가 매수는 항상 더 낮은 가격으로 사야하기 때문)
-            SpotTradingResult lastBuyTradingResult = buyTradingResultList.get(buyTradingResultList.size() - 1);
-            if (lastBuyTradingResult.getPrice() <= currentPrice) {
-                log.info("[추가 매수 조건] 추가 매수하기에는 현재가가 높음, lastBuyTradingResult.price={}, currentPrice={}", lastBuyTradingResult.getPrice(), currentPrice);
-                return false;
-            }
-
-            // 마지막으로 매수했던 지지선의 바로 아래 지지선이 아니라면
-            double prevSupportPrice_ = this.getSupportPrice(lastBuyTradingResult.getPrice(), 1, index);
-            if (movingAveragePrice < prevSupportPrice_ || movingAveragePrice > (prevSupportPrice_ + param.getResistancePriceBuffer())) {
-                log.info("[추가 매수 조건] 마지막 매수의 아래 아래 지지선이 아님, movingAveragePrice={}, lastBuyTradingResult.price={}, param.resistancePriceBuffer={}", movingAveragePrice,
-                    lastBuyTradingResult.getPrice(),
-                    param.getResistancePriceBuffer());
-                return false;
-            }
-            log.info("[추가 매수 조건] 추가 매수 조건 만족");
-            return true;
-        }
+        // macd가 하락에서 상승으로 전환되는 극초기가 아니라면
+//        if (index.getMacd().getLatestHist(1) > 0) {
+//            log.info("[매수 조건] 하락에서 상승으로 전환되는 초기가 아니라면 매수하지 않음, macdHist={}, prevMacd={}", macdHist, index.getMacd().getLatestHist(1));
+//            return false;
+//        }
 
         log.info("[매수 조건] 매수 조건 만족");
         return true;
@@ -278,22 +231,21 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
     private boolean isProfitOrderTiming(double currentPrice, TradingInfo tradingInfo, TradingResultPack<SpotTradingResult> tradingResultPack, Index index) {
         List<SpotTradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
         SpotTradingResult lastBuyTradingResult = buyTradingResultList.get(buyTradingResultList.size() - 1);
-        double resistancePrice = this.getResistancePrice(lastBuyTradingResult.getPrice(), index);
-        double supportPrice = this.getSupportPrice(lastBuyTradingResult.getPrice(), 0, index);
-        double prevSupportPrice = this.getSupportPrice(lastBuyTradingResult.getPrice(), 1, index);
-        double profitPotential = resistancePrice - supportPrice;
-        double lossPotential = supportPrice - prevSupportPrice;
-
-        double movingAveragePrice = this.getMovingAveragePrice(tradingInfo.getCandles());
-        double movingSupportPrice = this.getSupportPrice(movingAveragePrice, 0, index);
-        double movingResistancePrice = this.getResistancePrice(movingAveragePrice, index);
-        double movingPrevSupportPrice = this.getSupportPrice(movingAveragePrice, 1, index);
-        double movingProfitPotential = movingResistancePrice - movingSupportPrice;
-        double movingLossPotential = movingSupportPrice - movingPrevSupportPrice;
+        double macdHist = index.getMacd().getHist();
+        double macdMacd = index.getMacd().getMacd();
+        double currentUptrendHighestHist = index.getMacd().getCurrentUptrendHighestHist();
+        double currentUptrendHighestMacd = index.getMacd().getCurrentUptrendHighestMacd();
 
         // 매수 주문한적이 없다면
         if (tradingResultPack.getBuyTradingResultList().isEmpty()) {
             log.info("[익절 조건] 매수 주문 한적이 없음");
+            return false;
+        }
+
+        // 포지션 진입 후 유예시간을 충분히 갖지 않았다면
+        LocalDateTime lastBuyOrderDateTime = lastBuyTradingResult.getCreatedAt();
+        if (!isEnoughBufferTime(lastBuyOrderDateTime)) {
+            log.info("[익절 조건] 방향성이 나올때까지 충분한 유예시간을 갖지 못함, lastBuyOrderDateTime={}, currentDateTime={}", lastBuyOrderDateTime, TradingTimeContext.now());
             return false;
         }
 
@@ -303,16 +255,15 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
-        // 상승 추세가 아직 유지되고 있다면
-        double rate = movingLossPotential > movingProfitPotential ? 0.8 : 0.6;
-        if (index.getMacd().getCurrentUptrendHighestHist() * rate < index.getMacd().getHist()) {
-            log.info("[익절 조건] 상승 추세가 유지되고 있음, currentUptrendHighestHist={}, macd={}", index.getMacd().getCurrentUptrendHighestHist(), index.getMacd().getHist());
+        // 아직 상승 추세라면
+        if (currentUptrendHighestMacd * 0.3 < macdMacd) {
+            log.info("[익절 조건] 아직 상승 추세, currentUptrendHighestMacd={}, macdMacd={}", currentUptrendHighestMacd, macdMacd);
             return false;
         }
 
-        // 최소 익절금액은 감수했던 손절 리스크보다는 커야함
-        if (prevSupportPrice != 0 && ((currentPrice - tradingResultPack.getAveragePrice()) < lossPotential)) {
-            log.info("[익절 조건] 최소 익절 금액이 감수했던 리스크 금액보다 작음 , 익절금액={}, lossPotential={}", currentPrice - tradingResultPack.getAveragePrice(), lossPotential);
+        // 아직 상승 추세라면
+        if (currentUptrendHighestHist * 0.3 < macdHist) {
+            log.info("[익절 조건] 아직 상승 추세, currentUptrendHighestHist={}, macdHist={}", currentUptrendHighestHist, macdHist);
             return false;
         }
 
@@ -324,22 +275,21 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         List<SpotTradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
         SpotTradingResult lastBuyTradingResult = buyTradingResultList.get(buyTradingResultList.size() - 1);
 
-        double resistancePrice = this.getResistancePrice(lastBuyTradingResult.getPrice(), index);
-        double supportPrice = this.getSupportPrice(lastBuyTradingResult.getPrice(), 0, index);
-        double prevSupportPrice = this.getSupportPrice(lastBuyTradingResult.getPrice(), 1, index);
-        double profitPotential = resistancePrice - supportPrice;
-        double lossPotential = supportPrice - prevSupportPrice;
-
-        double movingAveragePrice = this.getMovingAveragePrice(tradingInfo.getCandles());
-        double movingResistancePrice = this.getResistancePrice(movingAveragePrice, index);
-        double movingSupportPrice = this.getSupportPrice(movingAveragePrice, 0, index);
-        double movingPrevSupportPrice = this.getSupportPrice(movingAveragePrice, 1, index);
-        double movingProfitPotential = movingResistancePrice - movingSupportPrice;
-        double movingLossPotential = movingSupportPrice - movingPrevSupportPrice;
+        double macdHist = index.getMacd().getHist();
+        double macdMacd = index.getMacd().getMacd();
+        double currentUptrendHighestHist = index.getMacd().getCurrentUptrendHighestHist();
+        double currentUptrendHighestMacd = index.getMacd().getCurrentUptrendHighestMacd();
 
         // 매수 주문한적이 없다면
         if (tradingResultPack.getBuyTradingResultList().isEmpty()) {
             log.info("[손절 조건] 매수 주문한적이 없음");
+            return false;
+        }
+
+        // 포지션 진입 후 유예시간을 충분히 갖지 않았다면
+        LocalDateTime lastBuyOrderDateTime = lastBuyTradingResult.getCreatedAt();
+        if (!isEnoughBufferTime(lastBuyOrderDateTime)) {
+            log.info("[손절 조건] 방향성이 나올때까지 충분한 유예시간을 갖지 못함, lastBuyOrderDateTime={}, currentDateTime={}", lastBuyOrderDateTime, TradingTimeContext.now());
             return false;
         }
 
@@ -349,27 +299,16 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
-        // 1순위 : 두번째 지지선이 존재하지 않으면, 익절 포텐셜 만큼을 손절 라인으로 사용하여 그곳까지 도달하지 않았다면 손절하지 않음
-        if (prevSupportPrice == 0 && resistancePrice != Integer.MAX_VALUE) {
-            if (movingAveragePrice > (supportPrice - profitPotential)) {
-                log.info("[손절 조건] 익절 포텐셜만큼을 손절 라인으로 가짐, 이 라인까지 도달하지 않았음, movingAveragePrice={}, 익절포텐셜={}", movingAveragePrice, movingSupportPrice - movingProfitPotential);
-                return false;
-            }
+        // 아직 상승 추세라면
+        if (currentUptrendHighestMacd * 0.3 < macdMacd) {
+            log.info("[손절 조건] 아직 상승 추세, currentUptrendHighestMacd={}, macdMacd={}", currentUptrendHighestMacd, macdMacd);
+            return false;
         }
-        // 2순위 : 두번째 지지선이 존재하고, 그곳까지 하락하지 않았다면
-        else if (prevSupportPrice != 0) {
-            if (movingAveragePrice > prevSupportPrice) {
-                log.info("[손절 조건] 두번째 지지선까지는 하락하지 않음, resistancePriceList={}, movingAveragePrice={}", index.getResistancePriceList(), movingAveragePrice);
-                return false;
-            }
-        }
-        // 3순위 : 상승 추세가 아직 유지되고 있다면
-        else {
-            double rate = movingLossPotential > movingProfitPotential ? 0.8 : 0.6;
-            if (index.getMacd().getCurrentUptrendHighestHist() * rate < index.getMacd().getHist()) {
-                log.info("[손절 조건] 상승 추세가 유지되고 있음, currentUptrendHighestHist={}, macd={}", index.getMacd().getCurrentUptrendHighestHist(), index.getMacd().getHist());
-                return false;
-            }
+
+        // 아직 상승 추세라면
+        if (currentUptrendHighestHist * 0.3 < macdHist) {
+            log.info("[손절 조건] 아직 상승 추세, currentUptrendHighestHist={}, macdHist={}", currentUptrendHighestHist, macdHist);
+            return false;
         }
 
         log.info("[손절 조건] 손절 조건 만족");
@@ -385,37 +324,11 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         return param.getInitOrderPrice() / currentPrice;
     }
 
-    private double getSupportPrice(double standardPrice, int next, Index index) {
-        int nextCount = 0;
-        for (int i = index.getResistancePriceList().size() - 1; i >= 0; i--) {
-            double supportPrice = index.getResistancePriceList().get(i);
-            if (standardPrice > supportPrice) {
-                if (nextCount < next) {
-                    nextCount++;
-                    continue;
-                }
-                return supportPrice;
-            }
-
+    private boolean isEnoughBufferTime(LocalDateTime standard) {
+        if (Objects.isNull(standard)) {
+            return true;
         }
-        log.warn("지지선 찾지 못함");
-        return 0;
-    }
-
-    private double getResistancePrice(double standardPrice, Index index) {
-        for (Double resistancePrice : index.getResistancePriceList()) {
-            if (standardPrice < resistancePrice) {
-                return resistancePrice;
-            }
-        }
-        log.warn("저항선 찾지 못함");
-        return Integer.MAX_VALUE;
-    }
-
-    private double getMovingAveragePrice(ExchangeCandles candles) {
-        return (candles.getLatest(1).getTradePrice()
-            + candles.getLatest(0).getTradePrice()
-        ) / 2.0;
+        return TradingTimeContext.now().isAfter(standard.plusMinutes(param.getConditionTimeBuffer()));
     }
 
     private boolean isTooOld(SpotTradingResult tradingResult) {
