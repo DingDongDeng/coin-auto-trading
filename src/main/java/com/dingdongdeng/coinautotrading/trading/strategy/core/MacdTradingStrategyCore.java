@@ -218,12 +218,6 @@ public class MacdTradingStrategyCore implements StrategyCore<SpotTradingInfo, Sp
             return false;
         }
 
-        // macd가 하락에서 상승으로 전환되는 극초기가 아니라면
-//        if (index.getMacd().getLatestHist(1) > 0) {
-//            log.info("[매수 조건] 하락에서 상승으로 전환되는 초기가 아니라면 매수하지 않음, macdHist={}, prevMacd={}", macdHist, index.getMacd().getLatestHist(1));
-//            return false;
-//        }
-
         log.info("[매수 조건] 매수 조건 만족");
         return true;
     }
