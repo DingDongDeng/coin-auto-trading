@@ -19,13 +19,14 @@ public class TrendSwitchTradingStrategyCore implements StrategyCore<SpotTradingI
 
     private final TrendSwitchTradingStrategyCoreParam param;
 
-    private final BBandsTradingStrategyCore bBandsTradingStrategyCore;
     private final MacdTradingStrategyCore macdTradingStrategyCore;
+    private final OptimisticBBandsTradingStrategyCore optimisticBBandsTradingStrategyCore;
+    private final PessimisticBBandsTradingStrategyCore pessimisticBBandsTradingStrategyCore;
 
     public TrendSwitchTradingStrategyCore(TrendSwitchTradingStrategyCoreParam param) {
         this.param = param;
-        this.bBandsTradingStrategyCore = new BBandsTradingStrategyCore(
-            BBandsTradingStrategyCoreParam.builder()
+        this.macdTradingStrategyCore = new MacdTradingStrategyCore(
+            MacdTradingStrategyCoreParam.builder()
                 .initOrderPrice(param.getInitOrderPrice())
                 .conditionTimeBuffer(param.getConditionTimeBuffer())
                 .accountBalanceLimit(param.getAccountBalanceLimit())
@@ -33,8 +34,17 @@ public class TrendSwitchTradingStrategyCore implements StrategyCore<SpotTradingI
                 .processDuration(param.getProcessDuration())
                 .build()
         );
-        this.macdTradingStrategyCore = new MacdTradingStrategyCore(
-            MacdTradingStrategyCoreParam.builder()
+        this.optimisticBBandsTradingStrategyCore = new OptimisticBBandsTradingStrategyCore(
+            OptimisticBBandsTradingStrategyCoreParam.builder()
+                .initOrderPrice(param.getInitOrderPrice())
+                .conditionTimeBuffer(param.getConditionTimeBuffer())
+                .accountBalanceLimit(param.getAccountBalanceLimit())
+                .tooOldOrderTimeSeconds(param.getTooOldOrderTimeSeconds())
+                .processDuration(param.getProcessDuration())
+                .build()
+        );
+        this.pessimisticBBandsTradingStrategyCore = new PessimisticBBandsTradingStrategyCore(
+            PessimisticBBandsTradingStrategyCoreParam.builder()
                 .initOrderPrice(param.getInitOrderPrice())
                 .conditionTimeBuffer(param.getConditionTimeBuffer())
                 .accountBalanceLimit(param.getAccountBalanceLimit())
@@ -48,17 +58,6 @@ public class TrendSwitchTradingStrategyCore implements StrategyCore<SpotTradingI
     public List<TradingTask> makeTradingTask(SpotTradingInfo tradingInfo, TradingResultPack<SpotTradingResult> tradingResultPack) {
         Index index = tradingInfo.getIndex();
         ExchangeCandles candles = tradingInfo.getCandles();
-
-        /**
-         * FIXME
-         *  볼린저전략 손절 미끄럼틀 해결 필요
-         *      - macd를 볼까??
-         *
-         *  TODO
-         *      하락장은 lower에 사서 middel 판매
-         *      횡보장은 lower에 사서 higer에 판매
-         */
-
         // 상승장이라면
         if (isUptrend(index, candles)) {
             log.info("[분기 조건] 상승 추세");
@@ -67,25 +66,27 @@ public class TrendSwitchTradingStrategyCore implements StrategyCore<SpotTradingI
         // 하락장이라면
         else if (isDowntrend(index, candles)) {
             log.info("[분기 조건] 하락 추세");
-            return bBandsTradingStrategyCore.makeTradingTask(tradingInfo, tradingResultPack);
+            return pessimisticBBandsTradingStrategyCore.makeTradingTask(tradingInfo, tradingResultPack);
         }
         // 횡보장이라면
         else {
             log.info("[분기 조건] 횡보 추세");
-            return bBandsTradingStrategyCore.makeTradingTask(tradingInfo, tradingResultPack);
+            return optimisticBBandsTradingStrategyCore.makeTradingTask(tradingInfo, tradingResultPack);
         }
     }
 
     @Override
     public void handleOrderResult(SpotTradingResult tradingResult) {
         macdTradingStrategyCore.handleOrderResult(tradingResult);
-        bBandsTradingStrategyCore.handleOrderResult(tradingResult);
+        optimisticBBandsTradingStrategyCore.handleOrderResult(tradingResult);
+        pessimisticBBandsTradingStrategyCore.handleOrderResult(tradingResult);
     }
 
     @Override
     public void handleOrderCancelResult(SpotTradingResult tradingResult) {
         macdTradingStrategyCore.handleOrderCancelResult(tradingResult);
-        bBandsTradingStrategyCore.handleOrderCancelResult(tradingResult);
+        optimisticBBandsTradingStrategyCore.handleOrderCancelResult(tradingResult);
+        pessimisticBBandsTradingStrategyCore.handleOrderCancelResult(tradingResult);
     }
 
     @Override

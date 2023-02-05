@@ -2,10 +2,12 @@ package com.dingdongdeng.coinautotrading.trading.strategy.model.type;
 
 import com.dingdongdeng.coinautotrading.common.type.MarketType;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyCore;
-import com.dingdongdeng.coinautotrading.trading.strategy.core.BBandsTradingStrategyCore;
-import com.dingdongdeng.coinautotrading.trading.strategy.core.BBandsTradingStrategyCoreParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.core.MacdTradingStrategyCore;
 import com.dingdongdeng.coinautotrading.trading.strategy.core.MacdTradingStrategyCoreParam;
+import com.dingdongdeng.coinautotrading.trading.strategy.core.OptimisticBBandsTradingStrategyCore;
+import com.dingdongdeng.coinautotrading.trading.strategy.core.OptimisticBBandsTradingStrategyCoreParam;
+import com.dingdongdeng.coinautotrading.trading.strategy.core.PessimisticBBandsTradingStrategyCore;
+import com.dingdongdeng.coinautotrading.trading.strategy.core.PessimisticBBandsTradingStrategyCoreParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.core.PrototypeFutureStrategyCore;
 import com.dingdongdeng.coinautotrading.trading.strategy.core.PrototypeFutureStrategyCoreParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.core.TrendSwitchTradingStrategyCore;
@@ -22,7 +24,8 @@ import lombok.Getter;
 public enum StrategyCode {
     TREND_SWITCH_TRADING("추세 구분 매매(240분봉 추천)", MarketType.SPOT, TrendSwitchTradingStrategyCore.class, TrendSwitchTradingStrategyCoreParam.class),
     MACD_TRADING("MACD 기반 매매(240분봉 추천)", MarketType.SPOT, MacdTradingStrategyCore.class, MacdTradingStrategyCoreParam.class),
-    BBANDS_TRADING("볼링저밴드 기반 매매(240분봉 추천)", MarketType.SPOT, BBandsTradingStrategyCore.class, BBandsTradingStrategyCoreParam.class),
+    OPTIMISTIC_BBANDS_TRADING("낙관적 볼링저밴드 기반 매매(240분봉 추천)", MarketType.SPOT, OptimisticBBandsTradingStrategyCore.class, OptimisticBBandsTradingStrategyCoreParam.class),
+    PESSIMISTIC_BBANDS_TRADING("비관적 볼링저밴드 기반 매매(240분봉 추천)", MarketType.SPOT, PessimisticBBandsTradingStrategyCore.class, PessimisticBBandsTradingStrategyCoreParam.class),
     TEST_FUTURE("테스트 선물 전략", MarketType.FUTURE, PrototypeFutureStrategyCore.class, PrototypeFutureStrategyCoreParam.class),
     ;
 
