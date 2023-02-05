@@ -1,5 +1,6 @@
 package com.dingdongdeng.coinautotrading.trading.strategy.core;
 
+import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles.Candle;
 import com.dingdongdeng.coinautotrading.trading.index.Index;
@@ -9,6 +10,7 @@ import com.dingdongdeng.coinautotrading.trading.strategy.model.SpotTradingResult
 import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,8 @@ public class TrendSwitchTradingStrategyCore implements StrategyCore<SpotTradingI
     private final MacdTradingStrategyCore macdTradingStrategyCore;
     private final OptimisticBBandsTradingStrategyCore optimisticBBandsTradingStrategyCore;
     private final PessimisticBBandsTradingStrategyCore pessimisticBBandsTradingStrategyCore;
+
+    private LocalDateTime recentInnerOfBbands;
 
     public TrendSwitchTradingStrategyCore(TrendSwitchTradingStrategyCoreParam param) {
         this.param = param;
@@ -58,6 +62,7 @@ public class TrendSwitchTradingStrategyCore implements StrategyCore<SpotTradingI
     public List<TradingTask> makeTradingTask(SpotTradingInfo tradingInfo, TradingResultPack<SpotTradingResult> tradingResultPack) {
         Index index = tradingInfo.getIndex();
         ExchangeCandles candles = tradingInfo.getCandles();
+
         // 상승장이라면
         if (isUptrend(index, candles)) {
             log.info("[분기 조건] 상승 추세");
@@ -70,6 +75,7 @@ public class TrendSwitchTradingStrategyCore implements StrategyCore<SpotTradingI
         }
         // 횡보장이라면
         else {
+            this.recentInnerOfBbands = TradingTimeContext.now();
             log.info("[분기 조건] 횡보 추세");
             return optimisticBBandsTradingStrategyCore.makeTradingTask(tradingInfo, tradingResultPack);
         }
@@ -95,48 +101,32 @@ public class TrendSwitchTradingStrategyCore implements StrategyCore<SpotTradingI
     }
 
     private boolean isUptrend(Index index, ExchangeCandles candles) {
-        List<Candle> candleList = candles.getCandleList();
         int TARGET_CANDLE_COUNT = 10;
-        double ema60 = index.getMa().getEma60();
+        List<Candle> candleList = candles.getCandleList();
+        double sma120 = index.getMa().getSma120();
 
         // 최근 캔들이 이평선보다 위인지 확인
         int offset = candleList.size() - TARGET_CANDLE_COUNT;
         for (int i = offset; i < candleList.size(); i++) {
-            if (candleList.get(i).getTradePrice() < ema60) {
+            if (candleList.get(i).getTradePrice() < sma120) {
                 return false;
             }
-        }
-
-        // 이평선이 볼린저밴드 바깥에 있어야함
-        double sma120 = index.getMa().getSma120();
-        double bbandsUpper = index.getBollingerBands().getUpper();
-        double bbandsLower = index.getBollingerBands().getLower();
-        if (bbandsLower < sma120 && sma120 < bbandsUpper) {
-            return false;
         }
 
         return true;
     }
 
     private boolean isDowntrend(Index index, ExchangeCandles candles) {
-        List<Candle> candleList = candles.getCandleList();
         int TARGET_CANDLE_COUNT = 10;
-        double ema60 = index.getMa().getEma60();
+        List<Candle> candleList = candles.getCandleList();
+        double sma120 = index.getMa().getSma120();
 
         // 최근 캔들이 이평선보다 위인지 확인
         int offset = candleList.size() - TARGET_CANDLE_COUNT;
         for (int i = offset; i < candleList.size(); i++) {
-            if (candleList.get(i).getTradePrice() > ema60) {
+            if (candleList.get(i).getTradePrice() > sma120) {
                 return false;
             }
-        }
-
-        // 이평선이 볼린저밴드 바깥에 있어야함
-        double sma120 = index.getMa().getSma120();
-        double bbandsUpper = index.getBollingerBands().getUpper();
-        double bbandsLower = index.getBollingerBands().getLower();
-        if (bbandsLower < sma120 && sma120 < bbandsUpper) {
-            return false;
         }
 
         return true;
