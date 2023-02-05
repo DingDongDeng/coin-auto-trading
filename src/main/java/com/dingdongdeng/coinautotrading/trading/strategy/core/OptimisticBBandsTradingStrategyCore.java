@@ -292,7 +292,7 @@ public class OptimisticBBandsTradingStrategyCore implements StrategyCore<SpotTra
         }
 
         // 목표 저항선까지 도달하지 않았다면
-        double targetProfitPrice = obvHist > 0 ? bbandsUpper : (bbandsMiddle - getBufferPrice(bbandsHeight, 0.1));
+        double targetProfitPrice = bbandsUpper - getBufferPrice(bbandsHeight, 0.1);
         if (targetProfitPrice > currentPrice) {
             log.info("[익절 조건] 저항선에 도달하지 않으면 익절하지 않음, targetProfitPrice={}, currentPrice={}", targetProfitPrice, currentPrice);
             return false;
