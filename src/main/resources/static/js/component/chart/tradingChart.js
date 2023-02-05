@@ -92,7 +92,7 @@ export default Vue.component('trading-chart', {
       const mvOnchartList = [];
       mvOnchartList.push(
           {
-            name: "SMA 200",
+            name: "EMA 60",
             type: "EMA",
             data: [],
             settings: {
@@ -271,7 +271,7 @@ export default Vue.component('trading-chart', {
             [timestamp, recordContext.index.bollingerBands.middle])
         bollingerBandsOnchartList[2].data.push(
             [timestamp, recordContext.index.bollingerBands.lower])
-        maOnchartList[0].data.push([timestamp, recordContext.index.ma.sma200])
+        maOnchartList[0].data.push([timestamp, recordContext.index.ma.ema60])
       }
 
       return {chart, onchart, offchart};
