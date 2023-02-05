@@ -9,6 +9,7 @@ import lombok.ToString;
 @Builder
 public class Ma {
 
+    private double sma120;
     private double sma200;
     private double ema60;
 }

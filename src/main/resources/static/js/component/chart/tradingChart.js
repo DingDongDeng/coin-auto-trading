@@ -98,6 +98,14 @@ export default Vue.component('trading-chart', {
             settings: {
               "color": "#6D23A5FF"
             },
+          },
+          {
+            name: "SMA 120",
+            type: "EMA",
+            data: [],
+            settings: {
+              "color": "#c66e10"
+            },
           }
       );
       return mvOnchartList;
@@ -206,7 +214,8 @@ export default Vue.component('trading-chart', {
       const tradesOnchart = this.getTradesOnchart();
       const onchart = [tradesOnchart];
       const maOnchartList = this.getMaOnchartList();
-      onchart.push(maOnchartList[0]); // sma200
+      onchart.push(maOnchartList[0]); // ema60
+      onchart.push(maOnchartList[1]); // sma120
       const bollingerBandsOnchartList = this.getBollingerBandsOnchartList();
       onchart.push(bollingerBandsOnchartList[0]); // upper
       onchart.push(bollingerBandsOnchartList[1]); // middle
@@ -272,6 +281,7 @@ export default Vue.component('trading-chart', {
         bollingerBandsOnchartList[2].data.push(
             [timestamp, recordContext.index.bollingerBands.lower])
         maOnchartList[0].data.push([timestamp, recordContext.index.ma.ema60])
+        maOnchartList[1].data.push([timestamp, recordContext.index.ma.sma120])
       }
 
       return {chart, onchart, offchart};

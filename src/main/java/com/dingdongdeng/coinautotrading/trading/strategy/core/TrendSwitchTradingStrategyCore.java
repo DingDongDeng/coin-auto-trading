@@ -95,32 +95,50 @@ public class TrendSwitchTradingStrategyCore implements StrategyCore<SpotTradingI
     }
 
     private boolean isUptrend(Index index, ExchangeCandles candles) {
+        List<Candle> candleList = candles.getCandleList();
         int TARGET_CANDLE_COUNT = 10;
         double ema60 = index.getMa().getEma60();
-        List<Candle> candleList = candles.getCandleList();
-        int offset = candleList.size() - TARGET_CANDLE_COUNT;
 
+        // 최근 캔들이 이평선보다 위인지 확인
+        int offset = candleList.size() - TARGET_CANDLE_COUNT;
         for (int i = offset; i < candleList.size(); i++) {
             if (candleList.get(i).getTradePrice() < ema60) {
                 return false;
             }
-
         }
+
+        // 이평선이 볼린저밴드 바깥에 있어야함
+        double sma120 = index.getMa().getSma120();
+        double bbandsUpper = index.getBollingerBands().getUpper();
+        double bbandsLower = index.getBollingerBands().getLower();
+        if (bbandsLower < sma120 && sma120 < bbandsUpper) {
+            return false;
+        }
+
         return true;
     }
 
     private boolean isDowntrend(Index index, ExchangeCandles candles) {
+        List<Candle> candleList = candles.getCandleList();
         int TARGET_CANDLE_COUNT = 10;
         double ema60 = index.getMa().getEma60();
-        List<Candle> candleList = candles.getCandleList();
-        int offset = candleList.size() - TARGET_CANDLE_COUNT;
 
+        // 최근 캔들이 이평선보다 위인지 확인
+        int offset = candleList.size() - TARGET_CANDLE_COUNT;
         for (int i = offset; i < candleList.size(); i++) {
             if (candleList.get(i).getTradePrice() > ema60) {
                 return false;
             }
-
         }
+
+        // 이평선이 볼린저밴드 바깥에 있어야함
+        double sma120 = index.getMa().getSma120();
+        double bbandsUpper = index.getBollingerBands().getUpper();
+        double bbandsLower = index.getBollingerBands().getLower();
+        if (bbandsLower < sma120 && sma120 < bbandsUpper) {
+            return false;
+        }
+
         return true;
     }
 }

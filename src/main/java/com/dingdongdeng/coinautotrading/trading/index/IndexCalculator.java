@@ -40,6 +40,13 @@ public class IndexCalculator {
         List<Candle> candleList = candles.getCandleList();
         double[] inReal = candleList.stream().mapToDouble(Candle::getTradePrice).toArray();
 
+        // SMA 120
+        int SMA120_TIME_PERIOD = 120;
+        MInteger sma120OutBegIdx = new MInteger();
+        MInteger sma120OutNBElement = new MInteger();
+        double[] sma120OutReal = new double[inReal.length];
+        core.sma(0, inReal.length - 1, inReal, SMA120_TIME_PERIOD, sma120OutBegIdx, sma120OutNBElement, sma120OutReal);
+
         // SMA 200
         int SMA200_TIME_PERIOD = 200;
         MInteger sma200OutBegIdx = new MInteger();
@@ -55,6 +62,7 @@ public class IndexCalculator {
         core.ema(0, inReal.length - 1, inReal, EMA60_TIME_PERIOD, ema60OutBegIdx, ema60OutNBElement, ema60OutReal);
 
         return Ma.builder()
+            .sma120(sma120OutReal[sma120OutNBElement.value - 1])
             .sma200(sma200OutReal[sma200OutNBElement.value - 1])
             .ema60(ema60OutReal[ema60OutNBElement.value - 1])
             .build();

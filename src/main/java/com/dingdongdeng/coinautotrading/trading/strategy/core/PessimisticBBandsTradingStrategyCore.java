@@ -233,6 +233,10 @@ public class PessimisticBBandsTradingStrategyCore implements StrategyCore<SpotTr
             return false;
         }
 
+        /**
+         * FIXME
+         *  손절 미끄럼틀 해결좀
+         */
         // 볼린저 밴드의 변동성이 점점 줄어들고 있다면
         if (bbandsHeightHist < 0) { //fixme -N보다 작을때로해보자
             log.info("[매수 조건] 볼린저 밴드의 변동성이 점점 줄어들고 있음, bbandsHeightHist={}", bbandsHeightHist);
