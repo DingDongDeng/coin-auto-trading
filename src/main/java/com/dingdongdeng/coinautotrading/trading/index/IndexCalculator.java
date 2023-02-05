@@ -46,8 +46,17 @@ public class IndexCalculator {
         MInteger sma200OutNBElement = new MInteger();
         double[] sma200OutReal = new double[inReal.length];
         core.sma(0, inReal.length - 1, inReal, SMA200_TIME_PERIOD, sma200OutBegIdx, sma200OutNBElement, sma200OutReal);
+
+        // EMA 60
+        int EMA60_TIME_PERIOD = 60;
+        MInteger ema60OutBegIdx = new MInteger();
+        MInteger ema60OutNBElement = new MInteger();
+        double[] ema60OutReal = new double[inReal.length];
+        core.ema(0, inReal.length - 1, inReal, EMA60_TIME_PERIOD, ema60OutBegIdx, ema60OutNBElement, ema60OutReal);
+
         return Ma.builder()
             .sma200(sma200OutReal[sma200OutNBElement.value - 1])
+            .ema60(ema60OutReal[ema60OutNBElement.value - 1])
             .build();
     }
 

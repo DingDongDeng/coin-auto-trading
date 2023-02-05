@@ -169,7 +169,7 @@ class IndexCalculatorTest {
     }
 
     @Test
-    public void SMA200_계산_테스트() {
+    public void MA_계산_테스트() {
         // given
         CoinType coinType = CoinType.ETHEREUM;
         TradingTerm tradingTerm = TradingTerm.SCALPING_240M;
@@ -182,6 +182,7 @@ class IndexCalculatorTest {
         // then
         log.info("result : {}", ma);
         assertEquals(1767750, Math.round(ma.getSma200()));
+        assertEquals(1975838, Math.round(ma.getEma60()));
     }
 
     private ExchangeCandles getExchangeCandles(LocalDateTime now, TradingTerm tradingTerm, CoinType coinType, String keyPairId) {

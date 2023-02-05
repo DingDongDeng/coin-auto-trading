@@ -10,4 +10,5 @@ import lombok.ToString;
 public class Ma {
 
     private double sma200;
+    private double ema60;
 }
