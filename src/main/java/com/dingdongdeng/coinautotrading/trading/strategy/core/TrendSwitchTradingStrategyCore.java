@@ -1,6 +1,5 @@
 package com.dingdongdeng.coinautotrading.trading.strategy.core;
 
-import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles.Candle;
 import com.dingdongdeng.coinautotrading.trading.index.Index;
@@ -10,7 +9,6 @@ import com.dingdongdeng.coinautotrading.trading.strategy.model.SpotTradingResult
 import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
-import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +22,6 @@ public class TrendSwitchTradingStrategyCore implements StrategyCore<SpotTradingI
     private final MacdTradingStrategyCore macdTradingStrategyCore;
     private final OptimisticBBandsTradingStrategyCore optimisticBBandsTradingStrategyCore;
     private final PessimisticBBandsTradingStrategyCore pessimisticBBandsTradingStrategyCore;
-
-    private LocalDateTime recentInnerOfBbands;
 
     public TrendSwitchTradingStrategyCore(TrendSwitchTradingStrategyCoreParam param) {
         this.param = param;
@@ -75,7 +71,6 @@ public class TrendSwitchTradingStrategyCore implements StrategyCore<SpotTradingI
         }
         // 횡보장이라면
         else {
-            this.recentInnerOfBbands = TradingTimeContext.now();
             log.info("[분기 조건] 횡보 추세");
             return optimisticBBandsTradingStrategyCore.makeTradingTask(tradingInfo, tradingResultPack);
         }
