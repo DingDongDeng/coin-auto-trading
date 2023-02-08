@@ -12,4 +12,6 @@ public class Ma {
     private double sma120;
     private double sma200;
     private double ema60;
+
+    private double[] sma120s;
 }

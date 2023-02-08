@@ -65,6 +65,7 @@ public class IndexCalculator {
             .sma120(sma120OutReal[sma120OutNBElement.value - 1])
             .sma200(sma200OutReal[sma200OutNBElement.value - 1])
             .ema60(ema60OutReal[ema60OutNBElement.value - 1])
+            .sma120s(Arrays.copyOfRange(sma120OutReal, 0, sma120OutNBElement.value))
             .build();
     }
 
