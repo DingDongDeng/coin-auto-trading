@@ -9,7 +9,9 @@ import com.dingdongdeng.coinautotrading.trading.strategy.model.SpotTradingResult
 import com.dingdongdeng.coinautotrading.trading.strategy.model.StrategyCoreParam;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingResultPack;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.TradingTask;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,6 +24,8 @@ public class TrendSwitchTradingStrategyCore implements StrategyCore<SpotTradingI
     private final MacdTradingStrategyCore macdTradingStrategyCore;
     private final OptimisticBBandsTradingStrategyCore optimisticBBandsTradingStrategyCore;
     private final PessimisticBBandsTradingStrategyCore pessimisticBBandsTradingStrategyCore;
+
+    private Map<String, Trend> orderTrendMap = new HashMap<>();
 
     public TrendSwitchTradingStrategyCore(TrendSwitchTradingStrategyCoreParam param) {
         this.param = param;
@@ -59,6 +63,27 @@ public class TrendSwitchTradingStrategyCore implements StrategyCore<SpotTradingI
         Index index = tradingInfo.getIndex();
         ExchangeCandles candles = tradingInfo.getCandles();
 
+        // 매수 주문된게 없음
+        if (tradingResultPack.getBuyTradingResultList().isEmpty()) {
+            this.orderTrendMap.clear();
+        }
+        // 이미 매수 주문이 되어있다면
+        else {
+            SpotTradingResult buyTradingResult = tradingResultPack.getBuyTradingResultList().get(0);
+            Trend trend = this.orderTrendMap.get(buyTradingResult.getOrderId());
+
+            if (trend == Trend.BOX) {
+                log.info("[분기 조건] 횡보 추세");
+                return optimisticBBandsTradingStrategyCore.makeTradingTask(tradingInfo, tradingResultPack);
+            } else if (trend == Trend.UP) {
+                log.info("[분기 조건] 상승 추세");
+                return macdTradingStrategyCore.makeTradingTask(tradingInfo, tradingResultPack);
+            } else {
+                log.info("[분기 조건] 하락 추세");
+                return pessimisticBBandsTradingStrategyCore.makeTradingTask(tradingInfo, tradingResultPack);
+            }
+        }
+
         // 횡보장이라면
         if (isBoxTrend(index, candles)) {
             log.info("[분기 조건] 횡보 추세");
@@ -77,17 +102,34 @@ public class TrendSwitchTradingStrategyCore implements StrategyCore<SpotTradingI
     }
 
     @Override
-    public void handleOrderResult(SpotTradingResult tradingResult) {
-        macdTradingStrategyCore.handleOrderResult(tradingResult);
-        optimisticBBandsTradingStrategyCore.handleOrderResult(tradingResult);
-        pessimisticBBandsTradingStrategyCore.handleOrderResult(tradingResult);
+    public void handleOrderResult(SpotTradingInfo tradingInfo, SpotTradingResult tradingResult) {
+        macdTradingStrategyCore.handleOrderResult(tradingInfo, tradingResult);
+        optimisticBBandsTradingStrategyCore.handleOrderResult(tradingInfo, tradingResult);
+        pessimisticBBandsTradingStrategyCore.handleOrderResult(tradingInfo, tradingResult);
+
+        Index index = tradingInfo.getIndex();
+        ExchangeCandles candles = tradingInfo.getCandles();
+        // 횡보장이라면
+        if (isBoxTrend(index, candles)) {
+            this.orderTrendMap.put(tradingResult.getOrderId(), Trend.BOX);
+        }
+        // 상승장이라면
+        else if (isUptrend(index, candles)) {
+            this.orderTrendMap.put(tradingResult.getOrderId(), Trend.UP);
+        }
+        // 하락장이라면
+        else {
+            this.orderTrendMap.put(tradingResult.getOrderId(), Trend.DOWN);
+        }
     }
 
     @Override
-    public void handleOrderCancelResult(SpotTradingResult tradingResult) {
-        macdTradingStrategyCore.handleOrderCancelResult(tradingResult);
-        optimisticBBandsTradingStrategyCore.handleOrderCancelResult(tradingResult);
-        pessimisticBBandsTradingStrategyCore.handleOrderCancelResult(tradingResult);
+    public void handleOrderCancelResult(SpotTradingInfo tradingInfo, SpotTradingResult tradingResult) {
+        macdTradingStrategyCore.handleOrderCancelResult(tradingInfo, tradingResult);
+        optimisticBBandsTradingStrategyCore.handleOrderCancelResult(tradingInfo, tradingResult);
+        pessimisticBBandsTradingStrategyCore.handleOrderCancelResult(tradingInfo, tradingResult);
+
+        this.orderTrendMap.remove(tradingResult.getOrderId());
     }
 
     @Override
@@ -127,5 +169,9 @@ public class TrendSwitchTradingStrategyCore implements StrategyCore<SpotTradingI
         }
 
         return true;
+    }
+
+    private enum Trend {
+        UP, DOWN, BOX
     }
 }
