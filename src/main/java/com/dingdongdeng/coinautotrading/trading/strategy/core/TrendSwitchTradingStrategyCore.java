@@ -108,6 +108,14 @@ public class TrendSwitchTradingStrategyCore implements StrategyCore<SpotTradingI
             }
         }
 
+        // 이평선 기울기 확인
+        double[] sma120s = index.getMa().getSma120s();
+        double from = sma120s[sma120s.length - 15];
+        double to = sma120s[sma120s.length - 1];
+        if (from * (1 + 0.005) > to) {
+            return false;
+        }
+
         return true;
     }
 
@@ -122,6 +130,14 @@ public class TrendSwitchTradingStrategyCore implements StrategyCore<SpotTradingI
             if (candleList.get(i).getTradePrice() > sma120) {
                 return false;
             }
+        }
+
+        // 이평선 기울기 확인
+        double[] sma120s = index.getMa().getSma120s();
+        double from = sma120s[sma120s.length - 15];
+        double to = sma120s[sma120s.length - 1];
+        if (from * (1 - 0.005) < to) {
+            return false;
         }
 
         return true;
