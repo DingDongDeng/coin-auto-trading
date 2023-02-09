@@ -154,14 +154,14 @@ public class MacdTradingStrategyCore implements StrategyCore<SpotTradingInfo, Sp
     }
 
     @Override
-    public void handleOrderResult(SpotTradingResult tradingResult) {
+    public void handleOrderResult(SpotTradingInfo tradingInfo, SpotTradingResult tradingResult) {
         if (List.of(TradingTag.PROFIT, TradingTag.LOSS).contains(tradingResult.getTradingTag())) {
             this.positionCompletedDateTime = tradingResult.getCreatedAt();
         }
     }
 
     @Override
-    public void handleOrderCancelResult(SpotTradingResult tradingResult) {
+    public void handleOrderCancelResult(SpotTradingInfo tradingInfo, SpotTradingResult tradingResult) {
         if (List.of(TradingTag.PROFIT, TradingTag.LOSS).contains(tradingResult.getTradingTag())) {
             this.positionCompletedDateTime = null;
         }
