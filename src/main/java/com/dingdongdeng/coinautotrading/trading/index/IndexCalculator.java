@@ -162,13 +162,16 @@ public class IndexCalculator {
     }
 
     public Resistance getResistancePrice(ExchangeCandles candles) {
-        double RESISTANCE_GAP = 0.02; // n% 퍼센트
         int RESISTANCE_MAX_COUNT = 20;
+
+        // 너무 오래된 저항선은 의미없기때문에 절반의 캔들만 다룸
+        int size = candles.getCandleList().size();
+        List<Candle> candleList = candles.getCandleList().subList(size / 2, size - 10); //최 캔들은 지지선 계산에서 제외
 
         // 가격대별 거래량을 통해 지지/저항선을 추출
         Map<Double, Double> priceMap = new HashMap<>();
-        for (Candle candle : candles.getCandleList()) {
-            Double price = Math.floor(candle.getTradePrice() / 1000) * 1000;
+        for (Candle candle : candleList) {
+            Double price = Math.floor(candle.getTradePrice() / 10000) * 10000;
             Double volume = Objects.isNull(candle.getCandleAccTradeVolume()) ? 0 : candle.getCandleAccTradeVolume();
             if (Objects.isNull(priceMap.get(price))) {
                 priceMap.put(price, volume);
@@ -184,34 +187,8 @@ public class IndexCalculator {
             .sorted(Entry.comparingByKey())
             .collect(Collectors.toList());
 
-        // 저항선 간의 간격이 가깝지 않도록 필터
-        for (int i = 0; i < priceEntryList.size(); i++) {
-            Entry<Double, Double> currentEntry = priceEntryList.get(i);
-            for (int j = i + 1; j < priceEntryList.size(); j++) {
-                Entry<Double, Double> nextEntry = priceEntryList.get(j);
-                if (currentEntry.getKey() * (1 + RESISTANCE_GAP) > nextEntry.getKey()) {
-                    priceEntryList.remove(nextEntry);
-                    j--;
-                }
-            }
-        }
-
-        // 지지/저항선간의 간격이 큰 것들을 추출
-        Map<Double, Double> diffMap = new HashMap<>();
-        for (int i = 0; i < priceEntryList.size() - 1; i++) {
-            double currentPrice = priceEntryList.get(i).getKey();
-            double nextPrice = priceEntryList.get(i + 1).getKey();
-            double diffPrice = nextPrice - currentPrice;
-            diffMap.put(currentPrice, diffPrice);
-        }
-        List<Entry<Double, Double>> diffEntryList = diffMap.entrySet().stream()
-            .sorted(Collections.reverseOrder(Entry.comparingByValue()))
-            .limit(RESISTANCE_MAX_COUNT / 2)
-            .sorted(Entry.comparingByKey())
-            .toList();
-
         return Resistance.builder()
-            .resistancePriceList(diffEntryList.stream().map(Entry::getKey).collect(Collectors.toList()))
+            .resistancePriceList(priceEntryList.stream().map(Entry::getKey).toList())
             .build();
     }
 

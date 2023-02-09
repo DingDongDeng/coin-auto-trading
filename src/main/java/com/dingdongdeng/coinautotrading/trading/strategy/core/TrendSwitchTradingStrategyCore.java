@@ -59,20 +59,20 @@ public class TrendSwitchTradingStrategyCore implements StrategyCore<SpotTradingI
         Index index = tradingInfo.getIndex();
         ExchangeCandles candles = tradingInfo.getCandles();
 
+        // 횡보장이라면
+        if (isBoxTrend(index, candles)) {
+            log.info("[분기 조건] 횡보 추세");
+            return optimisticBBandsTradingStrategyCore.makeTradingTask(tradingInfo, tradingResultPack);
+        }
         // 상승장이라면
-        if (isUptrend(index, candles)) {
+        else if (isUptrend(index, candles)) {
             log.info("[분기 조건] 상승 추세");
             return macdTradingStrategyCore.makeTradingTask(tradingInfo, tradingResultPack);
         }
         // 하락장이라면
-        else if (isDowntrend(index, candles)) {
+        else {
             log.info("[분기 조건] 하락 추세");
             return pessimisticBBandsTradingStrategyCore.makeTradingTask(tradingInfo, tradingResultPack);
-        }
-        // 횡보장이라면
-        else {
-            log.info("[분기 조건] 횡보 추세");
-            return optimisticBBandsTradingStrategyCore.makeTradingTask(tradingInfo, tradingResultPack);
         }
     }
 
@@ -95,49 +95,35 @@ public class TrendSwitchTradingStrategyCore implements StrategyCore<SpotTradingI
         return this.param;
     }
 
-    private boolean isUptrend(Index index, ExchangeCandles candles) {
-        int TARGET_CANDLE_COUNT = 10;
-        List<Candle> candleList = candles.getCandleList();
-        double sma120 = index.getMa().getSma120();
+    private boolean isBoxTrend(Index index, ExchangeCandles candles) {
+        double movingAveragePrice = (candles.getLatest(0).getTradePrice() + candles.getLatest(0).getOpeningPrice()) / 2;
+        double resistancePrice = index.getResistance().getResistancePrice(movingAveragePrice);
+        double supportPrice = index.getResistance().getSupportPrice(movingAveragePrice);
 
-        // 최근 캔들이 이평선보다 위인지 확인
-        int offset = candleList.size() - TARGET_CANDLE_COUNT;
-        for (int i = offset; i < candleList.size(); i++) {
-            if (candleList.get(i).getTradePrice() < sma120) {
-                return false;
-            }
+        // 저항선이 없음
+        if (resistancePrice == Integer.MAX_VALUE) {
+            return false;
         }
 
-        // 이평선 기울기 확인
-        double[] sma120s = index.getMa().getSma120s();
-        double from = sma120s[sma120s.length - 15];
-        double to = sma120s[sma120s.length - 1];
-        if (from * (1 + 0.005) > to) {
+        // 지지선이 없음
+        if (supportPrice == 0) {
             return false;
         }
 
         return true;
     }
 
-    private boolean isDowntrend(Index index, ExchangeCandles candles) {
-        int TARGET_CANDLE_COUNT = 10;
-        List<Candle> candleList = candles.getCandleList();
-        double sma120 = index.getMa().getSma120();
+    private boolean isUptrend(Index index, ExchangeCandles candles) {
 
         // 최근 캔들이 이평선보다 위인지 확인
+        int TARGET_CANDLE_COUNT = 5;
+        List<Candle> candleList = candles.getCandleList();
+        double sma120 = index.getMa().getSma120();
         int offset = candleList.size() - TARGET_CANDLE_COUNT;
         for (int i = offset; i < candleList.size(); i++) {
-            if (candleList.get(i).getTradePrice() > sma120) {
+            if (candleList.get(i).getTradePrice() < sma120) {
                 return false;
             }
-        }
-
-        // 이평선 기울기 확인
-        double[] sma120s = index.getMa().getSma120s();
-        double from = sma120s[sma120s.length - 15];
-        double to = sma120s[sma120s.length - 1];
-        if (from * (1 - 0.005) < to) {
-            return false;
         }
 
         return true;

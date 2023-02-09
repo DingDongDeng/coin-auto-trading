@@ -217,18 +217,6 @@ public class MacdTradingStrategyCore implements StrategyCore<SpotTradingInfo, Sp
             return false;
         }
 
-        // 저항선에 너무 가깝다면
-        if (resistancePrice * (1 - 0.02) < currentPrice) {
-            log.info("[매수 조건] 저항선에 너무 가까움, resistancePrice={}, currentPrice={}", resistancePrice, currentCandle);
-            return false;
-        }
-
-        // 지지받지 않고 있다면
-        if (supportPrice * (1 + 0.02) < currentPrice) {
-            log.info("[매수 조건] 지지 받지 않는중, supportPrice={}, currentPrice={}", supportPrice, currentCandle);
-            return false;
-        }
-
         log.info("[매수 조건] 매수 조건 만족");
         return true;
     }

@@ -252,6 +252,8 @@ public class OptimisticBBandsTradingStrategyCore implements StrategyCore<SpotTra
             return false;
         }
 
+        //fixme 현재가가 최저가랑 얼마 차이안나면 사지말게하는것도 좋을듯(손절 미끄럼틀 특징 ㅜㅜ)
+
         log.info("[매수 조건] 매수 조건 만족");
         return true;
     }
@@ -337,10 +339,10 @@ public class OptimisticBBandsTradingStrategyCore implements StrategyCore<SpotTra
         }
 
         // 가격이 5만원 이상 떨어졌다면 바로 손절
-        if (tradingResultPack.getAveragePrice() - currentPrice > tradingResultPack.getAveragePrice() * 0.03) {
-            log.info("[손절 조건] 손절 조건 만족, 가격이 크게 떨어짐, averagePrice={}, currentPrice={}", tradingResultPack.getAveragePrice(), currentPrice);
-            return true;
-        }
+//        if (tradingResultPack.getAveragePrice() - currentPrice > tradingResultPack.getAveragePrice() * 0.03) {
+//            log.info("[손절 조건] 손절 조건 만족, 가격이 크게 떨어짐, averagePrice={}, currentPrice={}", tradingResultPack.getAveragePrice(), currentPrice);
+//            return true;
+//        }
 
         // 지지받고 있다면
         if (bbandsLower - bufferPrice < currentPrice) {
@@ -373,6 +375,7 @@ public class OptimisticBBandsTradingStrategyCore implements StrategyCore<SpotTra
     }
 
     private double getBufferPrice(double bbandsHeight) {
+        //fixme 여기 고치면 더 찬스가 많았음
         return (bbandsHeight / 10) > 20000 ? 20000 : 10000;
     }
 

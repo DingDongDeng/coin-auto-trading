@@ -222,9 +222,9 @@ export default Vue.component('trading-chart', {
       onchart.push(bollingerBandsOnchartList[2]); // lower
       const resistanceOnchartList = this.getResistanceOnchartList();
       // 지지/저항 차트에서 생략
-      //for (let resistanceOnchart of resistanceOnchartList) {
-      //  onchart.push(resistanceOnchart);
-      //}
+      for (let resistanceOnchart of resistanceOnchartList) {
+        onchart.push(resistanceOnchart);
+      }
 
       // offchart
       const rsiOffchart = this.getRsiOffchart();
