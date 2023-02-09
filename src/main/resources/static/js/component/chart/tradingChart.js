@@ -268,9 +268,10 @@ export default Vue.component('trading-chart', {
 
         // 보조지표 세팅(onChart)
         for (let i = 0; i < resistanceOnchartList.length; i++) {
-          if (i < recordContext.index.resistancePriceList.length) {
+          if (i < recordContext.index.resistance.resistancePriceList.length) {
             resistanceOnchartList[i].data.push(
-                [timestamp, recordContext.index.resistancePriceList[i]]
+                [timestamp,
+                  recordContext.index.resistance.resistancePriceList[i]]
             );
           }
         }
