@@ -78,10 +78,10 @@ class IndexCalculatorTest {
         ExchangeCandles candles = getExchangeCandles(now, tradingTerm, coinType, keyPairId);
 
         //when
-        List<Double> resistancePriceList = calculator.getResistancePrice(candles);
+        Resistance resistance = calculator.getResistancePrice(candles);
 
         //then
-        log.info("resistancePrice List = {}", resistancePriceList);
+        log.info("resistancePrice List = {}", resistance.getResistancePriceList());
     }
 
     @Test

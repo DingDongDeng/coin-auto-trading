@@ -28,7 +28,7 @@ public class IndexCalculator {
     public Index getIndex(ExchangeCandles candles) {
         return Index.builder()
             .rsi(this.getRsi(candles))
-            .resistancePriceList(this.getResistancePrice(candles))
+            .resistance(this.getResistancePrice(candles))
             .macd(this.getMACD(candles))
             .bollingerBands(this.getBollingerBands(candles))
             .obv(this.getObv(candles))
@@ -161,7 +161,7 @@ public class IndexCalculator {
             .build();
     }
 
-    public List<Double> getResistancePrice(ExchangeCandles candles) {
+    public Resistance getResistancePrice(ExchangeCandles candles) {
         double RESISTANCE_GAP = 0.02; // n% 퍼센트
         int RESISTANCE_MAX_COUNT = 20;
 
@@ -210,7 +210,9 @@ public class IndexCalculator {
             .sorted(Entry.comparingByKey())
             .toList();
 
-        return diffEntryList.stream().map(Entry::getKey).collect(Collectors.toList());
+        return Resistance.builder()
+            .resistancePriceList(diffEntryList.stream().map(Entry::getKey).collect(Collectors.toList()))
+            .build();
     }
 
     // RSI(지수 가중 이동 평균)
