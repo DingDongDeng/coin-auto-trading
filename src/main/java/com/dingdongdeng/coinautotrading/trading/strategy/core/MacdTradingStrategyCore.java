@@ -5,6 +5,7 @@ import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles.Candle;
 import com.dingdongdeng.coinautotrading.trading.index.Index;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyCore;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.SpotTradingInfo;
@@ -193,6 +194,9 @@ public class MacdTradingStrategyCore implements StrategyCore<SpotTradingInfo, Sp
 
         double obvHist = index.getObv().getHist();
 
+        double resistancePrice = index.getResistance().getResistancePrice(currentPrice);
+        double supportPrice = index.getResistance().getSupportPrice(currentPrice);
+
         // 추가 매수 안함
         if (isExsistBuyOrder) {
             log.info("[추가 매수 조건] 추가 매수 안함");
@@ -206,15 +210,22 @@ public class MacdTradingStrategyCore implements StrategyCore<SpotTradingInfo, Sp
             return false;
         }
 
-        // 상승 추세가 아니라면
-        if (macdHist < 0) {
-            log.info("[매수 조건] 하락 추세, hist={}, signal={}, macd={}", macdHist, macdSignal, macdMacd);
+        // 현재 음봉 캔들이라면
+        Candle currentCandle = tradingInfo.getCandles().getLatest(0);
+        if (currentCandle.getOpeningPrice() - currentCandle.getTradePrice() > 0) {
+            log.info("[매수 조건] 현재 음봉 캔들일때는 매수하지 않음, openingPrice={}, tradePrice={}", currentCandle.getOpeningPrice(), currentCandle.getTradePrice());
             return false;
         }
 
-        // 거래량이 하락중이라면
-        if (obvHist < 0) {
-            log.info("[매수 조건] 거래량이 하락 중, obvHist={}", obvHist);
+        // 저항선에 너무 가깝다면
+        if (resistancePrice * (1 - 0.02) < currentPrice) {
+            log.info("[매수 조건] 저항선에 너무 가까움, resistancePrice={}, currentPrice={}", resistancePrice, currentCandle);
+            return false;
+        }
+
+        // 지지받지 않고 있다면
+        if (supportPrice * (1 + 0.02) < currentPrice) {
+            log.info("[매수 조건] 지지 받지 않는중, supportPrice={}, currentPrice={}", supportPrice, currentCandle);
             return false;
         }
 
@@ -229,6 +240,8 @@ public class MacdTradingStrategyCore implements StrategyCore<SpotTradingInfo, Sp
         double macdMacd = index.getMacd().getMacd();
         double currentUptrendHighestHist = index.getMacd().getCurrentUptrendHighestHist();
         double currentUptrendHighestMacd = index.getMacd().getCurrentUptrendHighestMacd();
+
+        double bbandsLower = index.getBollingerBands().getLower();
 
         // 매수 주문한적이 없다면
         if (tradingResultPack.getBuyTradingResultList().isEmpty()) {
@@ -249,15 +262,9 @@ public class MacdTradingStrategyCore implements StrategyCore<SpotTradingInfo, Sp
             return false;
         }
 
-        // 아직 상승 추세라면
-        if (currentUptrendHighestMacd * 0.3 < macdMacd) {
-            log.info("[익절 조건] 아직 상승 추세, currentUptrendHighestMacd={}, macdMacd={}", currentUptrendHighestMacd, macdMacd);
-            return false;
-        }
-
-        // 아직 상승 추세라면
-        if (currentUptrendHighestHist * 0.3 < macdHist) {
-            log.info("[익절 조건] 아직 상승 추세, currentUptrendHighestHist={}, macdHist={}", currentUptrendHighestHist, macdHist);
+        // 볼린저 밴드 하단에 닿지 않았다면
+        if (bbandsLower < currentPrice) {
+            log.info("[익절 조건] 볼린저밴드 하단에 닿지 않음, bbandsLower={}, currentPrice={}", bbandsLower, currentPrice);
             return false;
         }
 
@@ -273,6 +280,8 @@ public class MacdTradingStrategyCore implements StrategyCore<SpotTradingInfo, Sp
         double macdMacd = index.getMacd().getMacd();
         double currentUptrendHighestHist = index.getMacd().getCurrentUptrendHighestHist();
         double currentUptrendHighestMacd = index.getMacd().getCurrentUptrendHighestMacd();
+
+        double bbandsLower = index.getBollingerBands().getLower();
 
         // 매수 주문한적이 없다면
         if (tradingResultPack.getBuyTradingResultList().isEmpty()) {
@@ -293,15 +302,9 @@ public class MacdTradingStrategyCore implements StrategyCore<SpotTradingInfo, Sp
             return false;
         }
 
-        // 아직 상승 추세라면
-        if (currentUptrendHighestMacd * 0.3 < macdMacd) {
-            log.info("[손절 조건] 아직 상승 추세, currentUptrendHighestMacd={}, macdMacd={}", currentUptrendHighestMacd, macdMacd);
-            return false;
-        }
-
-        // 아직 상승 추세라면
-        if (currentUptrendHighestHist * 0.3 < macdHist) {
-            log.info("[손절 조건] 아직 상승 추세, currentUptrendHighestHist={}, macdHist={}", currentUptrendHighestHist, macdHist);
+        // 볼린저 밴드 하단에 닿지 않았다면
+        if (bbandsLower < currentPrice) {
+            log.info("[손절 조건] 볼린저밴드 하단에 닿지 않음, bbandsLower={}, currentPrice={}", bbandsLower, currentPrice);
             return false;
         }
 
