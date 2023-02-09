@@ -77,17 +77,17 @@ public class TrendSwitchTradingStrategyCore implements StrategyCore<SpotTradingI
     }
 
     @Override
-    public void handleOrderResult(SpotTradingResult tradingResult) {
-        macdTradingStrategyCore.handleOrderResult(tradingResult);
-        optimisticBBandsTradingStrategyCore.handleOrderResult(tradingResult);
-        pessimisticBBandsTradingStrategyCore.handleOrderResult(tradingResult);
+    public void handleOrderResult(SpotTradingInfo tradingInfo, SpotTradingResult tradingResult) {
+        macdTradingStrategyCore.handleOrderResult(tradingInfo, tradingResult);
+        optimisticBBandsTradingStrategyCore.handleOrderResult(tradingInfo, tradingResult);
+        pessimisticBBandsTradingStrategyCore.handleOrderResult(tradingInfo, tradingResult);
     }
 
     @Override
-    public void handleOrderCancelResult(SpotTradingResult tradingResult) {
-        macdTradingStrategyCore.handleOrderCancelResult(tradingResult);
-        optimisticBBandsTradingStrategyCore.handleOrderCancelResult(tradingResult);
-        pessimisticBBandsTradingStrategyCore.handleOrderCancelResult(tradingResult);
+    public void handleOrderCancelResult(SpotTradingInfo tradingInfo, SpotTradingResult tradingResult) {
+        macdTradingStrategyCore.handleOrderCancelResult(tradingInfo, tradingResult);
+        optimisticBBandsTradingStrategyCore.handleOrderCancelResult(tradingInfo, tradingResult);
+        pessimisticBBandsTradingStrategyCore.handleOrderCancelResult(tradingInfo, tradingResult);
     }
 
     @Override
@@ -96,9 +96,13 @@ public class TrendSwitchTradingStrategyCore implements StrategyCore<SpotTradingI
     }
 
     private boolean isBoxTrend(Index index, ExchangeCandles candles) {
-        double movingAveragePrice = (candles.getLatest(0).getTradePrice() + candles.getLatest(0).getOpeningPrice()) / 2;
-        double resistancePrice = index.getResistance().getResistancePrice(movingAveragePrice);
-        double supportPrice = index.getResistance().getSupportPrice(movingAveragePrice);
+        double movingAveragePrice = (
+            candles.getLatest(0).getLowPrice()
+                + candles.getLatest(1).getLowPrice()
+                + candles.getLatest(2).getLowPrice()
+        ) / 3;
+        double resistancePrice = index.getResistance().getResistancePrice(movingAveragePrice * 0.99);
+        double supportPrice = index.getResistance().getSupportPrice(movingAveragePrice * 0.99);
 
         // 저항선이 없음
         if (resistancePrice == Integer.MAX_VALUE) {

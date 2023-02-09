@@ -6,6 +6,7 @@ import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles.Candle;
 import com.dingdongdeng.coinautotrading.trading.index.Index;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyCore;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.SpotTradingInfo;
@@ -252,7 +253,12 @@ public class OptimisticBBandsTradingStrategyCore implements StrategyCore<SpotTra
             return false;
         }
 
-        //fixme 현재가가 최저가랑 얼마 차이안나면 사지말게하는것도 좋을듯(손절 미끄럼틀 특징 ㅜㅜ)
+        // 현재 음봉 캔들이라면
+        Candle currentCandle = tradingInfo.getCandles().getLatest(0);
+        if (currentCandle.getOpeningPrice() - currentCandle.getTradePrice() > 0) {
+            log.info("[매수 조건] 현재 음봉 캔들일때는 매수하지 않음, openingPrice={}, tradePrice={}", currentCandle.getOpeningPrice(), currentCandle.getTradePrice());
+            return false;
+        }
 
         log.info("[매수 조건] 매수 조건 만족");
         return true;
@@ -337,12 +343,6 @@ public class OptimisticBBandsTradingStrategyCore implements StrategyCore<SpotTra
             log.info("[손절 조건] 손실 중이 아님, currentPrice={}, averagePrice={}", currentPrice, tradingResultPack.getAveragePrice());
             return false;
         }
-
-        // 가격이 5만원 이상 떨어졌다면 바로 손절
-//        if (tradingResultPack.getAveragePrice() - currentPrice > tradingResultPack.getAveragePrice() * 0.03) {
-//            log.info("[손절 조건] 손절 조건 만족, 가격이 크게 떨어짐, averagePrice={}, currentPrice={}", tradingResultPack.getAveragePrice(), currentPrice);
-//            return true;
-//        }
 
         // 지지받고 있다면
         if (bbandsLower - bufferPrice < currentPrice) {
