@@ -19,14 +19,14 @@ public class TrendSwitchTradingStrategyCore implements StrategyCore<SpotTradingI
 
     private final TrendSwitchTradingStrategyCoreParam param;
 
-    private final MacdTradingStrategyCore macdTradingStrategyCore;
+    private final ResistanceTradingStrategyCore resistanceTradingStrategyCore;
     private final OptimisticBBandsTradingStrategyCore optimisticBBandsTradingStrategyCore;
     private final PessimisticBBandsTradingStrategyCore pessimisticBBandsTradingStrategyCore;
 
     public TrendSwitchTradingStrategyCore(TrendSwitchTradingStrategyCoreParam param) {
         this.param = param;
-        this.macdTradingStrategyCore = new MacdTradingStrategyCore(
-            MacdTradingStrategyCoreParam.builder()
+        this.resistanceTradingStrategyCore = new ResistanceTradingStrategyCore(
+            ResistanceTradingStrategyCoreParam.builder()
                 .initOrderPrice(param.getInitOrderPrice())
                 .conditionTimeBuffer(param.getConditionTimeBuffer())
                 .accountBalanceLimit(param.getAccountBalanceLimit())
@@ -67,7 +67,7 @@ public class TrendSwitchTradingStrategyCore implements StrategyCore<SpotTradingI
         // 상승장이라면
         else if (isUptrend(index, candles)) {
             log.info("[분기 조건] 상승 추세");
-            return macdTradingStrategyCore.makeTradingTask(tradingInfo, tradingResultPack);
+            return resistanceTradingStrategyCore.makeTradingTask(tradingInfo, tradingResultPack);
         }
         // 하락장이라면
         else {
@@ -78,14 +78,14 @@ public class TrendSwitchTradingStrategyCore implements StrategyCore<SpotTradingI
 
     @Override
     public void handleOrderResult(SpotTradingInfo tradingInfo, SpotTradingResult tradingResult) {
-        macdTradingStrategyCore.handleOrderResult(tradingInfo, tradingResult);
+        resistanceTradingStrategyCore.handleOrderResult(tradingInfo, tradingResult);
         optimisticBBandsTradingStrategyCore.handleOrderResult(tradingInfo, tradingResult);
         pessimisticBBandsTradingStrategyCore.handleOrderResult(tradingInfo, tradingResult);
     }
 
     @Override
     public void handleOrderCancelResult(SpotTradingInfo tradingInfo, SpotTradingResult tradingResult) {
-        macdTradingStrategyCore.handleOrderCancelResult(tradingInfo, tradingResult);
+        resistanceTradingStrategyCore.handleOrderCancelResult(tradingInfo, tradingResult);
         optimisticBBandsTradingStrategyCore.handleOrderCancelResult(tradingInfo, tradingResult);
         pessimisticBBandsTradingStrategyCore.handleOrderCancelResult(tradingInfo, tradingResult);
     }
