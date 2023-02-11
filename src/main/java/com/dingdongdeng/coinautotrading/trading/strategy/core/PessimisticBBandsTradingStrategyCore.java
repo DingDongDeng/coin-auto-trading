@@ -233,10 +233,6 @@ public class PessimisticBBandsTradingStrategyCore implements StrategyCore<SpotTr
             return false;
         }
 
-        /**
-         * FIXME
-         *  손절 미끄럼틀 해결좀
-         */
         // 볼린저 밴드의 변동성이 점점 줄어들고 있다면
         if (bbandsHeightHist < 0) { //fixme -N보다 작을때로해보자
             log.info("[매수 조건] 볼린저 밴드의 변동성이 점점 줄어들고 있음, bbandsHeightHist={}", bbandsHeightHist);
@@ -340,9 +336,9 @@ public class PessimisticBBandsTradingStrategyCore implements StrategyCore<SpotTr
             return false;
         }
 
-        // 가격이 5만원 이상 떨어졌다면 바로 손절
-        if (tradingResultPack.getAveragePrice() - currentPrice > tradingResultPack.getAveragePrice() * 0.03) {
-            log.info("[손절 조건] 손절 조건 만족, 가격이 크게 떨어짐, averagePrice={}, currentPrice={}", tradingResultPack.getAveragePrice(), currentPrice);
+        // 잠재 상승폭이 적다면
+        if (bbandsMiddle * (0.99) < tradingResultPack.getAveragePrice()) {
+            log.info("[손실 조건] 손실 조건 만족, 잠재 상승 폭이 적음, bbandMiddle={}, averagePrice={}", bbandsMiddle, tradingResultPack.getAveragePrice());
             return true;
         }
 

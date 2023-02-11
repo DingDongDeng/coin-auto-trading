@@ -32,7 +32,6 @@ public class OptimisticBBandsTradingStrategyCore implements StrategyCore<SpotTra
     // 매수,익절,손절 조건에 도달하였다고 해서 바로 수행하지 않고, 방향성 확인을 위해 버퍼 시간을 둠
     private LocalDateTime positionInitDateTime;
     private LocalDateTime positionCompletedDateTime;
-    private LocalDateTime recentOutOfLowerDateTime; // 볼린저 밴드 하단 선 밖으로 나간 시간
 
     @Override
     public List<TradingTask> makeTradingTask(SpotTradingInfo tradingInfo, TradingResultPack<SpotTradingResult> tradingResultPack) {
@@ -210,11 +209,6 @@ public class OptimisticBBandsTradingStrategyCore implements StrategyCore<SpotTra
 
         double bufferPrice = getBufferPrice(bbandsHeight);
 
-        // 볼린저 밴드 하단 아래로 내려간 시간 기록
-        if (bbandsLower - bufferPrice > currentPrice) {
-            this.recentOutOfLowerDateTime = TradingTimeContext.now();
-        }
-
         // 추가 매수 안함
         if (isExsistBuyOrder) {
             log.info("[추가 매수 조건] 추가 매수 안함");
@@ -228,28 +222,15 @@ public class OptimisticBBandsTradingStrategyCore implements StrategyCore<SpotTra
             return false;
         }
 
-        // 이미 상승 추세라면
-        if (macdHist > 0) {
-            log.info("[매수 조건] 이미 상승 추세, hist={}", macdHist);
+        // 볼린저밴드 lower 아래가 아니라면
+        if (bbandsLower + bufferPrice < currentPrice) {
+            log.info("[매수 조건] 볼린저 밴드 아래가 아니라면, lower={}, currentPrice={}, bufferPrice={}", bbandsLower, currentPrice, bufferPrice);
             return false;
         }
 
         // 볼린저 밴드의 변동성이 점점 줄어들고 있다면
         if (bbandsHeightHist < 0) { //fixme -N보다 작을때로해보자
             log.info("[매수 조건] 볼린저 밴드의 변동성이 점점 줄어들고 있음, bbandsHeightHist={}", bbandsHeightHist);
-            return false;
-        }
-
-        // 볼린저 밴드 하단으로 내려갔다면 유예시간을 가져야함(하락의 가능성이 큼)
-        if (!isEnoughBufferTime(recentOutOfLowerDateTime)) {
-            log.info("[매수 조건] 볼린저 밴드 하단으로 내려갔다면 유예시간을 가져야함, bufferTime={}, recentOutOfLowerDateTime={}, now={}", param.getConditionTimeBuffer(), recentOutOfLowerDateTime,
-                TradingTimeContext.now());
-            return false;
-        }
-
-        // 볼린저밴드 lower 근처가 아니라면
-        if (bbandsLower + bufferPrice < currentPrice || bbandsLower - bufferPrice > currentPrice) {
-            log.info("[매수 조건] 볼린저 밴드 하단선 근처가 아니라면, lower={}, currentPrice={}, bufferPrice={}", bbandsLower, currentPrice, bufferPrice);
             return false;
         }
 
@@ -277,6 +258,7 @@ public class OptimisticBBandsTradingStrategyCore implements StrategyCore<SpotTra
         double bbandsMiddle = index.getBollingerBands().getMiddle();
         double bbandsLower = index.getBollingerBands().getLower();
         double bbandsHeight = index.getBollingerBands().getHeight();
+        double bbandsHeightHist = index.getBollingerBands().getHeightHist();
 
         double obvHist = index.getObv().getHist();
 
@@ -300,7 +282,7 @@ public class OptimisticBBandsTradingStrategyCore implements StrategyCore<SpotTra
         }
 
         // 목표 저항선까지 도달하지 않았다면
-        double targetProfitPrice = bbandsUpper - getBufferPrice(bbandsHeight, 0.1);
+        double targetProfitPrice = bbandsHeightHist < 0 ? bbandsMiddle : bbandsUpper - getBufferPrice(bbandsHeight, 0.1);
         if (targetProfitPrice > currentPrice) {
             log.info("[익절 조건] 저항선에 도달하지 않으면 익절하지 않음, targetProfitPrice={}, currentPrice={}", targetProfitPrice, currentPrice);
             return false;
@@ -344,6 +326,12 @@ public class OptimisticBBandsTradingStrategyCore implements StrategyCore<SpotTra
             return false;
         }
 
+        // 잠재 상승폭이 적다면
+        if (bbandsMiddle * (0.99) < tradingResultPack.getAveragePrice()) {
+            log.info("[손실 조건] 손실 조건 만족, 잠재 상승 폭이 적음, bbandMiddle={}, averagePrice={}", bbandsMiddle, tradingResultPack.getAveragePrice());
+            return true;
+        }
+
         // 지지받고 있다면
         if (bbandsLower - bufferPrice < currentPrice) {
             log.info("[손절 조건] 지지 받고 있음, lower={}, bufferPrice={}, currentPrice={}", bbandsLower, bufferPrice, currentPrice);
@@ -375,8 +363,11 @@ public class OptimisticBBandsTradingStrategyCore implements StrategyCore<SpotTra
     }
 
     private double getBufferPrice(double bbandsHeight) {
-        //fixme 여기 고치면 더 찬스가 많았음
-        return (bbandsHeight / 10) > 20000 ? 20000 : 10000;
+        double buffer = bbandsHeight / 10;
+        if (buffer > 20000) {
+            return buffer;
+        }
+        return 10000;
     }
 
     private boolean isTooOld(SpotTradingResult tradingResult) {
