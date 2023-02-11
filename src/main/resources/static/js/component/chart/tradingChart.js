@@ -9,6 +9,7 @@ export default Vue.component('trading-chart', {
   template:
       `
 <trading-vue :data="charts" :width="this.width" :height="this.height"
+    :timezone="this.timezone"
     :color-back="colors.colorBack"
     :color-grid="colors.colorGrid"
     :color-text="colors.colorText">
@@ -184,6 +185,7 @@ export default Vue.component('trading-chart', {
     return {
       width: window.innerWidth,
       height: window.innerHeight,
+      timezone: 9,
       colors: {
         colorBack: '#fff',
         colorGrid: '#eee',
