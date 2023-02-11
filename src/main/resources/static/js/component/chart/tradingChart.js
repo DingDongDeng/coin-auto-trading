@@ -41,10 +41,10 @@ export default Vue.component('trading-chart', {
     },
     getResistanceOnchartList() {
       const resistanceOnchartList = [];
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 20; i++) {
         resistanceOnchartList.push(
             {
-              name: "Resistance" + (i + 1),
+              name: "r" + (i + 1),
               type: "EMA",
               data: [],
               settings: {
