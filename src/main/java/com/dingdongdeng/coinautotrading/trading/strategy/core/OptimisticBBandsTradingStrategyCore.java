@@ -160,6 +160,7 @@ public class OptimisticBBandsTradingStrategyCore implements StrategyCore<SpotTra
     public void handleOrderResult(SpotTradingInfo tradingInfo, SpotTradingResult tradingResult) {
         if (List.of(TradingTag.PROFIT, TradingTag.LOSS).contains(tradingResult.getTradingTag())) {
             this.positionCompletedDateTime = tradingResult.getCreatedAt();
+            this.isTouchedBbandsUpper = false;
         }
         if (tradingResult.getTradingTag() == TradingTag.BUY) {
             this.positionInitDateTime = tradingResult.getCreatedAt();
@@ -170,6 +171,7 @@ public class OptimisticBBandsTradingStrategyCore implements StrategyCore<SpotTra
     public void handleOrderCancelResult(SpotTradingInfo tradingInfo, SpotTradingResult tradingResult) {
         if (List.of(TradingTag.PROFIT, TradingTag.LOSS).contains(tradingResult.getTradingTag())) {
             this.positionCompletedDateTime = null;
+            this.isTouchedBbandsUpper = true; // 익절/손절 주문이 취소되면 로직상 원래값이었을 true로 되돌림
         }
         if (tradingResult.getTradingTag() == TradingTag.BUY) {
             this.positionInitDateTime = null;
@@ -266,7 +268,6 @@ public class OptimisticBBandsTradingStrategyCore implements StrategyCore<SpotTra
         // 매수 주문한적이 없다면
         if (tradingResultPack.getBuyTradingResultList().isEmpty()) {
             log.info("[익절 조건] 매수 주문 한적이 없음");
-            this.isTouchedBbandsUpper = false; // 상태 업데이트
             return false;
         }
 
@@ -277,8 +278,7 @@ public class OptimisticBBandsTradingStrategyCore implements StrategyCore<SpotTra
         }
 
         // 상태 업데이트
-        double bbandsUpperPrice = bbandsUpper - getBufferPrice(bbandsHeight, 0.1);
-        if (bbandsUpperPrice < currentPrice) {
+        if (bbandsUpper - getBufferPrice(bbandsHeight, 0.3) < currentPrice) {
             this.isTouchedBbandsUpper = true;
             log.info("[익절 상태 업데이트] 볼린저 밴드 상단 터치 정보 업데이트");
             return false;
@@ -292,8 +292,8 @@ public class OptimisticBBandsTradingStrategyCore implements StrategyCore<SpotTra
         }
 
         // 목표 저항선까지 도달하지 않았다면
-        double targetProfitPrice = isTouchedBbandsUpper || bbandsHeightHist < 0 ? bbandsMiddle : bbandsUpperPrice;
-        if (targetProfitPrice > currentPrice) {
+        double targetProfitPrice = isTouchedBbandsUpper ? bbandsMiddle : bbandsUpper;
+        if (targetProfitPrice > currentPrice || targetProfitPrice + getBufferPrice(bbandsHeight) < currentPrice) {
             log.info("[익절 조건] 저항선에 도달하지 않으면 익절하지 않음, targetProfitPrice={}, currentPrice={}", targetProfitPrice, currentPrice);
             return false;
         }
