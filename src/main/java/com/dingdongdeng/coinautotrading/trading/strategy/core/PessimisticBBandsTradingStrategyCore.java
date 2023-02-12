@@ -252,13 +252,6 @@ public class PessimisticBBandsTradingStrategyCore implements StrategyCore<SpotTr
             return false;
         }
 
-        // 볼린저밴드 lower가 평평하지 않다면
-        double pastLower = index.getBollingerBands().getLatestLower(4);
-        if (pastLower > bbandsLower * 1.03) {
-            log.info("[매수 조건] 볼린저 밴드 하단선이 평평하지 않음, lower={}, pastLower={}", bbandsLower, pastLower);
-            return false;
-        }
-
         log.info("[매수 조건] 매수 조건 만족");
         return true;
     }
@@ -380,11 +373,7 @@ public class PessimisticBBandsTradingStrategyCore implements StrategyCore<SpotTr
     }
 
     private double getBufferPrice(double bbandsHeight) {
-        double buffer = bbandsHeight / 10;
-        if (buffer > 20000) {
-            return buffer;
-        }
-        return 10000;
+        return (bbandsHeight / 10) > 20000 ? 20000 : 10000;
     }
 
     private boolean isTooOld(SpotTradingResult tradingResult) {
