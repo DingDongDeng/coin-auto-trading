@@ -132,6 +132,7 @@ public class IndexCalculator {
             .lower(bbandsOutRealLowerBand[bbandsOutNBElement.value - 1])
             .height(bbandsOutRealHeight[bbandsOutNBElement.value - 1])
             .heightHist(bbandsOutRealHeight[bbandsOutNBElement.value - 1] - signalOutReal[signalOutNBElement.value - 1])
+            .lowers(Arrays.copyOfRange(bbandsOutRealLowerBand, 0, bbandsOutNBElement.value))
             .build();
     }
 
