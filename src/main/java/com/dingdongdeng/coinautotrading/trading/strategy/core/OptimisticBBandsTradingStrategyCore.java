@@ -32,6 +32,7 @@ public class OptimisticBBandsTradingStrategyCore implements StrategyCore<SpotTra
     // 매수,익절,손절 조건에 도달하였다고 해서 바로 수행하지 않고, 방향성 확인을 위해 버퍼 시간을 둠
     private LocalDateTime positionInitDateTime;
     private LocalDateTime positionCompletedDateTime;
+    private boolean isTouchedBbandsUpper;
 
     @Override
     public List<TradingTask> makeTradingTask(SpotTradingInfo tradingInfo, TradingResultPack<SpotTradingResult> tradingResultPack) {
@@ -265,6 +266,21 @@ public class OptimisticBBandsTradingStrategyCore implements StrategyCore<SpotTra
         // 매수 주문한적이 없다면
         if (tradingResultPack.getBuyTradingResultList().isEmpty()) {
             log.info("[익절 조건] 매수 주문 한적이 없음");
+            this.isTouchedBbandsUpper = false; // 상태 업데이트
+            return false;
+        }
+
+        // 손실중이면
+        if (currentPrice <= tradingResultPack.getAveragePrice()) {
+            log.info("[익절 조건] 손실 중, currentPrice={}, averagePrice={}", currentPrice, tradingResultPack.getAveragePrice());
+            return false;
+        }
+
+        // 상태 업데이트
+        double bbandsUpperPrice = bbandsUpper - getBufferPrice(bbandsHeight, 0.1);
+        if (bbandsUpperPrice < currentPrice) {
+            this.isTouchedBbandsUpper = true;
+            log.info("[익절 상태 업데이트] 볼린저 밴드 상단 터치 정보 업데이트");
             return false;
         }
 
@@ -275,14 +291,8 @@ public class OptimisticBBandsTradingStrategyCore implements StrategyCore<SpotTra
             return false;
         }
 
-        // 손실중이면
-        if (currentPrice <= tradingResultPack.getAveragePrice()) {
-            log.info("[익절 조건] 손실 중, currentPrice={}, averagePrice={}", currentPrice, tradingResultPack.getAveragePrice());
-            return false;
-        }
-
         // 목표 저항선까지 도달하지 않았다면
-        double targetProfitPrice = bbandsHeightHist < 0 ? bbandsMiddle : bbandsUpper - getBufferPrice(bbandsHeight, 0.1);
+        double targetProfitPrice = isTouchedBbandsUpper || bbandsHeightHist < 0 ? bbandsMiddle : bbandsUpperPrice;
         if (targetProfitPrice > currentPrice) {
             log.info("[익절 조건] 저항선에 도달하지 않으면 익절하지 않음, targetProfitPrice={}, currentPrice={}", targetProfitPrice, currentPrice);
             return false;
