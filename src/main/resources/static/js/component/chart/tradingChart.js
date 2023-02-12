@@ -41,7 +41,7 @@ export default Vue.component('trading-chart', {
     },
     getResistanceOnchartList() {
       const resistanceOnchartList = [];
-      for (let i = 0; i < 20; i++) {
+      for (let i = 0; i < 2; i++) {
         resistanceOnchartList.push(
             {
               name: "r" + (i + 1),
@@ -269,14 +269,12 @@ export default Vue.component('trading-chart', {
             [timestamp, recordContext.index.bollingerBands.heightHist])
 
         // 보조지표 세팅(onChart)
-        for (let i = 0; i < resistanceOnchartList.length; i++) {
-          if (i < recordContext.index.resistance.resistancePriceList.length) {
-            resistanceOnchartList[i].data.push(
-                [timestamp,
-                  recordContext.index.resistance.resistancePriceList[i]]
-            );
-          }
-        }
+        resistanceOnchartList[0].data.push(
+            [timestamp, recordContext.index.resistance.resistancePriceList[0]]); // 가장 작은 지지선
+        resistanceOnchartList[1].data.push(
+            [timestamp,
+              recordContext.index.resistance.resistancePriceList.at(-1)]); // 가장 큰 저항선
+
         bollingerBandsOnchartList[0].data.push(
             [timestamp, recordContext.index.bollingerBands.upper])
         bollingerBandsOnchartList[1].data.push(
