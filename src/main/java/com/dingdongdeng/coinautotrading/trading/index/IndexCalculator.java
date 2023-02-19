@@ -81,7 +81,7 @@ public class IndexCalculator {
         core.obv(0, obvInReal.length - 1, obvInReal, obvInVolume, obvOutBegIdx, obvOutNBElement, obvOutReal);
 
         // obv 시그널 계산
-        int TIME_PERIOD = 10;
+        int TIME_PERIOD = 30;
         double[] signalInReal = obvOutReal;
         MInteger signalOutBegIdx = new MInteger();
         MInteger signalOutNBElement = new MInteger();
