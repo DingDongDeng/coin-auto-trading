@@ -6,7 +6,6 @@ import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
-import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles.Candle;
 import com.dingdongdeng.coinautotrading.trading.index.Index;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyCore;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.SpotTradingInfo;
@@ -231,16 +230,17 @@ public class OptimisticBBandsTradingStrategyCore implements StrategyCore<SpotTra
             return false;
         }
 
-        // 볼린저 밴드의 변동성이 점점 줄어들고 있다면
-        if (bbandsHeightHist < 0) { //fixme -N보다 작을때로해보자
-            log.info("[매수 조건] 볼린저 밴드의 변동성이 점점 줄어들고 있음, bbandsHeightHist={}", bbandsHeightHist);
+        // 저항선에 너무 가깝다면
+        double maxResistancePrice = index.getResistance().getResistancePriceList().get(index.getResistance().getResistancePriceList().size() - 1);
+        if (maxResistancePrice - bbandsHeight < currentPrice) {
+            log.info("[매수 조건] 저항선에 너무 가까움, maxResistancePrice={}, currentPrice={}", maxResistancePrice, currentPrice);
             return false;
         }
 
-        // 현재 음봉 캔들이라면
-        Candle currentCandle = tradingInfo.getCandles().getLatest(0);
-        if (currentCandle.getOpeningPrice() - currentCandle.getTradePrice() > 0) {
-            log.info("[매수 조건] 현재 음봉 캔들일때는 매수하지 않음, openingPrice={}, tradePrice={}", currentCandle.getOpeningPrice(), currentCandle.getTradePrice());
+        // 지지선에 너무 가깝다면
+        double minSupportPrice = index.getResistance().getResistancePriceList().get(0);
+        if (minSupportPrice + bufferPrice > currentPrice) {
+            log.info("[매수 조건] 지지선에 너무 가까움, minSupportPrice={}, currentPrice={}", minSupportPrice, currentPrice);
             return false;
         }
 
@@ -373,7 +373,7 @@ public class OptimisticBBandsTradingStrategyCore implements StrategyCore<SpotTra
     }
 
     private double getBufferPrice(double bbandsHeight) {
-        double buffer = bbandsHeight / 10;
+        double buffer = bbandsHeight / 6;
         if (buffer > 20000) {
             return buffer;
         }
