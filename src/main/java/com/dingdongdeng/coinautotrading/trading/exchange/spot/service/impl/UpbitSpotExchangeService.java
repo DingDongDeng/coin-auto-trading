@@ -4,7 +4,6 @@ import com.dingdongdeng.coinautotrading.common.type.CoinExchangeType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
 import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
-import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles.Candle;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.UpbitClient;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitEnum.MarketType;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitEnum.OrdType;
@@ -101,21 +100,6 @@ public class UpbitSpotExchangeService implements SpotExchangeService {
 
         // 캔들 정보 조회
         ExchangeCandles candles = getExchangeCandles(param, keyPairId);
-
-        // 캔들 정보에 현재 정보를 추가
-        candles.getCandleList().add(
-            Candle.builder()
-                .candleDateTimeUtc(null)
-                .candleDateTimeKst(TradingTimeContext.now())
-                .openingPrice(candles.getLatest(0).getTradePrice())
-                .highPrice(null)
-                .lowPrice(null)
-                .tradePrice(ticker.getTradePrice())
-                .timestamp(null)
-                .candleAccTradePrice(null)
-                .candleAccTradeVolume(null)
-                .build()
-        );
 
         // 계좌 정보 조회
         //fixme findFirst에 원화만 오는게 아니라 balance가 큰 순서인것 같은니 수정해야 될듯?

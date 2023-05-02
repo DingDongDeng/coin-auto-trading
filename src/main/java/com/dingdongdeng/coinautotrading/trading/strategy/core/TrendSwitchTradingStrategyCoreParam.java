@@ -13,12 +13,12 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ResistanceTradingStrategyCoreParam implements StrategyCoreParam {
+public class TrendSwitchTradingStrategyCoreParam implements StrategyCoreParam {
 
     @GuideMessage("최초 주문할 금액을 입력해주세요. ex) 40000")
     private double initOrderPrice; // 처음에 주문할 금액
 
-    @GuideMessage("조건 버퍼 시간(n분을 설정하면 주문 조건을 만족하더라도 n분의 버퍼를 둠) ex) 240")
+    @GuideMessage("주문 버퍼 시간(주문이 체결되면 n분의 버퍼를 둠) ex) 240")
     private int conditionTimeBuffer;
 
     @GuideMessage("계좌 안전 금액을 입력해주세요.")

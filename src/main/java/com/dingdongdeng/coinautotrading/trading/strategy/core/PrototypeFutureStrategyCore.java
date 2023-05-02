@@ -151,12 +151,12 @@ public class PrototypeFutureStrategyCore implements StrategyCore<FutureTradingIn
     }
 
     @Override
-    public void handleOrderResult(FutureTradingResult tradingResult) {
+    public void handleOrderResult(FutureTradingInfo tradingInfo, FutureTradingResult tradingResult) {
 
     }
 
     @Override
-    public void handleOrderCancelResult(FutureTradingResult tradingResult) {
+    public void handleOrderCancelResult(FutureTradingInfo tradingInfo, FutureTradingResult tradingResult) {
 
     }
 

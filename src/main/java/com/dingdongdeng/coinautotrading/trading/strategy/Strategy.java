@@ -61,7 +61,7 @@ public class Strategy<TI extends TradingInfo, TR extends TradingResult> {
             if (isOrder(tradingTask)) {
                 TR orderTradingResult = strategyService.order(tradingTask);
                 strategyStore.save(orderTradingResult); // 주문 성공 건 정보 저장
-                strategyCore.handleOrderResult(orderTradingResult);
+                strategyCore.handleOrderResult(tradingInfo, orderTradingResult);
                 tradingResultList.add(orderTradingResult);
                 return;
             }
@@ -70,7 +70,7 @@ public class Strategy<TI extends TradingInfo, TR extends TradingResult> {
             if (isOrderCancel(tradingTask)) {
                 TR cancelTradingResult = strategyService.orderCancel(tradingTask);
                 strategyStore.delete(cancelTradingResult); // 주문 취소 건 정보 제거
-                strategyCore.handleOrderCancelResult(cancelTradingResult);
+                strategyCore.handleOrderCancelResult(tradingInfo, cancelTradingResult);
                 tradingResultList.add(cancelTradingResult);
                 return;
             }

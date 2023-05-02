@@ -33,4 +33,15 @@ public class RecordContext {
             Objects.isNull(executeResult.getTradingResultList()) ? new ArrayList<>() : executeResult.getTradingResultList()
         );
     }
+
+    public static RecordContext ofStrategyExecuteResult(StrategyExecuteResult executeResult, Candle candle) {
+        TradingInfo tradingInfo = executeResult.getTradingInfo();
+        return new RecordContext(
+            candle.getCandleDateTimeKst(),
+            candle.getTradePrice(),
+            candle,
+            tradingInfo.getIndex(),
+            Objects.isNull(executeResult.getTradingResultList()) ? new ArrayList<>() : executeResult.getTradingResultList()
+        );
+    }
 }

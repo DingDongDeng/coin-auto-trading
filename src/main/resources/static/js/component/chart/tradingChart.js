@@ -9,6 +9,7 @@ export default Vue.component('trading-chart', {
   template:
       `
 <trading-vue :data="charts" :width="this.width" :height="this.height"
+    :timezone="this.timezone"
     :color-back="colors.colorBack"
     :color-grid="colors.colorGrid"
     :color-text="colors.colorText">
@@ -40,10 +41,10 @@ export default Vue.component('trading-chart', {
     },
     getResistanceOnchartList() {
       const resistanceOnchartList = [];
-      for (let i = 0; i < 20; i++) {
+      for (let i = 0; i < 2; i++) {
         resistanceOnchartList.push(
             {
-              name: "Resistance" + (i + 1),
+              name: "r" + (i + 1),
               type: "EMA",
               data: [],
               settings: {
@@ -53,6 +54,62 @@ export default Vue.component('trading-chart', {
         )
       }
       return resistanceOnchartList;
+    },
+    getBollingerBandsOnchartList() {
+      const bollingerBandsOnchartList = [];
+      bollingerBandsOnchartList.push(
+          {
+            name: "bbands upper",
+            type: "EMA",
+            data: [],
+            settings: {
+              "color": "#FF5733"
+            },
+          }
+      );
+      bollingerBandsOnchartList.push(
+          {
+            name: "bbands middle",
+            type: "EMA",
+            data: [],
+            settings: {
+              "color": "#21871C"
+            },
+          }
+      );
+      bollingerBandsOnchartList.push(
+          {
+            name: "bbands lower",
+            type: "EMA",
+            data: [],
+            settings: {
+              "color": "#3347FF"
+            },
+          }
+      );
+      return bollingerBandsOnchartList;
+    },
+    getMaOnchartList() {
+      const mvOnchartList = [];
+      mvOnchartList.push(
+          {
+            name: "EMA 60",
+            type: "EMA",
+            data: [],
+            settings: {
+              "color": "#6D23A5FF"
+            },
+          },
+          {
+            name: "SMA 120",
+            type: "EMA",
+            data: [],
+            settings: {
+              "color": "#c66e10"
+            },
+          }
+      );
+      return mvOnchartList;
     },
     getRsiOffchart() {
       return {
@@ -66,9 +123,9 @@ export default Vue.component('trading-chart', {
       }
           ;
     },
-    getMacdOffchart() {
+    getMacdHistOffchart() {
       return {
-        name: "MACD",
+        name: "MACD_HIST",
         type: "RSI", //FIXME 찾아봐야함
         data: [],
         settings: {
@@ -76,6 +133,39 @@ export default Vue.component('trading-chart', {
           lower: -25
         }
       };
+    },
+    getMacdMacdOffchart() {
+      return {
+        name: "MACD_MACD",
+        type: "RSI",
+        data: [],
+        settings: {
+          upper: 25,
+          lower: -25
+        }
+      };
+    },
+    getObvHistOffchart() {
+      return {
+        name: "OBV_HIST",
+        type: "RSI",
+        data: [],
+        settings: {
+          upper: 25,
+          lower: -25
+        }
+      }
+    },
+    getBollingerBandsHeightHistOffchart() {
+      return {
+        name: "BBANDS_HEIGHT_HIST",
+        type: "RSI",
+        data: [],
+        settings: {
+          upper: 25,
+          lower: -25
+        }
+      }
     }
 
   },
@@ -95,6 +185,7 @@ export default Vue.component('trading-chart', {
     return {
       width: window.innerWidth,
       height: window.innerHeight,
+      timezone: 9,
       colors: {
         colorBack: '#fff',
         colorGrid: '#eee',
@@ -123,16 +214,28 @@ export default Vue.component('trading-chart', {
 
       // onchart
       const tradesOnchart = this.getTradesOnchart();
-      const resistanceOnchartList = this.getResistanceOnchartList();
       const onchart = [tradesOnchart];
+      const maOnchartList = this.getMaOnchartList();
+      onchart.push(maOnchartList[0]); // ema60
+      onchart.push(maOnchartList[1]); // sma120
+      const bollingerBandsOnchartList = this.getBollingerBandsOnchartList();
+      onchart.push(bollingerBandsOnchartList[0]); // upper
+      onchart.push(bollingerBandsOnchartList[1]); // middle
+      onchart.push(bollingerBandsOnchartList[2]); // lower
+      const resistanceOnchartList = this.getResistanceOnchartList();
+      // 지지/저항 차트에서 생략
       for (let resistanceOnchart of resistanceOnchartList) {
         onchart.push(resistanceOnchart);
       }
 
       // offchart
       const rsiOffchart = this.getRsiOffchart();
-      const macdOffchart = this.getMacdOffchart();
-      const offchart = [rsiOffchart, macdOffchart];
+      const macdHistOffchart = this.getMacdHistOffchart();
+      const macdMacdOffchart = this.getMacdMacdOffchart();
+      const obvHistOffchart = this.getObvHistOffchart();
+      const bollingerBandsHeightHistOffchart = this.getBollingerBandsHeightHistOffchart();
+      const offchart = [rsiOffchart, macdHistOffchart, macdMacdOffchart,
+        obvHistOffchart, bollingerBandsHeightHistOffchart];
 
       // 차트들 데이터 세팅
       for (let recordContext of recordContextList) {
@@ -157,16 +260,29 @@ export default Vue.component('trading-chart', {
               [timestamp, trade.orderType === 'BUY' ? 1 : 0, trade.price]);
         }
 
-        // 보조지표 세팅
+        // 보조지표 세팅(offChart)
         rsiOffchart.data.push([timestamp, recordContext.index.rsi * 100]);
-        macdOffchart.data.push([timestamp, recordContext.index.macd.hist]);
-        for (let i = 0; i < resistanceOnchartList.length; i++) {
-          if (i < recordContext.index.resistancePriceList.length) {
-            resistanceOnchartList[i].data.push(
-                [timestamp, recordContext.index.resistancePriceList[i]]
-            );
-          }
-        }
+        macdHistOffchart.data.push([timestamp, recordContext.index.macd.hist]);
+        macdMacdOffchart.data.push([timestamp, recordContext.index.macd.macd]);
+        obvHistOffchart.data.push([timestamp, recordContext.index.obv.hist]);
+        bollingerBandsHeightHistOffchart.data.push(
+            [timestamp, recordContext.index.bollingerBands.heightHist])
+
+        // 보조지표 세팅(onChart)
+        resistanceOnchartList[0].data.push(
+            [timestamp, recordContext.index.resistance.resistancePriceList[0]]); // 가장 작은 지지선
+        resistanceOnchartList[1].data.push(
+            [timestamp,
+              recordContext.index.resistance.resistancePriceList.at(-1)]); // 가장 큰 저항선
+
+        bollingerBandsOnchartList[0].data.push(
+            [timestamp, recordContext.index.bollingerBands.upper])
+        bollingerBandsOnchartList[1].data.push(
+            [timestamp, recordContext.index.bollingerBands.middle])
+        bollingerBandsOnchartList[2].data.push(
+            [timestamp, recordContext.index.bollingerBands.lower])
+        maOnchartList[0].data.push([timestamp, recordContext.index.ma.ema60])
+        maOnchartList[1].data.push([timestamp, recordContext.index.ma.sma120])
       }
 
       return {chart, onchart, offchart};
