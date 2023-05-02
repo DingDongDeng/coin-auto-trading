@@ -11,9 +11,9 @@ public interface StrategyCore<TI extends TradingInfo, TR extends TradingResult> 
 
     List<TradingTask> makeTradingTask(TI tradingInfo, TradingResultPack<TR> tradingResultPack);
 
-    void handleOrderResult(TR tradingResult);
+    void handleOrderResult(TI tradingInfo, TR tradingResult);
 
-    void handleOrderCancelResult(TR tradingResult);
+    void handleOrderCancelResult(TI tradingInfo, TR tradingResult);
 
     StrategyCoreParam getParam();
 

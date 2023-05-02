@@ -5,7 +5,7 @@ import com.dingdongdeng.coinautotrading.common.type.OrderType;
 import com.dingdongdeng.coinautotrading.common.type.PriceType;
 import com.dingdongdeng.coinautotrading.common.type.TradingTerm;
 import com.dingdongdeng.coinautotrading.trading.common.context.TradingTimeContext;
-import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles.Candle;
+import com.dingdongdeng.coinautotrading.trading.exchange.common.model.ExchangeCandles;
 import com.dingdongdeng.coinautotrading.trading.index.Index;
 import com.dingdongdeng.coinautotrading.trading.strategy.StrategyCore;
 import com.dingdongdeng.coinautotrading.trading.strategy.model.SpotTradingInfo;
@@ -24,12 +24,14 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingInfo, SpotTradingResult> {
+public class OptimisticBBandsTradingStrategyCore implements StrategyCore<SpotTradingInfo, SpotTradingResult> {
 
-    private final ResistanceTradingStrategyCoreParam param;
+    private final OptimisticBBandsTradingStrategyCoreParam param;
 
     // 매수,익절,손절 조건에 도달하였다고 해서 바로 수행하지 않고, 방향성 확인을 위해 버퍼 시간을 둠
+    private LocalDateTime positionInitDateTime;
     private LocalDateTime positionCompletedDateTime;
+    private boolean isTouchedBbandsUpper;
 
     @Override
     public List<TradingTask> makeTradingTask(SpotTradingInfo tradingInfo, TradingResultPack<SpotTradingResult> tradingResultPack) {
@@ -157,6 +159,10 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
     public void handleOrderResult(SpotTradingInfo tradingInfo, SpotTradingResult tradingResult) {
         if (List.of(TradingTag.PROFIT, TradingTag.LOSS).contains(tradingResult.getTradingTag())) {
             this.positionCompletedDateTime = tradingResult.getCreatedAt();
+            this.isTouchedBbandsUpper = false;
+        }
+        if (tradingResult.getTradingTag() == TradingTag.BUY) {
+            this.positionInitDateTime = tradingResult.getCreatedAt();
         }
     }
 
@@ -164,6 +170,10 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
     public void handleOrderCancelResult(SpotTradingInfo tradingInfo, SpotTradingResult tradingResult) {
         if (List.of(TradingTag.PROFIT, TradingTag.LOSS).contains(tradingResult.getTradingTag())) {
             this.positionCompletedDateTime = null;
+            this.isTouchedBbandsUpper = true; // 익절/손절 주문이 취소되면 로직상 원래값이었을 true로 되돌림
+        }
+        if (tradingResult.getTradingTag() == TradingTag.BUY) {
+            this.positionInitDateTime = null;
         }
     }
 
@@ -187,15 +197,19 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
     private boolean isBuyOrderTiming(double currentPrice, TradingInfo tradingInfo, TradingResultPack<SpotTradingResult> tradingResultPack, Index index) {
         List<SpotTradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
         boolean isExsistBuyOrder = !buyTradingResultList.isEmpty();
+        ExchangeCandles candles = tradingInfo.getCandles();
+
+        double bbandsUpper = index.getBollingerBands().getUpper();
+        double bbandsMiddle = index.getBollingerBands().getMiddle();
+        double bbandsLower = index.getBollingerBands().getLower();
+        double bbandsHeight = index.getBollingerBands().getHeight();
+        double bbandsHeightHist = index.getBollingerBands().getHeightHist();
 
         double macdHist = index.getMacd().getHist();
         double macdSignal = index.getMacd().getSignal();
         double macdMacd = index.getMacd().getMacd();
 
-        double obvHist = index.getObv().getHist();
-
-        double resistancePrice = index.getResistance().getResistancePrice(currentPrice);
-        double supportPrice = index.getResistance().getSupportPrice(currentPrice);
+        double bufferPrice = getBufferPrice(bbandsHeight);
 
         // 추가 매수 안함
         if (isExsistBuyOrder) {
@@ -210,10 +224,23 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
-        // 현재 음봉 캔들이라면
-        Candle currentCandle = tradingInfo.getCandles().getLatest(0);
-        if (currentCandle.getOpeningPrice() - currentCandle.getTradePrice() > 0) {
-            log.info("[매수 조건] 현재 음봉 캔들일때는 매수하지 않음, openingPrice={}, tradePrice={}", currentCandle.getOpeningPrice(), currentCandle.getTradePrice());
+        // 볼린저밴드 lower 아래가 아니라면
+        if (bbandsLower + bufferPrice < currentPrice) {
+            log.info("[매수 조건] 볼린저 밴드 아래가 아니라면, lower={}, currentPrice={}, bufferPrice={}", bbandsLower, currentPrice, bufferPrice);
+            return false;
+        }
+
+        // 저항선에 너무 가깝다면
+        double maxResistancePrice = index.getResistance().getResistancePriceList().get(index.getResistance().getResistancePriceList().size() - 1);
+        if (maxResistancePrice - bbandsHeight < currentPrice) {
+            log.info("[매수 조건] 저항선에 너무 가까움, maxResistancePrice={}, currentPrice={}", maxResistancePrice, currentPrice);
+            return false;
+        }
+
+        // 지지선에 너무 가깝다면
+        double minSupportPrice = index.getResistance().getResistancePriceList().get(0);
+        if (minSupportPrice + bufferPrice > currentPrice) {
+            log.info("[매수 조건] 지지선에 너무 가까움, minSupportPrice={}, currentPrice={}", minSupportPrice, currentPrice);
             return false;
         }
 
@@ -222,18 +249,38 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
     }
 
     private boolean isProfitOrderTiming(double currentPrice, TradingInfo tradingInfo, TradingResultPack<SpotTradingResult> tradingResultPack, Index index) {
+        ExchangeCandles candles = tradingInfo.getCandles();
         List<SpotTradingResult> buyTradingResultList = tradingResultPack.getBuyTradingResultList();
         SpotTradingResult lastBuyTradingResult = buyTradingResultList.get(buyTradingResultList.size() - 1);
-        double macdHist = index.getMacd().getHist();
-        double macdMacd = index.getMacd().getMacd();
-        double currentUptrendHighestHist = index.getMacd().getCurrentUptrendHighestHist();
-        double currentUptrendHighestMacd = index.getMacd().getCurrentUptrendHighestMacd();
 
+        double macdHist = index.getMacd().getHist();
+        double macdSignal = index.getMacd().getSignal();
+        double macdMacd = index.getMacd().getMacd();
+
+        double bbandsUpper = index.getBollingerBands().getUpper();
+        double bbandsMiddle = index.getBollingerBands().getMiddle();
         double bbandsLower = index.getBollingerBands().getLower();
+        double bbandsHeight = index.getBollingerBands().getHeight();
+        double bbandsHeightHist = index.getBollingerBands().getHeightHist();
+
+        double obvHist = index.getObv().getHist();
 
         // 매수 주문한적이 없다면
         if (tradingResultPack.getBuyTradingResultList().isEmpty()) {
             log.info("[익절 조건] 매수 주문 한적이 없음");
+            return false;
+        }
+
+        // 손실중이면
+        if (currentPrice <= tradingResultPack.getAveragePrice()) {
+            log.info("[익절 조건] 손실 중, currentPrice={}, averagePrice={}", currentPrice, tradingResultPack.getAveragePrice());
+            return false;
+        }
+
+        // 상태 업데이트
+        if (bbandsUpper - getBufferPrice(bbandsHeight, 0.3) < currentPrice) {
+            this.isTouchedBbandsUpper = true;
+            log.info("[익절 상태 업데이트] 볼린저 밴드 상단 터치 정보 업데이트");
             return false;
         }
 
@@ -244,15 +291,10 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
-        // 손실중이면
-        if (currentPrice <= tradingResultPack.getAveragePrice()) {
-            log.info("[익절 조건] 손실 중, currentPrice={}, averagePrice={}", currentPrice, tradingResultPack.getAveragePrice());
-            return false;
-        }
-
-        // 볼린저 밴드 하단에 닿지 않았다면
-        if (bbandsLower < currentPrice) {
-            log.info("[익절 조건] 볼린저밴드 하단에 닿지 않음, bbandsLower={}, currentPrice={}", bbandsLower, currentPrice);
+        // 목표 저항선까지 도달하지 않았다면
+        double targetProfitPrice = isTouchedBbandsUpper ? bbandsMiddle : bbandsUpper;
+        if (targetProfitPrice > currentPrice || targetProfitPrice + getBufferPrice(bbandsHeight) < currentPrice) {
+            log.info("[익절 조건] 저항선에 도달하지 않으면 익절하지 않음, targetProfitPrice={}, currentPrice={}", targetProfitPrice, currentPrice);
             return false;
         }
 
@@ -265,11 +307,15 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
         SpotTradingResult lastBuyTradingResult = buyTradingResultList.get(buyTradingResultList.size() - 1);
 
         double macdHist = index.getMacd().getHist();
+        double macdSignal = index.getMacd().getSignal();
         double macdMacd = index.getMacd().getMacd();
-        double currentUptrendHighestHist = index.getMacd().getCurrentUptrendHighestHist();
-        double currentUptrendHighestMacd = index.getMacd().getCurrentUptrendHighestMacd();
 
+        double bbandsUpper = index.getBollingerBands().getUpper();
+        double bbandsMiddle = index.getBollingerBands().getMiddle();
         double bbandsLower = index.getBollingerBands().getLower();
+        double bbandsHeight = index.getBollingerBands().getHeight();
+
+        double bufferPrice = getBufferPrice(bbandsHeight, 0.1);
 
         // 매수 주문한적이 없다면
         if (tradingResultPack.getBuyTradingResultList().isEmpty()) {
@@ -290,9 +336,15 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return false;
         }
 
-        // 볼린저 밴드 하단에 닿지 않았다면
-        if (bbandsLower < currentPrice) {
-            log.info("[손절 조건] 볼린저밴드 하단에 닿지 않음, bbandsLower={}, currentPrice={}", bbandsLower, currentPrice);
+        // 잠재 상승폭이 적다면
+        if (bbandsMiddle * (0.99) < tradingResultPack.getAveragePrice()) {
+            log.info("[손실 조건] 손실 조건 만족, 잠재 상승 폭이 적음, bbandMiddle={}, averagePrice={}", bbandsMiddle, tradingResultPack.getAveragePrice());
+            return true;
+        }
+
+        // 지지받고 있다면
+        if (bbandsLower - bufferPrice < currentPrice) {
+            log.info("[손절 조건] 지지 받고 있음, lower={}, bufferPrice={}, currentPrice={}", bbandsLower, bufferPrice, currentPrice);
             return false;
         }
 
@@ -314,6 +366,18 @@ public class ResistanceTradingStrategyCore implements StrategyCore<SpotTradingIn
             return true;
         }
         return TradingTimeContext.now().isAfter(standard.plusMinutes(param.getConditionTimeBuffer()));
+    }
+
+    private double getBufferPrice(double bbandsHeight, double rate) {
+        return bbandsHeight * rate;
+    }
+
+    private double getBufferPrice(double bbandsHeight) {
+        double buffer = bbandsHeight / 6;
+        if (buffer > 20000) {
+            return buffer;
+        }
+        return 10000;
     }
 
     private boolean isTooOld(SpotTradingResult tradingResult) {

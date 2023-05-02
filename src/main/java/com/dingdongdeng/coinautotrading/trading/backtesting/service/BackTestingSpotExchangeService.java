@@ -43,6 +43,7 @@ public class BackTestingSpotExchangeService implements SpotExchangeService {
     private LocalDateTime snapshotCandleDateTime;
     private double snapshotCandleAccTradeVolume;
     private double highPrice;
+    @Default
     private double lowPrice = Double.MAX_VALUE;
 
     @Override
@@ -139,8 +140,8 @@ public class BackTestingSpotExchangeService implements SpotExchangeService {
         candles.getCandleList().remove(lastCandle);
         candles.getCandleList().add(
             Candle.builder()
-                .candleDateTimeUtc(currentCandle.getCandleDateTimeUtc())
-                .candleDateTimeKst(currentCandle.getCandleDateTimeKst())
+                .candleDateTimeUtc(lastCandle.getCandleDateTimeUtc())
+                .candleDateTimeKst(lastCandle.getCandleDateTimeKst())
                 .openingPrice(lastCandle.getOpeningPrice())
                 .highPrice(this.highPrice)
                 .lowPrice(this.lowPrice)

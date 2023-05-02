@@ -13,7 +13,6 @@ import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.UpbitClient
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitEnum.MarketType;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitRequest.CandleRequest;
 import com.dingdongdeng.coinautotrading.trading.exchange.spot.client.model.UpbitResponse.CandleResponse;
-import com.dingdongdeng.coinautotrading.trading.index.Index.Macd;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -79,10 +78,10 @@ class IndexCalculatorTest {
         ExchangeCandles candles = getExchangeCandles(now, tradingTerm, coinType, keyPairId);
 
         //when
-        List<Double> resistancePriceList = calculator.getResistancePrice(candles);
+        Resistance resistance = calculator.getResistancePrice(candles);
 
         //then
-        log.info("resistancePrice List = {}", resistancePriceList);
+        log.info("resistancePrice List = {}", resistance.getResistancePriceList());
     }
 
     @Test
@@ -132,6 +131,58 @@ class IndexCalculatorTest {
         // then
         log.info("result : {}", macd);
         assertEquals(2205.1025093942594, macd.getHist());
+    }
+
+    @Test
+    public void 볼린저밴드_계산_테스트() {
+        // given
+        CoinType coinType = CoinType.ETHEREUM;
+        TradingTerm tradingTerm = TradingTerm.SCALPING_240M;
+        LocalDateTime now = LocalDateTime.of(2023, 1, 29, 1, 1, 10);
+        ExchangeCandles candles = getExchangeCandles(now, tradingTerm, coinType, keyPairId);
+
+        // when
+        BollingerBands bollingerBands = calculator.getBollingerBands(candles);
+
+        // then
+        log.info("result : {}", bollingerBands);
+        assertEquals(2038281, Math.round(bollingerBands.getUpper()));
+        assertEquals(1994050, Math.round(bollingerBands.getMiddle()));
+        assertEquals(1949819, Math.round(bollingerBands.getLower()));
+    }
+
+    @Test
+    public void obv_계산_테스트() {
+        // given
+        CoinType coinType = CoinType.ETHEREUM;
+        TradingTerm tradingTerm = TradingTerm.SCALPING_240M;
+        LocalDateTime now = LocalDateTime.of(2023, 1, 29, 1, 1, 10);
+        ExchangeCandles candles = getExchangeCandles(now, tradingTerm, coinType, keyPairId);
+
+        // when
+        Obv obv = calculator.getObv(candles);
+
+        // then
+        log.info("result : {}", obv);
+        assertEquals(60075, Math.round(obv.getObv()));
+        assertEquals(-4835, Math.round(obv.getHist()));
+    }
+
+    @Test
+    public void MA_계산_테스트() {
+        // given
+        CoinType coinType = CoinType.ETHEREUM;
+        TradingTerm tradingTerm = TradingTerm.SCALPING_240M;
+        LocalDateTime now = LocalDateTime.of(2023, 1, 29, 1, 1, 10);
+        ExchangeCandles candles = getExchangeCandles(now, tradingTerm, coinType, keyPairId);
+
+        // when
+        Ma ma = calculator.getMv(candles);
+
+        // then
+        log.info("result : {}", ma);
+        assertEquals(1767750, Math.round(ma.getSma200()));
+        assertEquals(1975838, Math.round(ma.getEma60()));
     }
 
     private ExchangeCandles getExchangeCandles(LocalDateTime now, TradingTerm tradingTerm, CoinType coinType, String keyPairId) {
