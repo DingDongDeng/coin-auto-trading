@@ -21,7 +21,7 @@ public class CollectRsiTradingStrategyCoreParam implements StrategyCoreParam {
     @GuideMessage("매수 기준으로 판단할 RSI 값을 입력해줒세요. ex) 0.3")
     private double standardRsi; // 처음에 주문할 금액
 
-    @GuideMessage("매수 버퍼 시간(n분을 설정하면 주문 조건을 만족하더라도 n분의 버퍼를 둠) ex) 240")
+    @GuideMessage("매수 버퍼 시간(n분을 설정하면 주문 조건을 만족하더라도 n분의 버퍼를 둠) ex) 720")
     private int conditionTimeBuffer;
 
     @GuideMessage("계좌 안전 금액을 입력해주세요.")
