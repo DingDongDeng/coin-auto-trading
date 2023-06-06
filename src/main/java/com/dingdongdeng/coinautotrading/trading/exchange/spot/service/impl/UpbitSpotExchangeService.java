@@ -102,8 +102,10 @@ public class UpbitSpotExchangeService implements SpotExchangeService {
         ExchangeCandles candles = getExchangeCandles(param, keyPairId);
 
         // 계좌 정보 조회
-        //fixme findFirst에 원화만 오는게 아니라 balance가 큰 순서인것 같은니 수정해야 될듯?
-        AccountsResponse accounts = upbitClient.getAccounts(keyPairId).stream().findFirst().orElseThrow(() -> new NoSuchElementException("계좌를 찾지 못함"));
+        AccountsResponse accounts = upbitClient.getAccounts(keyPairId).stream()
+                .filter(accountsResponse -> accountsResponse.getCurrency().equals("KRW"))
+                .findAny()
+                .orElseThrow(() -> new NoSuchElementException("계좌를 찾지 못함"));
 
         return SpotExchangeTradingInfo.builder()
             .coinType(param.getCoinType())
