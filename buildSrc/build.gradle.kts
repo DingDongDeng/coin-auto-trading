@@ -15,7 +15,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-noarg:$kotlinVersion")
 
     // spring plugin
-    implementation("org.springframework.boot:spring-boot-gradle-plugin:3.1.5")
+    implementation("org.springframework.boot:spring-boot-gradle-plugin:3.1.5") //TODO 3.2 버전이 나오면 REST Client를 사용하자
     implementation("io.spring.gradle:dependency-management-plugin:1.1.3")
 
     // test plugin
