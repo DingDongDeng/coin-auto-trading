@@ -19,8 +19,6 @@ class UpbitApiConfig {
 
 @ConfigurationProperties(prefix = "client.upbit")
 class UpbitClientResourceProperties(
-    val accessKey: String,
-    val secretKey: String,
     val baseUrl: String,
     val readTimeout: Int,
     val connectionTimeout: Int,
