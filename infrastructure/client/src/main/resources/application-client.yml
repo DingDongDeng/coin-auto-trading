@@ -1,3 +1,7 @@
+spring:
+  config:
+    activate:
+      on-profile: local,develop,prod
 client:
   upbit:
     baseUrl: https://api.upbit.com
