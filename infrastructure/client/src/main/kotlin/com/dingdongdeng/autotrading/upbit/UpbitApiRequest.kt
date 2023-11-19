@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.util.*
+import java.util.Objects
 
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -45,10 +45,10 @@ class OrderInfoListRequest(
 
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-class MarketCodeRequest {
+class MarketCodeRequest(
     @JsonProperty("isDetail")
-    val isDetail = false // 유의종목 필드과 같은 상세 정보 노출 여부
-}
+    val isDetail: Boolean = false, // 유의종목 필드과 같은 상세 정보 노출 여부
+)
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 class OrderRequest(
