@@ -1,0 +1,80 @@
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = false
+indent_style = space
+indent_size = 2
+
+[{*.sht,*.htm,*.html,*.shtm,*.shtml,*.ng}]
+indent_style = space
+indent_size = 4
+
+[{*.mod,*.ent,*.dtd,*.elt}]
+indent_style = space
+indent_size = 4
+
+[{*.jhm,*.xjb,*.rng,*.qrc,*.wsdl,*.fxml,*.plan,*.pom,*.xslt,*.jrxml,*.ant,*.xul,*.xsl,*.xsd,*.tld,*.jnlp,*.wsdd,*.wadl,*.xml}]
+indent_style = space
+indent_size = 4
+
+[{.babelrc,.stylelintrc,jest.config,.eslintrc,*.bowerrc,*.jsb3,*.jsb2,*.json}]
+indent_style = space
+indent_size = 2
+
+[*.svg]
+indent_style = space
+indent_size = 4
+
+[*.java]
+indent_style = space
+indent_size = 4
+
+[*.snippet]
+indent_style = space
+indent_size = 4
+
+[*.css]
+indent_style = space
+indent_size = 4
+
+[{messages.*,spring.handlers,spring.schemas,messages,org.codehaus.groovy.runtime.ExtensionModule,*.properties}]
+indent_style = space
+indent_size = 4
+
+[{*.applejs,*.js}]
+indent_style = space
+indent_size = 4
+
+[{*.gson,*.gradle,*.groovy,*.gdsl,*.gy,*.gant}]
+indent_style = space
+indent_size = 4
+
+[*.aj]
+indent_style = space
+indent_size = 4
+
+[{*.kts,*.kt}]
+indent_style = space
+indent_size = 4
+## https://gist.github.com/osipxd/9a786496634a1ef0ea622c9805601490
+ij_kotlin_name_count_to_use_star_import = 15
+ij_kotlin_name_count_to_use_star_import_for_members = 15
+ij_kotlin_import_nested_classes = false
+ij_kotlin_packages_to_use_import_on_demand = unset
+ij_kotlin_imports_layout = *, java.**, javax.**, kotlin.**, ^
+ij_kotlin_continuation_indent_for_chained_calls = true
+ij_kotlin_continuation_indent_in_parameter_lists = true
+ij_kotlin_continuation_indent_for_expression_bodies = true
+ij_kotlin_continuation_indent_in_argument_lists = true
+ij_kotlin_continuation_indent_in_elvis = true
+ij_kotlin_continuation_indent_in_if_conditions = true
+ij_kotlin_continuation_indent_in_supertype_lists = true
+
+[*.vue]
+indent_style = space
+indent_size = 4
+
+[{*.yml,*.yaml}]
+indent_style = space
+indent_size = 2
+
