@@ -3,12 +3,11 @@ package com.dingdongdeng.autotrading.common
 import org.springframework.http.HttpStatus
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import java.nio.charset.StandardCharsets
-import java.util.function.Supplier
 
 object ResponseHandler {
-    fun <T> handle(request: Supplier<T>): T {
+    fun <T> handle(request: () -> T): T {
         return try {
-            request.get()
+            request()
         } catch (e: WebClientResponseException) {
             throw ApiResponseException(
                 status = HttpStatus.valueOf(e.statusCode.value()),
