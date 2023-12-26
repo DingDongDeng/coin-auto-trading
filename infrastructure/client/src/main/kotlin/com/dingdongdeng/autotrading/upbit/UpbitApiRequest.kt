@@ -75,7 +75,7 @@ data class OrderCancelRequest(
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class CandleRequest(
-    val unit: Int, // 분 단위. 가능한 값 : 1, 3, 5, 15, 10, 30, 60, 240
+    val unit: Int? = null, // 분 단위. 가능한 값 : 1, 3, 5, 15, 10, 30, 60, 240
     val market: String, // 마켓 ID (필수)
     @field:JsonIgnore
     val timeAsKst: LocalDateTime?,
