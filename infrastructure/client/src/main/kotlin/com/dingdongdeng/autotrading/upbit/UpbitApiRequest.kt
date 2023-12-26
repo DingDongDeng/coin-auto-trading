@@ -1,12 +1,11 @@
 package com.dingdongdeng.autotrading.upbit
 
-import com.fasterxml.jackson.annotation.JsonFormat
+import com.dingdongdeng.autotrading.utils.convertToString
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.util.Objects
 
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -78,18 +77,16 @@ data class OrderCancelRequest(
 data class CandleRequest(
     val unit: Int, // 분 단위. 가능한 값 : 1, 3, 5, 15, 10, 30, 60, 240
     val market: String, // 마켓 ID (필수)
-    @JsonIgnore
-    val toKst: LocalDateTime,
+    @field:JsonIgnore
+    val timeAsKst: LocalDateTime?,
     val count: Int, // 캔들 개수(최대 200개)
 ) {
-    @get:JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    val to: LocalDateTime?
-        get() =// 마지막 캔들 시각 (비우면 가장 최근 시각), UTC 기준
-            if (Objects.isNull(toKst)) {
-                null
-            } else toKst!!.atZone(ZoneId.of("Asia/Seoul"))
-                .withZoneSameInstant(ZoneId.of("UTC"))
-                .toLocalDateTime()
+    @field:JsonProperty("to")
+    val timeAsUtc: String? = timeAsKst // 마지막 캔들 시각 (비우면 가장 최근 시각), UTC 기준
+        ?.atZone(ZoneId.of("Asia/Seoul"))
+        ?.withZoneSameInstant(ZoneId.of("UTC"))
+        ?.toLocalDateTime()
+        ?.convertToString()
 }
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
