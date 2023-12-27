@@ -1,7 +1,7 @@
 rootProject.name = "autotrading"
-include(":application-deploy")
-include(":application-deploy:coin-spot")
-include(":application-deploy:coin-futures")
+include(":application-service")
+include(":application-service:coin-spot")
+include(":application-service:coin-futures")
 include(":application-infra")
 include(":application-infra:auth")
 include(":application-infra:client")
