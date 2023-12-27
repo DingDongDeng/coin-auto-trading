@@ -1,0 +1,15 @@
+spring:
+  config:
+    activate:
+      on-profile: local,develop,prod,integration-embedded-test,integration-test
+client:
+  upbit:
+    baseUrl: https://api.upbit.com
+    readTimeout: 5000
+    connectionTimeout: 5000
+
+  binance:
+    future:
+      baseUrl: https://fapi.binance.com
+      readTimeout: 5000
+      connectionTimeout: 5000
