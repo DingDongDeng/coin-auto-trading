@@ -15,6 +15,7 @@ data class SpotCoinExchangeOrderResult(
     val orderState: OrderState, // 주문 상태
     val coinExchangeType: CoinExchangeType,
     val coinType: CoinType,
-    val createdAt: LocalDateTime, // 주문 생성 시간
+    val orderDateTime: LocalDateTime? = null, // 주문 시간
+    val cancelDateTime: LocalDateTime? = null, // 취소 시간
 )
 

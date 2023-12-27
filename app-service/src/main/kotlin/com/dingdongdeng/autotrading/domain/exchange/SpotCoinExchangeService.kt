@@ -1,5 +1,6 @@
 package com.dingdongdeng.autotrading.domain.exchange
 
+import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeKeyParam
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartParam
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartResult
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderParam
@@ -7,9 +8,9 @@ import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderR
 import com.dingdongdeng.autotrading.infra.common.type.CoinExchangeType
 
 interface SpotCoinExchangeService {
-    fun order(param: SpotCoinExchangeOrderParam): SpotCoinExchangeOrderResult
-    fun cancel(orderId: String): SpotCoinExchangeOrderResult
-    fun getOrder(orderId: String): SpotCoinExchangeOrderResult
-    fun getChart(param: SpotCoinExchangeChartParam): SpotCoinExchangeChartResult
+    fun order(param: SpotCoinExchangeOrderParam, keyParam: ExchangeKeyParam): SpotCoinExchangeOrderResult
+    fun cancel(orderId: String, keyParam: ExchangeKeyParam): SpotCoinExchangeOrderResult
+    fun getOrder(orderId: String, keyParam: ExchangeKeyParam): SpotCoinExchangeOrderResult
+    fun getChart(param: SpotCoinExchangeChartParam, keyParam: ExchangeKeyParam): SpotCoinExchangeChartResult
     fun support(exchangeType: CoinExchangeType): Boolean
 }
