@@ -1,6 +1,6 @@
 package com.dingdongdeng.autotrading.type
 
-import java.util.*
+import java.util.EnumMap
 
 
 enum class CandleUnit(

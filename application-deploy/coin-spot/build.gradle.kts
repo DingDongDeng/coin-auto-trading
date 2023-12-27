@@ -6,5 +6,5 @@ plugins {
 }
 
 dependencies {
-
+    implementation(project(":application-infra:common"))
 }
