@@ -7,9 +7,9 @@ import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderR
 import com.dingdongdeng.autotrading.infra.common.type.CoinExchangeType
 
 interface SpotCoinExchangeService {
-    fun support(exchangeType: CoinExchangeType): Boolean
     fun order(param: SpotCoinExchangeOrderParam): SpotCoinExchangeOrderResult
     fun cancel(orderId: String): SpotCoinExchangeOrderResult
     fun getOrder(orderId: String): SpotCoinExchangeOrderResult
     fun getChart(param: SpotCoinExchangeChartParam): SpotCoinExchangeChartResult
+    fun support(exchangeType: CoinExchangeType): Boolean
 }
