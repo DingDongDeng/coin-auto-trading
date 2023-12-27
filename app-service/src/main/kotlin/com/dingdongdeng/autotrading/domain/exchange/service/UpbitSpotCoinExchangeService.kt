@@ -9,6 +9,7 @@ import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderR
 import com.dingdongdeng.autotrading.infra.client.upbit.MarketType
 import com.dingdongdeng.autotrading.infra.client.upbit.OrdType
 import com.dingdongdeng.autotrading.infra.client.upbit.OrderCancelRequest
+import com.dingdongdeng.autotrading.infra.client.upbit.OrderInfoRequest
 import com.dingdongdeng.autotrading.infra.client.upbit.OrderRequest
 import com.dingdongdeng.autotrading.infra.client.upbit.Side
 import com.dingdongdeng.autotrading.infra.client.upbit.UpbitApiClient
@@ -61,7 +62,18 @@ class UpbitSpotCoinExchangeService(
     }
 
     override fun getOrder(orderId: String, keyParam: ExchangeKeyParam): SpotCoinExchangeOrderResult {
-        TODO("Not yet implemented")
+        val request = OrderInfoRequest(uuid = orderId)
+        val response = upbitApiClient.getOrderInfo(request, makeToken(request, keyParam))
+        return SpotCoinExchangeOrderResult(
+            orderId = response.uuid,
+            orderType = response.side.orderType,
+            priceType = response.ordType.priceType,
+            price = response.price,
+            orderState = response.state.orderState,
+            coinExchangeType = EXCHANGE_TYPE,
+            coinType = MarketType.of(response.market).coinType,
+            orderDateTime = response.getCreatedAt(),
+        )
     }
 
     override fun getChart(param: SpotCoinExchangeChartParam, keyParam: ExchangeKeyParam): SpotCoinExchangeChartResult {
