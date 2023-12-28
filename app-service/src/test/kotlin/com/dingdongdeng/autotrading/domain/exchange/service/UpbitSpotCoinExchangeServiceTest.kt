@@ -1,6 +1,10 @@
 package com.dingdongdeng.autotrading.domain.exchange.service
 
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeKeyParam
+import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderParam
+import com.dingdongdeng.autotrading.infra.common.type.CoinType
+import com.dingdongdeng.autotrading.infra.common.type.OrderType
+import com.dingdongdeng.autotrading.infra.common.type.PriceType
 import com.dingdongdeng.autotrading.test.TestEnv
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -21,7 +25,16 @@ class UpbitSpotCoinExchangeServiceTest(
     @DisplayName("주문, 조회, 주문취소가 문제 없이 동작해야한다.")
     @Test
     fun test1() {
-
+        val orderRequest = SpotCoinExchangeOrderParam(
+            coinType = CoinType.ETHEREUM,
+            orderType = OrderType.BUY,
+            volume = 1.0,
+            price = 5000,
+            priceType = PriceType.LIMIT,
+        )
+        val orderResponse = upbitSpotCoinExchangeService.order(orderRequest, keyParam)
+        val getOrderResponse = upbitSpotCoinExchangeService.getOrder(orderResponse.orderId, keyParam)
+        val cancelResponse = upbitSpotCoinExchangeService.cancel(orderResponse.orderId, keyParam)
     }
 
     @DisplayName("차트 정보를 조회할때 범위는 'from <= 조회범위 <= to'를 만족해야 한다.")
