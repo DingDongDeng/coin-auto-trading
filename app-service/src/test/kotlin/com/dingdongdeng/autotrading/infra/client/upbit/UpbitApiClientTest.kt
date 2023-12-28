@@ -1,11 +1,9 @@
 package com.dingdongdeng.autotrading.infra.client.upbit
 
-import com.dingdongdeng.autotrading.infra.client.common.QueryParamsConverter
 import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.test.TestEnv
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
@@ -13,15 +11,7 @@ import org.springframework.test.context.TestConstructor
 import java.time.LocalDateTime
 
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
-@SpringBootTest(
-    classes = [
-        UpbitApiConfig::class,
-        UpbitApiClient::class,
-        UpbitTokenGenerator::class,
-        QueryParamsConverter::class,
-        ObjectMapper::class
-    ]
-)
+@SpringBootTest
 class UpbitApiClientTest(
     val upbitApiClient: UpbitApiClient,
     val upbitTokenGenerator: UpbitTokenGenerator,
