@@ -12,9 +12,11 @@ import org.springframework.web.util.UriBuilder
 @Component
 class UpbitApiClient(
     val upbitWebClient: WebClient,
+    val upbitApiRateLimiter: UpbitApiRateLimiter,
     val queryParamsConverter: QueryParamsConverter,
 ) {
     fun getAccounts(token: String): List<AccountsResponse> {
+        upbitApiRateLimiter.wait()
         return ResponseHandler.handle {
             upbitWebClient.get()
                 .uri("/v1/accounts")
@@ -26,6 +28,7 @@ class UpbitApiClient(
     }
 
     fun getOrdersChance(request: OrderChanceRequest, token: String): OrdersChanceResponse {
+        upbitApiRateLimiter.wait()
         return ResponseHandler.handle {
             upbitWebClient.get()
                 .uri { uriBuilder ->
@@ -41,6 +44,7 @@ class UpbitApiClient(
     }
 
     fun getMarketList(request: MarketCodeRequest, token: String): List<MarketCodeResponse> {
+        upbitApiRateLimiter.wait()
         return ResponseHandler.handle {
             upbitWebClient.get()
                 .uri { uriBuilder: UriBuilder ->
@@ -56,6 +60,7 @@ class UpbitApiClient(
     }
 
     fun getOrderInfo(request: OrderInfoRequest, token: String): OrderResponse {
+        upbitApiRateLimiter.wait()
         return ResponseHandler.handle {
             upbitWebClient.get()
                 .uri { uriBuilder: UriBuilder ->
@@ -71,6 +76,7 @@ class UpbitApiClient(
     }
 
     fun getOrderInfoList(request: OrderInfoListRequest, token: String): List<OrderResponse> {
+        upbitApiRateLimiter.wait()
         return ResponseHandler.handle {
             upbitWebClient.get()
                 .uri { uriBuilder: UriBuilder ->
@@ -113,6 +119,7 @@ class UpbitApiClient(
     }
 
     fun getCandle(request: CandleRequest, candleUnit: CandleUnit, token: String): List<CandleResponse> {
+        upbitApiRateLimiter.wait()
         return when (candleUnit) {
             CandleUnit.UNIT_1D -> this.getDayCandle(request, token)
             CandleUnit.UNIT_1W -> this.getWeekCandle(request, token)
@@ -120,7 +127,7 @@ class UpbitApiClient(
         }
     }
 
-    fun getDayCandle(request: CandleRequest, token: String): List<CandleResponse> {
+    private fun getDayCandle(request: CandleRequest, token: String): List<CandleResponse> {
         return ResponseHandler.handle {
             upbitWebClient.get()
                 .uri { uriBuilder: UriBuilder ->
@@ -136,7 +143,7 @@ class UpbitApiClient(
         }
     }
 
-    fun getWeekCandle(request: CandleRequest, token: String): List<CandleResponse> {
+    private fun getWeekCandle(request: CandleRequest, token: String): List<CandleResponse> {
         return ResponseHandler.handle {
             upbitWebClient.get()
                 .uri { uriBuilder: UriBuilder ->
@@ -152,7 +159,7 @@ class UpbitApiClient(
         }
     }
 
-    fun getMinuteCandle(request: CandleRequest, token: String): List<CandleResponse> {
+    private fun getMinuteCandle(request: CandleRequest, token: String): List<CandleResponse> {
         return ResponseHandler.handle {
             upbitWebClient.get()
                 .uri { uriBuilder: UriBuilder ->
@@ -169,6 +176,7 @@ class UpbitApiClient(
     }
 
     fun getOrderBook(request: OrderBookRequest, token: String): List<OrderBookResponse> {
+        upbitApiRateLimiter.wait()
         return ResponseHandler.handle {
             upbitWebClient.get()
                 .uri { uriBuilder: UriBuilder ->
@@ -184,6 +192,7 @@ class UpbitApiClient(
     }
 
     fun getTicker(request: TickerRequest, token: String): List<TickerResponse> {
+        upbitApiRateLimiter.wait()
         return ResponseHandler.handle {
             upbitWebClient.get()
                 .uri { uriBuilder: UriBuilder ->
