@@ -1,5 +1,6 @@
 package com.dingdongdeng.autotrading.infra.client.upbit
 
+import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.utils.convertToString
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
@@ -79,6 +80,8 @@ data class CandleRequest(
     val market: String, // 마켓 ID (필수)
     @field:JsonIgnore
     val timeAsKst: LocalDateTime?,
+    @field:JsonIgnore
+    val candleUnit: CandleUnit,
     val count: Int, // 캔들 개수(최대 200개)
 ) {
     @field:JsonProperty("to")

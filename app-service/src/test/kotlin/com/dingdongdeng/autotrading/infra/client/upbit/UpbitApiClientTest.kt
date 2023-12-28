@@ -2,6 +2,7 @@ package com.dingdongdeng.autotrading.infra.client.upbit
 
 import com.dingdongdeng.autotrading.infra.client.common.QueryParamsConverter
 import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
+import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.test.TestEnv
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -121,9 +122,10 @@ class UpbitApiClientTest(
             unit = 1,
             market = "KRW-ETH",
             timeAsKst = to,
+            candleUnit = CandleUnit.UNIT_1M,
             count = 2,
         )
-        val response = upbitApiClient.getMinuteCandle(request, makeToken(request))
+        val response = upbitApiClient.getCandle(request, makeToken(request))
         log.info("result : {}", response)
     }
 
@@ -134,9 +136,10 @@ class UpbitApiClientTest(
         val request = CandleRequest(
             market = "KRW-ETH",
             timeAsKst = to,
+            candleUnit = CandleUnit.UNIT_1D,
             count = 2,
         )
-        val response = upbitApiClient.getDayCandle(request, makeToken(request))
+        val response = upbitApiClient.getCandle(request, makeToken(request))
         log.info("result : {}", response)
     }
 

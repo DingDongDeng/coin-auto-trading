@@ -85,10 +85,11 @@ class UpbitSpotCoinExchangeService(
             unit = param.candleUnit.size,
             market = MarketType.of(param.coinType).code,
             timeAsKst = param.to.plusMinutes(2), // upbit 캔들 조회 응답을 정확히 예측할 수 없기때문에 버퍼를 두어서 조회
+            candleUnit = param.candleUnit,
             count = param.chunkSize,
         )
         var response = upbitApiClient
-            .getCandle(request, param.candleUnit, makeToken(request, keyParam))
+            .getCandle(request, makeToken(request, keyParam))
             .sortedBy { it.candleDateTimeKst } // 가장 마지막 캔들이 현재 캔들
 
         // from <= 조회 범위 <= to 를 만족하도록 부족한 캔들을 조회
@@ -104,10 +105,11 @@ class UpbitSpotCoinExchangeService(
                 unit = param.candleUnit.size,
                 market = MarketType.of(param.coinType).code,
                 timeAsKst = firstCandle.candleDateTimeKst,
+                candleUnit = param.candleUnit,
                 count = param.chunkSize,
             )
             val response2 = upbitApiClient
-                .getCandle(request2, param.candleUnit, makeToken(request2, keyParam))
+                .getCandle(request2, makeToken(request2, keyParam))
                 .sortedBy { it.candleDateTimeKst } // 가장 마지막 캔들이 현재 캔들
 
             response = response2 + response

@@ -14,7 +14,7 @@ class UpbitApiRateLimiter {
     private var countPerSeconds = 0
     private var lastRequestedAt = LocalDateTime.now()
 
-    fun wait() {
+    fun waitForReady() {
         synchronized(this) {
             countPerSeconds++
             val diff = Duration.between(LocalDateTime.now(), lastRequestedAt)

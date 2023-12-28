@@ -16,7 +16,7 @@ class UpbitApiClient(
     val queryParamsConverter: QueryParamsConverter,
 ) {
     fun getAccounts(token: String): List<AccountsResponse> {
-        upbitApiRateLimiter.wait()
+        upbitApiRateLimiter.waitForReady()
         return ResponseHandler.handle {
             upbitWebClient.get()
                 .uri("/v1/accounts")
@@ -28,7 +28,7 @@ class UpbitApiClient(
     }
 
     fun getOrdersChance(request: OrderChanceRequest, token: String): OrdersChanceResponse {
-        upbitApiRateLimiter.wait()
+        upbitApiRateLimiter.waitForReady()
         return ResponseHandler.handle {
             upbitWebClient.get()
                 .uri { uriBuilder ->
@@ -44,7 +44,7 @@ class UpbitApiClient(
     }
 
     fun getMarketList(request: MarketCodeRequest, token: String): List<MarketCodeResponse> {
-        upbitApiRateLimiter.wait()
+        upbitApiRateLimiter.waitForReady()
         return ResponseHandler.handle {
             upbitWebClient.get()
                 .uri { uriBuilder: UriBuilder ->
@@ -60,7 +60,7 @@ class UpbitApiClient(
     }
 
     fun getOrderInfo(request: OrderInfoRequest, token: String): OrderResponse {
-        upbitApiRateLimiter.wait()
+        upbitApiRateLimiter.waitForReady()
         return ResponseHandler.handle {
             upbitWebClient.get()
                 .uri { uriBuilder: UriBuilder ->
@@ -76,7 +76,7 @@ class UpbitApiClient(
     }
 
     fun getOrderInfoList(request: OrderInfoListRequest, token: String): List<OrderResponse> {
-        upbitApiRateLimiter.wait()
+        upbitApiRateLimiter.waitForReady()
         return ResponseHandler.handle {
             upbitWebClient.get()
                 .uri { uriBuilder: UriBuilder ->
@@ -118,9 +118,9 @@ class UpbitApiClient(
         }
     }
 
-    fun getCandle(request: CandleRequest, candleUnit: CandleUnit, token: String): List<CandleResponse> {
-        upbitApiRateLimiter.wait()
-        return when (candleUnit) {
+    fun getCandle(request: CandleRequest, token: String): List<CandleResponse> {
+        upbitApiRateLimiter.waitForReady()
+        return when (request.candleUnit) {
             CandleUnit.UNIT_1D -> this.getDayCandle(request, token)
             CandleUnit.UNIT_1W -> this.getWeekCandle(request, token)
             else -> this.getMinuteCandle(request, token)
@@ -176,7 +176,7 @@ class UpbitApiClient(
     }
 
     fun getOrderBook(request: OrderBookRequest, token: String): List<OrderBookResponse> {
-        upbitApiRateLimiter.wait()
+        upbitApiRateLimiter.waitForReady()
         return ResponseHandler.handle {
             upbitWebClient.get()
                 .uri { uriBuilder: UriBuilder ->
@@ -192,7 +192,7 @@ class UpbitApiClient(
     }
 
     fun getTicker(request: TickerRequest, token: String): List<TickerResponse> {
-        upbitApiRateLimiter.wait()
+        upbitApiRateLimiter.waitForReady()
         return ResponseHandler.handle {
             upbitWebClient.get()
                 .uri { uriBuilder: UriBuilder ->
