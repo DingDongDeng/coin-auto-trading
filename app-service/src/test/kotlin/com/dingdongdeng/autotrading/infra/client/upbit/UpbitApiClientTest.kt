@@ -3,6 +3,7 @@ package com.dingdongdeng.autotrading.infra.client.upbit
 import com.dingdongdeng.autotrading.infra.client.common.QueryParamsConverter
 import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
+import com.dingdongdeng.autotrading.test.TestEnv
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -24,9 +25,6 @@ class UpbitApiClientTest(
     val upbitApiClient: UpbitApiClient,
     val upbitTokenGenerator: UpbitTokenGenerator,
 ) {
-
-    val accessKey = "access key"
-    val secretKey = "secret key"
 
     @DisplayName("전체 계좌 조회 테스트")
     @Test
@@ -160,6 +158,10 @@ class UpbitApiClientTest(
     }
 
     private fun makeToken(request: Any? = null): String {
-        return upbitTokenGenerator.makeToken(request, accessKey, secretKey)
+        return upbitTokenGenerator.makeToken(
+            request,
+            TestEnv.UPBIT_ACCESS_KEY,
+            TestEnv.UPBIT_SECRET_KEY
+        )
     }
 }
