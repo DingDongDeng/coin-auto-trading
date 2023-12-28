@@ -84,7 +84,7 @@ class UpbitSpotCoinExchangeService(
         val request = CandleRequest(
             unit = param.candleUnit.size,
             market = MarketType.of(param.coinType).code,
-            timeAsKst = param.to,
+            timeAsKst = param.to.plusMinutes(2), // upbit 캔들 조회 응답을 정확히 예측할 수 없기때문에 버퍼를 두어서 조회
             count = param.chunkSize,
         )
         var response = upbitApiClient
@@ -113,7 +113,7 @@ class UpbitSpotCoinExchangeService(
             response = response2 + response
         }
 
-        // 범위를 넘는 캔들 커팅
+        // 범위를 넘는 캔들 제거
         response =
             response.filter { (it.candleDateTimeKst.isAfter(param.to) || it.candleDateTimeKst.isBefore(param.from)).not() }
 

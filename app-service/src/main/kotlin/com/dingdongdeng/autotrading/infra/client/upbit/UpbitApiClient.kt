@@ -115,6 +115,7 @@ class UpbitApiClient(
     fun getCandle(request: CandleRequest, candleUnit: CandleUnit, token: String): List<CandleResponse> {
         return when (candleUnit) {
             CandleUnit.UNIT_1D -> this.getDayCandle(request, token)
+            CandleUnit.UNIT_1W -> this.getWeekCandle(request, token)
             else -> this.getMinuteCandle(request, token)
         }
     }
@@ -124,6 +125,22 @@ class UpbitApiClient(
             upbitWebClient.get()
                 .uri { uriBuilder: UriBuilder ->
                     uriBuilder.path("/v1/candles/days")
+                        .queryParams(queryParamsConverter.convertMap(request))
+                        .build()
+                }
+                .headers { headers -> headers.addAll(makeHeaders(token)) }
+                .retrieve()
+                .bodyToMono(object : ParameterizedTypeReference<List<CandleResponse>>() {})
+                .retry(3)
+                .block()!!
+        }
+    }
+
+    fun getWeekCandle(request: CandleRequest, token: String): List<CandleResponse> {
+        return ResponseHandler.handle {
+            upbitWebClient.get()
+                .uri { uriBuilder: UriBuilder ->
+                    uriBuilder.path("/v1/candles/weeks")
                         .queryParams(queryParamsConverter.convertMap(request))
                         .build()
                 }

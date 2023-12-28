@@ -1,16 +1,20 @@
 package com.dingdongdeng.autotrading.domain.exchange.service
 
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeKeyParam
+import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartParam
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderParam
+import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.OrderType
 import com.dingdongdeng.autotrading.infra.common.type.PriceType
 import com.dingdongdeng.autotrading.test.TestEnv
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.TestConstructor
+import java.time.LocalDateTime
 
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @SpringBootTest
@@ -40,44 +44,117 @@ class UpbitSpotCoinExchangeServiceTest(
     @DisplayName("차트 정보를 조회할때 범위는 'from <= 조회범위 <= to'를 만족해야 한다.")
     @Nested
     inner class Test1 {
-        @DisplayName("현재 실시간으로 생성중인 캔들에 대해서도 잘 조회되어야한다. (15:05 캔들을 조회했는데)")
+        @DisplayName("[1분봉] 현재 실시간으로 생성중인 캔들에 대해서도 잘 조회되어야한다. (to=15:05:30 일때, 마지막 캔들은 15:05시간을 갖고 있어야함)")
         @Test
         fun test22() {
             // given
+            val now = LocalDateTime.now()
+            val param = SpotCoinExchangeChartParam(
+                coinType = CoinType.ETHEREUM,
+                candleUnit = CandleUnit.UNIT_1M,
+                from = now.minusMinutes(5),
+                to = now,
+                chunkSize = 3
+            )
 
             // when
+            val result = upbitSpotCoinExchangeService.getChart(param, keyParam)
 
             // then
+            Assertions.assertEquals(5, result.candles.size)
+            Assertions.assertEquals(
+                param.from.withSecond(0).withNano(0).plusMinutes(1),
+                result.candles.first().candleDateTimeKst
+            )
+            Assertions.assertEquals(param.to.withSecond(0).withNano(0), result.candles.last().candleDateTimeKst)
         }
 
-        @DisplayName("[분봉] N분봉 일때 to의 시간이 분봉의 단위와 일치하더라도 잘 조회되어야한다. (예를 들어, 5분봉일때 to=15:05)")
+        @DisplayName("[1분봉] 과거 캔들들도 적절한 범위로 조회되어야 한다.")
         @Test
-        fun test2() {
+        fun test23() {
             // given
+            val now = LocalDateTime.of(2023, 12, 25, 0, 0, 0)
+            val param = SpotCoinExchangeChartParam(
+                coinType = CoinType.ETHEREUM,
+                candleUnit = CandleUnit.UNIT_1M,
+                from = now.minusMinutes(5),
+                to = now,
+                chunkSize = 3
+            )
 
             // when
+            val result = upbitSpotCoinExchangeService.getChart(param, keyParam)
 
             // then
+            Assertions.assertEquals(6, result.candles.size)
+            Assertions.assertEquals(param.from, result.candles.first().candleDateTimeKst)
+            Assertions.assertEquals(param.to, result.candles.last().candleDateTimeKst)
         }
 
-        @DisplayName("[분봉] N분봉 일때 to의 시간이 분봉의 단위와 일치하더라도 잘 조회되어야한다. (예를 들어, 5분봉일때 to=15:05)")
+        @DisplayName("[5분봉 테스트] 과거 캔들들도 적절한 범위로 조회되어야 한다.")
         @Test
-        fun test3() {
+        fun test24() {
             // given
+            val now = LocalDateTime.of(2023, 12, 25, 0, 0, 0)
+            val param = SpotCoinExchangeChartParam(
+                coinType = CoinType.ETHEREUM,
+                candleUnit = CandleUnit.UNIT_5M,
+                from = now.minusMinutes(53),
+                to = now,
+                chunkSize = 3
+            )
 
             // when
+            val result = upbitSpotCoinExchangeService.getChart(param, keyParam)
 
             // then
+            Assertions.assertEquals(11, result.candles.size)
+            Assertions.assertEquals(param.from.plusMinutes(3), result.candles.first().candleDateTimeKst)
+            Assertions.assertEquals(param.to, result.candles.last().candleDateTimeKst)
         }
 
-        @DisplayName("주봉 차트 정보를 조회할때 범위는 'from <= 조회범위 <= to'를 만족해야 한다.")
+        @DisplayName("[일봉 테스트] 과거 캔들들도 적절한 범위로 조회되어야 한다. (UTC +09 기준이라 생각한거랑 다를 수 있음)")
         @Test
-        fun test4() {
+        fun test123() {
             // given
+            val now = LocalDateTime.of(2023, 12, 25, 9, 0, 0)
+            val param = SpotCoinExchangeChartParam(
+                coinType = CoinType.ETHEREUM,
+                candleUnit = CandleUnit.UNIT_1D,
+                from = now.minusDays(5),
+                to = now,
+                chunkSize = 3
+            )
 
             // when
+            val result = upbitSpotCoinExchangeService.getChart(param, keyParam)
 
             // then
+            Assertions.assertEquals(5, result.candles.size)
+            Assertions.assertEquals(param.from, result.candles.first().candleDateTimeKst)
+            Assertions.assertEquals(param.to, result.candles.last().candleDateTimeKst)
+        }
+
+        @DisplayName("[주봉 테스트] 과거 캔들들도 적절한 범위로 조회되어야 한다. (UTC +09 기준이라 생각한거랑 다를 수 있음)")
+        @Test
+        fun test124() {
+            // given
+            val now = LocalDateTime.of(2023, 12, 25, 9, 0, 0)
+            val param = SpotCoinExchangeChartParam(
+                coinType = CoinType.ETHEREUM,
+                candleUnit = CandleUnit.UNIT_1W,
+                from = now.minusWeeks(5),
+                to = now,
+                chunkSize = 3
+            )
+
+            // when
+            val result = upbitSpotCoinExchangeService.getChart(param, keyParam)
+
+            // then
+            Assertions.assertEquals(5, result.candles.size)
+            Assertions.assertEquals(param.from, result.candles.first().candleDateTimeKst)
+            Assertions.assertEquals(param.to, result.candles.last().candleDateTimeKst)
         }
     }
 
