@@ -130,7 +130,7 @@ class UpbitSpotCoinExchangeServiceTest(
             val result = upbitSpotCoinExchangeService.getChart(param, keyParam)
 
             // then
-            Assertions.assertEquals(5, result.candles.size)
+            Assertions.assertEquals(6, result.candles.size)
             Assertions.assertEquals(param.from, result.candles.first().candleDateTimeKst)
             Assertions.assertEquals(param.to, result.candles.last().candleDateTimeKst)
         }
@@ -152,7 +152,7 @@ class UpbitSpotCoinExchangeServiceTest(
             val result = upbitSpotCoinExchangeService.getChart(param, keyParam)
 
             // then
-            Assertions.assertEquals(5, result.candles.size)
+            Assertions.assertEquals(6, result.candles.size)
             Assertions.assertEquals(param.from, result.candles.first().candleDateTimeKst)
             Assertions.assertEquals(param.to, result.candles.last().candleDateTimeKst)
         }
