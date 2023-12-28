@@ -16,7 +16,6 @@ class UpbitApiClient(
     val queryParamsConverter: QueryParamsConverter,
 ) {
     fun getAccounts(token: String): List<AccountsResponse> {
-        upbitApiRateLimiter.waitForReady()
         return ResponseHandler.handle {
             upbitWebClient.get()
                 .uri("/v1/accounts")
@@ -28,7 +27,6 @@ class UpbitApiClient(
     }
 
     fun getOrdersChance(request: OrderChanceRequest, token: String): OrdersChanceResponse {
-        upbitApiRateLimiter.waitForReady()
         return ResponseHandler.handle {
             upbitWebClient.get()
                 .uri { uriBuilder ->
@@ -44,7 +42,6 @@ class UpbitApiClient(
     }
 
     fun getMarketList(request: MarketCodeRequest, token: String): List<MarketCodeResponse> {
-        upbitApiRateLimiter.waitForReady()
         return ResponseHandler.handle {
             upbitWebClient.get()
                 .uri { uriBuilder: UriBuilder ->
@@ -60,7 +57,6 @@ class UpbitApiClient(
     }
 
     fun getOrderInfo(request: OrderInfoRequest, token: String): OrderResponse {
-        upbitApiRateLimiter.waitForReady()
         return ResponseHandler.handle {
             upbitWebClient.get()
                 .uri { uriBuilder: UriBuilder ->
@@ -192,7 +188,6 @@ class UpbitApiClient(
     }
 
     fun getTicker(request: TickerRequest, token: String): List<TickerResponse> {
-        upbitApiRateLimiter.waitForReady()
         return ResponseHandler.handle {
             upbitWebClient.get()
                 .uri { uriBuilder: UriBuilder ->

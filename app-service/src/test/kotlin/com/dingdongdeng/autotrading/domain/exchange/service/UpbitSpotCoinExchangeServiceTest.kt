@@ -3,6 +3,7 @@ package com.dingdongdeng.autotrading.domain.exchange.service
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeKeyParam
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartParam
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderParam
+import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.OrderType
@@ -37,8 +38,11 @@ class UpbitSpotCoinExchangeServiceTest(
             priceType = PriceType.LIMIT,
         )
         val orderResponse = upbitSpotCoinExchangeService.order(orderRequest, keyParam)
+        log.info("orderResponse={}", orderResponse)
         val getOrderResponse = upbitSpotCoinExchangeService.getOrder(orderResponse.orderId, keyParam)
+        log.info("getOrderResponse={}", getOrderResponse)
         val cancelResponse = upbitSpotCoinExchangeService.cancel(orderResponse.orderId, keyParam)
+        log.info("cancelResponse={}", cancelResponse)
     }
 
     @DisplayName("차트 정보를 조회할때 범위는 'from <= 조회범위 <= to'를 만족해야 한다.")
@@ -59,6 +63,7 @@ class UpbitSpotCoinExchangeServiceTest(
 
             // when
             val result = upbitSpotCoinExchangeService.getChart(param, keyParam)
+            log.info("result={}", result)
 
             // then
             Assertions.assertEquals(5, result.candles.size)
@@ -84,6 +89,7 @@ class UpbitSpotCoinExchangeServiceTest(
 
             // when
             val result = upbitSpotCoinExchangeService.getChart(param, keyParam)
+            log.info("result={}", result)
 
             // then
             Assertions.assertEquals(6, result.candles.size)
@@ -106,6 +112,7 @@ class UpbitSpotCoinExchangeServiceTest(
 
             // when
             val result = upbitSpotCoinExchangeService.getChart(param, keyParam)
+            log.info("result={}", result)
 
             // then
             Assertions.assertEquals(11, result.candles.size)
@@ -128,6 +135,7 @@ class UpbitSpotCoinExchangeServiceTest(
 
             // when
             val result = upbitSpotCoinExchangeService.getChart(param, keyParam)
+            log.info("result={}", result)
 
             // then
             Assertions.assertEquals(6, result.candles.size)
@@ -150,7 +158,8 @@ class UpbitSpotCoinExchangeServiceTest(
 
             // when
             val result = upbitSpotCoinExchangeService.getChart(param, keyParam)
-
+            log.info("result={}", result)
+            
             // then
             Assertions.assertEquals(6, result.candles.size)
             Assertions.assertEquals(param.from, result.candles.first().candleDateTimeKst)
