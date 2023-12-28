@@ -11,8 +11,9 @@ import java.time.LocalDateTime
 @Component
 class UpbitApiRateLimiter {
 
-    var countPerSeconds = 0
-    var lastRequestedAt: LocalDateTime? = null
+    private var countPerSeconds = 0
+    private var lastRequestedAt = LocalDateTime.now()
+
     fun wait() {
         synchronized(this) {
             countPerSeconds++
