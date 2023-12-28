@@ -265,16 +265,16 @@ data class CandleResponse(
     val candleDateTimeKst: LocalDateTime, // 캔들 기준 시각(KST 기준)
 
     @field:JsonProperty("opening_price")
-    val openingPrice: Double, // 시가
+    val openingPrice: Int, // 시가
 
     @field:JsonProperty("high_price")
-    val highPrice: Double, // 고가
+    val highPrice: Int, // 고가
 
     @field:JsonProperty("low_price")
-    val lowPrice: Double, // 저가
+    val lowPrice: Int, // 저가
 
     @field:JsonProperty("trade_price")
-    val tradePrice: Double, // 종가
+    val tradePrice: Int, // 종가
 
     @field:JsonProperty("timestamp")
     val timestamp: Long, // 해당 캔들에서 마지막 틱이 저장된 시각
