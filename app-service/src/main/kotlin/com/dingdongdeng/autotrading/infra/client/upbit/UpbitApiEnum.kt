@@ -38,7 +38,7 @@ enum class MarketType(
         }
 
         fun of(code: String): MarketType {
-            return values().first { it.code === code }
+            return values().first { it.code == code }
         }
     }
 }
