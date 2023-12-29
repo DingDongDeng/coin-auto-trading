@@ -1,6 +1,5 @@
 package com.dingdongdeng.autotrading.domain.exchange.service
 
-import com.dingdongdeng.autotrading.domain.exchange.SpotCoinExchangeService
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeKeyParam
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeCandleResult
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartParam
