@@ -1,4 +1,4 @@
-package com.dingdongdeng.autotrading.infra.persistence.entity
+package com.dingdongdeng.autotrading.domain.exchange.entity
 
 import com.dingdongdeng.autotrading.infra.common.type.CoinExchangeType
 import jakarta.persistence.Column
