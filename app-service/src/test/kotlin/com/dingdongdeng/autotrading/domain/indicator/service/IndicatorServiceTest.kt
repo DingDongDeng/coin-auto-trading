@@ -132,4 +132,27 @@ class IndicatorServiceTest(
         assertEquals(60075, Math.round(obv.obv))
         assertEquals(-4835, Math.round(obv.hist))
     }
+
+    @DisplayName("MA_계산_테스트")
+    @Test
+    fun test7() {
+        // given
+        val now = LocalDateTime.of(2023, 1, 29, 1, 1, 10)
+        val param = SpotCoinExchangeChartParam(
+            coinType = CoinType.ETHEREUM,
+            candleUnit = CandleUnit.UNIT_240M,
+            from = now.minusMinutes(240 * 200),
+            to = now,
+        )
+        val chart = upbitSpotCoinExchangeService.getChart(param, keyParam)
+
+        // when
+        val ma = indicatorService.getMv(chart.candles)
+
+        // then
+        log.info("result : {}", ma)
+        assertEquals(1905871, Math.round(ma.sma120))
+        assertEquals(1767750, Math.round(ma.sma200))
+        assertEquals(1975838, Math.round(ma.ema60))
+    }
 }
