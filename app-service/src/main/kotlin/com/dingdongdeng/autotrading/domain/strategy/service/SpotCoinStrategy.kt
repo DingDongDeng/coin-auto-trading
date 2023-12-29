@@ -5,7 +5,7 @@ import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyMakeTa
 
 interface SpotCoinStrategy {
 
-    fun makeTask(params: List<SpotCoinStrategyMakeTaskParam>): SpotCoinStrategyMakeTaskResult
+    fun makeTask(params: List<SpotCoinStrategyMakeTaskParam>): List<SpotCoinStrategyMakeTaskResult>
 
     fun handleTaskResult()
 
