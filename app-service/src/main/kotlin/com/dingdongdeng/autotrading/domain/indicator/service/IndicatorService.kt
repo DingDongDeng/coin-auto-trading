@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service
 @Service
 class IndicatorService {
     private val core = Core()
+
     fun calculate(chart: SpotCoinExchangeChartResult): Indicators {
         val candles = chart.candles
         return Indicators(

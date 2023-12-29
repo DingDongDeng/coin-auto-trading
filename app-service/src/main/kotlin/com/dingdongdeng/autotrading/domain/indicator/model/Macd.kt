@@ -1,6 +1,6 @@
 package com.dingdongdeng.autotrading.domain.indicator.model
 
-class Macd(
+data class Macd(
     val hist: Double,
     val signal: Double,
     val macd: Double,

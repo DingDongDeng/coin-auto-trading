@@ -1,7 +1,7 @@
 package com.dingdongdeng.autotrading.domain.indicator.model
 
 
-class Obv(
+data class Obv(
     val obv: Double,
     val hist: Double,
 )

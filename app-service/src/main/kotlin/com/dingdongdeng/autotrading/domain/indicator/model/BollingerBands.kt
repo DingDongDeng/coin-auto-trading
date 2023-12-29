@@ -1,6 +1,6 @@
 package com.dingdongdeng.autotrading.domain.indicator.model
 
-class BollingerBands(
+data class BollingerBands(
     val upper: Double,
     val middle: Double,
     val lower: Double,
