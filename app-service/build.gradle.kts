@@ -17,4 +17,7 @@ dependencies {
 
     // upbit
     implementation("com.auth0:java-jwt:3.18.2") // upbit api 헤더 생성을 위함
+
+    // 보조 지표 계산을 위함
+    implementation("com.tictactec:ta-lib:0.4.0")
 }
