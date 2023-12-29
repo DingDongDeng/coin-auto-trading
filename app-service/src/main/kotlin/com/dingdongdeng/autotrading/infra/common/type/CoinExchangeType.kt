@@ -4,10 +4,16 @@ import java.util.EnumMap
 
 enum class CoinExchangeType(
     val desc: String,
-    val marketType: MarketType,
+    val exchangeTypes: List<ExchangeType>,
 ) {
-    UPBIT("업비트", MarketType.SPOT),
-    BINANCE_FUTURE("바이낸스 선물", MarketType.FUTURE);
+    UPBIT(
+        "업비트",
+        listOf(ExchangeType.SPOT_COIN)
+    ),
+    BINANCE_FUTURE(
+        "바이낸스 선물",
+        listOf(ExchangeType.SPOT_COIN, ExchangeType.FUTURE_COIN)
+    );
 
     companion object {
         fun of(name: String?): CoinExchangeType {
