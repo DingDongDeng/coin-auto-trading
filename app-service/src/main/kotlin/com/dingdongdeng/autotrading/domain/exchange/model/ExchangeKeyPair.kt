@@ -1,6 +1,6 @@
 package com.dingdongdeng.autotrading.domain.exchange.model
 
-data class ExchangeKeyParam(
+data class ExchangeKeyPair(
     val accessKey: String,
     val secretKey: String,
 )
