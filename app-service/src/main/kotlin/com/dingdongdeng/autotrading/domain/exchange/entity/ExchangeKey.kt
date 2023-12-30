@@ -1,6 +1,6 @@
 package com.dingdongdeng.autotrading.domain.exchange.entity
 
-import com.dingdongdeng.autotrading.infra.common.type.CoinExchangeType
+import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -21,7 +21,7 @@ class ExchangeKey(
     val keyPairId: String,
     @Enumerated(EnumType.STRING)
     @Column(name = "coin_exchange_type")
-    val coinExchangeType: CoinExchangeType,
+    val exchangeType: ExchangeType,
     @Column(name = "name")
     val name: String,
     @Column(name = "`value`")
