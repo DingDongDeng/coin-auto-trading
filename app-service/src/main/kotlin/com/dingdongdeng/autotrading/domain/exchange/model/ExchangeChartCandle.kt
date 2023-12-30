@@ -1,22 +1,9 @@
 package com.dingdongdeng.autotrading.domain.exchange.model
 
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
-import com.dingdongdeng.autotrading.infra.common.type.CoinType
-import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import java.time.LocalDateTime
 
-data class SpotCoinExchangeChartResult(
-    val exchangeType: ExchangeType,
-    val coinType: CoinType,
-    val from: LocalDateTime,
-    val to: LocalDateTime,
-    val currentPrice: Int,
-    val candles: List<SpotCoinExchangeCandleResult>,
-)
-
-data class SpotCoinExchangeCandleResult(
-    val exchangeType: ExchangeType,
-    val coinType: CoinType,
+data class ExchangeChartCandle(
     val candleUnit: CandleUnit,
     val candleDateTimeUtc: LocalDateTime, // 캔들 기준 시각(UTC 기준)
     val candleDateTimeKst: LocalDateTime, // 캔들 기준 시각(KST 기준)

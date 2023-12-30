@@ -1,7 +1,7 @@
 package com.dingdongdeng.autotrading.domain.indicator.service
 
-import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeCandleResult
-import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartResult
+import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChart
+import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChartCandle
 import com.dingdongdeng.autotrading.domain.indicator.model.BollingerBands
 import com.dingdongdeng.autotrading.domain.indicator.model.Indicators
 import com.dingdongdeng.autotrading.domain.indicator.model.Ma
@@ -16,13 +16,9 @@ import org.springframework.stereotype.Service
 class IndicatorService {
     private val core = Core()
 
-    //FIXME SpotCoinExchangeChartResult가 아니라 좀 더 범용적인 캔들이라는 개념의 모델을 사용하도록 하자
-    // (코인,주식 캔들이 올수도있잖아)
-    fun calculate(chart: SpotCoinExchangeChartResult): Indicators {
+    fun calculate(chart: ExchangeChart): Indicators {
         val candles = chart.candles
         return Indicators(
-            exchangeType = chart.exchangeType,
-            coinType = chart.coinType,
             indicatorDateTime = candles.last().candleDateTimeKst,
             rsi = this.getRsi(candles),
             macd = this.getMACD(candles),
@@ -32,7 +28,7 @@ class IndicatorService {
         )
     }
 
-    fun getMv(candles: List<SpotCoinExchangeCandleResult>): Ma {
+    fun getMv(candles: List<ExchangeChartCandle>): Ma {
         val inReal = candles.map { it.closingPrice.toDouble() }.toDoubleArray()
 
         // SMA 120
@@ -63,7 +59,7 @@ class IndicatorService {
         )
     }
 
-    fun getObv(candles: List<SpotCoinExchangeCandleResult>): Obv {
+    fun getObv(candles: List<ExchangeChartCandle>): Obv {
         // obv 계산
         val obvInReal = candles.map { it.closingPrice.toDouble() }.toDoubleArray()
         val obvInVolume = candles.map { it.accTradeVolume }.toDoubleArray()
@@ -85,7 +81,7 @@ class IndicatorService {
         )
     }
 
-    fun getBollingerBands(candles: List<SpotCoinExchangeCandleResult>): BollingerBands {
+    fun getBollingerBands(candles: List<ExchangeChartCandle>): BollingerBands {
 
         // 볼린저 밴드 계산
         val MA_TYPE = MAType.Sma
@@ -142,7 +138,7 @@ class IndicatorService {
         )
     }
 
-    fun getMACD(candles: List<SpotCoinExchangeCandleResult>): Macd {
+    fun getMACD(candles: List<ExchangeChartCandle>): Macd {
         val FAST_PERIOD = 12
         val SLOW_PERIOD = 26
         val SIGNAL_PERIOD = 9
@@ -175,7 +171,7 @@ class IndicatorService {
     // RSI(지수 가중 이동 평균)
     // https://www.investopedia.com/terms/r/rsi.asp
     // https://rebro.kr/139
-    fun getRsi(candles: List<SpotCoinExchangeCandleResult>): Double {
+    fun getRsi(candles: List<ExchangeChartCandle>): Double {
         val RSI_STANDARD_PERIOD = 14
         var U = 0.0
         var D = 0.0

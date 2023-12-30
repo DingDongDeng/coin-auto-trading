@@ -1,9 +1,9 @@
 package com.dingdongdeng.autotrading.domain.exchange.service
 
+import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChart
+import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChartCandle
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeKeyPair
-import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeCandleResult
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartParam
-import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartResult
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderParam
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderResult
 import com.dingdongdeng.autotrading.domain.exchange.repository.ExchangeKeyRepository
@@ -85,7 +85,7 @@ class UpbitSpotCoinExchangeService(
     }
 
     // from <= 조회범위 <= to
-    override fun getChart(param: SpotCoinExchangeChartParam, keyParam: ExchangeKeyPair): SpotCoinExchangeChartResult {
+    override fun getChart(param: SpotCoinExchangeChartParam, keyParam: ExchangeKeyPair): ExchangeChart {
         var totalResponse = requestCandles(
             unit = param.candleUnit,
             coinType = param.coinType,
@@ -120,16 +120,12 @@ class UpbitSpotCoinExchangeService(
         totalResponse =
             totalResponse.filter { (it.candleDateTimeKst.isAfter(param.to) || it.candleDateTimeKst.isBefore(param.from)).not() }
 
-        return SpotCoinExchangeChartResult(
-            exchangeType = EXCHANGE_TYPE,
-            coinType = param.coinType,
+        return ExchangeChart(
             from = param.from,
             to = param.to,
             currentPrice = totalResponse.last().tradePrice,
             candles = totalResponse.map {
-                SpotCoinExchangeCandleResult(
-                    exchangeType = EXCHANGE_TYPE,
-                    coinType = param.coinType,
+                ExchangeChartCandle(
                     candleUnit = param.candleUnit,
                     candleDateTimeUtc = it.candleDateTimeUtc,
                     candleDateTimeKst = it.candleDateTimeKst,
