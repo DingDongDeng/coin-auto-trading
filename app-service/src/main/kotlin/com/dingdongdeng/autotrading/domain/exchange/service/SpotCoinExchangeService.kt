@@ -12,5 +12,6 @@ interface SpotCoinExchangeService {
     fun cancel(orderId: String, keyParam: ExchangeKeyPair): SpotCoinExchangeOrderResult
     fun getOrder(orderId: String, keyParam: ExchangeKeyPair): SpotCoinExchangeOrderResult
     fun getChart(param: SpotCoinExchangeChartParam, keyParam: ExchangeKeyPair): SpotCoinExchangeChartResult
+    fun getExchangeKeyPair(keyPairId: String): ExchangeKeyPair
     fun support(exchangeType: ExchangeType): Boolean
 }

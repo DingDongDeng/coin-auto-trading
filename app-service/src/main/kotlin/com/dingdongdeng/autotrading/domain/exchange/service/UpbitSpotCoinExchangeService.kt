@@ -6,6 +6,7 @@ import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartP
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartResult
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderParam
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderResult
+import com.dingdongdeng.autotrading.domain.exchange.repository.ExchangeKeyRepository
 import com.dingdongdeng.autotrading.infra.client.upbit.CandleRequest
 import com.dingdongdeng.autotrading.infra.client.upbit.CandleResponse
 import com.dingdongdeng.autotrading.infra.client.upbit.MarketType
@@ -27,6 +28,7 @@ import java.time.LocalDateTime
 class UpbitSpotCoinExchangeService(
     private val upbitApiClient: UpbitApiClient,
     private val upbitTokenGenerator: UpbitTokenGenerator,
+    private val exchangeKeyRepository: ExchangeKeyRepository,
 ) : SpotCoinExchangeService {
 
     override fun order(param: SpotCoinExchangeOrderParam, keyParam: ExchangeKeyPair): SpotCoinExchangeOrderResult {
@@ -142,6 +144,14 @@ class UpbitSpotCoinExchangeService(
         )
     }
 
+    override fun getExchangeKeyPair(keyPairId: String): ExchangeKeyPair {
+        val exchangeKeys = exchangeKeyRepository.findByExchangeTypeAndKeyPairId(EXCHANGE_TYPE, keyPairId)
+        return ExchangeKeyPair(
+            accessKey = exchangeKeys.first { it.name == ACCESS_KEY_NAME }.value,
+            secretKey = exchangeKeys.first { it.name == SECRET_KEY_NAME }.value,
+        )
+    }
+
     override fun support(exchangeType: ExchangeType): Boolean {
         return exchangeType == EXCHANGE_TYPE
     }
@@ -172,5 +182,7 @@ class UpbitSpotCoinExchangeService(
 
     companion object {
         val EXCHANGE_TYPE = ExchangeType.UPBIT
+        const val ACCESS_KEY_NAME = "access_key"
+        const val SECRET_KEY_NAME = "secret_key"
     }
 }
