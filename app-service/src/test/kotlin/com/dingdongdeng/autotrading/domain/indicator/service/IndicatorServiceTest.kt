@@ -1,6 +1,6 @@
 package com.dingdongdeng.autotrading.domain.indicator.service
 
-import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeKeyParam
+import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeKeyPair
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartParam
 import com.dingdongdeng.autotrading.domain.exchange.service.UpbitSpotCoinExchangeService
 import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
@@ -20,7 +20,7 @@ class IndicatorServiceTest(
     val indicatorService: IndicatorService,
     val upbitSpotCoinExchangeService: UpbitSpotCoinExchangeService,
 ) {
-    val keyParam = ExchangeKeyParam(
+    val keyParam = ExchangeKeyPair(
         accessKey = TestEnv.UPBIT_ACCESS_KEY,
         secretKey = TestEnv.UPBIT_SECRET_KEY,
     )

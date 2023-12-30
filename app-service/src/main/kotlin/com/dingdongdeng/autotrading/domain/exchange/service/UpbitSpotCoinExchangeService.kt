@@ -1,6 +1,6 @@
 package com.dingdongdeng.autotrading.domain.exchange.service
 
-import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeKeyParam
+import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeKeyPair
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeCandleResult
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartParam
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartResult
@@ -29,7 +29,7 @@ class UpbitSpotCoinExchangeService(
     private val upbitTokenGenerator: UpbitTokenGenerator,
 ) : SpotCoinExchangeService {
 
-    override fun order(param: SpotCoinExchangeOrderParam, keyParam: ExchangeKeyParam): SpotCoinExchangeOrderResult {
+    override fun order(param: SpotCoinExchangeOrderParam, keyParam: ExchangeKeyPair): SpotCoinExchangeOrderResult {
         val request = OrderRequest(
             market = MarketType.of(param.coinType).code,
             side = Side.of(param.orderType),
@@ -50,7 +50,7 @@ class UpbitSpotCoinExchangeService(
         )
     }
 
-    override fun cancel(orderId: String, keyParam: ExchangeKeyParam): SpotCoinExchangeOrderResult {
+    override fun cancel(orderId: String, keyParam: ExchangeKeyPair): SpotCoinExchangeOrderResult {
         val request = OrderCancelRequest(
             uuid = orderId
         )
@@ -67,7 +67,7 @@ class UpbitSpotCoinExchangeService(
         )
     }
 
-    override fun getOrder(orderId: String, keyParam: ExchangeKeyParam): SpotCoinExchangeOrderResult {
+    override fun getOrder(orderId: String, keyParam: ExchangeKeyPair): SpotCoinExchangeOrderResult {
         val request = OrderInfoRequest(uuid = orderId)
         val response = upbitApiClient.getOrderInfo(request, makeToken(request, keyParam))
         return SpotCoinExchangeOrderResult(
@@ -83,7 +83,7 @@ class UpbitSpotCoinExchangeService(
     }
 
     // from <= 조회범위 <= to
-    override fun getChart(param: SpotCoinExchangeChartParam, keyParam: ExchangeKeyParam): SpotCoinExchangeChartResult {
+    override fun getChart(param: SpotCoinExchangeChartParam, keyParam: ExchangeKeyPair): SpotCoinExchangeChartResult {
         var totalResponse = requestCandles(
             unit = param.candleUnit,
             coinType = param.coinType,
@@ -152,7 +152,7 @@ class UpbitSpotCoinExchangeService(
         to: LocalDateTime,
         candleUnit: CandleUnit,
         chunkSize: Int,
-        keyParam: ExchangeKeyParam,
+        keyParam: ExchangeKeyPair,
     ): List<CandleResponse> {
         val request = CandleRequest(
             unit = unit.size,
@@ -166,7 +166,7 @@ class UpbitSpotCoinExchangeService(
             .sortedBy { it.candleDateTimeKst } // 가장 마지막 캔들이 현재 캔들
     }
 
-    private fun makeToken(request: Any? = null, keyParam: ExchangeKeyParam): String {
+    private fun makeToken(request: Any? = null, keyParam: ExchangeKeyPair): String {
         return upbitTokenGenerator.makeToken(request, keyParam.accessKey, keyParam.secretKey)
     }
 

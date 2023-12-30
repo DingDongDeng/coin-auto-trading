@@ -1,6 +1,6 @@
 package com.dingdongdeng.autotrading.domain.exchange.service
 
-import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeKeyParam
+import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeKeyPair
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartParam
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderParam
 import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
@@ -22,7 +22,7 @@ import java.time.LocalDateTime
 class UpbitSpotCoinExchangeServiceTest(
     private val upbitSpotCoinExchangeService: UpbitSpotCoinExchangeService,
 ) {
-    val keyParam = ExchangeKeyParam(
+    val keyParam = ExchangeKeyPair(
         accessKey = TestEnv.UPBIT_ACCESS_KEY,
         secretKey = TestEnv.UPBIT_SECRET_KEY,
     )
@@ -159,7 +159,7 @@ class UpbitSpotCoinExchangeServiceTest(
             // when
             val result = upbitSpotCoinExchangeService.getChart(param, keyParam)
             log.info("result={}", result)
-            
+
             // then
             Assertions.assertEquals(6, result.candles.size)
             Assertions.assertEquals(param.from, result.candles.first().candleDateTimeKst)
