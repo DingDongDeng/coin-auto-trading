@@ -20,7 +20,7 @@ class ExchangeKey(
     @Column(name = "key_pair_id")
     val keyPairId: String,
     @Enumerated(EnumType.STRING)
-    @Column(name = "coin_exchange_type")
+    @Column(name = "exchange_type")
     val exchangeType: ExchangeType,
     @Column(name = "name")
     val name: String,
