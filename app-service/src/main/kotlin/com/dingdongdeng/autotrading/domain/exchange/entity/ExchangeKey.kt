@@ -17,8 +17,8 @@ class ExchangeKey(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "exchange_key_id")
     val id: Long? = null,
-    @Column(name = "pair_id")
-    val pairId: String,
+    @Column(name = "key_pair_id")
+    val keyPairId: String,
     @Enumerated(EnumType.STRING)
     @Column(name = "coin_exchange_type")
     val coinExchangeType: CoinExchangeType,
