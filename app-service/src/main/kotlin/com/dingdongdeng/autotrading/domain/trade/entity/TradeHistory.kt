@@ -23,6 +23,8 @@ class TradeHistory(
     val id: Long? = null,
     @Column(name = "user_id")
     val userId: Long,
+    @Column(name = "auto_trade_processor_id")
+    val autoTradeProcessorId: String,
     @Enumerated(EnumType.STRING)
     @Column(name = "coin_exchange_type")
     val coinExchangeType: CoinExchangeType,
