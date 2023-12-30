@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service
 class IndicatorService {
     private val core = Core()
 
+    //FIXME SpotCoinExchangeChartResult가 아니라 좀 더 범용적인 캔들이라는 개념의 모델을 사용하도록 하자
+    // (코인,주식 캔들이 올수도있잖아)
     fun calculate(chart: SpotCoinExchangeChartResult): Indicators {
         val candles = chart.candles
         return Indicators(
