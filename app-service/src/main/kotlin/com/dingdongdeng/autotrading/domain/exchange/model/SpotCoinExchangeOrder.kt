@@ -7,7 +7,7 @@ import com.dingdongdeng.autotrading.infra.common.type.OrderType
 import com.dingdongdeng.autotrading.infra.common.type.PriceType
 import java.time.LocalDateTime
 
-data class SpotCoinExchangeOrderResult(
+data class SpotCoinExchangeOrder(
     val orderId: String, // 주문의 고유 아이디
     val orderType: OrderType, // 주문 종류
     val priceType: PriceType, // 주문 방식

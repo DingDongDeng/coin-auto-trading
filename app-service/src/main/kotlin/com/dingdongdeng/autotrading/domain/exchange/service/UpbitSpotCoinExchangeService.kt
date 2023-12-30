@@ -4,8 +4,8 @@ import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChart
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChartCandle
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeKeyPair
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartParam
+import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrder
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderParam
-import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderResult
 import com.dingdongdeng.autotrading.domain.exchange.repository.ExchangeKeyRepository
 import com.dingdongdeng.autotrading.infra.client.upbit.CandleRequest
 import com.dingdongdeng.autotrading.infra.client.upbit.CandleResponse
@@ -31,7 +31,7 @@ class UpbitSpotCoinExchangeService(
     private val exchangeKeyRepository: ExchangeKeyRepository,
 ) : SpotCoinExchangeService {
 
-    override fun order(param: SpotCoinExchangeOrderParam, keyParam: ExchangeKeyPair): SpotCoinExchangeOrderResult {
+    override fun order(param: SpotCoinExchangeOrderParam, keyParam: ExchangeKeyPair): SpotCoinExchangeOrder {
         val request = OrderRequest(
             market = MarketType.of(param.coinType).code,
             side = Side.of(param.orderType),
@@ -40,7 +40,7 @@ class UpbitSpotCoinExchangeService(
             ordType = OrdType.of(param.priceType, param.orderType),
         )
         val response = upbitApiClient.order(request, makeToken(request, keyParam))
-        return SpotCoinExchangeOrderResult(
+        return SpotCoinExchangeOrder(
             orderId = response.uuid,
             orderType = response.side.orderType,
             priceType = response.ordType.priceType,
@@ -52,12 +52,12 @@ class UpbitSpotCoinExchangeService(
         )
     }
 
-    override fun cancel(orderId: String, keyParam: ExchangeKeyPair): SpotCoinExchangeOrderResult {
+    override fun cancel(orderId: String, keyParam: ExchangeKeyPair): SpotCoinExchangeOrder {
         val request = OrderCancelRequest(
             uuid = orderId
         )
         val response = upbitApiClient.orderCancel(request, makeToken(request, keyParam))
-        return SpotCoinExchangeOrderResult(
+        return SpotCoinExchangeOrder(
             orderId = response.uuid,
             orderType = response.side.orderType,
             priceType = response.ordType.priceType,
@@ -69,10 +69,10 @@ class UpbitSpotCoinExchangeService(
         )
     }
 
-    override fun getOrder(orderId: String, keyParam: ExchangeKeyPair): SpotCoinExchangeOrderResult {
+    override fun getOrder(orderId: String, keyParam: ExchangeKeyPair): SpotCoinExchangeOrder {
         val request = OrderInfoRequest(uuid = orderId)
         val response = upbitApiClient.getOrderInfo(request, makeToken(request, keyParam))
-        return SpotCoinExchangeOrderResult(
+        return SpotCoinExchangeOrder(
             orderId = response.uuid,
             orderType = response.side.orderType,
             priceType = response.ordType.priceType,
