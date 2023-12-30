@@ -1,9 +1,26 @@
 package com.dingdongdeng.autotrading.infra.common.type
 
+import java.util.EnumMap
+
 enum class ExchangeType(
     val desc: String,
-    val marketType: MarketType,
 ) {
-    SPOT_COIN("현물 코인 거래소", MarketType.SPOT),
-    FUTURE_COIN("선물 코인 거래소", MarketType.FUTURE);
+    UPBIT("업비트"),
+    BINANCE("바이낸스");
+
+    companion object {
+        fun of(name: String?): ExchangeType {
+            return values().first { type -> type.name.equals(name, ignoreCase = true) }
+        }
+
+        fun toMap(): EnumMap<ExchangeType, String> {
+            val map = EnumMap<ExchangeType, String>(
+                ExchangeType::class.java
+            )
+            for (value in values()) {
+                map[value] = value.desc
+            }
+            return map
+        }
+    }
 }

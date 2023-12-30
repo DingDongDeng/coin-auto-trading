@@ -21,7 +21,7 @@ class IndicatorService {
     fun calculate(chart: SpotCoinExchangeChartResult): Indicators {
         val candles = chart.candles
         return Indicators(
-            coinExchangeType = chart.coinExchangeType,
+            exchangeType = chart.exchangeType,
             coinType = chart.coinType,
             indicatorDateTime = candles.last().candleDateTimeKst,
             rsi = this.getRsi(candles),

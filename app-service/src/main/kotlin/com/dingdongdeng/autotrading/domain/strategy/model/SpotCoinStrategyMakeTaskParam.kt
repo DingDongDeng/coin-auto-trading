@@ -3,12 +3,12 @@ package com.dingdongdeng.autotrading.domain.strategy.model
 import com.dingdongdeng.autotrading.domain.indicator.model.Indicators
 import com.dingdongdeng.autotrading.domain.trade.entity.TradeHistory
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
-import com.dingdongdeng.autotrading.infra.common.type.CoinExchangeType
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
+import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import java.time.LocalDateTime
 
 data class SpotCoinStrategyMakeTaskParam(
-    val coinExchangeType: CoinExchangeType,
+    val exchangeType: ExchangeType,
     val coinType: CoinType,
     val charts: List<SpotCoinStrategyChartParam>,
     val tradeInfo: List<SpotCoinStrategyTradeInfoParam>,

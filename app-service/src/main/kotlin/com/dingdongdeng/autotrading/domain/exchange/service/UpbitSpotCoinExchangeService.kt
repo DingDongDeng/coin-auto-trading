@@ -18,8 +18,8 @@ import com.dingdongdeng.autotrading.infra.client.upbit.UpbitApiClient
 import com.dingdongdeng.autotrading.infra.client.upbit.UpbitTokenGenerator
 import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
-import com.dingdongdeng.autotrading.infra.common.type.CoinExchangeType
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
+import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
@@ -44,7 +44,7 @@ class UpbitSpotCoinExchangeService(
             priceType = response.ordType.priceType,
             price = response.price,
             orderState = response.state.orderState,
-            coinExchangeType = EXCHANGE_TYPE,
+            exchangeType = EXCHANGE_TYPE,
             coinType = MarketType.of(response.market).coinType,
             orderDateTime = response.getCreatedAt(),
         )
@@ -61,7 +61,7 @@ class UpbitSpotCoinExchangeService(
             priceType = response.ordType.priceType,
             price = response.price,
             orderState = response.state.orderState,
-            coinExchangeType = EXCHANGE_TYPE,
+            exchangeType = EXCHANGE_TYPE,
             coinType = MarketType.of(response.market).coinType,
             cancelDateTime = response.createdAt,
         )
@@ -76,7 +76,7 @@ class UpbitSpotCoinExchangeService(
             priceType = response.ordType.priceType,
             price = response.price,
             orderState = response.state.orderState,
-            coinExchangeType = EXCHANGE_TYPE,
+            exchangeType = EXCHANGE_TYPE,
             coinType = MarketType.of(response.market).coinType,
             orderDateTime = response.getCreatedAt(),
         )
@@ -119,14 +119,14 @@ class UpbitSpotCoinExchangeService(
             totalResponse.filter { (it.candleDateTimeKst.isAfter(param.to) || it.candleDateTimeKst.isBefore(param.from)).not() }
 
         return SpotCoinExchangeChartResult(
-            coinExchangeType = EXCHANGE_TYPE,
+            exchangeType = EXCHANGE_TYPE,
             coinType = param.coinType,
             from = param.from,
             to = param.to,
             currentPrice = totalResponse.last().tradePrice,
             candles = totalResponse.map {
                 SpotCoinExchangeCandleResult(
-                    coinExchangeType = EXCHANGE_TYPE,
+                    exchangeType = EXCHANGE_TYPE,
                     coinType = param.coinType,
                     candleUnit = param.candleUnit,
                     candleDateTimeUtc = it.candleDateTimeUtc,
@@ -142,7 +142,7 @@ class UpbitSpotCoinExchangeService(
         )
     }
 
-    override fun support(exchangeType: CoinExchangeType): Boolean {
+    override fun support(exchangeType: ExchangeType): Boolean {
         return exchangeType == EXCHANGE_TYPE
     }
 
@@ -171,6 +171,6 @@ class UpbitSpotCoinExchangeService(
     }
 
     companion object {
-        val EXCHANGE_TYPE = CoinExchangeType.UPBIT
+        val EXCHANGE_TYPE = ExchangeType.UPBIT
     }
 }

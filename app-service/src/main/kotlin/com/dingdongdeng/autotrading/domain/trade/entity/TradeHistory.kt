@@ -1,7 +1,7 @@
 package com.dingdongdeng.autotrading.domain.trade.entity
 
-import com.dingdongdeng.autotrading.infra.common.type.CoinExchangeType
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
+import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.type.OrderType
 import com.dingdongdeng.autotrading.infra.common.type.PriceType
 import jakarta.persistence.Column
@@ -27,7 +27,7 @@ class TradeHistory(
     val autoTradeProcessorId: String,
     @Enumerated(EnumType.STRING)
     @Column(name = "coin_exchange_type")
-    val coinExchangeType: CoinExchangeType,
+    val exchangeType: ExchangeType,
     @Enumerated(EnumType.STRING)
     @Column(name = "coint_type")
     val coinType: CoinType,
