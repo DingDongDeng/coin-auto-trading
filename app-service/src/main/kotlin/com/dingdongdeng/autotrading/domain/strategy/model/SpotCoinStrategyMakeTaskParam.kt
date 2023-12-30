@@ -37,6 +37,6 @@ data class SpotCoinStrategyChartCandleParam(
 data class SpotCoinStrategyTradeInfoParam(
     val volume: Double,
     val averagePrice: Int,
-    val lossProfitPrice: Int,
+    val lossProfitPrice: Int, // 손익 금액
     val tradeHistory: List<TradeHistory>,
 )
