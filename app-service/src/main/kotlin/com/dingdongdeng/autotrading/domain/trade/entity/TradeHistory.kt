@@ -39,8 +39,10 @@ class TradeHistory(
     val volume: Double,
     @Column(name = "price")
     val price: Double,
+    @Column(name = "traded_at")
+    val tradedAt: LocalDateTime,
     @Column(name = "created_at")
-    val createdAt: LocalDateTime,
+    val createdAt: LocalDateTime = LocalDateTime.now(),
     @Column(name = "updated_at")
-    val updatedAt: LocalDateTime,
+    val updatedAt: LocalDateTime = LocalDateTime.now(),
 )
