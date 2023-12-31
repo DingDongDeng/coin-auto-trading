@@ -1,5 +1,6 @@
 package com.dingdongdeng.autotrading.domain.trade.entity
 
+import com.dingdongdeng.autotrading.domain.trade.type.TradeStatus
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.type.OrderType
@@ -21,8 +22,11 @@ class CoinTradeHistory(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "coin_trade_history_id")
     val id: Long? = null,
-    @Column(name = "user_id")
-    val userId: Long,
+    @Column(name = "order_id")
+    val orderId: String,
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    val status: TradeStatus,
     @Column(name = "auto_trade_processor_id")
     val autoTradeProcessorId: String,
     @Enumerated(EnumType.STRING)
