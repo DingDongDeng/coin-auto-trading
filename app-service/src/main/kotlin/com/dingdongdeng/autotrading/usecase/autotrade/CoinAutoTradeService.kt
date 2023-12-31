@@ -3,6 +3,7 @@ package com.dingdongdeng.autotrading.usecase.autotrade
 import com.dingdongdeng.autotrading.domain.autotrade.service.AutoTradeService
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeKeyPair
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartParam
+import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrder
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderParam
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
 import com.dingdongdeng.autotrading.domain.indicator.service.IndicatorService
@@ -14,11 +15,11 @@ import com.dingdongdeng.autotrading.domain.strategy.service.SpotCoinStrategy
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.domain.trade.entity.CoinTradeHistory
 import com.dingdongdeng.autotrading.domain.trade.service.CoinTradeHistoryService
-import com.dingdongdeng.autotrading.domain.trade.type.TradeStatus
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.type.OrderType
+import com.dingdongdeng.autotrading.infra.common.type.TradeState
 import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
 import org.springframework.stereotype.Service
 import java.util.UUID
@@ -70,7 +71,7 @@ class CoinAutoTradeService(
                 )
             }
             strategyService.makeTask(makeTaskParams).forEach { task ->
-                when (task.orderType) {
+                val orderResponse = when (task.orderType) {
                     OrderType.BUY, OrderType.SELL -> {
                         val param = SpotCoinExchangeOrderParam(
                             coinType = task.coinType,
@@ -85,7 +86,12 @@ class CoinAutoTradeService(
                     OrderType.CANCEL -> exchangeService.cancel(task.orderId!!, exchangeKeyPair)
                 }
 
-                coinTradeHistoryService //TODO 거래결과를 저장
+                coinTradeHistoryService.save(
+                    makeCoinTradeHistory(
+                        order = orderResponse,
+                        autoTradeProcessorId = autoTradeProcessorId
+                    )
+                )
             }
         }
 
@@ -161,19 +167,15 @@ class CoinAutoTradeService(
         currentPrice: Double,
     ): SpotCoinStrategyTradeInfoParam {
 
-        val tradeHistories = coinTradeHistoryService.findAllTradeHistory(autoTradeProcessorId, coinType)
-
-        //TODO WAIT 상태의 거래건들 업데이트하기
-        val waitTradeHistories = tradeHistories.filter { it.status == TradeStatus.WAIT }
+        // WAIT 상태의 거래건들 업데이트
+        val tradeHistories2 = coinTradeHistoryService.findAllTradeHistory(autoTradeProcessorId, coinType)
+        val waitTradeHistories = tradeHistories2.filter { it.state == TradeState.WAIT }
         waitTradeHistories.forEach { waitTradeHistory ->
             val order = exchangeService.getOrder(waitTradeHistory.orderId, exchangeKeyPair)
-            coinTradeHistoryService.save(
-                CoinTradeHistory(
-
-                )
-            )
+            coinTradeHistoryService.save(makeCoinTradeHistory(waitTradeHistory.id, order, autoTradeProcessorId))
         }
 
+        val tradeHistories = coinTradeHistoryService.findAllTradeHistory(autoTradeProcessorId, coinType)
         val buyTradeHistories = tradeHistories.filter { it.orderType == OrderType.BUY }
         val sellTradeHistories = tradeHistories.filter { it.orderType == OrderType.SELL }
 
@@ -190,6 +192,27 @@ class CoinAutoTradeService(
             originPrice = originPrice,
             profitPrice = (valuePrice - originPrice),
             coinTradeHistory = coinTradeHistoryService.findAllTradeHistory(autoTradeProcessorId, coinType)
+        )
+    }
+
+    private fun makeCoinTradeHistory(
+        coinTradehistoryId: Long? = null,
+        order: SpotCoinExchangeOrder,
+        autoTradeProcessorId: String
+    ): CoinTradeHistory {
+        return CoinTradeHistory(
+            id = coinTradehistoryId,
+            orderId = order.orderId,
+            state = order.tradeState,
+            autoTradeProcessorId = autoTradeProcessorId,
+            exchangeType = order.exchangeType,
+            coinType = order.coinType,
+            orderType = order.orderType,
+            priceType = order.priceType,
+            volume = order.volume,
+            price = order.price,
+            fee = order.fee,
+            tradedAt = if (order.orderType == OrderType.CANCEL) order.cancelDateTime!! else order.orderDateTime!!,
         )
     }
 
