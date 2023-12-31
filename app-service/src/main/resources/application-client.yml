@@ -13,3 +13,6 @@ client:
       baseUrl: https://fapi.binance.com
       readTimeout: 5000
       connectionTimeout: 5000
+
+slack:
+  webHookUrl: ${SLACK_WEB_HOOK_URL}

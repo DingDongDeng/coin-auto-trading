@@ -3,6 +3,3 @@ spring:
     active: local
     include:
       - client
-
-slack:
-  webHookUrl: ${SLACK_WEB_HOOK_URL}

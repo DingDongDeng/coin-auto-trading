@@ -7,10 +7,10 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.web.reactive.function.client.WebClient
 
 @Configuration
-class SlackApiConfig {
+class SlackApiConfig(
     @Value("\${slack.webHookUrl:}")
     private val webHookUrl: String? = null
-
+) {
     @Bean
     fun slackWebClient(): WebClient {
         return WebClientUtils.makeWebClient(webHookUrl, 5000, 5000)
