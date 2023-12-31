@@ -6,7 +6,7 @@ import java.util.EnumMap
 enum class CandleUnit(
     val desc: String,
     val unitType: UnitType,
-    val size: Int,
+    val size: Long,
 ) {
     UNIT_1M("1분 봉", UnitType.MIN, 1),
     UNIT_3M("3분 봉", UnitType.MIN, 3),
@@ -20,10 +20,8 @@ enum class CandleUnit(
     UNIT_1W("1주 봉", UnitType.WEEK, 1),
     ;
 
-    enum class UnitType {
-        MIN,
-        DAY,
-        WEEK
+    fun getMinuteSize(): Long {
+        return this.unitType.minute * this.size
     }
 
     companion object {
@@ -37,4 +35,13 @@ enum class CandleUnit(
             return map
         }
     }
+}
+
+enum class UnitType(
+    val desc: String,
+    val minute: Long,
+) {
+    MIN("분", 1),
+    DAY("일", 24 * 60),
+    WEEK("주", 7 * 24 * 60)
 }
