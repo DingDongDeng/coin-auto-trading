@@ -47,18 +47,20 @@ class CoinAutoTradeService(
 
         val process = {
             val makeTaskParams = coinTypes.map { coinType ->
+                val charts = makeSpotCoinStrategyChartParam(
+                    exchangeService = exchangeService,
+                    coinType = coinType,
+                    candleUnits = candleUnits,
+                    exchangeKeyPair = exchangeKeyPair,
+                )
                 SpotCoinStrategyMakeTaskParam(
                     exchangeType = exchangeType,
                     coinType = coinType,
-                    charts = makeSpotCoinStrategyChartParam(
-                        exchangeService = exchangeService,
-                        coinType = coinType,
-                        candleUnits = candleUnits,
-                        exchangeKeyPair = exchangeKeyPair,
-                    ),
+                    charts = charts,
                     tradeInfo = makeSpotCoinStrategyTradeInfoParam(
                         autoTradeProcessorId = autoTradeProcessorId,
                         coinType = coinType,
+                        currentPrice = charts.first().currentPrice
                     ),
                 )
             }
@@ -133,22 +135,24 @@ class CoinAutoTradeService(
     private fun makeSpotCoinStrategyTradeInfoParam(
         autoTradeProcessorId: String,
         coinType: CoinType,
+        currentPrice: Int,
     ): SpotCoinStrategyTradeInfoParam {
-        val coinTradeHistories = tradeHistoryService.findAllTradeHistory(autoTradeProcessorId, coinType)
-        val buyCoinTradeHistories = coinTradeHistories.filter { it.orderType == OrderType.BUY }
-        val sellCoinTradeHistories = coinTradeHistories.filter { it.orderType == OrderType.SELL }
+        val tradeHistories = tradeHistoryService.findAllTradeHistory(autoTradeProcessorId, coinType)
+        val buyTradeHistories = tradeHistories.filter { it.orderType == OrderType.BUY }
+        val sellTradeHistories = tradeHistories.filter { it.orderType == OrderType.SELL }
 
-        val volume = buyCoinTradeHistories.sumOf { it.volume } - sellCoinTradeHistories.sumOf { it.volume }
-        val value =
-            buyCoinTradeHistories.sumOf { it.price * it.volume } - sellCoinTradeHistories.sumOf { it.price * it.volume }
-        val averagePrice = if (volume == 0.0) 0 else value / volume
+        val volume = buyTradeHistories.sumOf { it.volume } - sellTradeHistories.sumOf { it.volume }
+        val value = buyTradeHistories.sumOf { it.price * it.volume } - sellTradeHistories.sumOf { it.price * it.volume }
+        val averagePrice = (if (volume == 0.0) 0 else (value / volume)).toInt()
+        val valuePrice = (volume * currentPrice).toInt()
+        val originPrice = (volume * averagePrice).toInt()
 
         return SpotCoinStrategyTradeInfoParam(
-            volume = buyCoinTradeHistories.sumOf { it.volume } - sellCoinTradeHistories.sumOf { it.volume },
-            averagePrice = averagePrice.toInt(),
-            valuePrice = 0,
-            valueProfitPrice = 0,
-            realizedProfitPrice = 0, // TODO
+            volume = buyTradeHistories.sumOf { it.volume } - sellTradeHistories.sumOf { it.volume },
+            averagePrice = averagePrice,
+            valuePrice = valuePrice,
+            originPrice = originPrice,
+            profitPrice = (valuePrice - originPrice),
             coinTradeHistory = tradeHistoryService.findAllTradeHistory(autoTradeProcessorId, coinType)
         )
     }
