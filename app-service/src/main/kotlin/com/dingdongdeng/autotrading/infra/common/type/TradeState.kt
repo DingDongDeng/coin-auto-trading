@@ -1,6 +1,6 @@
 package com.dingdongdeng.autotrading.infra.common.type
 
-enum class OrderState(
+enum class TradeState(
     val desc: String
 ) {
     WAIT("체결 대기"),

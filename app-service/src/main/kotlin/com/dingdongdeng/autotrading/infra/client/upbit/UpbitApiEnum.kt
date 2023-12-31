@@ -1,18 +1,18 @@
 package com.dingdongdeng.autotrading.infra.client.upbit
 
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
-import com.dingdongdeng.autotrading.infra.common.type.OrderState
 import com.dingdongdeng.autotrading.infra.common.type.OrderType
 import com.dingdongdeng.autotrading.infra.common.type.PriceType
+import com.dingdongdeng.autotrading.infra.common.type.TradeState
 
 enum class State(
     val desc: String,
-    val orderState: OrderState
+    val tradeState: TradeState
 ) {
-    wait("체결 대기", OrderState.WAIT),
-    watch("예약주문 대기", OrderState.WAIT),
-    done("전체 체결 완료", OrderState.DONE),
-    cancel("주문 취소", OrderState.CANCEL),
+    wait("체결 대기", TradeState.WAIT),
+    watch("예약주문 대기", TradeState.WAIT),
+    done("전체 체결 완료", TradeState.DONE),
+    cancel("주문 취소", TradeState.CANCEL),
     ;
 }
 
