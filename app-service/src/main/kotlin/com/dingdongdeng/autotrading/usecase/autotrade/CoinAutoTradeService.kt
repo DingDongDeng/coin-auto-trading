@@ -15,6 +15,7 @@ import com.dingdongdeng.autotrading.domain.trade.service.TradeHistoryService
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
+import com.dingdongdeng.autotrading.infra.common.type.OrderType
 import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
 import org.springframework.stereotype.Service
 import java.util.UUID
@@ -133,10 +134,21 @@ class CoinAutoTradeService(
         autoTradeProcessorId: String,
         coinType: CoinType,
     ): SpotCoinStrategyTradeInfoParam {
+        val coinTradeHistories = tradeHistoryService.findAllTradeHistory(autoTradeProcessorId, coinType)
+        val buyCoinTradeHistories = coinTradeHistories.filter { it.orderType == OrderType.BUY }
+        val sellCoinTradeHistories = coinTradeHistories.filter { it.orderType == OrderType.SELL }
+
+        val volume = buyCoinTradeHistories.sumOf { it.volume } - sellCoinTradeHistories.sumOf { it.volume }
+        val value =
+            buyCoinTradeHistories.sumOf { it.price * it.volume } - sellCoinTradeHistories.sumOf { it.price * it.volume }
+        val averagePrice = if (volume == 0.0) 0 else value / volume
+
         return SpotCoinStrategyTradeInfoParam(
-            volume = 0,
-            averagePrice = 0,
-            lossProfitPrice = 0, //TODO 실현 손익과, 평가 손익을 구분하고 싶어
+            volume = buyCoinTradeHistories.sumOf { it.volume } - sellCoinTradeHistories.sumOf { it.volume },
+            averagePrice = averagePrice.toInt(),
+            valuePrice = 0,
+            valueProfitPrice = 0,
+            realizedProfitPrice = 0, // TODO
             coinTradeHistory = tradeHistoryService.findAllTradeHistory(autoTradeProcessorId, coinType)
         )
     }
