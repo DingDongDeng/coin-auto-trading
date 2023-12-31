@@ -3,6 +3,7 @@ package com.dingdongdeng.autotrading.usecase.autotrade
 import com.dingdongdeng.autotrading.domain.autotrade.service.AutoTradeService
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeKeyPair
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartParam
+import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderParam
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
 import com.dingdongdeng.autotrading.domain.indicator.service.IndicatorService
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyChartCandleParam
@@ -11,7 +12,9 @@ import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyMakeTa
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyTradeInfoParam
 import com.dingdongdeng.autotrading.domain.strategy.service.SpotCoinStrategy
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
-import com.dingdongdeng.autotrading.domain.trade.service.TradeHistoryService
+import com.dingdongdeng.autotrading.domain.trade.entity.CoinTradeHistory
+import com.dingdongdeng.autotrading.domain.trade.service.CoinTradeHistoryService
+import com.dingdongdeng.autotrading.domain.trade.type.TradeStatus
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
@@ -27,7 +30,7 @@ class CoinAutoTradeService(
     private val indicatorService: IndicatorService,
     private val strategyServices: List<SpotCoinStrategy>,
     private val autoTradeService: AutoTradeService,
-    private val tradeHistoryService: TradeHistoryService,
+    private val coinTradeHistoryService: CoinTradeHistoryService,
 ) {
 
     fun register(
@@ -58,14 +61,32 @@ class CoinAutoTradeService(
                     coinType = coinType,
                     charts = charts,
                     tradeInfo = makeSpotCoinStrategyTradeInfoParam(
+                        exchangeService = exchangeService,
+                        exchangeKeyPair = exchangeKeyPair,
                         autoTradeProcessorId = autoTradeProcessorId,
                         coinType = coinType,
-                        currentPrice = charts.first().currentPrice
+                        currentPrice = charts.first().currentPrice,
                     ),
                 )
             }
-            strategyService.makeTask(makeTaskParams)
-            strategyService.handleResult()
+            strategyService.makeTask(makeTaskParams).forEach { task ->
+                when (task.orderType) {
+                    OrderType.BUY, OrderType.SELL -> {
+                        val param = SpotCoinExchangeOrderParam(
+                            coinType = task.coinType,
+                            orderType = task.orderType,
+                            volume = task.volume,
+                            price = task.price,
+                            priceType = task.priceType,
+                        )
+                        exchangeService.order(param, exchangeKeyPair)
+                    }
+
+                    OrderType.CANCEL -> exchangeService.cancel(task.orderId!!, exchangeKeyPair)
+                }
+
+                coinTradeHistoryService //TODO 거래결과를 저장
+            }
         }
 
         return autoTradeService.register(autoTradeProcessorId, userId, process, 10000)
@@ -73,9 +94,9 @@ class CoinAutoTradeService(
 
     private fun makeSpotCoinStrategyChartParam(
         exchangeService: SpotCoinExchangeService,
+        exchangeKeyPair: ExchangeKeyPair,
         coinType: CoinType,
         candleUnits: List<CandleUnit>,
-        exchangeKeyPair: ExchangeKeyPair
     ): List<SpotCoinStrategyChartParam> {
         return candleUnits.map { candleUnit ->
             val now = TimeContext.now()
@@ -133,11 +154,26 @@ class CoinAutoTradeService(
     }
 
     private fun makeSpotCoinStrategyTradeInfoParam(
+        exchangeService: SpotCoinExchangeService,
+        exchangeKeyPair: ExchangeKeyPair,
         autoTradeProcessorId: String,
         coinType: CoinType,
         currentPrice: Double,
     ): SpotCoinStrategyTradeInfoParam {
-        val tradeHistories = tradeHistoryService.findAllTradeHistory(autoTradeProcessorId, coinType)
+
+        val tradeHistories = coinTradeHistoryService.findAllTradeHistory(autoTradeProcessorId, coinType)
+
+        //TODO WAIT 상태의 거래건들 업데이트하기
+        val waitTradeHistories = tradeHistories.filter { it.status == TradeStatus.WAIT }
+        waitTradeHistories.forEach { waitTradeHistory ->
+            val order = exchangeService.getOrder(waitTradeHistory.orderId, exchangeKeyPair)
+            coinTradeHistoryService.save(
+                CoinTradeHistory(
+
+                )
+            )
+        }
+
         val buyTradeHistories = tradeHistories.filter { it.orderType == OrderType.BUY }
         val sellTradeHistories = tradeHistories.filter { it.orderType == OrderType.SELL }
 
@@ -153,7 +189,7 @@ class CoinAutoTradeService(
             valuePrice = valuePrice,
             originPrice = originPrice,
             profitPrice = (valuePrice - originPrice),
-            coinTradeHistory = tradeHistoryService.findAllTradeHistory(autoTradeProcessorId, coinType)
+            coinTradeHistory = coinTradeHistoryService.findAllTradeHistory(autoTradeProcessorId, coinType)
         )
     }
 
