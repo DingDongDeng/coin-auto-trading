@@ -12,12 +12,15 @@ data class SpotCoinStrategyMakeTaskParam(
     val coinType: CoinType,
     val charts: List<SpotCoinStrategyChartParam>, // 1분봉, 5분봉, 60분봉 등
     val tradeInfo: SpotCoinStrategyTradeInfoParam,
-)
+) {
+    fun getChart(candleUnit: CandleUnit): SpotCoinStrategyChartParam = charts.first { it.candleUnit == candleUnit }
+}
 
 data class SpotCoinStrategyChartParam(
     val from: LocalDateTime,
     val to: LocalDateTime,
     val currentPrice: Int,
+    val candleUnit: CandleUnit,
     val candles: List<SpotCoinStrategyChartCandleParam>,
 )
 
