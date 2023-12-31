@@ -40,7 +40,9 @@ class CoinTradeHistory(
     @Column(name = "volume")
     val volume: Double,
     @Column(name = "price")
-    val price: Double,
+    val price: Int,
+    @Column(name = "fee")
+    val fee: Int,
     @Column(name = "traded_at")
     val tradedAt: LocalDateTime,
     @Column(name = "created_at")
