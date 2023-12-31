@@ -1,8 +1,8 @@
 package com.dingdongdeng.autotrading.domain.trade.entity
 
-import com.dingdongdeng.autotrading.domain.trade.type.TradeStatus
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
+import com.dingdongdeng.autotrading.infra.common.type.OrderState
 import com.dingdongdeng.autotrading.infra.common.type.OrderType
 import com.dingdongdeng.autotrading.infra.common.type.PriceType
 import jakarta.persistence.Column
@@ -25,8 +25,8 @@ class CoinTradeHistory(
     @Column(name = "order_id")
     val orderId: String,
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
-    val status: TradeStatus,
+    @Column(name = "state")
+    val state: OrderState,
     @Column(name = "auto_trade_processor_id")
     val autoTradeProcessorId: String,
     @Enumerated(EnumType.STRING)
@@ -46,7 +46,7 @@ class CoinTradeHistory(
     @Column(name = "price")
     val price: Double,
     @Column(name = "fee")
-    val fee: Int,
+    val fee: Double,
     @Column(name = "traded_at")
     val tradedAt: LocalDateTime,
     @Column(name = "created_at")

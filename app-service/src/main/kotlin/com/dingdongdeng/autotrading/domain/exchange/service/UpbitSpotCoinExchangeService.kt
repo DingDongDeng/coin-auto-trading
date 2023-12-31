@@ -45,9 +45,11 @@ class UpbitSpotCoinExchangeService(
             orderType = response.side.orderType,
             priceType = response.ordType.priceType,
             price = response.price,
+            volume = response.volume,
             orderState = response.state.orderState,
             exchangeType = EXCHANGE_TYPE,
             coinType = MarketType.of(response.market).coinType,
+            fee = response.paidFee,
             orderDateTime = response.getCreatedAt(),
         )
     }
@@ -62,9 +64,11 @@ class UpbitSpotCoinExchangeService(
             orderType = response.side.orderType,
             priceType = response.ordType.priceType,
             price = response.price,
+            volume = response.volume,
             orderState = response.state.orderState,
             exchangeType = EXCHANGE_TYPE,
             coinType = MarketType.of(response.market).coinType,
+            fee = response.paidFee,
             cancelDateTime = response.createdAt,
         )
     }
@@ -77,9 +81,11 @@ class UpbitSpotCoinExchangeService(
             orderType = response.side.orderType,
             priceType = response.ordType.priceType,
             price = response.price,
+            volume = response.volume,
             orderState = response.state.orderState,
             exchangeType = EXCHANGE_TYPE,
             coinType = MarketType.of(response.market).coinType,
+            fee = response.paidFee,
             orderDateTime = response.getCreatedAt(),
         )
     }

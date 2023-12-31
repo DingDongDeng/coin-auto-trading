@@ -1,15 +1,15 @@
 package com.dingdongdeng.autotrading.domain.trade.repository
 
 import com.dingdongdeng.autotrading.domain.trade.entity.CoinTradeHistory
-import com.dingdongdeng.autotrading.domain.trade.type.TradeStatus
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
+import com.dingdongdeng.autotrading.infra.common.type.OrderState
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface CoinTradeHistoryRepository : JpaRepository<CoinTradeHistory, Long> {
 
-    fun findByAutoTradeProcessorIdAndCoinTypeAndStatusInOrderByTradedAtAsc(
+    fun findByAutoTradeProcessorIdAndCoinTypeAndStateInOrderByTradedAtAsc(
         autoTradeProcessorId: String,
         coinType: CoinType,
-        status: List<TradeStatus>,
+        states: List<OrderState>,
     ): List<CoinTradeHistory>
 }

@@ -2,8 +2,8 @@ package com.dingdongdeng.autotrading.domain.trade.service
 
 import com.dingdongdeng.autotrading.domain.trade.entity.CoinTradeHistory
 import com.dingdongdeng.autotrading.domain.trade.repository.CoinTradeHistoryRepository
-import com.dingdongdeng.autotrading.domain.trade.type.TradeStatus
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
+import com.dingdongdeng.autotrading.infra.common.type.OrderState
 import org.springframework.stereotype.Service
 
 @Service
@@ -14,16 +14,16 @@ class CoinTradeHistoryService(
     fun findAllTradeHistory(
         autoTradeProcessorId: String,
         coinType: CoinType,
-        tradeStatus: List<TradeStatus> = listOf(
-            TradeStatus.WAIT,
-            TradeStatus.DONE,
-            TradeStatus.CANCEL
+        states: List<OrderState> = listOf(
+            OrderState.WAIT,
+            OrderState.DONE,
+            OrderState.CANCEL
         )
     ): List<CoinTradeHistory> {
-        return coinTradeHistoryRepository.findByAutoTradeProcessorIdAndCoinTypeAndStatusInOrderByTradedAtAsc(
+        return coinTradeHistoryRepository.findByAutoTradeProcessorIdAndCoinTypeAndStateInOrderByTradedAtAsc(
             autoTradeProcessorId,
             coinType,
-            tradeStatus,
+            states,
         )
     }
 

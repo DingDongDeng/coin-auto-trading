@@ -12,9 +12,11 @@ data class SpotCoinExchangeOrder(
     val orderType: OrderType, // 주문 종류
     val priceType: PriceType, // 주문 방식
     val price: Double, // 주문 당시 화폐 가격
+    val volume: Double,
     val orderState: OrderState, // 주문 상태
     val exchangeType: ExchangeType,
     val coinType: CoinType,
+    val fee: Double,
     val orderDateTime: LocalDateTime? = null, // 주문 시간
     val cancelDateTime: LocalDateTime? = null, // 취소 시간
 )

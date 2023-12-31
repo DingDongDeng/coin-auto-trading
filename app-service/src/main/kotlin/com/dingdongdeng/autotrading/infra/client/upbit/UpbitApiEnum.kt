@@ -10,7 +10,7 @@ enum class State(
     val orderState: OrderState
 ) {
     wait("체결 대기", OrderState.WAIT),
-    watch("예약주문 대기", OrderState.WATCH),
+    watch("예약주문 대기", OrderState.WAIT),
     done("전체 체결 완료", OrderState.DONE),
     cancel("주문 취소", OrderState.CANCEL),
     ;
