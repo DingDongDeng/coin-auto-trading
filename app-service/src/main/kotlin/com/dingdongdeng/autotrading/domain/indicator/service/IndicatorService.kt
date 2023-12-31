@@ -1,6 +1,5 @@
 package com.dingdongdeng.autotrading.domain.indicator.service
 
-import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChart
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChartCandle
 import com.dingdongdeng.autotrading.domain.indicator.model.BollingerBands
 import com.dingdongdeng.autotrading.domain.indicator.model.Indicators
@@ -16,10 +15,9 @@ import org.springframework.stereotype.Service
 class IndicatorService {
     private val core = Core()
 
-    fun calculate(chart: ExchangeChart): Indicators {
-        val candles = chart.candles
+    fun calculate(candles: List<ExchangeChartCandle>): Indicators {
         return Indicators(
-            indicatorDateTime = candles.last().candleDateTimeKst,
+            indicatorDateTimeKst = candles.last().candleDateTimeKst,
             rsi = this.getRsi(candles),
             macd = this.getMACD(candles),
             bollingerBands = this.getBollingerBands(candles),
