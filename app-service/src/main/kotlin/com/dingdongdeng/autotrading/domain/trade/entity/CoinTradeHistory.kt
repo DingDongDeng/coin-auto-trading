@@ -15,11 +15,11 @@ import jakarta.persistence.Table
 import java.time.LocalDateTime
 
 @Entity
-@Table(name = "trade_history")
-class TradeHistory(
+@Table(name = "coin_trade_history")
+class CoinTradeHistory(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "trade_history_id")
+    @Column(name = "coin_trade_history_id")
     val id: Long? = null,
     @Column(name = "user_id")
     val userId: Long,

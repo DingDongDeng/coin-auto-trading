@@ -1,15 +1,15 @@
 package com.dingdongdeng.autotrading.domain.trade.service
 
-import com.dingdongdeng.autotrading.domain.trade.entity.TradeHistory
-import com.dingdongdeng.autotrading.domain.trade.repository.TradeHistoryRepository
+import com.dingdongdeng.autotrading.domain.trade.entity.CoinTradeHistory
+import com.dingdongdeng.autotrading.domain.trade.repository.CoinTradeHistoryRepository
 import org.springframework.stereotype.Service
 
 @Service
 class TradeHistoryService(
-    private val tradeHistoryRepository: TradeHistoryRepository,
+    private val coinTradeHistoryRepository: CoinTradeHistoryRepository,
 ) {
 
-    fun findAllAutoTradeProcessorTradeHistory(autoTradeProcessorId: String): List<TradeHistory> {
-        return tradeHistoryRepository.findByAutoTradeProcessorIdOrderByTradedAtAsc(autoTradeProcessorId)
+    fun findAllAutoTradeProcessorTradeHistory(autoTradeProcessorId: String): List<CoinTradeHistory> {
+        return coinTradeHistoryRepository.findByAutoTradeProcessorIdOrderByTradedAtAsc(autoTradeProcessorId)
     }
 }
