@@ -67,7 +67,7 @@ class UpbitApiClientTest(
             market = "KRW-ETH",
             side = Side.bid,
             volume = 1.0,
-            price = 5000,
+            price = 5000.0,
             ordType = OrdType.limit,
         )
         val orderResponse = upbitApiClient.order(orderRequest, makeToken(orderRequest))

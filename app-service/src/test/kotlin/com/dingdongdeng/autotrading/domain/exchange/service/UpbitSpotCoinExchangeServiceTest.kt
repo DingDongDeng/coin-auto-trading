@@ -34,7 +34,7 @@ class UpbitSpotCoinExchangeServiceTest(
             coinType = CoinType.ETHEREUM,
             orderType = OrderType.BUY,
             volume = 1.0,
-            price = 5000,
+            price = 5000.0,
             priceType = PriceType.LIMIT,
         )
         val orderResponse = upbitSpotCoinExchangeService.order(orderRequest, keyParam)

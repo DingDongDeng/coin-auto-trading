@@ -5,6 +5,6 @@ import java.time.LocalDateTime
 data class ExchangeChart(
     val from: LocalDateTime,
     val to: LocalDateTime,
-    val currentPrice: Int,
+    val currentPrice: Double,
     val candles: List<ExchangeChartCandle>,
 )

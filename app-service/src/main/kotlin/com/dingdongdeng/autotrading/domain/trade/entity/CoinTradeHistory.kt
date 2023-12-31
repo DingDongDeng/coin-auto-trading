@@ -40,7 +40,7 @@ class CoinTradeHistory(
     @Column(name = "volume")
     val volume: Double,
     @Column(name = "price")
-    val price: Int,
+    val price: Double,
     @Column(name = "fee")
     val fee: Int,
     @Column(name = "traded_at")

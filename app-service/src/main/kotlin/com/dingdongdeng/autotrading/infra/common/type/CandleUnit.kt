@@ -6,7 +6,7 @@ import java.util.EnumMap
 enum class CandleUnit(
     val desc: String,
     val unitType: UnitType,
-    val size: Long,
+    val size: Int,
 ) {
     UNIT_1M("1분 봉", UnitType.MIN, 1),
     UNIT_3M("3분 봉", UnitType.MIN, 3),
