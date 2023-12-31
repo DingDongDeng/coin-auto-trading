@@ -3,6 +3,7 @@ package com.dingdongdeng.autotrading.domain.autotrade.service
 import com.dingdongdeng.autotrading.domain.autotrade.model.AutoTradeProcessor
 import com.dingdongdeng.autotrading.infra.client.slack.SlackSender
 import org.springframework.stereotype.Service
+import java.util.UUID
 
 @Service
 class AutoTradeService(
@@ -15,8 +16,14 @@ class AutoTradeService(
         return storedProcessors[autoTradeProcessorId] ?: throw NoSuchElementException()
     }
 
-    fun register(userId: Long, process: () -> Unit, duration: Long): String {
+    fun register(
+        autoTradeProcessorId: String = UUID.randomUUID().toString(),
+        userId: Long,
+        process: () -> Unit,
+        duration: Long
+    ): String {
         val processor = AutoTradeProcessor(
+            id = autoTradeProcessorId,
             userId = userId,
             process = process,
             duration = duration,
