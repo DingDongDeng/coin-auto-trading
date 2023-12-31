@@ -40,8 +40,8 @@ data class SpotCoinStrategyChartCandleParam(
 data class SpotCoinStrategyTradeInfoParam(
     val volume: Double,     // 수량        ex) 이더리움 1.38개 보유
     val averagePrice: Int,  // 평균 단가    ex) 이더리움 평균 단가 807,302원
-    val valuePrice: Int,   // 평가 금액     ex) 이더리움 평가 가치가 1,305,783원
-    val valueProfitPrice: Int,   // 손익 평가 금액 ex) 현재 +230원 이익 중
-    val realizedProfitPrice: Int,  // 손익 실현 금액  ex) 현재 실현된 이익 -770원 이익 중
+    val valuePrice: Int,   // 현재 평가 금액     ex) 이더리움 평가 가치가 1,305,783원
+    val originPrice: Int, // 매수했던 시점의 평가 금액
+    val profitPrice: Int,   // 손익 평가 금액 ex) valuePrice - originPrice
     val coinTradeHistory: List<CoinTradeHistory>,
 )
