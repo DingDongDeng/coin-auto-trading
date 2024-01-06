@@ -1,11 +1,11 @@
 package com.dingdongdeng.autotrading.usecase.autotrade.service
 
-import com.dingdongdeng.autotrading.domain.autotrade.service.AutoTradeService
+import com.dingdongdeng.autotrading.domain.process.service.ProcessService
 import org.springframework.stereotype.Service
 
 @Service
 class AutoTradeManageService(
-    private val autoTradeService: AutoTradeService,
+    private val processService: ProcessService,
 ) {
 
     fun register(
@@ -13,6 +13,6 @@ class AutoTradeManageService(
         autoTradeProcessorId: String,
         process: () -> Unit,
     ): String {
-        return autoTradeService.register(autoTradeProcessorId, userId, process, 10000)
+        return processService.register(autoTradeProcessorId, userId, process, 10000)
     }
 }
