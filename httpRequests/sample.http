@@ -1,0 +1,16 @@
+POST http://localhost:8080/user/autotrade/register
+Content-Type: application/json
+
+{
+  "coinStrategyType": "PROTO",
+  "exchangeType": "UPBIT",
+  "coinTypes": [
+    "BITCOIN",
+    "ETHEREUM"
+  ],
+  "candleUnits": [
+    "UNIT_1M",
+    "UNIT_3M"
+  ],
+  "keyPairId":
+}

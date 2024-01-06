@@ -1,4 +1,4 @@
-package com.dingdongdeng.autotrading.usecase.dashboard.service
+package com.dingdongdeng.autotrading.usecase.autotrade.service
 
 import com.dingdongdeng.autotrading.domain.autotrade.service.AutoTradeService
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyMakeTaskParam
@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service
 import java.util.UUID
 
 @Service
-class CoinDashBoardService(
+class CoinAutoTradeService(
     private val strategyServices: List<SpotCoinStrategy>,
-    private val autoTradeService: AutoTradeService,
+    private val autoTradeService: AutoTradeService, //FIXME 처음 보는 사람이...  autoTradeService는 머고... coinAutoTrade**Service는 머고 하는 궁금증을 안갖게해야해
 
     private val coinAutoTradeChartService: CoinAutoTradeChartService,
     private val coinAutoTradeInfoService: CoinAutoTradeInfoService,
