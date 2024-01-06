@@ -1,23 +1,23 @@
-package com.dingdongdeng.autotrading.domain.autotrade.model
+package com.dingdongdeng.autotrading.domain.process.model
 
-import com.dingdongdeng.autotrading.domain.autotrade.type.AutoTradingProcessStatus
+import com.dingdongdeng.autotrading.domain.process.type.ProcessStatus
 import com.dingdongdeng.autotrading.infra.client.slack.SlackSender
 import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
 import java.util.UUID
 import java.util.concurrent.CompletableFuture
 
-class AutoTradeProcessor(
+class Processor(
     val id: String = UUID.randomUUID().toString(),
     val userId: Long,
-    var status: AutoTradingProcessStatus = AutoTradingProcessStatus.INIT,
+    var status: ProcessStatus = ProcessStatus.INIT,
     val process: () -> Unit,
     val duration: Long = 60 * 1000, // milliseconds
     val slackSender: SlackSender,
 ) {
     fun start() {
-        status = AutoTradingProcessStatus.RUNNING
+        status = ProcessStatus.RUNNING
         CompletableFuture.runAsync {
-            while (status == AutoTradingProcessStatus.RUNNING) {
+            while (status == ProcessStatus.RUNNING) {
                 try {
                     Thread.sleep(duration)
                     process()
@@ -30,10 +30,10 @@ class AutoTradeProcessor(
     }
 
     fun stop() {
-        status = AutoTradingProcessStatus.STOPPED
+        status = ProcessStatus.STOPPED
     }
 
     fun terminate() {
-        status = AutoTradingProcessStatus.TERMINATED
+        status = ProcessStatus.TERMINATED
     }
 }
