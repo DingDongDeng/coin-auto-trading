@@ -1,8 +1,6 @@
 package com.dingdongdeng.autotrading.usecase.autotrade.service
 
-import com.dingdongdeng.autotrading.domain.autotrade.service.AutoTradeService
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyMakeTaskParam
-import com.dingdongdeng.autotrading.domain.strategy.service.SpotCoinStrategy
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
@@ -12,12 +10,10 @@ import java.util.UUID
 
 @Service
 class CoinAutoTradeService(
-    private val strategyServices: List<SpotCoinStrategy>,
-    private val autoTradeService: AutoTradeService, //FIXME 처음 보는 사람이...  autoTradeService는 머고... coinAutoTrade**Service는 머고 하는 궁금증을 안갖게해야해
-
     private val coinAutoTradeChartService: CoinAutoTradeChartService,
     private val coinAutoTradeInfoService: CoinAutoTradeInfoService,
-    private val coinAutoTradeOrderService: CoinAutoTradeOrderService,
+    private val coinAutoTradeTaskService: CoinAutoTradeTaskService,
+    private val coinAutoTradeManageService: CoinAutoTradeManageService,
 ) {
 
     fun registerCoinAutoTrade(
@@ -31,10 +27,9 @@ class CoinAutoTradeService(
     ): String {
 
         val autoTradeProcessorId = UUID.randomUUID().toString()
-        val strategyService = strategyServices.first { it.support(coinStrategyType) }
 
         val process = {
-            val makeTaskParams = coinTypes.map { coinType ->
+            val params = coinTypes.map { coinType ->
                 // 차트 조회
                 val charts = coinAutoTradeChartService.makeCharts(
                     exchangeType = exchangeType,
@@ -59,16 +54,27 @@ class CoinAutoTradeService(
                     tradeInfo = tradeInfo,
                 )
             }
-            strategyService.makeTask(makeTaskParams).forEach { task ->
-                coinAutoTradeOrderService.order(
-                    exchangeType = exchangeType,
-                    keyPairId = keyPairId,
-                    autoTradeProcessorId = autoTradeProcessorId,
-                    task = task,
-                )
-            }
+
+            // 작업 생성 (매수, 매도, 취소)
+            val tasks = coinAutoTradeTaskService.makeTask(
+                params = params,
+                strategyType = coinStrategyType
+            )
+
+            // 작업 실행
+            coinAutoTradeTaskService.execute(
+                tasks = tasks,
+                keyPairId = keyPairId,
+                autoTradeProcessorId = autoTradeProcessorId,
+                exchangeType = exchangeType
+            )
         }
 
-        return autoTradeService.register(autoTradeProcessorId, userId, process, 10000)
+        // 자동매매 등록
+        return coinAutoTradeManageService.register(
+            userId = userId,
+            autoTradeProcessorId = autoTradeProcessorId,
+            process = process,
+        )
     }
 }
