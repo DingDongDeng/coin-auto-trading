@@ -18,7 +18,6 @@ class AutoTradeUsecase(
     private val autoTradeManageService: AutoTradeManageService,
     private val autoTradeChartService: AutoTradeChartService,
     private val autoTradeInfoService: AutoTradeInfoService,
-
     // 코인
     private val coinAutoTradeTaskService: CoinAutoTradeTaskService,
 ) {
