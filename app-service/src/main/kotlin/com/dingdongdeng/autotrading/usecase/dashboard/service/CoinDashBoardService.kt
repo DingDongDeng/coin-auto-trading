@@ -1,4 +1,4 @@
-package com.dingdongdeng.autotrading.usecase.autotrade
+package com.dingdongdeng.autotrading.usecase.dashboard.service
 
 import com.dingdongdeng.autotrading.domain.autotrade.service.AutoTradeService
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyMakeTaskParam
@@ -7,14 +7,11 @@ import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
-import com.dingdongdeng.autotrading.usecase.autotrade.service.CoinAutoTradeChartService
-import com.dingdongdeng.autotrading.usecase.autotrade.service.CoinAutoTradeInfoService
-import com.dingdongdeng.autotrading.usecase.autotrade.service.CoinAutoTradeOrderService
 import org.springframework.stereotype.Service
 import java.util.UUID
 
 @Service
-class CoinAutoTradeService(
+class CoinDashBoardService(
     private val strategyServices: List<SpotCoinStrategy>,
     private val autoTradeService: AutoTradeService,
 
@@ -23,7 +20,7 @@ class CoinAutoTradeService(
     private val coinAutoTradeOrderService: CoinAutoTradeOrderService,
 ) {
 
-    fun register(
+    fun registerCoinAutoTrade(
         userId: Long,
         coinStrategyType: CoinStrategyType,
         exchangeType: ExchangeType,

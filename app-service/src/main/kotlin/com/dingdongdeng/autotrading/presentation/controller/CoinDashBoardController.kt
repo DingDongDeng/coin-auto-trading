@@ -1,8 +1,8 @@
-package com.dingdongdeng.autotrading.presentation.dashboard.controller
+package com.dingdongdeng.autotrading.presentation.controller
 
 import com.dingdongdeng.autotrading.presentation.common.CommonResponse
-import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinAutotradeRegisterRequest
-import com.dingdongdeng.autotrading.usecase.autotrade.CoinAutoTradeService
+import com.dingdongdeng.autotrading.usecase.dashboard.model.CoinAutotradeRegisterRequest
+import com.dingdongdeng.autotrading.usecase.dashboard.service.CoinDashBoardService
 import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -11,8 +11,17 @@ import org.springframework.web.bind.annotation.SessionAttribute
 
 @RestController
 class CoinDashBoardController(
-    private val coinAutoTradeService: CoinAutoTradeService,
+    private val coinDashBoardService: CoinDashBoardService,
 ) {
+
+    @PostMapping("/user/exchange-key/register")
+    fun register(
+
+    ): CommonResponse<String> {
+        return CommonResponse(
+
+        )
+    }
 
     @PostMapping("/user/autotrade/register")
     fun register(
@@ -20,7 +29,7 @@ class CoinDashBoardController(
         @SessionAttribute userId: Long
     ): CommonResponse<String> {
         return CommonResponse(
-            body = coinAutoTradeService.register(
+            body = coinDashBoardService.registerCoinAutoTrade(
                 userId = userId,
                 coinStrategyType = request.coinStrategyType,
                 exchangeType = request.exchangeType,

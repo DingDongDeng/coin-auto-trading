@@ -1,4 +1,4 @@
-package com.dingdongdeng.autotrading.presentation.dashboard.model
+package com.dingdongdeng.autotrading.usecase.dashboard.model
 
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
