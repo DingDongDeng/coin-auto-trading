@@ -64,7 +64,7 @@ class AutoTradeInfoService(
             id = coinTradehistoryId,
             orderId = order.orderId,
             state = order.tradeState,
-            autoTradeProcessorId = autoTradeProcessorId,
+            processorId = autoTradeProcessorId,
             exchangeType = order.exchangeType,
             coinType = order.coinType,
             orderType = order.orderType,

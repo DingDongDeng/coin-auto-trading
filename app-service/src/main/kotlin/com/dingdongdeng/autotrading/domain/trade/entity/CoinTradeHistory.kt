@@ -27,8 +27,8 @@ class CoinTradeHistory(
     @Enumerated(EnumType.STRING)
     @Column(name = "state")
     val state: TradeState,
-    @Column(name = "auto_trade_processor_id")
-    val autoTradeProcessorId: String,
+    @Column(name = "processor_id")
+    val processorId: String,
     @Enumerated(EnumType.STRING)
     @Column(name = "coin_exchange_type")
     val exchangeType: ExchangeType,
