@@ -156,16 +156,26 @@ class UpbitSpotCoinExchangeService(
         )
     }
 
-    override fun registerKeyPair(exchangeType: ExchangeType, keyName: String, keyValue: String, userId: Long) {
-        exchangeKeyRepository.save(
-            ExchangeKey(
-                keyPairId = UUID.randomUUID().toString(),
-                exchangeType = exchangeType,
-                name = keyName,
-                value = keyValue,
-                userId = userId,
-            )
+    override fun registerKeyPair(accessKey: String, secretKey: String, userId: Long): String {
+        val keyPairId = UUID.randomUUID().toString()
+        val accessExchangeKey = ExchangeKey(
+            keyPairId = keyPairId,
+            exchangeType = EXCHANGE_TYPE,
+            name = ACCESS_KEY_NAME,
+            value = accessKey,
+            userId = userId,
         )
+        val secretExchangeKey = ExchangeKey(
+            keyPairId = keyPairId,
+            exchangeType = EXCHANGE_TYPE,
+            name = SECRET_KEY_NAME,
+            value = secretKey,
+            userId = userId,
+        )
+        exchangeKeyRepository.saveAll(
+            listOf(accessExchangeKey, secretExchangeKey)
+        )
+        return keyPairId
     }
 
     override fun support(exchangeType: ExchangeType): Boolean {

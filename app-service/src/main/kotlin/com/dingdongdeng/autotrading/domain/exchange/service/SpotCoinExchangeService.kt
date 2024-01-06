@@ -13,6 +13,6 @@ interface SpotCoinExchangeService {
     fun getOrder(orderId: String, keyParam: ExchangeKeyPair): SpotCoinExchangeOrder
     fun getChart(param: SpotCoinExchangeChartParam, keyParam: ExchangeKeyPair): ExchangeChart
     fun getKeyPair(keyPairId: String): ExchangeKeyPair
-    fun registerKeyPair(exchangeType: ExchangeType, keyName: String, keyValue: String, userId: Long)
+    fun registerKeyPair(accessKey: String, secretKey: String, userId: Long): String
     fun support(exchangeType: ExchangeType): Boolean
 }
