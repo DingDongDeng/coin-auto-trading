@@ -4,7 +4,7 @@ import com.dingdongdeng.autotrading.domain.autotrade.service.AutoTradeService
 import org.springframework.stereotype.Service
 
 @Service
-class CoinAutoTradeManageService(
+class AutoTradeManageService(
     private val autoTradeService: AutoTradeService,
 ) {
 

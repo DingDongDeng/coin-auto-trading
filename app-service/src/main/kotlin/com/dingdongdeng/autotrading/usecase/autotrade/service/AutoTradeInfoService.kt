@@ -12,12 +12,12 @@ import com.dingdongdeng.autotrading.infra.common.type.TradeState
 import org.springframework.stereotype.Service
 
 @Service
-class CoinAutoTradeInfoService(
+class AutoTradeInfoService(
     private val exchangeServices: List<SpotCoinExchangeService>,
     private val coinTradeHistoryService: CoinTradeHistoryService,
 ) {
 
-    fun makeTradeInfo(
+    fun makeCoinTradeInfo(
         exchangeType: ExchangeType,
         keyPairId: String,
         autoTradeProcessorId: String,
