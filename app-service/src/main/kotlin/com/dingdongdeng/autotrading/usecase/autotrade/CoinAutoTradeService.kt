@@ -1,7 +1,6 @@
 package com.dingdongdeng.autotrading.usecase.autotrade
 
 import com.dingdongdeng.autotrading.domain.autotrade.service.AutoTradeService
-import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyMakeTaskParam
 import com.dingdongdeng.autotrading.domain.strategy.service.SpotCoinStrategy
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
@@ -13,7 +12,6 @@ import java.util.UUID
 
 @Service
 class CoinAutoTradeService(
-    private val exchangeServices: List<SpotCoinExchangeService>,
     private val strategyServices: List<SpotCoinStrategy>,
     private val autoTradeService: AutoTradeService,
 
@@ -34,15 +32,13 @@ class CoinAutoTradeService(
 
         val autoTradeProcessorId = UUID.randomUUID().toString()
         val strategyService = strategyServices.first { it.support(coinStrategyType) }
-        val exchangeService = exchangeServices.first { it.support(exchangeType) }
-        val exchangeKeyPair = exchangeService.getExchangeKeyPair(keyPairId)
 
         val process = {
             val makeTaskParams = coinTypes.map { coinType ->
                 // 차트 조회
                 val charts = coinAutoTradeChartService.makeCharts(
                     exchangeType = exchangeType,
-                    exchangeKeyPair = exchangeKeyPair,
+                    keyPairId = keyPairId,
                     coinType = coinType,
                     candleUnits = candleUnits,
                 )
@@ -50,7 +46,7 @@ class CoinAutoTradeService(
                 // 거래 정보 조회
                 val tradeInfo = coinAutoTradeInfoService.makeTradeInfo(
                     exchangeType = exchangeType,
-                    exchangeKeyPair = exchangeKeyPair,
+                    keyPairId = keyPairId,
                     autoTradeProcessorId = autoTradeProcessorId,
                     coinType = coinType,
                     currentPrice = charts.first().currentPrice,
@@ -66,7 +62,7 @@ class CoinAutoTradeService(
             strategyService.makeTask(makeTaskParams).forEach { task ->
                 coinAutoTradeOrderService.order(
                     exchangeType = exchangeType,
-                    exchangeKeyPair = exchangeKeyPair,
+                    keyPairId = keyPairId,
                     autoTradeProcessorId = autoTradeProcessorId,
                     task = task,
                 )

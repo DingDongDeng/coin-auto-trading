@@ -1,6 +1,5 @@
 package com.dingdongdeng.autotrading.usecase.autotrade
 
-import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeKeyPair
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartParam
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
 import com.dingdongdeng.autotrading.domain.indicator.service.IndicatorService
@@ -21,7 +20,7 @@ class CoinAutoTradeChartService(
 
     fun makeCharts(
         exchangeType: ExchangeType,
-        exchangeKeyPair: ExchangeKeyPair,
+        keyPairId: String,
         coinType: CoinType,
         candleUnits: List<CandleUnit>,
     ): List<SpotCoinStrategyChartParam> {
@@ -34,7 +33,9 @@ class CoinAutoTradeChartService(
                 to = now,
             )
 
-            val chart = exchangeServices.first { it.support(exchangeType) }.getChart(chartParam, exchangeKeyPair)
+            val exchangeService = exchangeServices.first { it.support(exchangeType) }
+            val exchangeKeyPair = exchangeService.getExchangeKeyPair(keyPairId)
+            val chart = exchangeService.getChart(chartParam, exchangeKeyPair)
 
             val chartCandleParams = mutableListOf<SpotCoinStrategyChartCandleParam>()
             var count = 0

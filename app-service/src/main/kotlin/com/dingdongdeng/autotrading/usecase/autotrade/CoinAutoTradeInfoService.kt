@@ -1,6 +1,5 @@
 package com.dingdongdeng.autotrading.usecase.autotrade
 
-import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeKeyPair
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrder
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyTradeInfoParam
@@ -20,7 +19,7 @@ class CoinAutoTradeInfoService(
 
     fun makeTradeInfo(
         exchangeType: ExchangeType,
-        exchangeKeyPair: ExchangeKeyPair,
+        keyPairId: String,
         autoTradeProcessorId: String,
         coinType: CoinType,
         currentPrice: Double,
@@ -30,8 +29,9 @@ class CoinAutoTradeInfoService(
         val tradeHistories2 = coinTradeHistoryService.findAllTradeHistory(autoTradeProcessorId, coinType)
         val waitTradeHistories = tradeHistories2.filter { it.state == TradeState.WAIT }
         waitTradeHistories.forEach { waitTradeHistory ->
-            val order =
-                exchangeServices.first { it.support(exchangeType) }.getOrder(waitTradeHistory.orderId, exchangeKeyPair)
+            val exchangeService = exchangeServices.first { it.support(exchangeType) }
+            val exchangeKeyPair = exchangeService.getExchangeKeyPair(keyPairId)
+            val order = exchangeService.getOrder(waitTradeHistory.orderId, exchangeKeyPair)
             coinTradeHistoryService.save(makeCoinTradeHistory(waitTradeHistory.id, order, autoTradeProcessorId))
         }
 

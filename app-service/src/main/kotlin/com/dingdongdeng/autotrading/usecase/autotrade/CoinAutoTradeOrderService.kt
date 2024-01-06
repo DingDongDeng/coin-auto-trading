@@ -1,6 +1,5 @@
 package com.dingdongdeng.autotrading.usecase.autotrade
 
-import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeKeyPair
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrder
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderParam
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
@@ -18,12 +17,13 @@ class CoinAutoTradeOrderService(
 ) {
     fun order(
         exchangeType: ExchangeType,
-        exchangeKeyPair: ExchangeKeyPair,
+        keyPairId: String,
         autoTradeProcessorId: String,
         task: SpotCoinStrategyTask,
     ) {
 
         val exchangeService = exchangeServices.first { it.support(exchangeType) }
+        val exchangeKeyPair = exchangeService.getExchangeKeyPair(keyPairId)
         val orderResponse = when (task.orderType) {
             OrderType.BUY, OrderType.SELL -> {
                 val param = SpotCoinExchangeOrderParam(
