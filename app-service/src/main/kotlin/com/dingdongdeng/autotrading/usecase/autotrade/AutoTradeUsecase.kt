@@ -8,18 +8,16 @@ import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.usecase.autotrade.service.AutoTradeChartService
 import com.dingdongdeng.autotrading.usecase.autotrade.service.AutoTradeInfoService
 import com.dingdongdeng.autotrading.usecase.autotrade.service.AutoTradeManageService
-import com.dingdongdeng.autotrading.usecase.autotrade.service.CoinAutoTradeTaskService
+import com.dingdongdeng.autotrading.usecase.autotrade.service.AutoTradeTaskService
 import org.springframework.stereotype.Service
 import java.util.UUID
 
 @Service
 class AutoTradeUsecase(
-    // 공통
     private val autoTradeManageService: AutoTradeManageService,
     private val autoTradeChartService: AutoTradeChartService,
     private val autoTradeInfoService: AutoTradeInfoService,
-    // 코인
-    private val coinAutoTradeTaskService: CoinAutoTradeTaskService,
+    private val autoTradeTaskService: AutoTradeTaskService,
 ) {
 
     fun registerCoinAutoTrade(
@@ -62,13 +60,13 @@ class AutoTradeUsecase(
             }
 
             // 작업 생성 (매수, 매도, 취소)
-            val tasks = coinAutoTradeTaskService.makeTask(
+            val tasks = autoTradeTaskService.makeCoinTask(
                 params = params,
                 strategyType = coinStrategyType
             )
 
             // 작업 실행
-            coinAutoTradeTaskService.execute(
+            autoTradeTaskService.executeCoinTask(
                 tasks = tasks,
                 keyPairId = keyPairId,
                 autoTradeProcessorId = autoTradeProcessorId,

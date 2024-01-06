@@ -14,13 +14,13 @@ import com.dingdongdeng.autotrading.infra.common.type.OrderType
 import org.springframework.stereotype.Service
 
 @Service
-class CoinAutoTradeTaskService(
+class AutoTradeTaskService(
     private val exchangeServices: List<SpotCoinExchangeService>,
     private val strategyServices: List<SpotCoinStrategy>,
     private val coinTradeHistoryService: CoinTradeHistoryService,
 ) {
 
-    fun makeTask(
+    fun makeCoinTask(
         params: List<SpotCoinStrategyMakeTaskParam>,
         strategyType: CoinStrategyType
     ): List<SpotCoinStrategyTask> {
@@ -28,7 +28,7 @@ class CoinAutoTradeTaskService(
         return strategyService.makeTask(params)
     }
 
-    fun execute(
+    fun executeCoinTask(
         tasks: List<SpotCoinStrategyTask>,
         autoTradeProcessorId: String,
         keyPairId: String,
