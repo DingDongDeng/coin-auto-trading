@@ -7,6 +7,9 @@ import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
+import com.dingdongdeng.autotrading.usecase.autotrade.service.CoinAutoTradeChartService
+import com.dingdongdeng.autotrading.usecase.autotrade.service.CoinAutoTradeInfoService
+import com.dingdongdeng.autotrading.usecase.autotrade.service.CoinAutoTradeOrderService
 import org.springframework.stereotype.Service
 import java.util.UUID
 
