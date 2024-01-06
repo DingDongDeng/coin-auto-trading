@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class KeyUsecase(
-    private val exchangeServices: List<SpotCoinExchangeService>
+    private val coinExchangeServices: List<SpotCoinExchangeService>
 ) {
     fun registerCoinExchangeKey(
         exchangeType: ExchangeType,
@@ -14,7 +14,7 @@ class KeyUsecase(
         secretKey: String,
         userId: Long
     ): String {
-        val exchangeService = exchangeServices.first { it.support(exchangeType) }
+        val exchangeService = coinExchangeServices.first { it.support(exchangeType) }
         return exchangeService.registerKeyPair(
             accessKey = accessKey,
             secretKey = secretKey,
