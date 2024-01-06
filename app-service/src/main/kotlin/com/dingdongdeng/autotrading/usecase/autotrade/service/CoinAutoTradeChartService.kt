@@ -1,4 +1,4 @@
-package com.dingdongdeng.autotrading.usecase.autotrade
+package com.dingdongdeng.autotrading.usecase.autotrade.service
 
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartParam
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
