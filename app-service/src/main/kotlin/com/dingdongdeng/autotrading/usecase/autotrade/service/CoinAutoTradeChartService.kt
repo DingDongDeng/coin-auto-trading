@@ -34,7 +34,7 @@ class CoinAutoTradeChartService(
             )
 
             val exchangeService = exchangeServices.first { it.support(exchangeType) }
-            val exchangeKeyPair = exchangeService.getExchangeKeyPair(keyPairId)
+            val exchangeKeyPair = exchangeService.getKeyPair(keyPairId)
             val chart = exchangeService.getChart(chartParam, exchangeKeyPair)
 
             val chartCandleParams = mutableListOf<SpotCoinStrategyChartCandleParam>()

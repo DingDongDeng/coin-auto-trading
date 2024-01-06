@@ -23,7 +23,7 @@ class CoinAutoTradeOrderService(
     ) {
 
         val exchangeService = exchangeServices.first { it.support(exchangeType) }
-        val exchangeKeyPair = exchangeService.getExchangeKeyPair(keyPairId)
+        val exchangeKeyPair = exchangeService.getKeyPair(keyPairId)
         val orderResponse = when (task.orderType) {
             OrderType.BUY, OrderType.SELL -> {
                 val param = SpotCoinExchangeOrderParam(

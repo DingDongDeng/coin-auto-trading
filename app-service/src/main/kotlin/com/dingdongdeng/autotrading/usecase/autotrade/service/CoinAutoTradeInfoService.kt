@@ -30,7 +30,7 @@ class CoinAutoTradeInfoService(
         val waitTradeHistories = tradeHistories2.filter { it.state == TradeState.WAIT }
         waitTradeHistories.forEach { waitTradeHistory ->
             val exchangeService = exchangeServices.first { it.support(exchangeType) }
-            val exchangeKeyPair = exchangeService.getExchangeKeyPair(keyPairId)
+            val exchangeKeyPair = exchangeService.getKeyPair(keyPairId)
             val order = exchangeService.getOrder(waitTradeHistory.orderId, exchangeKeyPair)
             coinTradeHistoryService.save(makeCoinTradeHistory(waitTradeHistory.id, order, autoTradeProcessorId))
         }
