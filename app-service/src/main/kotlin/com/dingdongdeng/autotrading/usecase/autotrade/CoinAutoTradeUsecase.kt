@@ -1,15 +1,19 @@
-package com.dingdongdeng.autotrading.usecase.autotrade.service
+package com.dingdongdeng.autotrading.usecase.autotrade
 
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyMakeTaskParam
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
+import com.dingdongdeng.autotrading.usecase.autotrade.service.CoinAutoTradeChartService
+import com.dingdongdeng.autotrading.usecase.autotrade.service.CoinAutoTradeInfoService
+import com.dingdongdeng.autotrading.usecase.autotrade.service.CoinAutoTradeManageService
+import com.dingdongdeng.autotrading.usecase.autotrade.service.CoinAutoTradeTaskService
 import org.springframework.stereotype.Service
 import java.util.UUID
 
 @Service
-class CoinAutoTradeService(
+class CoinAutoTradeUsecase(
     private val coinAutoTradeChartService: CoinAutoTradeChartService,
     private val coinAutoTradeInfoService: CoinAutoTradeInfoService,
     private val coinAutoTradeTaskService: CoinAutoTradeTaskService,
