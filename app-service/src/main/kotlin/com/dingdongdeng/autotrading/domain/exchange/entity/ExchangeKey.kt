@@ -27,5 +27,5 @@ class ExchangeKey(
     @Column(name = "`value`")
     val value: String,
     @Column(name = "user_id")
-    val userId: String,
+    val userId: Long,
 )
