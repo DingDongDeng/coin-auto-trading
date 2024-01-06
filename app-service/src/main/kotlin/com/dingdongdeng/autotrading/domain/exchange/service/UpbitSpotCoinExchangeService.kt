@@ -1,5 +1,6 @@
 package com.dingdongdeng.autotrading.domain.exchange.service
 
+import com.dingdongdeng.autotrading.domain.exchange.entity.ExchangeKey
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChart
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChartCandle
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeKeyPair
@@ -23,6 +24,7 @@ import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
+import java.util.UUID
 
 @Service
 class UpbitSpotCoinExchangeService(
@@ -146,11 +148,23 @@ class UpbitSpotCoinExchangeService(
         )
     }
 
-    override fun getExchangeKeyPair(keyPairId: String): ExchangeKeyPair {
+    override fun getKeyPair(keyPairId: String): ExchangeKeyPair {
         val exchangeKeys = exchangeKeyRepository.findByExchangeTypeAndKeyPairId(EXCHANGE_TYPE, keyPairId)
         return ExchangeKeyPair(
             accessKey = exchangeKeys.first { it.name == ACCESS_KEY_NAME }.value,
             secretKey = exchangeKeys.first { it.name == SECRET_KEY_NAME }.value,
+        )
+    }
+
+    override fun registerKeyPair(exchangeType: ExchangeType, keyName: String, keyValue: String, userId: Long) {
+        exchangeKeyRepository.save(
+            ExchangeKey(
+                keyPairId = UUID.randomUUID().toString(),
+                exchangeType = exchangeType,
+                name = keyName,
+                value = keyValue,
+                userId = userId,
+            )
         )
     }
 
