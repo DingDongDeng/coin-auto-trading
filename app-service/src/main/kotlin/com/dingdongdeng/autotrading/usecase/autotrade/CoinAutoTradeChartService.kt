@@ -36,7 +36,7 @@ class CoinAutoTradeChartService(
 
             val chart = exchangeServices.first { it.support(exchangeType) }.getChart(chartParam, exchangeKeyPair)
 
-            val strategyChartCandleParams = mutableListOf<SpotCoinStrategyChartCandleParam>()
+            val chartCandleParams = mutableListOf<SpotCoinStrategyChartCandleParam>()
             var count = 0
             for ((index, candle) in chart.candles.withIndex().reversed()) {
                 if (count >= CHART_CANDLE_MAX_COUNT) {
@@ -52,7 +52,7 @@ class CoinAutoTradeChartService(
                     throw RuntimeException("캔들의 시간과 보조지표의 시간이 다름 (예상한 계산 결과가 아님)")
                 }
 
-                strategyChartCandleParams.add(
+                chartCandleParams.add(
                     SpotCoinStrategyChartCandleParam(
                         candleUnit = candle.candleUnit,
                         candleDateTimeUtc = candle.candleDateTimeUtc,
@@ -68,14 +68,14 @@ class CoinAutoTradeChartService(
                 )
                 count++
             }
-            strategyChartCandleParams.sortBy { it.candleDateTimeKst }
+            chartCandleParams.sortBy { it.candleDateTimeKst }
 
             SpotCoinStrategyChartParam(
                 from = chart.from,
                 to = chart.to,
                 currentPrice = chart.currentPrice,
                 candleUnit = candleUnit,
-                candles = strategyChartCandleParams,
+                candles = chartCandleParams,
             )
         }
     }
