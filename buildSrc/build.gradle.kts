@@ -9,14 +9,14 @@ repositories {
 
 dependencies {
     // kotlin plugin
-    val kotlinVersion = "1.8.22"
+    val kotlinVersion = "1.9.21"
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
     implementation("org.jetbrains.kotlin:kotlin-allopen:$kotlinVersion")
     implementation("org.jetbrains.kotlin:kotlin-noarg:$kotlinVersion")
 
     // spring plugin
-    implementation("org.springframework.boot:spring-boot-gradle-plugin:3.1.5") //TODO 3.2 버전이 나오면 REST Client를 사용하자
-    implementation("io.spring.gradle:dependency-management-plugin:1.1.3")
+    implementation("org.springframework.boot:spring-boot-gradle-plugin:3.2.1")
+    implementation("io.spring.gradle:dependency-management-plugin:1.1.4")
 
     // test plugin
     implementation("org.asciidoctor:asciidoctor-gradle-jvm:3.3.2")
