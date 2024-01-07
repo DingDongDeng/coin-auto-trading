@@ -13,6 +13,8 @@ import java.time.LocalDateTime
 @Component
 class UpbitApiRateLimiter {
 
+    //FIXME keyPairId 단위로 해야함..
+
     private var countPerSeconds = 0
     private var lastRequestedAt = LocalDateTime.now()
 
