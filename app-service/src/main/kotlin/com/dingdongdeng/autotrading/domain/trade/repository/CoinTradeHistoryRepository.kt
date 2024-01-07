@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface CoinTradeHistoryRepository : JpaRepository<CoinTradeHistory, Long> {
 
-    fun findByAutoTradeProcessorIdAndCoinTypeAndStateInOrderByTradedAtAsc(
+    fun findByProcessorIdAndCoinTypeAndStateInOrderByTradedAtAsc(
         autoTradeProcessorId: String,
         coinType: CoinType,
         states: List<TradeState>,

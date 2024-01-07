@@ -13,6 +13,6 @@ class SlackApiConfig(
 ) {
     @Bean
     fun slackRestClient(): RestClient {
-        return RestClientUtils.makeRestClient(webHookUrl!!, 5000, 5000)
+        return RestClientUtils.makeRestClient(webHookUrl ?: "", 5000, 5000)
     }
 }
