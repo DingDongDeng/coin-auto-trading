@@ -1,10 +1,10 @@
 package com.dingdongdeng.autotrading.infra.client.slack
 
-import com.dingdongdeng.autotrading.utils.WebClientUtils
+import com.dingdongdeng.autotrading.infra.client.common.RestClientUtils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.client.RestClient
 
 @Configuration
 class SlackApiConfig(
@@ -12,7 +12,7 @@ class SlackApiConfig(
     private val webHookUrl: String? = null
 ) {
     @Bean
-    fun slackWebClient(): WebClient {
-        return WebClientUtils.makeWebClient(webHookUrl, 5000, 5000)
+    fun slackRestClient(): RestClient {
+        return RestClientUtils.makeRestClient(webHookUrl!!, 5000, 5000)
     }
 }
