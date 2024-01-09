@@ -17,10 +17,6 @@ class CoinDashBoardController(
     private val keyUsecase: KeyUsecase,
 ) {
 
-    /**
-     *  TODO
-     *      JPA 설정도 잡아줘야할듯
-     */
     @PostMapping("/exchange-key/register")
     fun exchangeKeyRegister(
         @Valid @RequestBody request: CoinExchangeKeyRegisterRequest,
