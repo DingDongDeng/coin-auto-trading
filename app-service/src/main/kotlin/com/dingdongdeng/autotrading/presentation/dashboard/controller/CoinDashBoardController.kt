@@ -1,7 +1,8 @@
 package com.dingdongdeng.autotrading.presentation.dashboard.controller
 
 import com.dingdongdeng.autotrading.infra.common.web.CommonResponse
-import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinDashBoardRequest
+import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinAutotradeRegisterRequest
+import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinExchangeKeyRegisterRequest
 import com.dingdongdeng.autotrading.usecase.autotrade.AutoTradeUsecase
 import com.dingdongdeng.autotrading.usecase.key.KeyUsecase
 import jakarta.validation.Valid
@@ -18,24 +19,27 @@ class CoinDashBoardController(
 
     /**
      *  TODO
-     *      코인, 주식 등등 으로 확장될 수 있는데
-     *      url 설계를 어떤식으로 해야할까?? (AutoTradeUsecase로 하나로 추상화했으니 통합할수있는 방식을 고민해보자)
+     *      JPA 설정도 잡아줘야할듯
      */
+    @PostMapping("/exchange-key/register")
+    fun exchangeKeyRegister(
+        @Valid @RequestBody request: CoinExchangeKeyRegisterRequest,
+        @SessionAttribute userId: Long,
+    ): CommonResponse<String> {
+        return CommonResponse(
+            body = keyUsecase.registerCoinExchangeKey(
+                exchangeType = request.exchangeType,
+                accessKey = request.accessKey,
+                secretKey = request.secretKey,
+                userId = userId,
+            )
+        )
+    }
 
-
-//    @PostMapping("/user/exchange-key/register")
-//    fun register(
-//
-//    ): CommonResponse<String> {
-//        return CommonResponse(
-//            body = keyUsecase.registerCoinExchangeKey()
-//        )
-//    }
-
-    @PostMapping("/user/autotrade/register")
-    fun register(
-        @Valid @RequestBody request: CoinDashBoardRequest,
-        @SessionAttribute userId: Long
+    @PostMapping("/autotrade/register")
+    fun autotradeRegister(
+        @Valid @RequestBody request: CoinAutotradeRegisterRequest,
+        @SessionAttribute userId: Long,
     ): CommonResponse<String> {
         return CommonResponse(
             body = autoTradeUsecase.registerCoinAutoTrade(

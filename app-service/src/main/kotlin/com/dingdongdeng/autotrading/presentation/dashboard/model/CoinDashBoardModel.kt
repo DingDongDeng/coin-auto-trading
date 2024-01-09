@@ -5,15 +5,13 @@ import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 
-data class CoinDashBoardRequest(
-    val coinStrategyType: CoinStrategyType,
+data class CoinExchangeKeyRegisterRequest(
     val exchangeType: ExchangeType,
-    val coinTypes: List<CoinType>,
-    val candleUnits: List<CandleUnit>,
-    val keyPairId: String,
+    val accessKey: String,
+    val secretKey: String,
 )
 
-data class CoinDashBoardRequest2(
+data class CoinAutotradeRegisterRequest(
     val coinStrategyType: CoinStrategyType,
     val exchangeType: ExchangeType,
     val coinTypes: List<CoinType>,
