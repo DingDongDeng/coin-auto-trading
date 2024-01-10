@@ -1,4 +1,15 @@
-POST http://localhost:8080/user/autotrade/register
+### 거래소 키 등록
+POST http://localhost:8080/exchange-key/register
+Content-Type: application/json
+
+{
+  "exchangeType": "UPBIT",
+  "accessKey": "access key",
+  "secretKey": "secret key"
+}
+
+### 자동매매 등록
+POST http://localhost:8080/autotrade/register
 Content-Type: application/json
 
 {
@@ -12,5 +23,17 @@ Content-Type: application/json
     "UNIT_1M",
     "UNIT_3M"
   ],
-  "keyPairId":
+  "keyPairId": "9f57ddad-243c-4ee3-9b4d-24744f258270"
 }
+
+### 자동매매 시작
+POST http://localhost:8080/autotrade/b818a6ad-6b59-4d73-ad9e-9d28c050f781/start
+Content-Type: application/json
+
+### 자동매매 정지
+POST http://localhost:8080/autotrade/b818a6ad-6b59-4d73-ad9e-9d28c050f781/stop
+Content-Type: application/json
+
+### 자동매매 제거
+POST http://localhost:8080/autotrade/bdb74ff9-2d3a-4494-8ed4-70995ae7b748/terminate
+Content-Type: application/json
