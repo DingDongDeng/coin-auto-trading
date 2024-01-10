@@ -15,4 +15,16 @@ class AutoTradeManageService(
     ): String {
         return processService.register(autoTradeProcessorId, userId, process, 10000)
     }
+
+    fun start(autoTradeProcessorId: String) {
+        processService.start(autoTradeProcessorId)
+    }
+
+    fun stop(autoTradeProcessorId: String) {
+        processService.stop(autoTradeProcessorId)
+    }
+
+    fun terminate(autoTradeProcessorId: String) {
+        processService.terminate(autoTradeProcessorId)
+    }
 }

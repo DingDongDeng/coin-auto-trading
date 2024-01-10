@@ -32,23 +32,34 @@ class AutoTradeChartService(
                 from = now.minusMinutes(2 * CHART_CANDLE_MAX_COUNT * candleUnit.getMinuteSize()), // 보조지표 계산을 위해 2배로 조회
                 to = now,
             )
-
             val exchangeService = exchangeServices.first { it.support(exchangeType) }
             val exchangeKeyPair = exchangeService.getKeyPair(keyPairId)
+            /*
+             * 각 캔들의 보조지표 계산을 위한 200개씩의 과거 캔들이 필요
+             * 아래 로직은 총 400개의 캔들을 미리 조회하고
+             * 리스트를 200크기로 subList하여 실제 매매에서 사용할 캔들(보조지표가 계산된) 200개를 생성
+             * ex)
+             *  idx= 0~199 캔들은 idx=199 캔들의 보조 지표 계산해 사용
+             *  idx= 1~200 캔들은 idx=200 캔들의 보조 지표 계산해 사용
+             *  ... (생략)
+             *  idx= 200~399 캔들은 idx=399 캔들의 보조 지표 계산해 사용
+             *  실제 매매 로직에서는 보조지표가 계산된 idx=199~399를 사용
+             */
             val chart = exchangeService.getChart(chartParam, exchangeKeyPair)
-
             val chartCandleParams = mutableListOf<SpotCoinStrategyChartCandleParam>()
             var count = 0
-            for ((index, candle) in chart.candles.withIndex().reversed()) {
+            for ((index, candle) in chart.candles.reversed().withIndex()) {
                 if (count >= CHART_CANDLE_MAX_COUNT) {
                     break
                 }
-                val indicator = indicatorService.calculate(
-                    chart.candles.subList(
-                        max(0, chart.candles.size - CHART_CANDLE_MAX_COUNT - index),
-                        chart.candles.size - 1 - index
-                    )
-                )
+
+                // startIdx <= subList < endIdx
+                val startIdx = max(0, chart.candles.size - CHART_CANDLE_MAX_COUNT - index) // 무조건 0 이상의 수가 나오도록 방어 로직
+                val endIdx = chart.candles.size - index
+                if (endIdx - startIdx < 200) {
+                    throw RuntimeException("캔들의 보조 지표 계산을 위한 적절한 수의 과거 캔들을 추출하는데 실패")
+                }
+                val indicator = indicatorService.calculate(chart.candles.subList(startIdx, endIdx))
                 if (candle.candleDateTimeKst.isEqual(indicator.indicatorDateTimeKst).not()) {
                     throw RuntimeException("캔들의 시간과 보조지표의 시간이 다름 (예상한 계산 결과가 아님)")
                 }

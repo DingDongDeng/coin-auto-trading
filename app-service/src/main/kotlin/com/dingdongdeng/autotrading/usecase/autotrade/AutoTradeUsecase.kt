@@ -81,4 +81,19 @@ class AutoTradeUsecase(
             process = process,
         )
     }
+
+    fun start(autoTradeProcessorId: String): String {
+        autoTradeManageService.start(autoTradeProcessorId)
+        return autoTradeProcessorId
+    }
+
+    fun stop(autoTradeProcessorId: String): String {
+        autoTradeManageService.stop(autoTradeProcessorId)
+        return autoTradeProcessorId
+    }
+
+    fun terminate(autoTradeProcessorId: String): String {
+        autoTradeManageService.terminate(autoTradeProcessorId)
+        return autoTradeProcessorId
+    }
 }
