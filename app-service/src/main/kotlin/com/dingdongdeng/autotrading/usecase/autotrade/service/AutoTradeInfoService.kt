@@ -26,18 +26,18 @@ class AutoTradeInfoService(
     ): SpotCoinStrategyTradeInfoParam {
 
         // WAIT 상태의 거래건들 업데이트
-        val tradeHistories2 = coinTradeHistoryService.findAllTradeHistory(autoTradeProcessorId, coinType)
-        val waitTradeHistories = tradeHistories2.filter { it.state == TradeState.WAIT }
+        val notSyncedTradeHistories = coinTradeHistoryService.findAllTradeHistory(autoTradeProcessorId, coinType)
+        val waitTradeHistories = notSyncedTradeHistories.filter { it.state == TradeState.WAIT }
         waitTradeHistories.forEach { waitTradeHistory ->
             val exchangeService = exchangeServices.first { it.support(exchangeType) }
             val exchangeKeyPair = exchangeService.getKeyPair(keyPairId)
             val order = exchangeService.getOrder(waitTradeHistory.orderId, exchangeKeyPair)
-            coinTradeHistoryService.save(makeCoinTradeHistory(waitTradeHistory.id, order, autoTradeProcessorId))
+            coinTradeHistoryService.record(makeCoinTradeHistory(waitTradeHistory.id, order, autoTradeProcessorId))
         }
 
-        val tradeHistories = coinTradeHistoryService.findAllTradeHistory(autoTradeProcessorId, coinType)
-        val buyTradeHistories = tradeHistories.filter { it.orderType == OrderType.BUY }
-        val sellTradeHistories = tradeHistories.filter { it.orderType == OrderType.SELL }
+        val syncedTradeHistories = coinTradeHistoryService.findAllTradeHistory(autoTradeProcessorId, coinType)
+        val buyTradeHistories = syncedTradeHistories.filter { it.isBuyOrder() }
+        val sellTradeHistories = syncedTradeHistories.filter { it.isSellOrder() }
 
         val volume = buyTradeHistories.sumOf { it.volume } - sellTradeHistories.sumOf { it.volume }
         val value = buyTradeHistories.sumOf { it.price * it.volume } - sellTradeHistories.sumOf { it.price * it.volume }
