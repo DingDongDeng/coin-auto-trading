@@ -61,7 +61,6 @@ class CoinAutoTradeUsecase(
         coinStrategyType: CoinStrategyType,
         coinTypes: List<CoinType>,
         candleUnits: List<CandleUnit>,
-        keyPairId: String,
         config: Map<String, Any>
     ): String {
         val backTestProcessorId = "BACKTEST-${UUID.randomUUID()}"
@@ -72,7 +71,7 @@ class CoinAutoTradeUsecase(
             exchangeType = ExchangeType.BACKTEST,
             coinTypes = coinTypes,
             candleUnits = candleUnits,
-            keyPairId = keyPairId,
+            keyPairId = "",
             config = config,
         )
 
