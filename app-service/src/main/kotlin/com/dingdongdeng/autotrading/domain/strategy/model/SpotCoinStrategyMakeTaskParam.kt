@@ -5,6 +5,8 @@ import com.dingdongdeng.autotrading.domain.trade.entity.CoinTradeHistory
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
+import com.dingdongdeng.autotrading.infra.common.type.TradeState
+import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
 import java.time.LocalDateTime
 
 data class SpotCoinStrategyMakeTaskParam(
@@ -44,4 +46,13 @@ data class SpotCoinStrategyTradeInfoParam(
     val originPrice: Double, // 매수했던 시점의 평가 금액
     val profitPrice: Double,   // 손익 평가 금액 ex) valuePrice - originPrice
     val coinTradeHistory: List<CoinTradeHistory>,
-)
+) {
+    fun existsWaitTrade(): Boolean = coinTradeHistory.any { it.state == TradeState.WAIT }
+
+    fun getOldWaitTrades(seconds: Long): List<CoinTradeHistory> {
+        return coinTradeHistory.filter {
+            // 대기 상태이면서 N초 이상 지난 거래들
+            it.state == TradeState.WAIT && it.tradedAt.isAfter(TimeContext.now().minusSeconds(seconds))
+        }
+    }
+}
