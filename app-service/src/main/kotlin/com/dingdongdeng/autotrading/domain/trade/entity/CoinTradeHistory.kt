@@ -26,7 +26,7 @@ class CoinTradeHistory(
     val orderId: String,
     @Enumerated(EnumType.STRING)
     @Column(name = "state")
-    val state: TradeState,
+    var state: TradeState,
     @Column(name = "processor_id")
     val processorId: String,
     @Enumerated(EnumType.STRING)
@@ -53,4 +53,11 @@ class CoinTradeHistory(
     val createdAt: LocalDateTime = LocalDateTime.now(),
     @Column(name = "updated_at")
     val updatedAt: LocalDateTime = LocalDateTime.now(),
-)
+) {
+    fun isBuyOrder(): Boolean = orderType == OrderType.BUY && state == TradeState.DONE
+    fun isSellOrder(): Boolean = orderType == OrderType.SELL && state == TradeState.DONE
+
+    fun cancel() {
+        this.state = TradeState.CANCEL
+    }
+}
