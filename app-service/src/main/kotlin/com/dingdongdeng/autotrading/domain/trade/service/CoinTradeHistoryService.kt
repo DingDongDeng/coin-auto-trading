@@ -27,7 +27,17 @@ class CoinTradeHistoryService(
         )
     }
 
-    fun save(history: CoinTradeHistory): CoinTradeHistory {
+    fun findTradeHistory(orderId: String): CoinTradeHistory {
+        return coinTradeHistoryRepository.findByOrderId(orderId)
+    }
+
+    fun cancel(orderId: String): CoinTradeHistory {
+        val history = findTradeHistory(orderId)
+        history.cancel()
+        return coinTradeHistoryRepository.save(history)
+    }
+
+    fun record(history: CoinTradeHistory): CoinTradeHistory {
         return coinTradeHistoryRepository.save(history)
     }
 }
