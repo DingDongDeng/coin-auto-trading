@@ -52,7 +52,7 @@ data class SpotCoinStrategyTradeInfoParam(
     fun getOldWaitTrades(seconds: Long): List<CoinTradeHistory> {
         return coinTradeHistory.filter {
             // 대기 상태이면서 N초 이상 지난 거래들
-            it.state == TradeState.WAIT && it.tradedAt.isAfter(TimeContext.now().minusSeconds(seconds))
+            it.state == TradeState.WAIT && it.tradedAt.isBefore(TimeContext.now().minusSeconds(seconds))
         }
     }
 }
