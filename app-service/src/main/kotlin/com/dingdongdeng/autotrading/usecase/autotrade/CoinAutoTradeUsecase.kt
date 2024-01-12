@@ -6,21 +6,21 @@ import com.dingdongdeng.autotrading.infra.common.annotation.Usecase
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
-import com.dingdongdeng.autotrading.usecase.autotrade.service.AutoTradeChartService
-import com.dingdongdeng.autotrading.usecase.autotrade.service.AutoTradeInfoService
 import com.dingdongdeng.autotrading.usecase.autotrade.service.AutoTradeManageService
-import com.dingdongdeng.autotrading.usecase.autotrade.service.AutoTradeTaskService
+import com.dingdongdeng.autotrading.usecase.autotrade.service.CoinAutoTradeChartService
+import com.dingdongdeng.autotrading.usecase.autotrade.service.CoinAutoTradeInfoService
+import com.dingdongdeng.autotrading.usecase.autotrade.service.CoinAutoTradeTaskService
 import java.util.*
 
 @Usecase
-class AutoTradeUsecase(
+class CoinAutoTradeUsecase(
     private val autoTradeManageService: AutoTradeManageService,
-    private val autoTradeChartService: AutoTradeChartService,
-    private val autoTradeInfoService: AutoTradeInfoService,
-    private val autoTradeTaskService: AutoTradeTaskService,
+    private val coinAutoTradeChartService: CoinAutoTradeChartService,
+    private val coinAutoTradeInfoService: CoinAutoTradeInfoService,
+    private val coinAutoTradeTaskService: CoinAutoTradeTaskService,
 ) {
 
-    fun registerCoinAutoTrade(
+    fun register(
         userId: Long,
         coinStrategyType: CoinStrategyType,
         exchangeType: ExchangeType,
@@ -35,7 +35,7 @@ class AutoTradeUsecase(
         val process = {
             val params = coinTypes.map { coinType ->
                 // 차트 조회
-                val charts = autoTradeChartService.makeCoinCharts(
+                val charts = coinAutoTradeChartService.makeCharts(
                     exchangeType = exchangeType,
                     keyPairId = keyPairId,
                     coinType = coinType,
@@ -43,7 +43,7 @@ class AutoTradeUsecase(
                 )
 
                 // 거래 정보 조회
-                val tradeInfo = autoTradeInfoService.makeCoinTradeInfo(
+                val tradeInfo = coinAutoTradeInfoService.makeTradeInfo(
                     exchangeType = exchangeType,
                     keyPairId = keyPairId,
                     autoTradeProcessorId = autoTradeProcessorId,
@@ -60,14 +60,14 @@ class AutoTradeUsecase(
             }
 
             // 작업 생성 (매수, 매도, 취소)
-            val tasks = autoTradeTaskService.makeCoinTask(
+            val tasks = coinAutoTradeTaskService.makeTask(
                 params = params,
                 config = config,
                 strategyType = coinStrategyType
             )
 
             // 작업 실행
-            autoTradeTaskService.executeCoinTask(
+            coinAutoTradeTaskService.executeTask(
                 tasks = tasks,
                 keyPairId = keyPairId,
                 autoTradeProcessorId = autoTradeProcessorId,

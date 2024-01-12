@@ -1,12 +1,14 @@
 package com.dingdongdeng.autotrading.infra.common.type
 
-import java.util.EnumMap
+import java.util.*
 
 enum class ExchangeType(
     val desc: String,
 ) {
     UPBIT("업비트"),
-    BINANCE("바이낸스");
+    BINANCE("바이낸스"),
+    BACKTEST("백테스트 거래소"),
+    ;
 
     companion object {
         fun of(name: String?): ExchangeType {

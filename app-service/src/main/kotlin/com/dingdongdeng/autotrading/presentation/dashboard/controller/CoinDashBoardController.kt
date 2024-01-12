@@ -3,18 +3,20 @@ package com.dingdongdeng.autotrading.presentation.dashboard.controller
 import com.dingdongdeng.autotrading.infra.common.web.CommonResponse
 import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinAutotradeRegisterRequest
 import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinExchangeKeyRegisterRequest
-import com.dingdongdeng.autotrading.usecase.autotrade.AutoTradeUsecase
-import com.dingdongdeng.autotrading.usecase.key.KeyUsecase
+import com.dingdongdeng.autotrading.usecase.autotrade.CoinAutoTradeUsecase
+import com.dingdongdeng.autotrading.usecase.key.CoinKeyUsecase
 import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
+@RequestMapping("/coin")
 @RestController
 class CoinDashBoardController(
-    private val autoTradeUsecase: AutoTradeUsecase,
-    private val keyUsecase: KeyUsecase,
+    private val coinAutoTradeUsecase: CoinAutoTradeUsecase,
+    private val coinKeyUsecase: CoinKeyUsecase,
 ) {
 
     @PostMapping("/exchange-key/register")
@@ -23,7 +25,7 @@ class CoinDashBoardController(
         //@SessionAttribute userId: Long,
     ): CommonResponse<String> {
         return CommonResponse(
-            body = keyUsecase.registerCoinExchangeKey(
+            body = coinKeyUsecase.registerKey(
                 exchangeType = request.exchangeType,
                 accessKey = request.accessKey,
                 secretKey = request.secretKey,
@@ -38,7 +40,7 @@ class CoinDashBoardController(
         //@SessionAttribute userId: Long,
     ): CommonResponse<String> {
         return CommonResponse(
-            body = autoTradeUsecase.registerCoinAutoTrade(
+            body = coinAutoTradeUsecase.register(
                 userId = 12345,
                 coinStrategyType = request.coinStrategyType,
                 exchangeType = request.exchangeType,
@@ -55,7 +57,7 @@ class CoinDashBoardController(
         @PathVariable autoTradeProcessorId: String,
     ): CommonResponse<String> {
         return CommonResponse(
-            body = autoTradeUsecase.start(autoTradeProcessorId)
+            body = coinAutoTradeUsecase.start(autoTradeProcessorId)
         )
     }
 
@@ -64,7 +66,7 @@ class CoinDashBoardController(
         @PathVariable autoTradeProcessorId: String,
     ): CommonResponse<String> {
         return CommonResponse(
-            body = autoTradeUsecase.stop(autoTradeProcessorId)
+            body = coinAutoTradeUsecase.stop(autoTradeProcessorId)
         )
     }
 
@@ -73,7 +75,7 @@ class CoinDashBoardController(
         @PathVariable autoTradeProcessorId: String,
     ): CommonResponse<String> {
         return CommonResponse(
-            body = autoTradeUsecase.terminate(autoTradeProcessorId)
+            body = coinAutoTradeUsecase.terminate(autoTradeProcessorId)
         )
     }
 }

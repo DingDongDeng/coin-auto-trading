@@ -14,13 +14,13 @@ import com.dingdongdeng.autotrading.infra.common.type.OrderType
 import org.springframework.stereotype.Service
 
 @Service
-class AutoTradeTaskService(
+class CoinAutoTradeTaskService(
     private val exchangeServices: List<SpotCoinExchangeService>,
     private val strategyServices: List<SpotCoinStrategy>,
     private val coinTradeHistoryService: CoinTradeHistoryService,
 ) {
 
-    fun makeCoinTask(
+    fun makeTask(
         params: List<SpotCoinStrategyMakeTaskParam>,
         config: Map<String, Any>,
         strategyType: CoinStrategyType
@@ -29,7 +29,7 @@ class AutoTradeTaskService(
         return strategyService.makeTask(params, config)
     }
 
-    fun executeCoinTask(
+    fun executeTask(
         tasks: List<SpotCoinStrategyTask>,
         autoTradeProcessorId: String,
         keyPairId: String,
@@ -61,7 +61,7 @@ class AutoTradeTaskService(
 
             // 매수, 매도 기록
             coinTradeHistoryService.record(
-                makeCoinTradeHistory(
+                makeTradeHistory(
                     order = orderResponse,
                     autoTradeProcessorId = autoTradeProcessorId
                 )
@@ -69,7 +69,7 @@ class AutoTradeTaskService(
         }
     }
 
-    private fun makeCoinTradeHistory(
+    private fun makeTradeHistory(
         order: SpotCoinExchangeOrder,
         autoTradeProcessorId: String
     ): CoinTradeHistory {

@@ -13,12 +13,12 @@ import org.springframework.stereotype.Service
 import kotlin.math.max
 
 @Service
-class AutoTradeChartService(
+class CoinAutoTradeChartService(
     private val exchangeServices: List<SpotCoinExchangeService>,
     private val indicatorService: IndicatorService,
 ) {
 
-    fun makeCoinCharts(
+    fun makeCharts(
         exchangeType: ExchangeType,
         keyPairId: String,
         coinType: CoinType,

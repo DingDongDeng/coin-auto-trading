@@ -12,12 +12,12 @@ import com.dingdongdeng.autotrading.infra.common.type.TradeState
 import org.springframework.stereotype.Service
 
 @Service
-class AutoTradeInfoService(
+class CoinAutoTradeInfoService(
     private val exchangeServices: List<SpotCoinExchangeService>,
     private val coinTradeHistoryService: CoinTradeHistoryService,
 ) {
 
-    fun makeCoinTradeInfo(
+    fun makeTradeInfo(
         exchangeType: ExchangeType,
         keyPairId: String,
         autoTradeProcessorId: String,
@@ -32,7 +32,7 @@ class AutoTradeInfoService(
             val exchangeService = exchangeServices.first { it.support(exchangeType) }
             val exchangeKeyPair = exchangeService.getKeyPair(keyPairId)
             val order = exchangeService.getOrder(waitTradeHistory.orderId, exchangeKeyPair)
-            coinTradeHistoryService.record(makeCoinTradeHistory(waitTradeHistory.id, order, autoTradeProcessorId))
+            coinTradeHistoryService.record(makeTradeHistory(waitTradeHistory.id, order, autoTradeProcessorId))
         }
 
         val syncedTradeHistories = coinTradeHistoryService.findAllTradeHistory(autoTradeProcessorId, coinType)
@@ -55,7 +55,7 @@ class AutoTradeInfoService(
         )
     }
 
-    private fun makeCoinTradeHistory(
+    private fun makeTradeHistory(
         coinTradehistoryId: Long? = null,
         order: SpotCoinExchangeOrder,
         autoTradeProcessorId: String
