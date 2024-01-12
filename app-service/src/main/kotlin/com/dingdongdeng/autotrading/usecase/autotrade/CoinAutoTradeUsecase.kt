@@ -34,7 +34,6 @@ class CoinAutoTradeUsecase(
         val autoTradeProcessorId = "AUTOTRADE-${UUID.randomUUID()}"
 
         val process = makeProcess(
-            userId = userId,
             processorId = autoTradeProcessorId,
             coinStrategyType = coinStrategyType,
             exchangeType = exchangeType,
@@ -68,7 +67,6 @@ class CoinAutoTradeUsecase(
         val backTestProcessorId = "BACKTEST-${UUID.randomUUID()}"
 
         val process = makeProcess(
-            userId = userId,
             processorId = backTestProcessorId,
             coinStrategyType = coinStrategyType,
             exchangeType = ExchangeType.BACKTEST,
@@ -115,7 +113,6 @@ class CoinAutoTradeUsecase(
     }
 
     private fun makeProcess(
-        userId: Long,
         processorId: String,
         coinStrategyType: CoinStrategyType,
         exchangeType: ExchangeType,
