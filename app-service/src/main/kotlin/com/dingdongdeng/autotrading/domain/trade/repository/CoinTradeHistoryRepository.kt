@@ -12,4 +12,6 @@ interface CoinTradeHistoryRepository : JpaRepository<CoinTradeHistory, Long> {
         coinType: CoinType,
         states: List<TradeState>,
     ): List<CoinTradeHistory>
+
+    fun findByOrderId(orderId: String): CoinTradeHistory
 }
