@@ -52,7 +52,13 @@ class AutoTradeTaskService(
                 OrderType.CANCEL -> exchangeService.cancel(task.orderId!!, exchangeKeyPair)
             }
 
-            coinTradeHistoryService.save(
+            // 취소 상태 업데이트
+            if (orderResponse.orderType == OrderType.CANCEL) {
+                coinTradeHistoryService.cancel(orderResponse.orderId)
+            }
+
+            // 매수, 매도 기록
+            coinTradeHistoryService.record(
                 makeCoinTradeHistory(
                     order = orderResponse,
                     autoTradeProcessorId = autoTradeProcessorId
@@ -62,12 +68,10 @@ class AutoTradeTaskService(
     }
 
     private fun makeCoinTradeHistory(
-        coinTradehistoryId: Long? = null,
         order: SpotCoinExchangeOrder,
         autoTradeProcessorId: String
     ): CoinTradeHistory {
         return CoinTradeHistory(
-            id = coinTradehistoryId,
             orderId = order.orderId,
             state = order.tradeState,
             processorId = autoTradeProcessorId,
@@ -78,7 +82,7 @@ class AutoTradeTaskService(
             volume = order.volume,
             price = order.price,
             fee = order.fee,
-            tradedAt = if (order.orderType == OrderType.CANCEL) order.cancelDateTime!! else order.orderDateTime!!,
+            tradedAt = order.orderDateTime!!,
         )
     }
 }
