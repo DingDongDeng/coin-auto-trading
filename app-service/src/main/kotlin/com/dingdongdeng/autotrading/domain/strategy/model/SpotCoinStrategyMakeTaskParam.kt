@@ -21,7 +21,7 @@ data class SpotCoinStrategyMakeTaskParam(
 data class SpotCoinStrategyChartParam(
     val from: LocalDateTime,
     val to: LocalDateTime,
-    val currentPrice: Double,
+    val currentPrice: Double, // 어느 차트를 봐도 이 값은 동일
     val candleUnit: CandleUnit,
     val candles: List<SpotCoinStrategyChartCandleParam>,
 )
