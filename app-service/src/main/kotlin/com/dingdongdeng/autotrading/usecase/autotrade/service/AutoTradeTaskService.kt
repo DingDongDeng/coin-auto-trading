@@ -55,6 +55,7 @@ class AutoTradeTaskService(
             // 취소 상태 업데이트
             if (orderResponse.orderType == OrderType.CANCEL) {
                 coinTradeHistoryService.cancel(orderResponse.orderId)
+                return
             }
 
             // 매수, 매도 기록
