@@ -22,10 +22,11 @@ class AutoTradeTaskService(
 
     fun makeCoinTask(
         params: List<SpotCoinStrategyMakeTaskParam>,
+        config: Map<String, Any>,
         strategyType: CoinStrategyType
     ): List<SpotCoinStrategyTask> {
         val strategyService = strategyServices.first { it.support(strategyType) }
-        return strategyService.makeTask(params)
+        return strategyService.makeTask(params, config)
     }
 
     fun executeCoinTask(

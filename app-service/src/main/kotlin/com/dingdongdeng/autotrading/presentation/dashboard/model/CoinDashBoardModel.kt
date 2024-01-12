@@ -17,4 +17,5 @@ data class CoinAutotradeRegisterRequest(
     val coinTypes: List<CoinType>,
     val candleUnits: List<CandleUnit>,
     val keyPairId: String,
+    val config: Map<String, Any>,
 )

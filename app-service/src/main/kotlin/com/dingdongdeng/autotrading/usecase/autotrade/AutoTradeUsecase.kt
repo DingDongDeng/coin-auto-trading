@@ -27,7 +27,7 @@ class AutoTradeUsecase(
         coinTypes: List<CoinType>,
         candleUnits: List<CandleUnit>,
         keyPairId: String,
-        //TODO strategy에서 사용할 커스텀 파라미터도 추가 필요해
+        config: Map<String, Any>
     ): String {
 
         val autoTradeProcessorId = UUID.randomUUID().toString()
@@ -62,6 +62,7 @@ class AutoTradeUsecase(
             // 작업 생성 (매수, 매도, 취소)
             val tasks = autoTradeTaskService.makeCoinTask(
                 params = params,
+                config = config,
                 strategyType = coinStrategyType
             )
 
