@@ -3,6 +3,7 @@ package com.dingdongdeng.autotrading.domain.strategy.service
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyMakeTaskParam
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyTask
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
+import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.OrderType
 import com.dingdongdeng.autotrading.infra.common.type.PriceType
@@ -13,6 +14,7 @@ class TestSpotCoinStrategy : SpotCoinStrategy {
     override fun makeTask(params: List<SpotCoinStrategyMakeTaskParam>): List<SpotCoinStrategyTask> {
         val param = params.first { it.coinType == CoinType.XRP }
 
+        val currentPrice = param.getChart(CandleUnit.UNIT_1M).currentPrice
         val charts = param.charts
         val tradeInfo = param.tradeInfo
 
@@ -35,7 +37,7 @@ class TestSpotCoinStrategy : SpotCoinStrategy {
                 SpotCoinStrategyTask(
                     coinType = param.coinType,
                     volume = 7.0,
-                    price = charts.first().currentPrice,
+                    price = currentPrice,
                     orderType = OrderType.BUY,
                     priceType = PriceType.LIMIT,
                 )
@@ -47,7 +49,7 @@ class TestSpotCoinStrategy : SpotCoinStrategy {
                 SpotCoinStrategyTask(
                     coinType = param.coinType,
                     volume = 7.0,
-                    price = charts.first().currentPrice,
+                    price = currentPrice,
                     orderType = OrderType.SELL,
                     priceType = PriceType.LIMIT,
                 )
