@@ -16,22 +16,25 @@ Content-Type: application/json
   "coinStrategyType": "PROTO",
   "exchangeType": "UPBIT",
   "coinTypes": [
-    "BITCOIN",
-    "ETHEREUM"
+    "XRP"
   ],
   "candleUnits": [
     "UNIT_1M",
     "UNIT_3M"
   ],
-  "keyPairId": "9f57ddad-243c-4ee3-9b4d-24744f258270"
+  "keyPairId": "9f57ddad-243c-4ee3-9b4d-24744f258270",
+  "config": {
+    "configA": "TESTA",
+    "configB": 123
+  }
 }
 
 ### 자동매매 시작
-POST http://localhost:8080/autotrade/b818a6ad-6b59-4d73-ad9e-9d28c050f781/start
+POST http://localhost:8080/autotrade/f3abdf34-89cc-439a-a376-4eae5b33e808/start
 Content-Type: application/json
 
 ### 자동매매 정지
-POST http://localhost:8080/autotrade/b818a6ad-6b59-4d73-ad9e-9d28c050f781/stop
+POST http://localhost:8080/autotrade/160f2665-4f86-4d19-b6bf-7ef3f4fede46/stop
 Content-Type: application/json
 
 ### 자동매매 제거

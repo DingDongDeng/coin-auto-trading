@@ -7,12 +7,19 @@ import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.OrderType
 import com.dingdongdeng.autotrading.infra.common.type.PriceType
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Component
 
 @Component
-class TestSpotCoinStrategy : SpotCoinStrategy {
-    override fun makeTask(params: List<SpotCoinStrategyMakeTaskParam>): List<SpotCoinStrategyTask> {
+class TestSpotCoinStrategy(
+    private val objectMapper: ObjectMapper,
+) : SpotCoinStrategy {
+    override fun makeTask(
+        params: List<SpotCoinStrategyMakeTaskParam>,
+        config: Map<String, Any>
+    ): List<SpotCoinStrategyTask> {
         val param = params.first { it.coinType == CoinType.XRP }
+        val config = objectMapper.convertValue(config, TestSpotCoinStrategyConfig::class.java)
 
         val currentPrice = param.getChart(CandleUnit.UNIT_1M).currentPrice
         val charts = param.charts
@@ -63,3 +70,8 @@ class TestSpotCoinStrategy : SpotCoinStrategy {
         return param == CoinStrategyType.PROTO
     }
 }
+
+data class TestSpotCoinStrategyConfig(
+    val configA: String,
+    val configB: Int,
+)

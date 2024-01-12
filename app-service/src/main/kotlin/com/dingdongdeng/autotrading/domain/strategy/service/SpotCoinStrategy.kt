@@ -6,7 +6,7 @@ import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 
 interface SpotCoinStrategy {
 
-    fun makeTask(params: List<SpotCoinStrategyMakeTaskParam>): List<SpotCoinStrategyTask>
+    fun makeTask(params: List<SpotCoinStrategyMakeTaskParam>, config: Map<String, Any>): List<SpotCoinStrategyTask>
 
     fun support(param: CoinStrategyType): Boolean
 }
