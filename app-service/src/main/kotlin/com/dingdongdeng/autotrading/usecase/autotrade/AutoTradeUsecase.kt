@@ -2,6 +2,7 @@ package com.dingdongdeng.autotrading.usecase.autotrade
 
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyMakeTaskParam
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
+import com.dingdongdeng.autotrading.infra.common.annotation.Usecase
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
@@ -9,10 +10,9 @@ import com.dingdongdeng.autotrading.usecase.autotrade.service.AutoTradeChartServ
 import com.dingdongdeng.autotrading.usecase.autotrade.service.AutoTradeInfoService
 import com.dingdongdeng.autotrading.usecase.autotrade.service.AutoTradeManageService
 import com.dingdongdeng.autotrading.usecase.autotrade.service.AutoTradeTaskService
-import org.springframework.stereotype.Service
-import java.util.UUID
+import java.util.*
 
-@Service
+@Usecase
 class AutoTradeUsecase(
     private val autoTradeManageService: AutoTradeManageService,
     private val autoTradeChartService: AutoTradeChartService,

@@ -1,10 +1,10 @@
 package com.dingdongdeng.autotrading.usecase.key
 
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
+import com.dingdongdeng.autotrading.infra.common.annotation.Usecase
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
-import org.springframework.stereotype.Service
 
-@Service
+@Usecase
 class KeyUsecase(
     private val coinExchangeServices: List<SpotCoinExchangeService>
 ) {
