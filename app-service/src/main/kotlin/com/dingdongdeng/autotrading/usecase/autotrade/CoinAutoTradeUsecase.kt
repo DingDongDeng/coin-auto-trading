@@ -6,10 +6,12 @@ import com.dingdongdeng.autotrading.infra.common.annotation.Usecase
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
+import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
 import com.dingdongdeng.autotrading.usecase.autotrade.service.AutoTradeManageService
 import com.dingdongdeng.autotrading.usecase.autotrade.service.CoinAutoTradeChartService
 import com.dingdongdeng.autotrading.usecase.autotrade.service.CoinAutoTradeInfoService
 import com.dingdongdeng.autotrading.usecase.autotrade.service.CoinAutoTradeTaskService
+import java.time.LocalDateTime
 import java.util.*
 
 @Usecase
@@ -46,12 +48,16 @@ class CoinAutoTradeUsecase(
         return autoTradeManageService.register(
             userId = userId,
             autoTradeProcessorId = autoTradeProcessorId,
+            isRunnable = { true },
             process = process,
             duration = 10_000,
         )
     }
 
     fun backTest(
+        startDateTime: LocalDateTime,
+        endDateTime: LocalDateTime,
+        duration: Long, // 백테스트 시간 간격(초)
         userId: Long,
         coinStrategyType: CoinStrategyType,
         coinTypes: List<CoinType>,
@@ -72,10 +78,22 @@ class CoinAutoTradeUsecase(
             config = config,
         )
 
+        var initialize = false
+        val isRunnable = {
+            if (initialize.not()) {
+                TimeContext.update { startDateTime }
+                initialize = true
+            }
+            val now = TimeContext.now().plusSeconds(duration)
+            TimeContext.update { now }
+            now.isBefore(endDateTime)
+        }
+
         // 백테스트 등록
         return autoTradeManageService.register(
             userId = userId,
             autoTradeProcessorId = backTestProcessorId,
+            isRunnable = isRunnable,
             process = process,
             duration = 0,
         )

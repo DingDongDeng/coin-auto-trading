@@ -10,6 +10,7 @@ class Processor(
     val id: String = UUID.randomUUID().toString(),
     val userId: Long,
     var status: ProcessStatus = ProcessStatus.INIT,
+    val isRunnable: () -> Boolean,
     val process: () -> Unit,
     val duration: Long = 60 * 1000, // milliseconds
     val slackSender: SlackSender,
@@ -17,13 +18,13 @@ class Processor(
     fun start() {
         status = ProcessStatus.RUNNING
         CompletableFuture.runAsync {
-            while (status == ProcessStatus.RUNNING) {
+            while (status == ProcessStatus.RUNNING && isRunnable()) {
                 try {
                     sleep()
                     process()
                 } catch (e: Exception) {
-                    log.error("autoTradingProcessor 동작 중 실패, id={}, e.meesage={}", id, e.message, e)
-                    slackSender.send("userId : $userId, autoTradingProcessorId : $id", e)
+                    log.error("processor 동작 중 실패, id={}, e.meesage={}", id, e.message, e)
+                    slackSender.send("userId : $userId, processorId : $id", e)
                 }
             }
         }

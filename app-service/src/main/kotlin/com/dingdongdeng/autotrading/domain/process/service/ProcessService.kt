@@ -3,7 +3,7 @@ package com.dingdongdeng.autotrading.domain.process.service
 import com.dingdongdeng.autotrading.domain.process.model.Processor
 import com.dingdongdeng.autotrading.infra.client.slack.SlackSender
 import org.springframework.stereotype.Service
-import java.util.UUID
+import java.util.*
 
 @Service
 class ProcessService(
@@ -23,12 +23,14 @@ class ProcessService(
     fun register(
         processorId: String = UUID.randomUUID().toString(),
         userId: Long,
+        isRunnable: () -> Boolean,
         process: () -> Unit,
         duration: Long
     ): String {
         val processor = Processor(
             id = processorId,
             userId = userId,
+            isRunnable = isRunnable,
             process = process,
             duration = duration,
             slackSender = slackSender

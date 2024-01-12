@@ -11,10 +11,11 @@ class AutoTradeManageService(
     fun register(
         userId: Long,
         autoTradeProcessorId: String,
+        isRunnable: () -> Boolean,
         process: () -> Unit,
         duration: Long, //milliseconds
     ): String {
-        return processService.register(autoTradeProcessorId, userId, process, duration)
+        return processService.register(autoTradeProcessorId, userId, isRunnable, process, duration)
     }
 
     fun start(autoTradeProcessorId: String) {
