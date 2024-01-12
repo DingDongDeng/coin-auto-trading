@@ -29,10 +29,84 @@ class CoinAutoTradeUsecase(
         keyPairId: String,
         config: Map<String, Any>
     ): String {
+        val autoTradeProcessorId = "AUTOTRADE-${UUID.randomUUID()}"
 
-        val autoTradeProcessorId = UUID.randomUUID().toString()
+        val process = makeProcess(
+            userId = userId,
+            processorId = autoTradeProcessorId,
+            coinStrategyType = coinStrategyType,
+            exchangeType = exchangeType,
+            coinTypes = coinTypes,
+            candleUnits = candleUnits,
+            keyPairId = keyPairId,
+            config = config,
+        )
 
-        val process = {
+        // 자동매매 등록
+        return autoTradeManageService.register(
+            userId = userId,
+            autoTradeProcessorId = autoTradeProcessorId,
+            process = process,
+            duration = 10_000,
+        )
+    }
+
+    fun backTest(
+        userId: Long,
+        coinStrategyType: CoinStrategyType,
+        coinTypes: List<CoinType>,
+        candleUnits: List<CandleUnit>,
+        keyPairId: String,
+        config: Map<String, Any>
+    ): String {
+        val backTestProcessorId = "BACKTEST-${UUID.randomUUID()}"
+
+        val process = makeProcess(
+            userId = userId,
+            processorId = backTestProcessorId,
+            coinStrategyType = coinStrategyType,
+            exchangeType = ExchangeType.BACKTEST,
+            coinTypes = coinTypes,
+            candleUnits = candleUnits,
+            keyPairId = keyPairId,
+            config = config,
+        )
+
+        // 백테스트 등록
+        return autoTradeManageService.register(
+            userId = userId,
+            autoTradeProcessorId = backTestProcessorId,
+            process = process,
+            duration = 0,
+        )
+    }
+
+    fun start(autoTradeProcessorId: String): String {
+        autoTradeManageService.start(autoTradeProcessorId)
+        return autoTradeProcessorId
+    }
+
+    fun stop(autoTradeProcessorId: String): String {
+        autoTradeManageService.stop(autoTradeProcessorId)
+        return autoTradeProcessorId
+    }
+
+    fun terminate(autoTradeProcessorId: String): String {
+        autoTradeManageService.terminate(autoTradeProcessorId)
+        return autoTradeProcessorId
+    }
+
+    private fun makeProcess(
+        userId: Long,
+        processorId: String,
+        coinStrategyType: CoinStrategyType,
+        exchangeType: ExchangeType,
+        coinTypes: List<CoinType>,
+        candleUnits: List<CandleUnit>,
+        keyPairId: String,
+        config: Map<String, Any>
+    ): () -> Unit {
+        return {
             val params = coinTypes.map { coinType ->
                 // 차트 조회
                 val charts = coinAutoTradeChartService.makeCharts(
@@ -46,7 +120,7 @@ class CoinAutoTradeUsecase(
                 val tradeInfo = coinAutoTradeInfoService.makeTradeInfo(
                     exchangeType = exchangeType,
                     keyPairId = keyPairId,
-                    autoTradeProcessorId = autoTradeProcessorId,
+                    autoTradeProcessorId = processorId,
                     coinType = coinType,
                     currentPrice = charts.first().currentPrice,
                 )
@@ -70,31 +144,9 @@ class CoinAutoTradeUsecase(
             coinAutoTradeTaskService.executeTask(
                 tasks = tasks,
                 keyPairId = keyPairId,
-                autoTradeProcessorId = autoTradeProcessorId,
+                autoTradeProcessorId = processorId,
                 exchangeType = exchangeType
             )
         }
-
-        // 자동매매 등록
-        return autoTradeManageService.register(
-            userId = userId,
-            autoTradeProcessorId = autoTradeProcessorId,
-            process = process,
-        )
-    }
-
-    fun start(autoTradeProcessorId: String): String {
-        autoTradeManageService.start(autoTradeProcessorId)
-        return autoTradeProcessorId
-    }
-
-    fun stop(autoTradeProcessorId: String): String {
-        autoTradeManageService.stop(autoTradeProcessorId)
-        return autoTradeProcessorId
-    }
-
-    fun terminate(autoTradeProcessorId: String): String {
-        autoTradeManageService.terminate(autoTradeProcessorId)
-        return autoTradeProcessorId
     }
 }

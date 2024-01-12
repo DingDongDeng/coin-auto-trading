@@ -12,8 +12,9 @@ class AutoTradeManageService(
         userId: Long,
         autoTradeProcessorId: String,
         process: () -> Unit,
+        duration: Long, //milliseconds
     ): String {
-        return processService.register(autoTradeProcessorId, userId, process, 10000)
+        return processService.register(autoTradeProcessorId, userId, process, duration)
     }
 
     fun start(autoTradeProcessorId: String) {
