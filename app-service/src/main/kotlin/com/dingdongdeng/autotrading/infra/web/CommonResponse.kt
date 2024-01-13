@@ -1,4 +1,4 @@
-package com.dingdongdeng.autotrading.infra.common.web
+package com.dingdongdeng.autotrading.infra.web
 
 data class CommonResponse<T>(
     val body: T? = null,

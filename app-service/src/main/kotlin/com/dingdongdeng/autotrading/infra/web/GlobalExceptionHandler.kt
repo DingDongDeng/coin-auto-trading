@@ -1,4 +1,4 @@
-package com.dingdongdeng.autotrading.infra.common.web
+package com.dingdongdeng.autotrading.infra.web
 
 import com.dingdongdeng.autotrading.infra.client.slack.SlackSender
 import com.dingdongdeng.autotrading.infra.common.exception.CriticalException
