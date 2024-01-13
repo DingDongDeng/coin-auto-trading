@@ -18,7 +18,11 @@ import java.time.LocalDateTime
 @Table(
     name = "exchange_candle",
     indexes = [
-        Index(name = "idx_exchange_candle_1", columnList = "exchange_type,coin_type,candle_unit,candle_date_time_kst"),
+        Index(
+            name = "idx_exchange_candle_1",
+            columnList = "exchange_type,coin_type,candle_unit,candle_date_time_kst",
+            unique = true
+        ),
     ]
 )
 class ExchangeCandle(
