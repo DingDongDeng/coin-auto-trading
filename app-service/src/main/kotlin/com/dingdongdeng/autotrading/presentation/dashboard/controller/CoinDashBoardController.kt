@@ -1,6 +1,7 @@
 package com.dingdongdeng.autotrading.presentation.dashboard.controller
 
 import com.dingdongdeng.autotrading.infra.common.web.CommonResponse
+import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinAutotradeChartLoadRequest
 import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinAutotradeRegisterRequest
 import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinExchangeKeyRegisterRequest
 import com.dingdongdeng.autotrading.usecase.autotrade.CoinAutoTradeUsecase
@@ -50,6 +51,22 @@ class CoinDashBoardController(
                 config = request.config,
             )
         )
+    }
+
+    @PostMapping("/chart/load")
+    fun autotradeRegister(
+        @Valid @RequestBody request: CoinAutotradeChartLoadRequest,
+        //@SessionAttribute userId: Long,
+    ): CommonResponse<Boolean> {
+        coinAutoTradeUsecase.loadCharts(
+            exchangeType = request.exchangeType,
+            coinTypes = request.coinTypes,
+            startDateTime = request.startDateTime,
+            endDateTime = request.endDateTime,
+            candleUnits = request.candleUnits,
+            keyPairId = request.keyPairId,
+        )
+        return CommonResponse(true)
     }
 
     @PostMapping("/autotrade/{autoTradeProcessorId}/start")
