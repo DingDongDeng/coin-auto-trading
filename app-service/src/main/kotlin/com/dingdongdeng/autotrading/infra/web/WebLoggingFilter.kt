@@ -1,5 +1,6 @@
 package com.dingdongdeng.autotrading.infra.web
 
+import com.dingdongdeng.autotrading.infra.common.log.LoggingUtils
 import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
 import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.servlet.FilterChain
@@ -17,6 +18,7 @@ class WebLoggingFilter(
         response: HttpServletResponse,
         filterChain: FilterChain,
     ) {
+        LoggingUtils.trace()
         val cachingRequestWrapper = ContentCachingRequestWrapper(request)
         val cachingResponseWrapper = ContentCachingResponseWrapper(response)
 
@@ -35,6 +37,8 @@ class WebLoggingFilter(
             cachingResponseWrapper.copyBodyToResponse()
         } catch (e: Exception) {
             throw e
+        } finally {
+            LoggingUtils.clear()
         }
     }
 }
