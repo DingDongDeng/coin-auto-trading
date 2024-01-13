@@ -157,6 +157,8 @@ class UpbitSpotCoinExchangeService(
         param: SpotCoinExchangeChartParam,
         keyParam: ExchangeKeyPair
     ) {
+        val from = param.from
+        val to = param.to
 
         val count = exchangeCandleRepository.countByExchangeCandle(
             exchangeType = EXCHANGE_TYPE,
@@ -167,44 +169,47 @@ class UpbitSpotCoinExchangeService(
         )
 
         if (count > 0) {
-            throw WarnException(userMessage = "이미 캔들이 존재하는 구간입니다. ${param.from} ~ ${param.to}")
+            throw WarnException(userMessage = "이미 캔들이 존재하는 구간입니다. $from ~ $to")
         }
 
-        var now = param.to
+        var now = to
         while (true) {
-            val isCompleted = now.isBefore(param.from)
+            val isCompleted = now.isBefore(from) || now.isEqual(from)
             if (isCompleted) {
-                log.info("캔들 저장 완료, from={}, to={}", param.from, param.to)
+                log.info("캔들 저장 완료, from={}, to={}", from, to)
                 break
             }
             val response = requestCandles(
                 unit = param.candleUnit,
                 coinType = param.coinType,
-                to = now,
+                to = now.plusMinutes(2), // 조회 범위 버퍼
                 candleUnit = param.candleUnit,
                 chunkSize = param.chunkSize,
                 keyParam = keyParam,
-            ).filter {
-                it.candleDateTimeKst.isEqual(now).not() // from < 범위 < now 형태로 만들어서 to 범위때문에 중복되는 캔들을 제거
-                        && it.candleDateTimeKst.isAfter(param.from) // from 보다 이전 캔들을 제거
-            }
+            ).filter { it.candleDateTimeKst.isAfter(now).not() } // 버퍼에 의해 추가로 검색된 범위 필터
 
             exchangeCandleRepository.saveAll(
-                response.map {
-                    ExchangeCandle(
-                        exchangeType = EXCHANGE_TYPE,
-                        coinType = param.coinType,
-                        unit = param.candleUnit,
-                        candleDateTimeUtc = it.candleDateTimeUtc,
-                        candleDateTimeKst = it.candleDateTimeKst,
-                        openingPrice = it.openingPrice,
-                        highPrice = it.highPrice,
-                        lowPrice = it.lowPrice,
-                        closingPrice = it.tradePrice,
-                        accTradePrice = it.candleAccTradePrice,
-                        accTradeVolume = it.candleAccTradeVolume,
-                    )
-                }
+                response
+                    .filter {
+                        it.candleDateTimeKst.isEqual(to) // <= to 범위를 위해 필터 (엣지 범위)
+                                || it.candleDateTimeKst.isEqual(now).not() // 범위 < now 형태로 만들어서 이전 검색 범위와 겹치지 않도록함
+                                && it.candleDateTimeKst.isBefore(from).not() // from <= 범위를 위해 필터 (엣지 범위)
+                    }
+                    .map {
+                        ExchangeCandle(
+                            exchangeType = EXCHANGE_TYPE,
+                            coinType = param.coinType,
+                            unit = param.candleUnit,
+                            candleDateTimeUtc = it.candleDateTimeUtc,
+                            candleDateTimeKst = it.candleDateTimeKst,
+                            openingPrice = it.openingPrice,
+                            highPrice = it.highPrice,
+                            lowPrice = it.lowPrice,
+                            closingPrice = it.tradePrice,
+                            accTradePrice = it.candleAccTradePrice,
+                            accTradeVolume = it.candleAccTradeVolume,
+                        )
+                    }
             )
 
             now = response.first().candleDateTimeKst
