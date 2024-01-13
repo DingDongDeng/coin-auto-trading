@@ -3,6 +3,7 @@ package com.dingdongdeng.autotrading.presentation.dashboard.controller
 import com.dingdongdeng.autotrading.infra.web.CommonResponse
 import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinAutotradeChartLoadRequest
 import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinAutotradeRegisterRequest
+import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinBackTestRegisterRequest
 import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinExchangeKeyRegisterRequest
 import com.dingdongdeng.autotrading.usecase.autotrade.CoinAutoTradeUsecase
 import com.dingdongdeng.autotrading.usecase.key.CoinKeyUsecase
@@ -30,7 +31,7 @@ class CoinDashBoardController(
                 exchangeType = request.exchangeType,
                 accessKey = request.accessKey,
                 secretKey = request.secretKey,
-                userId = 12345,
+                userId = 12345, //FIXME
             )
         )
     }
@@ -42,7 +43,7 @@ class CoinDashBoardController(
     ): CommonResponse<String> {
         return CommonResponse(
             body = coinAutoTradeUsecase.register(
-                userId = 12345,
+                userId = 12345, //FIXME
                 coinStrategyType = request.coinStrategyType,
                 exchangeType = request.exchangeType,
                 coinTypes = request.coinTypes,
@@ -54,9 +55,8 @@ class CoinDashBoardController(
     }
 
     @PostMapping("/chart/load")
-    fun autotradeRegister(
+    fun chartLoad(
         @Valid @RequestBody request: CoinAutotradeChartLoadRequest,
-        //@SessionAttribute userId: Long,
     ): CommonResponse<Boolean> {
         coinAutoTradeUsecase.loadCharts(
             exchangeType = request.exchangeType,
@@ -67,6 +67,25 @@ class CoinDashBoardController(
             keyPairId = request.keyPairId,
         )
         return CommonResponse(true)
+    }
+
+    @PostMapping("/backtest/register")
+    fun backTestRegister(
+        @Valid @RequestBody request: CoinBackTestRegisterRequest,
+        //@SessionAttribute userId: Long,
+    ): CommonResponse<String> {
+        return CommonResponse(
+            body = coinAutoTradeUsecase.backTestRegister(
+                startDateTime = request.startDateTime,
+                endDateTime = request.endDateTime,
+                durationUnit = request.durationUnit,
+                userId = 1234, //FIXME
+                coinStrategyType = request.coinStrategyType,
+                coinTypes = request.coinTypes,
+                candleUnits = request.candleUnits,
+                config = request.config,
+            ),
+        )
     }
 
     @PostMapping("/autotrade/{autoTradeProcessorId}/start")
