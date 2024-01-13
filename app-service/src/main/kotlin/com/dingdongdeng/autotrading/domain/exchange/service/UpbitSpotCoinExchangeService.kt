@@ -138,7 +138,7 @@ class UpbitSpotCoinExchangeService(
                 current.candleDateTimeKst,
                 next.candleDateTimeKst
             ) != param.candleUnit.getMinuteSize()
-        }.any()
+        }.any { it }
         if (hasMissingCandle) {
             throw CriticalException.of("누락된 캔들이 존재합니다.")
         }
