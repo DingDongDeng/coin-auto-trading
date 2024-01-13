@@ -22,7 +22,7 @@ Content-Type: application/json
     "UNIT_1M",
     "UNIT_3M"
   ],
-  "keyPairId": "9f57ddad-243c-4ee3-9b4d-24744f258270",
+  "keyPairId": "354db64e-e208-4dc3-ab8b-8478ab55dc89",
   "config": {
     "configA": "TESTA",
     "configB": 123
@@ -36,19 +36,40 @@ Content-Type: application/json
 {
   "exchangeType": "UPBIT",
   "coinTypes": [
-    "XRP"
+    "ETHEREUM"
   ],
   "candleUnits": [
     "UNIT_1M",
-    "UNIT_3M"
+    "UNIT_15M"
   ],
-  "startDateTime": "2023-01-12T00:00:00",
+  "startDateTime": "2023-01-05T00:00:00",
   "endDateTime": "2023-01-12T00:00:00",
-  "keyPairId": "9f57ddad-243c-4ee3-9b4d-24744f258270"
+  "keyPairId": "354db64e-e208-4dc3-ab8b-8478ab55dc89"
+}
+
+### 백테스트 등록
+POST http://localhost:8080/coin/autotrade/backtest/register
+Content-Type: application/json
+
+{
+  "startDateTime": "2023-01-11T00:00:00",
+  "endDateTime": "2023-01-12T00:00:00",
+  "durationUnit": "UNIT_1M",
+  "coinStrategyType": "PROTO",
+  "coinTypes": [
+    "ETHEREUM"
+  ],
+  "candleUnits": [
+    "UNIT_15M"
+  ],
+  "config": {
+    "configA": "TESTA",
+    "configB": 123
+  }
 }
 
 ### 자동매매 시작
-POST http://localhost:8080/coin/autotrade/f3abdf34-89cc-439a-a376-4eae5b33e808/start
+POST http://localhost:8080/coin/autotrade/BACKTEST-065d1e7b-bb2f-4319-a384-632ece2799da/start
 Content-Type: application/json
 
 ### 자동매매 정지
