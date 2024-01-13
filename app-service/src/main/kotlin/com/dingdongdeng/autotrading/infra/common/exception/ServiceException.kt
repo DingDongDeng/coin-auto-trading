@@ -7,7 +7,13 @@ class CriticalException(
     val systemMessage: String = "시스템 오류",
     val userMessage: String = "시스템 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
     val throwable: Throwable? = null,
-) : RuntimeException(systemMessage, throwable)
+) : RuntimeException(systemMessage, throwable) {
+    companion object {
+        fun of(userMessage: String): WarnException {
+            return WarnException(systemMessage = userMessage, userMessage = userMessage)
+        }
+    }
+}
 
 class WarnException(
     val status: HttpStatus = HttpStatus.BAD_REQUEST,
