@@ -1,6 +1,6 @@
 package com.dingdongdeng.autotrading.infra.common.type
 
-import java.util.EnumMap
+import java.util.*
 
 
 enum class CandleUnit(
@@ -25,6 +25,9 @@ enum class CandleUnit(
     }
 
     companion object {
+
+        fun min(): CandleUnit = UNIT_1M
+
         fun toMap(): EnumMap<CandleUnit, String> {
             val map: EnumMap<CandleUnit, String> = EnumMap<CandleUnit, String>(
                 CandleUnit::class.java
