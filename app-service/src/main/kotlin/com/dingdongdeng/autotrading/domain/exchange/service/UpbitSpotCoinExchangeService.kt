@@ -154,7 +154,7 @@ class UpbitSpotCoinExchangeService(
     override fun loadChart(
         param: SpotCoinExchangeChartParam,
         keyParam: ExchangeKeyPair
-    ) { //FIXME 위에 getChart랑 좀 리팩토링좀하면 좋겟다...
+    ) {
 
         // TODO 이미 데이터가 있는지 확인하고 있는거는 필터해야함
 
@@ -173,9 +173,7 @@ class UpbitSpotCoinExchangeService(
                 candleUnit = param.candleUnit,
                 chunkSize = param.chunkSize,
                 keyParam = keyParam,
-            )
-                // 범위를 넘는 캔들 제거
-                .filter { (it.candleDateTimeKst.isAfter(param.to) || it.candleDateTimeKst.isBefore(param.from)).not() }
+            ).filter { it.candleDateTimeKst.isEqual(now).not() } // from <= 범위 < now 형태로 만들어서 중복되는 캔들을 제거
 
             exchangeCandleRepository.saveAll(
                 response.map {
