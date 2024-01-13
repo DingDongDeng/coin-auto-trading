@@ -20,7 +20,7 @@ class CoinTradeHistoryService(
             TradeState.CANCEL
         )
     ): List<CoinTradeHistory> {
-        return coinTradeHistoryRepository.findByProcessorIdAndCoinTypeAndStateInOrderByTradedAtAsc(
+        return coinTradeHistoryRepository.findAllCoinTradeHistories(
             autoTradeProcessorId,
             coinType,
             states,
