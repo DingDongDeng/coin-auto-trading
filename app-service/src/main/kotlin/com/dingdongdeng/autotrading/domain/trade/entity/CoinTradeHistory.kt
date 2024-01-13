@@ -5,6 +5,7 @@ import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.type.OrderType
 import com.dingdongdeng.autotrading.infra.common.type.PriceType
 import com.dingdongdeng.autotrading.infra.common.type.TradeState
+import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -64,9 +65,9 @@ class CoinTradeHistory(
     @Column(name = "traded_at")
     val tradedAt: LocalDateTime,
     @Column(name = "created_at")
-    val createdAt: LocalDateTime = LocalDateTime.now(),
+    val createdAt: LocalDateTime = TimeContext.now(),
     @Column(name = "updated_at")
-    val updatedAt: LocalDateTime = LocalDateTime.now(),
+    val updatedAt: LocalDateTime = TimeContext.now(),
 ) {
     fun isBuyOrder(): Boolean = orderType == OrderType.BUY && state == TradeState.DONE
     fun isSellOrder(): Boolean = orderType == OrderType.SELL && state == TradeState.DONE
