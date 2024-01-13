@@ -96,6 +96,26 @@ class CoinAutoTradeUsecase(
         )
     }
 
+    fun loadCharts(
+        exchangeType: ExchangeType,
+        coinTypes: List<CoinType>,
+        startDateTime: LocalDateTime,
+        endDateTime: LocalDateTime,
+        candleUnits: List<CandleUnit>,
+        keyPairId: String,
+    ) {
+        coinTypes.forEach { coinType ->
+            coinAutoTradeChartService.loadCharts(
+                coinType = coinType,
+                keyPairId = keyPairId,
+                exchangeType = exchangeType,
+                startDateTime = startDateTime,
+                endDateTime = endDateTime,
+                candleUnits = candleUnits,
+            )
+        }
+    }
+
     fun start(autoTradeProcessorId: String): String {
         autoTradeManageService.start(autoTradeProcessorId)
         return autoTradeProcessorId

@@ -10,6 +10,7 @@ import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 import kotlin.math.max
 
 @Service
@@ -88,6 +89,29 @@ class CoinAutoTradeChartService(
                 currentPrice = chart.currentPrice,
                 candleUnit = candleUnit,
                 candles = chartCandleParams,
+            )
+        }
+    }
+
+    fun loadCharts(
+        exchangeType: ExchangeType,
+        keyPairId: String,
+        coinType: CoinType,
+        startDateTime: LocalDateTime,
+        endDateTime: LocalDateTime,
+        candleUnits: List<CandleUnit>,
+    ) {
+        val exchangeService = exchangeServices.first { it.support(exchangeType) }
+        val keyPair = exchangeService.getKeyPair(keyPairId)
+        candleUnits.forEach { candleUnit ->
+            exchangeService.loadChart(
+                param = SpotCoinExchangeChartParam(
+                    coinType = coinType,
+                    candleUnit = candleUnit,
+                    from = startDateTime,
+                    to = endDateTime,
+                ),
+                keyParam = keyPair,
             )
         }
     }
