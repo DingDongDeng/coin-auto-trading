@@ -164,8 +164,8 @@ class UpbitSpotCoinExchangeService(
             exchangeType = EXCHANGE_TYPE,
             coinType = param.coinType,
             unit = param.candleUnit,
-            startDateTime = param.from,
-            endDateTime = param.to,
+            from = param.from,
+            to = param.to,
         )
 
         if (count > 0) {

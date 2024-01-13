@@ -17,15 +17,16 @@ interface ExchangeCandleRepository : JpaRepository<ExchangeCandle, Long> {
         where candle.exchangeType = :exchangeType
         and candle.coinType = :coinType
         and candle.unit = :unit
-        and candle.candleDateTimeKst between :startDateTime and :endDateTime
+        and candle.candleDateTimeKst between :from and :to
+        order by candle.candleDateTimeKst
     """
     )
     fun findAllExchangeCandle(
         exchangeType: ExchangeType,
         coinType: CoinType,
         unit: CandleUnit,
-        startDateTime: LocalDateTime,
-        endDateTime: LocalDateTime,
+        from: LocalDateTime,
+        to: LocalDateTime,
     ): List<ExchangeCandle>
 
     @Query(
@@ -35,14 +36,15 @@ interface ExchangeCandleRepository : JpaRepository<ExchangeCandle, Long> {
         where candle.exchangeType = :exchangeType
         and candle.coinType = :coinType
         and candle.unit = :unit
-        and candle.candleDateTimeKst between :startDateTime and :endDateTime
+        and candle.candleDateTimeKst between :from and :to
+        order by candle.candleDateTimeKst
     """
     )
     fun countByExchangeCandle(
         exchangeType: ExchangeType,
         coinType: CoinType,
         unit: CandleUnit,
-        startDateTime: LocalDateTime,
-        endDateTime: LocalDateTime,
+        from: LocalDateTime,
+        to: LocalDateTime,
     ): Long
 }
