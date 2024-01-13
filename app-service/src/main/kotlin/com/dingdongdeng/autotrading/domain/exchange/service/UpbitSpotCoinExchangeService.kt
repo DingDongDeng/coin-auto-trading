@@ -20,6 +20,7 @@ import com.dingdongdeng.autotrading.infra.client.upbit.OrderRequest
 import com.dingdongdeng.autotrading.infra.client.upbit.Side
 import com.dingdongdeng.autotrading.infra.client.upbit.UpbitApiClient
 import com.dingdongdeng.autotrading.infra.client.upbit.UpbitTokenGenerator
+import com.dingdongdeng.autotrading.infra.common.exception.WarnException
 import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
@@ -151,15 +152,25 @@ class UpbitSpotCoinExchangeService(
         )
     }
 
+    // from <= 저장 범위 <= to
     override fun loadChart(
         param: SpotCoinExchangeChartParam,
         keyParam: ExchangeKeyPair
     ) {
 
-        // TODO 이미 데이터가 있는지 확인하고 있는거는 필터해야함
+        val count = exchangeCandleRepository.countByExchangeCandle(
+            exchangeType = EXCHANGE_TYPE,
+            coinType = param.coinType,
+            unit = param.candleUnit,
+            startDateTime = param.from,
+            endDateTime = param.to,
+        )
+
+        if (count > 0) {
+            throw WarnException(userMessage = "이미 캔들이 존재하는 구간입니다. ${param.from} ~ ${param.to}")
+        }
 
         var now = param.to
-        // from <= 저장 범위 <= to
         while (true) {
             val isCompleted = now.isBefore(param.from)
             if (isCompleted) {
