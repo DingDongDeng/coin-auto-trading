@@ -69,7 +69,7 @@ class CoinDashBoardController(
         return CommonResponse(true)
     }
 
-    @PostMapping("/backtest/register")
+    @PostMapping("/autotrade/backtest/register")
     fun backTestRegister(
         @Valid @RequestBody request: CoinBackTestRegisterRequest,
         //@SessionAttribute userId: Long,

@@ -34,7 +34,6 @@ data class CoinBackTestRegisterRequest(
     val startDateTime: LocalDateTime,
     val endDateTime: LocalDateTime,
     val durationUnit: CandleUnit, // 백테스트 시간 간격
-    val userId: Long,
     val coinStrategyType: CoinStrategyType,
     val coinTypes: List<CoinType>,
     val candleUnits: List<CandleUnit>,
