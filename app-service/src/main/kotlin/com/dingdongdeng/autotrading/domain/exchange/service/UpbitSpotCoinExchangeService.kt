@@ -1,5 +1,6 @@
 package com.dingdongdeng.autotrading.domain.exchange.service
 
+import com.dingdongdeng.autotrading.domain.exchange.entity.ExchangeCandle
 import com.dingdongdeng.autotrading.domain.exchange.entity.ExchangeKey
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChart
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChartCandle
@@ -7,6 +8,7 @@ import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeKeyPair
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartParam
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrder
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderParam
+import com.dingdongdeng.autotrading.domain.exchange.repository.ExchangeCandleRepository
 import com.dingdongdeng.autotrading.domain.exchange.repository.ExchangeKeyRepository
 import com.dingdongdeng.autotrading.infra.client.upbit.CandleRequest
 import com.dingdongdeng.autotrading.infra.client.upbit.CandleResponse
@@ -24,13 +26,14 @@ import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 @Service
 class UpbitSpotCoinExchangeService(
     private val upbitApiClient: UpbitApiClient,
     private val upbitTokenGenerator: UpbitTokenGenerator,
     private val exchangeKeyRepository: ExchangeKeyRepository,
+    private val exchangeCandleRepository: ExchangeCandleRepository,
 ) : SpotCoinExchangeService {
 
     override fun order(param: SpotCoinExchangeOrderParam, keyParam: ExchangeKeyPair): SpotCoinExchangeOrder {
@@ -146,6 +149,54 @@ class UpbitSpotCoinExchangeService(
                 )
             }
         )
+    }
+
+    override fun loadChart(
+        param: SpotCoinExchangeChartParam,
+        keyParam: ExchangeKeyPair
+    ) { //FIXME 위에 getChart랑 좀 리팩토링좀하면 좋겟다...
+
+        // TODO 이미 데이터가 있는지 확인하고 있는거는 필터해야함
+
+        var now = param.to
+        // from <= 저장 범위 <= to
+        while (true) {
+            val isCompleted = now.isBefore(param.from)
+            if (isCompleted) {
+                log.info("캔들 저장 완료, from={}, to={}", param.from, param.to)
+                break
+            }
+            val response = requestCandles(
+                unit = param.candleUnit,
+                coinType = param.coinType,
+                to = now,
+                candleUnit = param.candleUnit,
+                chunkSize = param.chunkSize,
+                keyParam = keyParam,
+            )
+                // 범위를 넘는 캔들 제거
+                .filter { (it.candleDateTimeKst.isAfter(param.to) || it.candleDateTimeKst.isBefore(param.from)).not() }
+
+            exchangeCandleRepository.saveAll(
+                response.map {
+                    ExchangeCandle(
+                        exchangeType = EXCHANGE_TYPE,
+                        coinType = param.coinType,
+                        unit = param.candleUnit,
+                        candleDateTimeUtc = it.candleDateTimeUtc,
+                        candleDateTimeKst = it.candleDateTimeKst,
+                        openingPrice = it.openingPrice,
+                        highPrice = it.highPrice,
+                        lowPrice = it.lowPrice,
+                        closingPrice = it.tradePrice,
+                        accTradePrice = it.candleAccTradePrice,
+                        accTradeVolume = it.candleAccTradeVolume,
+                    )
+                }
+            )
+
+            now = response.first().candleDateTimeKst
+        }
     }
 
     override fun getKeyPair(keyPairId: String): ExchangeKeyPair {
