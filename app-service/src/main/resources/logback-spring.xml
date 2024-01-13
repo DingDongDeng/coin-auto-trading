@@ -3,7 +3,7 @@
 
     <!-- console -->
     <property name="console.format"
-              value="* %black(%d{ISO8601}) %highlight(%-5level) [%blue(%t)] %yellow(%C{1.}) : {%mdc} - %msg%n%throwable"/>
+              value="* %green(%d{ISO8601}) %highlight(%-5level) [%blue(%t)] %yellow(%C{1}) : {%mdc} - %msg%n%throwable"/>
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <charset>UTF-8</charset>
