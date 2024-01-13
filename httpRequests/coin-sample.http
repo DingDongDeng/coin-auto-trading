@@ -29,6 +29,24 @@ Content-Type: application/json
   }
 }
 
+### 서버에 거래소 캔들 정보 저장
+POST http://localhost:8080/coin/chart/load
+Content-Type: application/json
+
+{
+  "exchangeType": "UPBIT",
+  "coinTypes": [
+    "XRP"
+  ],
+  "candleUnits": [
+    "UNIT_1M",
+    "UNIT_3M"
+  ],
+  "startDateTime": "2023-01-12T00:00:00",
+  "endDateTime": "2023-01-12T00:00:00",
+  "keyPairId": "9f57ddad-243c-4ee3-9b4d-24744f258270"
+}
+
 ### 자동매매 시작
 POST http://localhost:8080/coin/autotrade/f3abdf34-89cc-439a-a376-4eae5b33e808/start
 Content-Type: application/json
