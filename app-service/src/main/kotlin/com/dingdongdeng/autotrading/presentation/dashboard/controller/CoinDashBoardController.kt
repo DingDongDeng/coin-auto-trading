@@ -1,6 +1,6 @@
 package com.dingdongdeng.autotrading.presentation.dashboard.controller
 
-import com.dingdongdeng.autotrading.infra.common.web.CommonResponse
+import com.dingdongdeng.autotrading.infra.web.CommonResponse
 import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinAutotradeChartLoadRequest
 import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinAutotradeRegisterRequest
 import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinExchangeKeyRegisterRequest
