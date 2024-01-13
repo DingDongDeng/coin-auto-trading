@@ -11,7 +11,11 @@ interface SpotCoinExchangeService {
     fun order(param: SpotCoinExchangeOrderParam, keyParam: ExchangeKeyPair): SpotCoinExchangeOrder
     fun cancel(orderId: String, keyParam: ExchangeKeyPair): SpotCoinExchangeOrder
     fun getOrder(orderId: String, keyParam: ExchangeKeyPair): SpotCoinExchangeOrder
+
+    // from <= 범위 <= to
     fun getChart(param: SpotCoinExchangeChartParam, keyParam: ExchangeKeyPair): ExchangeChart
+
+    // from <= 범위 <= to
     fun loadChart(param: SpotCoinExchangeChartParam, keyParam: ExchangeKeyPair)
     fun getKeyPair(keyPairId: String): ExchangeKeyPair
     fun registerKeyPair(accessKey: String, secretKey: String, userId: Long): String

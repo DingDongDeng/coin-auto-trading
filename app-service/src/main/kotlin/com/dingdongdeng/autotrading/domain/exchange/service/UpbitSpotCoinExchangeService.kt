@@ -184,7 +184,10 @@ class UpbitSpotCoinExchangeService(
                 candleUnit = param.candleUnit,
                 chunkSize = param.chunkSize,
                 keyParam = keyParam,
-            ).filter { it.candleDateTimeKst.isEqual(now).not() } // from <= 범위 < now 형태로 만들어서 중복되는 캔들을 제거
+            ).filter {
+                it.candleDateTimeKst.isEqual(now).not() // from < 범위 < now 형태로 만들어서 to 범위때문에 중복되는 캔들을 제거
+                        && it.candleDateTimeKst.isAfter(param.from) // from 보다 이전 캔들을 제거
+            }
 
             exchangeCandleRepository.saveAll(
                 response.map {
