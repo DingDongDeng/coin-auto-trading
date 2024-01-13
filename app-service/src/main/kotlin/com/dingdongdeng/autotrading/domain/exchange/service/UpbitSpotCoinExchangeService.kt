@@ -20,6 +20,7 @@ import com.dingdongdeng.autotrading.infra.client.upbit.OrderRequest
 import com.dingdongdeng.autotrading.infra.client.upbit.Side
 import com.dingdongdeng.autotrading.infra.client.upbit.UpbitApiClient
 import com.dingdongdeng.autotrading.infra.client.upbit.UpbitTokenGenerator
+import com.dingdongdeng.autotrading.infra.common.exception.CriticalException
 import com.dingdongdeng.autotrading.infra.common.exception.WarnException
 import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
@@ -27,6 +28,7 @@ import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import java.util.*
 
 @Service
@@ -126,11 +128,20 @@ class UpbitSpotCoinExchangeService(
             totalResponse = response + totalResponse
         }
 
-        // TODO 중간에 빠지거나, 중복되는 캔들이 있는지 어떻게 쉽게 확인할수있을까??
-
         // 범위를 넘는 캔들 제거
         totalResponse =
             totalResponse.filter { (it.candleDateTimeKst.isAfter(param.to) || it.candleDateTimeKst.isBefore(param.from)).not() }
+
+        // 누락된 캔들 확인
+        val hasMissingCandle = totalResponse.zipWithNext { current, next ->
+            ChronoUnit.MINUTES.between(
+                current.candleDateTimeKst,
+                next.candleDateTimeKst
+            ) != param.candleUnit.getMinuteSize()
+        }.any()
+        if (hasMissingCandle) {
+            throw CriticalException.of("누락된 캔들이 존재합니다.")
+        }
 
         return ExchangeChart(
             from = param.from,
