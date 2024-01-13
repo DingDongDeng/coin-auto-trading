@@ -28,7 +28,7 @@ import java.time.LocalDateTime
         ),
         Index(
             name = "idx_coin_trade_history_2",
-            columnList = "processor_id",
+            columnList = "processor_id, coin_type, state, traded_at",
         ),
     ]
 )
