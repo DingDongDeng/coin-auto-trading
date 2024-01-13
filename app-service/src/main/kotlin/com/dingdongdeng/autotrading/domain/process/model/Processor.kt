@@ -25,6 +25,8 @@ class Processor(
                 } catch (e: Exception) {
                     log.error("processor 동작 중 실패, id={}, e.meesage={}", id, e.message, e)
                     slackSender.send("userId : $userId, processorId : $id", e)
+                    this.stop()
+                    throw e
                 }
             }
         }
