@@ -12,11 +12,25 @@ import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.Index
 import jakarta.persistence.Table
 import java.time.LocalDateTime
 
 @Entity
-@Table(name = "coin_trade_history")
+@Table(
+    name = "coin_trade_history",
+    indexes = [
+        Index(
+            name = "idx_coin_trade_history_1",
+            columnList = "order_id",
+            unique = true
+        ),
+        Index(
+            name = "idx_coin_trade_history_2",
+            columnList = "processor_id",
+        ),
+    ]
+)
 class CoinTradeHistory(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
