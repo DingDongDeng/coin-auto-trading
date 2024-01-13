@@ -10,6 +10,7 @@ import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrder
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderParam
 import com.dingdongdeng.autotrading.domain.exchange.repository.ExchangeCandleRepository
 import com.dingdongdeng.autotrading.domain.exchange.repository.ExchangeKeyRepository
+import com.dingdongdeng.autotrading.domain.exchange.utils.ExchangeUtils
 import com.dingdongdeng.autotrading.infra.client.upbit.CandleRequest
 import com.dingdongdeng.autotrading.infra.client.upbit.CandleResponse
 import com.dingdongdeng.autotrading.infra.client.upbit.MarketType
@@ -28,7 +29,6 @@ import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 import java.util.*
 
 @Service
@@ -127,19 +127,26 @@ class UpbitSpotCoinExchangeService(
             )
             totalResponse = response + totalResponse
         }
-
         // 범위를 넘는 캔들 제거
         totalResponse =
             totalResponse.filter { (it.candleDateTimeKst.isAfter(param.to) || it.candleDateTimeKst.isBefore(param.from)).not() }
 
+        val resultCandles = totalResponse.map {
+            ExchangeChartCandle(
+                candleUnit = param.candleUnit,
+                candleDateTimeUtc = it.candleDateTimeUtc,
+                candleDateTimeKst = it.candleDateTimeKst,
+                openingPrice = it.openingPrice,
+                highPrice = it.highPrice,
+                lowPrice = it.lowPrice,
+                closingPrice = it.tradePrice,
+                accTradePrice = it.candleAccTradePrice,
+                accTradeVolume = it.candleAccTradeVolume,
+            )
+        }
+
         // 누락된 캔들 확인
-        val hasMissingCandle = totalResponse.zipWithNext { current, next ->
-            ChronoUnit.MINUTES.between(
-                current.candleDateTimeKst,
-                next.candleDateTimeKst
-            ) != param.candleUnit.getMinuteSize()
-        }.any { it }
-        if (hasMissingCandle) {
+        if (ExchangeUtils.hasMissingCandle(param.candleUnit, resultCandles)) {
             throw CriticalException.of("누락된 캔들이 존재합니다.")
         }
 
@@ -147,19 +154,7 @@ class UpbitSpotCoinExchangeService(
             from = param.from,
             to = param.to,
             currentPrice = totalResponse.last().tradePrice,
-            candles = totalResponse.map {
-                ExchangeChartCandle(
-                    candleUnit = param.candleUnit,
-                    candleDateTimeUtc = it.candleDateTimeUtc,
-                    candleDateTimeKst = it.candleDateTimeKst,
-                    openingPrice = it.openingPrice,
-                    highPrice = it.highPrice,
-                    lowPrice = it.lowPrice,
-                    closingPrice = it.tradePrice,
-                    accTradePrice = it.candleAccTradePrice,
-                    accTradeVolume = it.candleAccTradeVolume,
-                )
-            }
+            candles = resultCandles,
         )
     }
 

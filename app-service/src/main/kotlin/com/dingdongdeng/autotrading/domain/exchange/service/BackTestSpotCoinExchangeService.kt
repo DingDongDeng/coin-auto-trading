@@ -8,6 +8,8 @@ import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartP
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrder
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderParam
 import com.dingdongdeng.autotrading.domain.exchange.repository.ExchangeCandleRepository
+import com.dingdongdeng.autotrading.domain.exchange.utils.ExchangeUtils
+import com.dingdongdeng.autotrading.infra.common.exception.CriticalException
 import com.dingdongdeng.autotrading.infra.common.exception.WarnException
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
@@ -74,25 +76,33 @@ class BackTestSpotCoinExchangeService(
             )
         )
 
+        // 최종 캔들
+        val resultCandles = candles
+            .subList(0, candles.size - 1) // 마지막 캔들을 가상 캔들로 대체
+            .map {
+                ExchangeChartCandle(
+                    candleUnit = it.unit,
+                    candleDateTimeUtc = it.candleDateTimeUtc,
+                    candleDateTimeKst = it.candleDateTimeKst,
+                    openingPrice = it.openingPrice,
+                    highPrice = it.highPrice,
+                    lowPrice = it.lowPrice,
+                    closingPrice = it.closingPrice,
+                    accTradePrice = it.accTradePrice,
+                    accTradeVolume = it.accTradeVolume,
+                )
+            } + virtualCandle
+
+        // 누락된 캔들 확인
+        if (ExchangeUtils.hasMissingCandle(param.candleUnit, resultCandles)) {
+            throw CriticalException.of("누락된 캔들이 존재합니다.")
+        }
+
         return ExchangeChart(
             from = param.from,
             to = param.to,
             currentPrice = virtualCandle.closingPrice,
-            candles = candles
-                .subList(0, candles.size - 1) // 마지막 캔들을 가상 캔들로 대체
-                .map {
-                    ExchangeChartCandle(
-                        candleUnit = it.unit,
-                        candleDateTimeUtc = it.candleDateTimeUtc,
-                        candleDateTimeKst = it.candleDateTimeKst,
-                        openingPrice = it.openingPrice,
-                        highPrice = it.highPrice,
-                        lowPrice = it.lowPrice,
-                        closingPrice = it.closingPrice,
-                        accTradePrice = it.accTradePrice,
-                        accTradeVolume = it.accTradeVolume,
-                    )
-                } + virtualCandle
+            candles = resultCandles,
         )
 
     }
