@@ -37,7 +37,6 @@ interface ExchangeCandleRepository : JpaRepository<ExchangeCandle, Long> {
         and candle.coinType = :coinType
         and candle.unit = :unit
         and candle.candleDateTimeKst between :from and :to
-        order by candle.candleDateTimeKst
     """
     )
     fun countByExchangeCandle(
