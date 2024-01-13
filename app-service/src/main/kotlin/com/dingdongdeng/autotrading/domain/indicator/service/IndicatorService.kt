@@ -27,7 +27,7 @@ class IndicatorService {
     }
 
     fun getMv(candles: List<ExchangeChartCandle>): Ma {
-        val inReal = candles.map { it.closingPrice.toDouble() }.toDoubleArray()
+        val inReal = candles.map { it.closingPrice }.toDoubleArray()
 
         // SMA 120
         val SMA120_TIME_PERIOD = 120
@@ -59,7 +59,7 @@ class IndicatorService {
 
     fun getObv(candles: List<ExchangeChartCandle>): Obv {
         // obv 계산
-        val obvInReal = candles.map { it.closingPrice.toDouble() }.toDoubleArray()
+        val obvInReal = candles.map { it.closingPrice }.toDoubleArray()
         val obvInVolume = candles.map { it.accTradeVolume }.toDoubleArray()
         val obvOutBegIdx = MInteger()
         val obvOutNBElement = MInteger()
@@ -86,7 +86,7 @@ class IndicatorService {
         val TIME_PERIOD = 20
         val NB_DEV_UP = 2
         val NB_DEV_DOWN = 2
-        val bbandsInReal = candles.map { it.closingPrice.toDouble() }.toDoubleArray()
+        val bbandsInReal = candles.map { it.closingPrice }.toDoubleArray()
         val bbandsOutRealUpperBand = DoubleArray(bbandsInReal.size)
         val bbandsOutRealMiddleBand = DoubleArray(bbandsInReal.size)
         val bbandsOutRealLowerBand = DoubleArray(bbandsInReal.size)
@@ -140,7 +140,7 @@ class IndicatorService {
         val FAST_PERIOD = 12
         val SLOW_PERIOD = 26
         val SIGNAL_PERIOD = 9
-        val inReal = candles.map { it.closingPrice.toDouble() }.toDoubleArray()
+        val inReal = candles.map { it.closingPrice }.toDoubleArray()
         val outMACD = DoubleArray(inReal.size)
         val outMACDSignal = DoubleArray(inReal.size)
         val outMACDHist = DoubleArray(inReal.size)
