@@ -3,6 +3,7 @@ package com.dingdongdeng.autotrading.domain.strategy.service
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyMakeTaskParam
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyTask
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
+import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.OrderType
 import com.dingdongdeng.autotrading.infra.common.type.PriceType
@@ -17,6 +18,7 @@ class TestSpotCoinStrategy(
         params: List<SpotCoinStrategyMakeTaskParam>,
         config: Map<String, Any>
     ): List<SpotCoinStrategyTask> {
+        log.info("test ...")
         val param = params.first()
         val config = objectMapper.convertValue(config, TestSpotCoinStrategyConfig::class.java)
 
