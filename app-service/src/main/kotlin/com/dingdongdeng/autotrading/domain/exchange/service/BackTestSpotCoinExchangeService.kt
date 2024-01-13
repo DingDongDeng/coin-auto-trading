@@ -1,5 +1,6 @@
 package com.dingdongdeng.autotrading.domain.exchange.service
 
+import com.dingdongdeng.autotrading.domain.exchange.entity.ExchangeCandle
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChart
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChartCandle
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeKeyPair
@@ -8,11 +9,14 @@ import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrder
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderParam
 import com.dingdongdeng.autotrading.domain.exchange.repository.ExchangeCandleRepository
 import com.dingdongdeng.autotrading.infra.common.exception.WarnException
+import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.type.TradeState
 import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
 import org.springframework.stereotype.Service
 import java.util.*
+import kotlin.math.max
+import kotlin.math.min
 
 @Service
 class BackTestSpotCoinExchangeService(
@@ -47,6 +51,7 @@ class BackTestSpotCoinExchangeService(
     override fun getChart(param: SpotCoinExchangeChartParam, keyParam: ExchangeKeyPair): ExchangeChart {
         val exchangeType = ExchangeType.UPBIT // 업비트 차트를 사용
 
+        // 캔들 조회
         val candles = exchangeCandleRepository.findAllExchangeCandle(
             exchangeType = exchangeType,
             coinType = param.coinType,
@@ -55,33 +60,39 @@ class BackTestSpotCoinExchangeService(
             to = param.to,
         )
 
-
-        val isNeedVirtualCandle = false
-        if (isNeedVirtualCandle) {
-
-        }
-        //FIXME
-        // 각 N봉 캔들의 마지막 값을 1분봉으로 맞춰야해
-        // 어쩌면 캔들이 없을수도 있어... 필요하면 만들어야할지도 몰라
-        // 누적 물량,금액은 어떻게 계산을 해줄까?
+        // 가상 캔들 생성 (최소 단위 캔들을 사용하여, 현재 시간 기준으로 생성)
+        // 예를 들어, 15분봉일때, 현재시간이 13:17이라면 13:15에 대한 가상캔들을 새로 만들어야한다.
+        // DB에서 조회한 13:15캔들은 13:30까지의 상태가 반영되었기 때문이다.
+        val virtualCandle = makeVirtualCandle(
+            candleUnit = param.candleUnit,
+            minUnitCandles = exchangeCandleRepository.findAllExchangeCandle(
+                exchangeType = exchangeType,
+                coinType = param.coinType,
+                unit = CandleUnit.min(),
+                from = candles.last().candleDateTimeKst,
+                to = TimeContext.now(),
+            )
+        )
 
         return ExchangeChart(
             from = param.from,
             to = param.to,
-            currentPrice = 0, //이거는 1분봉껄로 조회하자
-            candles = candles.map {
-                ExchangeChartCandle(
-                    candleUnit = it.unit,
-                    candleDateTimeUtc = it.candleDateTimeUtc,
-                    candleDateTimeKst = it.candleDateTimeKst,
-                    openingPrice = it.openingPrice,
-                    highPrice = it.highPrice,
-                    lowPrice = it.lowPrice,
-                    closingPrice = it.closingPrice,
-                    accTradePrice = it.accTradePrice,
-                    accTradeVolume = it.accTradeVolume,
-                )
-            }
+            currentPrice = virtualCandle.closingPrice,
+            candles = candles
+                .subList(0, candles.size - 1) // 마지막 캔들을 가상 캔들로 대체
+                .map {
+                    ExchangeChartCandle(
+                        candleUnit = it.unit,
+                        candleDateTimeUtc = it.candleDateTimeUtc,
+                        candleDateTimeKst = it.candleDateTimeKst,
+                        openingPrice = it.openingPrice,
+                        highPrice = it.highPrice,
+                        lowPrice = it.lowPrice,
+                        closingPrice = it.closingPrice,
+                        accTradePrice = it.accTradePrice,
+                        accTradeVolume = it.accTradeVolume,
+                    )
+                } + virtualCandle
         )
 
     }
@@ -103,6 +114,37 @@ class BackTestSpotCoinExchangeService(
 
     override fun support(exchangeType: ExchangeType): Boolean {
         return exchangeType == EXCHANGE_TYPE
+    }
+
+    private fun makeVirtualCandle(candleUnit: CandleUnit, minUnitCandles: List<ExchangeCandle>): ExchangeChartCandle {
+        val candleDateTimeUtc = minUnitCandles.first().candleDateTimeUtc
+        val candleDateTimeKst = minUnitCandles.first().candleDateTimeKst
+        val openingPrice = minUnitCandles.first().openingPrice
+        var highPrice = 0.0
+        var lowPrice = 0.0
+        var closingPrice = 0.0
+        var accTradePrice = 0.0
+        var accTradeVolume = 0.0
+
+        minUnitCandles.forEach { candle ->
+            highPrice = max(highPrice, candle.closingPrice)
+            lowPrice = min(lowPrice, candle.closingPrice)
+            closingPrice = candle.closingPrice
+            accTradePrice += candle.accTradePrice
+            accTradeVolume += candle.accTradeVolume
+        }
+
+        return ExchangeChartCandle(
+            candleUnit = candleUnit,
+            candleDateTimeUtc = candleDateTimeUtc,
+            candleDateTimeKst = candleDateTimeKst,
+            openingPrice = openingPrice,
+            highPrice = highPrice,
+            lowPrice = lowPrice,
+            closingPrice = closingPrice,
+            accTradePrice = accTradePrice,
+            accTradeVolume = accTradeVolume,
+        )
     }
 
     companion object {
