@@ -53,10 +53,10 @@ class CoinAutoTradeUsecase(
         )
     }
 
-    fun backTest(
+    fun backTestRegister(
         startDateTime: LocalDateTime,
         endDateTime: LocalDateTime,
-        duration: Long, // 백테스트 시간 간격(초)
+        durationUnit: CandleUnit, // 백테스트 시간 간격
         userId: Long,
         coinStrategyType: CoinStrategyType,
         coinTypes: List<CoinType>,
@@ -81,7 +81,7 @@ class CoinAutoTradeUsecase(
                 TimeContext.update { startDateTime }
                 initialize = true
             }
-            val now = TimeContext.now().plusSeconds(duration)
+            val now = TimeContext.now().plusMinutes(durationUnit.getMinuteSize())
             TimeContext.update { now }
             now.isBefore(endDateTime)
         }
