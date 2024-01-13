@@ -33,7 +33,7 @@ class CoinTradeHistory(
     @Column(name = "coin_exchange_type")
     val exchangeType: ExchangeType,
     @Enumerated(EnumType.STRING)
-    @Column(name = "coint_type")
+    @Column(name = "coin_type")
     val coinType: CoinType,
     @Enumerated(EnumType.STRING)
     @Column(name = "order_type")
