@@ -87,7 +87,7 @@ class BackTestSpotCoinExchangeService(
     }
 
     override fun loadChart(param: SpotCoinExchangeChartParam, keyParam: ExchangeKeyPair) {
-        throw WarnException.of(userMessage = "백테스트에서는 지원하지 않는 기능입니다. (key 등록)")
+        throw WarnException.of(userMessage = "백테스트에서는 지원하지 않는 기능입니다. (거래소 차트 데이터 DB로 다운로드)")
     }
 
     override fun getKeyPair(keyPairId: String): ExchangeKeyPair {
