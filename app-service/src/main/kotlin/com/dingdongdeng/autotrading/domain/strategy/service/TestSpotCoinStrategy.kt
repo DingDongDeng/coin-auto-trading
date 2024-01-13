@@ -4,7 +4,6 @@ import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyMakeTa
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyTask
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
-import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.OrderType
 import com.dingdongdeng.autotrading.infra.common.type.PriceType
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -18,10 +17,10 @@ class TestSpotCoinStrategy(
         params: List<SpotCoinStrategyMakeTaskParam>,
         config: Map<String, Any>
     ): List<SpotCoinStrategyTask> {
-        val param = params.first { it.coinType == CoinType.XRP }
+        val param = params.first()
         val config = objectMapper.convertValue(config, TestSpotCoinStrategyConfig::class.java)
 
-        val currentPrice = param.getChart(CandleUnit.UNIT_1M).currentPrice
+        val currentPrice = param.getChart(CandleUnit.UNIT_15M).currentPrice
         val charts = param.charts
         val tradeInfo = param.tradeInfo
 
