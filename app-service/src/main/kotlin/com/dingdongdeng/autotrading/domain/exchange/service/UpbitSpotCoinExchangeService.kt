@@ -26,7 +26,6 @@ import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
-import com.dingdongdeng.autotrading.infra.common.utils.toUtc
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.*
@@ -225,33 +224,15 @@ class UpbitSpotCoinExchangeService(
             // 거래소에 간혹 캔들을 누락된채로 보내줌...
             if (ExchangeUtils.hasMissingCandle(param.candleUnit, candles.map { it.candleDateTimeKst })) {
                 log.warn(
-                    "거래소 API응답에 누락된 캔들이 존재하여 임의로 생성하였음, coinType=${param.coinType}, candleUnit=${param.candleUnit}, missingDateTimes=${
-                        ExchangeUtils.findMissingCandles(
-                            param.candleUnit,
-                            candles.map { it.candleDateTimeKst })
-                    }"
-                )
-                val missingDateTimes =
-                    ExchangeUtils.findMissingCandles(param.candleUnit, candles.map { it.candleDateTimeKst })
-
-                exchangeCandleRepository.saveAll(
-                    missingDateTimes.map { missingDateTime ->
-                        val prevCandle =
-                            candles.first { it.candleDateTimeKst.isEqual(missingDateTime.minusMinutes(param.candleUnit.getMinuteSize())) }
-                        ExchangeCandle(
-                            exchangeType = EXCHANGE_TYPE,
-                            coinType = param.coinType,
-                            unit = param.candleUnit,
-                            candleDateTimeUtc = missingDateTime.toUtc(),
-                            candleDateTimeKst = missingDateTime,
-                            openingPrice = prevCandle.openingPrice,
-                            highPrice = prevCandle.highPrice,
-                            lowPrice = prevCandle.lowPrice,
-                            closingPrice = prevCandle.closingPrice,
-                            accTradePrice = prevCandle.accTradePrice,
-                            accTradeVolume = prevCandle.accTradeVolume,
-                        )
-                    }
+                    "거래소 API응답에 누락된 캔들이 존재, coinType={}, candleUnit={}, missingDateTimes={}, ranged={}~{}",
+                    param.coinType,
+                    param.candleUnit,
+                    ExchangeUtils.findMissingCandles(
+                        param.candleUnit,
+                        candles.map { it.candleDateTimeKst }
+                    ),
+                    candles.first().candleDateTimeKst,
+                    candles.last().candleDateTimeKst,
                 )
             }
 

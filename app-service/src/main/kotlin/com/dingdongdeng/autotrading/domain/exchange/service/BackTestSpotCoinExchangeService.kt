@@ -9,8 +9,8 @@ import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrder
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderParam
 import com.dingdongdeng.autotrading.domain.exchange.repository.ExchangeCandleRepository
 import com.dingdongdeng.autotrading.domain.exchange.utils.ExchangeUtils
-import com.dingdongdeng.autotrading.infra.common.exception.CriticalException
 import com.dingdongdeng.autotrading.infra.common.exception.WarnException
+import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.type.TradeState
@@ -55,6 +55,7 @@ class BackTestSpotCoinExchangeService(
 
         // 캔들 조회
         val candles = exchangeCandleRepository.findAllExchangeCandle(
+            //FIXME 성능개선포인트
             exchangeType = exchangeType,
             coinType = param.coinType,
             unit = param.candleUnit,
@@ -93,9 +94,19 @@ class BackTestSpotCoinExchangeService(
                 )
             } + virtualCandle
 
-        // 누락된 캔들 확인
-        if (ExchangeUtils.hasMissingCandle(param.candleUnit, resultCandles.map { it.candleDateTimeKst })) {
-            throw CriticalException.of("누락된 캔들이 존재합니다.")
+        // 거래소에 간혹 캔들을 누락된채로 보내줌...
+        if (ExchangeUtils.hasMissingCandle(param.candleUnit, candles.map { it.candleDateTimeKst })) {
+            log.warn(
+                "거래소 API응답에 누락된 캔들이 존재, coinType={}, candleUnit={}, missingDateTimes={}, ranged={}~{}",
+                param.coinType,
+                param.candleUnit,
+                ExchangeUtils.findMissingCandles(
+                    param.candleUnit,
+                    candles.map { it.candleDateTimeKst }
+                ),
+                candles.first().candleDateTimeKst,
+                candles.last().candleDateTimeKst,
+            )
         }
 
         return ExchangeChart(
