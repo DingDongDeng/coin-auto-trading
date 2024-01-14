@@ -146,7 +146,7 @@ class UpbitSpotCoinExchangeService(
         }
 
         // 누락된 캔들 확인
-        if (ExchangeUtils.hasMissingCandle(param.candleUnit, resultCandles)) {
+        if (ExchangeUtils.hasMissingCandle(param.candleUnit, resultCandles.map { it.candleDateTimeKst })) {
             throw CriticalException.of("누락된 캔들이 존재합니다.")
         }
 
@@ -217,7 +217,7 @@ class UpbitSpotCoinExchangeService(
                 }
 
             // 거래소에 간혹 캔들을 누락된채로 보내줌...
-            if (ExchangeUtils.hasMissingCandle(param.candleUnit, candles)) {
+            if (ExchangeUtils.hasMissingCandle(param.candleUnit, candles.map { it.candleDateTimeKst })) {
                 throw CriticalException.of("거래소에서 전달받은 데이터에 누락된 캔들이 존재합니다.")
             }
 
