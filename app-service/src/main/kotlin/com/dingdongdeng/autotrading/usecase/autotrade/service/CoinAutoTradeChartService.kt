@@ -73,14 +73,15 @@ class CoinAutoTradeChartService(
         val chartParam = SpotCoinExchangeChartParam(
             coinType = coinType,
             candleUnit = candleUnit,
-            from = now.minusMinutes(2 * CHART_CANDLE_MAX_COUNT * candleUnit.getMinuteSize()), // 보조지표 계산을 위해 2배로 조회
+            // 보조지표 계산을 위해 3배로 조회(버퍼)
+            from = now.minusMinutes(3 * CHART_CANDLE_MAX_COUNT * candleUnit.getMinuteSize()),
             to = now,
         )
         val exchangeService = exchangeServices.first { it.support(exchangeType) }
         val exchangeKeyPair = exchangeService.getKeyPair(keyPairId)
         /*
          * 각 캔들의 보조지표 계산을 위한 200개씩의 과거 캔들이 필요
-         * 아래 로직은 총 400개의 캔들을 미리 조회하고
+         * 아래 로직은 총 600개의 캔들을 미리 조회하고
          * 리스트를 200크기로 subList하여 실제 매매에서 사용할 캔들(보조지표가 계산된) 200개를 생성
          * ex)
          *  idx= 0~199 캔들은 idx=199 캔들의 보조 지표 계산해 사용
