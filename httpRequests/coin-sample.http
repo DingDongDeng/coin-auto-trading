@@ -36,14 +36,15 @@ Content-Type: application/json
 {
   "exchangeType": "UPBIT",
   "coinTypes": [
+    "XRP",
     "ETHEREUM"
   ],
   "candleUnits": [
     "UNIT_1M",
     "UNIT_15M"
   ],
-  "startDateTime": "2023-01-05T00:00:00",
-  "endDateTime": "2023-01-12T00:00:00",
+  "startDateTime": "2024-01-05T00:00:00",
+  "endDateTime": "2024-01-12T00:00:00",
   "keyPairId": "354db64e-e208-4dc3-ab8b-8478ab55dc89"
 }
 
@@ -52,14 +53,16 @@ POST http://localhost:8080/coin/autotrade/backtest/register
 Content-Type: application/json
 
 {
-  "startDateTime": "2023-01-11T00:00:00",
-  "endDateTime": "2023-01-12T00:00:00",
+  "startDateTime": "2024-01-10T00:00:00",
+  "endDateTime": "2024-01-12T00:00:00",
   "durationUnit": "UNIT_1M",
   "coinStrategyType": "PROTO",
   "coinTypes": [
-    "ETHEREUM"
+    "ETHEREUM",
+    "XRP"
   ],
   "candleUnits": [
+    "UNIT_1M",
     "UNIT_15M"
   ],
   "config": {
@@ -69,7 +72,7 @@ Content-Type: application/json
 }
 
 ### 자동매매 시작
-POST http://localhost:8080/coin/autotrade/BACKTEST-065d1e7b-bb2f-4319-a384-632ece2799da/start
+POST http://localhost:8080/coin/autotrade/BACKTEST-c8b20a20-790b-429d-8883-0af806b5280e/start
 Content-Type: application/json
 
 ### 자동매매 정지

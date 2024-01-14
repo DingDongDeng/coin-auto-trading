@@ -55,7 +55,6 @@ class BackTestSpotCoinExchangeService(
 
         // 캔들 조회
         val candles = exchangeCandleRepository.findAllExchangeCandle(
-            //FIXME 성능개선포인트
             exchangeType = exchangeType,
             coinType = param.coinType,
             unit = param.candleUnit,
