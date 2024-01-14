@@ -11,6 +11,9 @@ import com.dingdongdeng.autotrading.usecase.autotrade.service.AutoTradeManageSer
 import com.dingdongdeng.autotrading.usecase.autotrade.service.CoinAutoTradeChartService
 import com.dingdongdeng.autotrading.usecase.autotrade.service.CoinAutoTradeInfoService
 import com.dingdongdeng.autotrading.usecase.autotrade.service.CoinAutoTradeTaskService
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 import java.util.*
@@ -140,50 +143,67 @@ class CoinAutoTradeUsecase(
         candleUnits: List<CandleUnit>,
         keyPairId: String,
         config: Map<String, Any>
-    ): () -> Unit {
-        return {
-            runBlocking {
-                val params = coinTypes.map { coinType ->
-                    // 차트 조회
-                    val charts = coinAutoTradeChartService.makeCharts(
+    ): () -> Unit = {
+        runBlocking {
+            val params = coinTypes.map { coinType ->
+                async {
+                    makeTaskParam(
+                        processorId = processorId,
                         exchangeType = exchangeType,
-                        keyPairId = keyPairId,
                         coinType = coinType,
                         candleUnits = candleUnits,
-                    )
-
-                    // 거래 정보 조회
-                    val tradeInfo = coinAutoTradeInfoService.makeTradeInfo(
-                        exchangeType = exchangeType,
                         keyPairId = keyPairId,
-                        autoTradeProcessorId = processorId,
-                        coinType = coinType,
-                        currentPrice = charts.first().currentPrice,
-                    )
-
-                    SpotCoinStrategyMakeTaskParam(
-                        exchangeType = exchangeType,
-                        coinType = coinType,
-                        charts = charts,
-                        tradeInfo = tradeInfo,
                     )
                 }
+            }.awaitAll()
 
-                // 작업 생성 (매수, 매도, 취소)
-                val tasks = coinAutoTradeTaskService.makeTask(
-                    params = params,
-                    config = config,
-                    strategyType = coinStrategyType
-                )
+            // 작업 생성 (매수, 매도, 취소)
+            val tasks = coinAutoTradeTaskService.makeTask(
+                params = params,
+                config = config,
+                strategyType = coinStrategyType
+            )
 
-                // 작업 실행
-                coinAutoTradeTaskService.executeTask(
-                    tasks = tasks,
-                    keyPairId = keyPairId,
-                    autoTradeProcessorId = processorId,
-                    exchangeType = exchangeType
-                )
-            }
+            // 작업 실행
+            coinAutoTradeTaskService.executeTask(
+                tasks = tasks,
+                keyPairId = keyPairId,
+                autoTradeProcessorId = processorId,
+                exchangeType = exchangeType
+            )
         }
+    }
+
+
+    private suspend fun makeTaskParam(
+        processorId: String,
+        exchangeType: ExchangeType,
+        coinType: CoinType,
+        candleUnits: List<CandleUnit>,
+        keyPairId: String,
+    ): SpotCoinStrategyMakeTaskParam = coroutineScope {
+        // 차트 조회
+        val charts = coinAutoTradeChartService.makeCharts(
+            exchangeType = exchangeType,
+            keyPairId = keyPairId,
+            coinType = coinType,
+            candleUnits = candleUnits,
+        )
+
+        // 거래 정보 조회
+        val tradeInfo = coinAutoTradeInfoService.makeTradeInfo(
+            exchangeType = exchangeType,
+            keyPairId = keyPairId,
+            autoTradeProcessorId = processorId,
+            coinType = coinType,
+            currentPrice = charts.first().currentPrice,
+        )
+
+        SpotCoinStrategyMakeTaskParam(
+            exchangeType = exchangeType,
+            coinType = coinType,
+            charts = charts,
+            tradeInfo = tradeInfo,
+        )
     }
 }
