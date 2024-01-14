@@ -21,7 +21,6 @@ import com.dingdongdeng.autotrading.infra.client.upbit.OrderRequest
 import com.dingdongdeng.autotrading.infra.client.upbit.Side
 import com.dingdongdeng.autotrading.infra.client.upbit.UpbitApiClient
 import com.dingdongdeng.autotrading.infra.client.upbit.UpbitTokenGenerator
-import com.dingdongdeng.autotrading.infra.common.exception.CriticalException
 import com.dingdongdeng.autotrading.infra.common.exception.WarnException
 import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
@@ -145,9 +144,15 @@ class UpbitSpotCoinExchangeService(
             )
         }
 
-        // 누락된 캔들 확인
+        // 누락된 캔들 확인 (거래소에서 간헐적으로 발생)
         if (ExchangeUtils.hasMissingCandle(param.candleUnit, resultCandles.map { it.candleDateTimeKst })) {
-            throw CriticalException.of("누락된 캔들이 존재합니다.")
+            log.warn(
+                "누락된 캔들이 존재, coinType=${param.coinType}, candleUnit=${param.candleUnit}, missingDateTimes=${
+                    ExchangeUtils.findMissingCandles(
+                        param.candleUnit,
+                        resultCandles.map { it.candleDateTimeKst })
+                }"
+            )
         }
 
         return ExchangeChart(
@@ -218,7 +223,35 @@ class UpbitSpotCoinExchangeService(
 
             // 거래소에 간혹 캔들을 누락된채로 보내줌...
             if (ExchangeUtils.hasMissingCandle(param.candleUnit, candles.map { it.candleDateTimeKst })) {
-                throw CriticalException.of("거래소에서 전달받은 데이터에 누락된 캔들이 존재합니다.")
+                log.warn(
+                    "거래소 API응답에 누락된 캔들이 존재하여 임의로 생성하였음, coinType=${param.coinType}, candleUnit=${param.candleUnit}, missingDateTimes=${
+                        ExchangeUtils.findMissingCandles(
+                            param.candleUnit,
+                            candles.map { it.candleDateTimeKst })
+                    }"
+                )
+                val missingDateTimes =
+                    ExchangeUtils.findMissingCandles(param.candleUnit, candles.map { it.candleDateTimeKst })
+
+                exchangeCandleRepository.saveAll(
+                    missingDateTimes.map { missingDateTime ->
+                        val prevCandle =
+                            candles.first { it.candleDateTimeKst.isEqual(missingDateTime.minusMinutes(param.candleUnit.getMinuteSize())) }
+                        ExchangeCandle(
+                            exchangeType = EXCHANGE_TYPE,
+                            coinType = param.coinType,
+                            unit = param.candleUnit,
+                            candleDateTimeUtc = prevCandle.candleDateTimeUtc,
+                            candleDateTimeKst = prevCandle.candleDateTimeKst,
+                            openingPrice = prevCandle.openingPrice,
+                            highPrice = prevCandle.highPrice,
+                            lowPrice = prevCandle.lowPrice,
+                            closingPrice = prevCandle.closingPrice,
+                            accTradePrice = prevCandle.accTradePrice,
+                            accTradeVolume = prevCandle.accTradeVolume,
+                        )
+                    }
+                )
             }
 
             exchangeCandleRepository.saveAll(candles)
