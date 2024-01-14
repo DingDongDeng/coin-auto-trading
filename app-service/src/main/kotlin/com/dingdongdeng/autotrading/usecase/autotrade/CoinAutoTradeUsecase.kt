@@ -11,6 +11,7 @@ import com.dingdongdeng.autotrading.usecase.autotrade.service.AutoTradeManageSer
 import com.dingdongdeng.autotrading.usecase.autotrade.service.CoinAutoTradeChartService
 import com.dingdongdeng.autotrading.usecase.autotrade.service.CoinAutoTradeInfoService
 import com.dingdongdeng.autotrading.usecase.autotrade.service.CoinAutoTradeTaskService
+import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 import java.util.*
 
@@ -141,46 +142,48 @@ class CoinAutoTradeUsecase(
         config: Map<String, Any>
     ): () -> Unit {
         return {
-            val params = coinTypes.map { coinType ->
-                // 차트 조회
-                val charts = coinAutoTradeChartService.makeCharts(
-                    exchangeType = exchangeType,
-                    keyPairId = keyPairId,
-                    coinType = coinType,
-                    candleUnits = candleUnits,
+            runBlocking {
+                val params = coinTypes.map { coinType ->
+                    // 차트 조회
+                    val charts = coinAutoTradeChartService.makeCharts(
+                        exchangeType = exchangeType,
+                        keyPairId = keyPairId,
+                        coinType = coinType,
+                        candleUnits = candleUnits,
+                    )
+
+                    // 거래 정보 조회
+                    val tradeInfo = coinAutoTradeInfoService.makeTradeInfo(
+                        exchangeType = exchangeType,
+                        keyPairId = keyPairId,
+                        autoTradeProcessorId = processorId,
+                        coinType = coinType,
+                        currentPrice = charts.first().currentPrice,
+                    )
+
+                    SpotCoinStrategyMakeTaskParam(
+                        exchangeType = exchangeType,
+                        coinType = coinType,
+                        charts = charts,
+                        tradeInfo = tradeInfo,
+                    )
+                }
+
+                // 작업 생성 (매수, 매도, 취소)
+                val tasks = coinAutoTradeTaskService.makeTask(
+                    params = params,
+                    config = config,
+                    strategyType = coinStrategyType
                 )
 
-                // 거래 정보 조회
-                val tradeInfo = coinAutoTradeInfoService.makeTradeInfo(
-                    exchangeType = exchangeType,
+                // 작업 실행
+                coinAutoTradeTaskService.executeTask(
+                    tasks = tasks,
                     keyPairId = keyPairId,
                     autoTradeProcessorId = processorId,
-                    coinType = coinType,
-                    currentPrice = charts.first().currentPrice,
-                )
-
-                SpotCoinStrategyMakeTaskParam(
-                    exchangeType = exchangeType,
-                    coinType = coinType,
-                    charts = charts,
-                    tradeInfo = tradeInfo,
+                    exchangeType = exchangeType
                 )
             }
-
-            // 작업 생성 (매수, 매도, 취소)
-            val tasks = coinAutoTradeTaskService.makeTask(
-                params = params,
-                config = config,
-                strategyType = coinStrategyType
-            )
-
-            // 작업 실행
-            coinAutoTradeTaskService.executeTask(
-                tasks = tasks,
-                keyPairId = keyPairId,
-                autoTradeProcessorId = processorId,
-                exchangeType = exchangeType
-            )
         }
     }
 }
