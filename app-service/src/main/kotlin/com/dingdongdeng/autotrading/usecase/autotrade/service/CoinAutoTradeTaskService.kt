@@ -4,7 +4,6 @@ import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrder
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderParam
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyMakeTaskParam
-import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyTask
 import com.dingdongdeng.autotrading.domain.strategy.service.SpotCoinStrategy
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.domain.trade.entity.CoinTradeHistory
@@ -20,21 +19,17 @@ class CoinAutoTradeTaskService(
     private val coinTradeHistoryService: CoinTradeHistoryService,
 ) {
 
-    fun makeTask(
+    fun executeTask(
         params: List<SpotCoinStrategyMakeTaskParam>,
         config: Map<String, Any>,
-        strategyType: CoinStrategyType
-    ): List<SpotCoinStrategyTask> {
-        val strategyService = strategyServices.first { it.support(strategyType) }
-        return strategyService.makeTask(params, config)
-    }
-
-    fun executeTask(
-        tasks: List<SpotCoinStrategyTask>,
+        strategyType: CoinStrategyType,
         autoTradeProcessorId: String,
         keyPairId: String,
         exchangeType: ExchangeType,
     ) {
+        val strategyService = strategyServices.first { it.support(strategyType) }
+        val tasks = strategyService.makeTask(params, config)
+
         tasks.forEach { task ->
             val exchangeService = exchangeServices.first { it.support(exchangeType) }
             val exchangeKeyPair = exchangeService.getKeyPair(keyPairId)

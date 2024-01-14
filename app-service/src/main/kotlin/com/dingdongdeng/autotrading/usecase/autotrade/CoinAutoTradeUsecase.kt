@@ -157,16 +157,11 @@ class CoinAutoTradeUsecase(
                 }
             }.awaitAll()
 
-            // 작업 생성 (매수, 매도, 취소)
-            val tasks = coinAutoTradeTaskService.makeTask(
+            // 작업 실행 (매수, 매도, 취소)
+            coinAutoTradeTaskService.executeTask(
                 params = params,
                 config = config,
-                strategyType = coinStrategyType
-            )
-
-            // 작업 실행
-            coinAutoTradeTaskService.executeTask(
-                tasks = tasks,
+                strategyType = coinStrategyType,
                 keyPairId = keyPairId,
                 autoTradeProcessorId = processorId,
                 exchangeType = exchangeType
