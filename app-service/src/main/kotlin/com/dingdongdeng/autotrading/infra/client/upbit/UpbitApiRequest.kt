@@ -2,11 +2,11 @@ package com.dingdongdeng.autotrading.infra.client.upbit
 
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.utils.convertToString
+import com.dingdongdeng.autotrading.infra.common.utils.toUtc
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDateTime
-import java.time.ZoneId
 
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -85,11 +85,7 @@ data class CandleRequest(
     val count: Int, // 캔들 개수(최대 200개)
 ) {
     @field:JsonProperty("to")
-    val timeAsUtc: String? = timeAsKst // 마지막 캔들 시각 (비우면 가장 최근 시각), UTC 기준
-        ?.atZone(ZoneId.of("Asia/Seoul"))
-        ?.withZoneSameInstant(ZoneId.of("UTC"))
-        ?.toLocalDateTime()
-        ?.convertToString()
+    val timeAsUtc: String? = timeAsKst?.toUtc()?.convertToString() // 마지막 캔들 시각 (비우면 가장 최근 시각), UTC 기준
 }
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

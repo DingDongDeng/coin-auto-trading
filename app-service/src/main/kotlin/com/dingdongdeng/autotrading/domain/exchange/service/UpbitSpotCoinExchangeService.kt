@@ -26,6 +26,7 @@ import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
+import com.dingdongdeng.autotrading.infra.common.utils.toUtc
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.*
@@ -241,8 +242,8 @@ class UpbitSpotCoinExchangeService(
                             exchangeType = EXCHANGE_TYPE,
                             coinType = param.coinType,
                             unit = param.candleUnit,
-                            candleDateTimeUtc = prevCandle.candleDateTimeUtc,
-                            candleDateTimeKst = prevCandle.candleDateTimeKst,
+                            candleDateTimeUtc = missingDateTime.toUtc(),
+                            candleDateTimeKst = missingDateTime,
                             openingPrice = prevCandle.openingPrice,
                             highPrice = prevCandle.highPrice,
                             lowPrice = prevCandle.lowPrice,
