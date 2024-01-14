@@ -10,14 +10,14 @@ import com.tictactec.ta.lib.Core
 import com.tictactec.ta.lib.MAType
 import com.tictactec.ta.lib.MInteger
 import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.runBlocking
 import org.springframework.stereotype.Service
 
 @Service
 class IndicatorService {
     private val core = Core()
 
-    suspend fun calculate(candles: List<ExchangeChartCandle>): Indicators = coroutineScope {
+    fun calculate(candles: List<ExchangeChartCandle>): Indicators = runBlocking {
         val rsi = async { getRsi(candles) }
         val macd = async { getMACD(candles) }
         val bollingerBands = async { getBollingerBands(candles) }
