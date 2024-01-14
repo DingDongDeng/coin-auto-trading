@@ -14,10 +14,15 @@ import org.springframework.stereotype.Component
 class TestSpotCoinStrategy(
     private val objectMapper: ObjectMapper,
 ) : SpotCoinStrategy {
+    var count = 0
     override fun makeTask(
         params: List<SpotCoinStrategyMakeTaskParam>,
         config: Map<String, Any>
     ): List<SpotCoinStrategyTask> {
+        if (count++ % 100 != 0) {
+            return emptyList()
+        }
+
         log.info("test ...")
         val param = params.first()
         val config = objectMapper.convertValue(config, TestSpotCoinStrategyConfig::class.java)
