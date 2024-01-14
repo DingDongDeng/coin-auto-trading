@@ -194,29 +194,34 @@ class UpbitSpotCoinExchangeService(
                 keyParam = keyParam,
             ).filter { it.candleDateTimeKst.isAfter(now).not() } // 버퍼에 의해 추가로 검색된 범위 필터
 
-            exchangeCandleRepository.saveAll(
-                response
-                    .filter {
-                        it.candleDateTimeKst.isEqual(to) // <= to 범위를 위해 필터 (엣지 범위)
-                                || it.candleDateTimeKst.isEqual(now).not() // 범위 < now 형태로 만들어서 이전 검색 범위와 겹치지 않도록함
-                                && it.candleDateTimeKst.isBefore(from).not() // from <= 범위를 위해 필터 (엣지 범위)
-                    }
-                    .map {
-                        ExchangeCandle(
-                            exchangeType = EXCHANGE_TYPE,
-                            coinType = param.coinType,
-                            unit = param.candleUnit,
-                            candleDateTimeUtc = it.candleDateTimeUtc,
-                            candleDateTimeKst = it.candleDateTimeKst,
-                            openingPrice = it.openingPrice,
-                            highPrice = it.highPrice,
-                            lowPrice = it.lowPrice,
-                            closingPrice = it.tradePrice,
-                            accTradePrice = it.candleAccTradePrice,
-                            accTradeVolume = it.candleAccTradeVolume,
-                        )
-                    }
-            )
+            val candles = response
+                .filter {
+                    it.candleDateTimeKst.isEqual(to) // <= to 범위를 위해 필터 (엣지 범위)
+                            || it.candleDateTimeKst.isEqual(now).not() // 범위 < now 형태로 만들어서 이전 검색 범위와 겹치지 않도록함
+                            && it.candleDateTimeKst.isBefore(from).not() // from <= 범위를 위해 필터 (엣지 범위)
+                }
+                .map {
+                    ExchangeCandle(
+                        exchangeType = EXCHANGE_TYPE,
+                        coinType = param.coinType,
+                        unit = param.candleUnit,
+                        candleDateTimeUtc = it.candleDateTimeUtc,
+                        candleDateTimeKst = it.candleDateTimeKst,
+                        openingPrice = it.openingPrice,
+                        highPrice = it.highPrice,
+                        lowPrice = it.lowPrice,
+                        closingPrice = it.tradePrice,
+                        accTradePrice = it.candleAccTradePrice,
+                        accTradeVolume = it.candleAccTradeVolume,
+                    )
+                }
+
+            // 거래소에 간혹 캔들을 누락된채로 보내줌...
+            if (ExchangeUtils.hasMissingCandle(param.candleUnit, candles)) {
+                throw CriticalException.of("거래소에서 전달받은 데이터에 누락된 캔들이 존재합니다.")
+            }
+
+            exchangeCandleRepository.saveAll(candles)
 
             now = response.first().candleDateTimeKst
         }
