@@ -94,7 +94,7 @@ class BackTestSpotCoinExchangeService(
             } + virtualCandle
 
         // 누락된 캔들 확인
-        if (ExchangeUtils.hasMissingCandle(param.candleUnit, resultCandles)) {
+        if (ExchangeUtils.hasMissingCandle(param.candleUnit, resultCandles.map { it.candleDateTimeKst })) {
             throw CriticalException.of("누락된 캔들이 존재합니다.")
         }
 
