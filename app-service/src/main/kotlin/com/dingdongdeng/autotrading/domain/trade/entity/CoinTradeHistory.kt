@@ -75,4 +75,7 @@ class CoinTradeHistory(
     fun cancel() {
         this.state = TradeState.CANCEL
     }
+
+    fun isWait(): Boolean = this.state == TradeState.WAIT
+
 }
