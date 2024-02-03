@@ -33,8 +33,8 @@ class AutoTradeService(
     ): String {
         return processService.register(
             CoinAutoTradeProcessor(
-                id = "AUTOTRADE-${UUID.randomUUID()}",
-                userId = userId,
+                _id = "AUTOTRADE-${UUID.randomUUID()}",
+                _userId = userId,
                 coinStrategyType = coinStrategyType,
                 exchangeType = exchangeType,
                 coinTypes = coinTypes,
