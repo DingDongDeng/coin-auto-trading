@@ -119,5 +119,4 @@ class CoinTradeService(
             tradedAt = if (order.orderType == OrderType.CANCEL) order.cancelDateTime!! else order.orderDateTime!!,
         )
     }
-
 }
