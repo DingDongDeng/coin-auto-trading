@@ -1,10 +1,9 @@
-package com.dingdongdeng.autotrading.usecase.autotrade.service
+package com.dingdongdeng.autotrading.domain.trade.service
 
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrder
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
-import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyTradeInfoParam
 import com.dingdongdeng.autotrading.domain.trade.entity.CoinTradeHistory
-import com.dingdongdeng.autotrading.domain.trade.service.CoinTradeHistoryService
+import com.dingdongdeng.autotrading.domain.trade.model.CoinTradeInfo
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.type.OrderType
@@ -12,18 +11,18 @@ import com.dingdongdeng.autotrading.infra.common.type.TradeState
 import org.springframework.stereotype.Service
 
 @Service
-class CoinAutoTradeInfoService(
+class CoinTradeService(
     private val exchangeServices: List<SpotCoinExchangeService>,
     private val coinTradeHistoryService: CoinTradeHistoryService,
 ) {
 
-    fun makeTradeInfo(
+    fun getTradeInfo(
         exchangeType: ExchangeType,
         keyPairId: String,
         autoTradeProcessorId: String,
         coinType: CoinType,
         currentPrice: Double,
-    ): SpotCoinStrategyTradeInfoParam {
+    ): CoinTradeInfo {
 
         // WAIT 상태의 거래건들 업데이트
         val notSyncedTradeHistories = coinTradeHistoryService.findAllTradeHistory(autoTradeProcessorId, coinType)
@@ -45,7 +44,7 @@ class CoinAutoTradeInfoService(
         val valuePrice = (volume * currentPrice)
         val originPrice = (volume * averagePrice)
 
-        return SpotCoinStrategyTradeInfoParam(
+        return CoinTradeInfo(
             volume = buyTradeHistories.sumOf { it.volume } - sellTradeHistories.sumOf { it.volume },
             averagePrice = averagePrice,
             valuePrice = valuePrice,
@@ -75,4 +74,5 @@ class CoinAutoTradeInfoService(
             tradedAt = if (order.orderType == OrderType.CANCEL) order.cancelDateTime!! else order.orderDateTime!!,
         )
     }
+
 }
