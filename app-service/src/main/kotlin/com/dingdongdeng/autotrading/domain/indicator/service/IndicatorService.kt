@@ -9,28 +9,26 @@ import com.dingdongdeng.autotrading.domain.indicator.model.Obv
 import com.tictactec.ta.lib.Core
 import com.tictactec.ta.lib.MAType
 import com.tictactec.ta.lib.MInteger
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import org.springframework.stereotype.Service
 
 @Service
 class IndicatorService {
     private val core = Core()
 
-    suspend fun calculate(candles: List<ExchangeChartCandle>): Indicators = coroutineScope {
-        val rsi = async { getRsi(candles) }
-        val macd = async { getMACD(candles) }
-        val bollingerBands = async { getBollingerBands(candles) }
-        val obv = async { getObv(candles) }
-        val mv = async { getMv(candles) }
+    fun calculate(candles: List<ExchangeChartCandle>): Indicators {
+        val rsi = getRsi(candles)
+        val macd = getMACD(candles)
+        val bollingerBands = getBollingerBands(candles)
+        val obv = getObv(candles)
+        val mv = getMv(candles)
 
-        Indicators(
+        return Indicators(
             indicatorDateTimeKst = candles.last().candleDateTimeKst,
-            rsi = rsi.await(),
-            macd = macd.await(),
-            bollingerBands = bollingerBands.await(),
-            obv = obv.await(),
-            ma = mv.await(),
+            rsi = rsi,
+            macd = macd,
+            bollingerBands = bollingerBands,
+            obv = obv,
+            ma = mv,
         )
     }
 
