@@ -1,14 +1,10 @@
 package com.dingdongdeng.autotrading.domain.process.service
 
 import com.dingdongdeng.autotrading.domain.process.model.Processor
-import com.dingdongdeng.autotrading.infra.client.slack.SlackSender
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
-class ProcessService(
-    private val slackSender: SlackSender,
-) {
+class ProcessService {
 
     private val storedProcessors = mutableMapOf<String, Processor>()
 
@@ -21,21 +17,8 @@ class ProcessService(
     }
 
     fun register(
-        processorId: String = UUID.randomUUID().toString(),
-        userId: Long,
-        isRunnable: () -> Boolean,
-        process: () -> Unit,
-        duration: Long
+        processor: Processor
     ): String {
-        val processor = Processor(
-            id = processorId,
-            userId = userId,
-            isRunnable = isRunnable,
-            process = process,
-            duration = duration,
-            slackSender = slackSender
-        )
-
         storedProcessors[processor.id] = processor
         return processor.id
     }
