@@ -1,12 +1,14 @@
 package com.dingdongdeng.autotrading.domain.trade.service
 
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrder
+import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderParam
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
 import com.dingdongdeng.autotrading.domain.trade.entity.CoinTradeHistory
 import com.dingdongdeng.autotrading.domain.trade.model.CoinTradeInfo
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.type.OrderType
+import com.dingdongdeng.autotrading.infra.common.type.PriceType
 import com.dingdongdeng.autotrading.infra.common.type.TradeState
 import org.springframework.stereotype.Service
 
@@ -51,6 +53,49 @@ class CoinTradeService(
             originPrice = originPrice,
             profitPrice = (valuePrice - originPrice),
             coinTradeHistory = coinTradeHistoryService.findAllTradeHistory(autoTradeProcessorId, coinType)
+        )
+    }
+
+    fun trade(
+        orderId: String?,
+        autoTradeProcessorId: String,
+        exchangeType: ExchangeType,
+        keyPairId: String,
+        orderType: OrderType,
+        coinType: CoinType,
+        volume: Double,
+        price: Double,
+        priceType: PriceType,
+    ) {
+        val exchangeService = exchangeServices.first { it.support(exchangeType) }
+        val exchangeKeyPair = exchangeService.getKeyPair(keyPairId)
+        val orderResponse = when (orderType) {
+            OrderType.BUY, OrderType.SELL -> {
+                val param = SpotCoinExchangeOrderParam(
+                    coinType = coinType,
+                    orderType = orderType,
+                    volume = volume,
+                    price = price,
+                    priceType = priceType,
+                )
+                exchangeService.order(param, exchangeKeyPair)
+            }
+
+            OrderType.CANCEL -> exchangeService.cancel(orderId!!, exchangeKeyPair)
+        }
+
+        // 취소 상태 업데이트
+        if (orderResponse.orderType == OrderType.CANCEL) {
+            coinTradeHistoryService.cancel(orderResponse.orderId)
+            return
+        }
+
+        // 매수, 매도 기록
+        coinTradeHistoryService.record(
+            makeTradeHistory(
+                order = orderResponse,
+                autoTradeProcessorId = autoTradeProcessorId
+            )
         )
     }
 
