@@ -3,7 +3,7 @@ package com.dingdongdeng.autotrading.domain.chart.model
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import java.time.LocalDateTime
 
-class Candle(
+data class Candle(
     val candleUnit: CandleUnit,
     val candleDateTimeUtc: LocalDateTime, // 캔들 기준 시각(UTC 기준)
     val candleDateTimeKst: LocalDateTime, // 캔들 기준 시각(KST 기준)
