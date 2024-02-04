@@ -48,16 +48,20 @@ class ChartService(
     ) {
         val exchangeService = exchangeServices.first { it.support(exchangeType) }
         val keyPair = exchangeService.getKeyPair(keyPairId)
+
+        // 병렬 처리
         candleUnits.forEach { candleUnit ->
-            exchangeService.loadChart(
-                param = SpotCoinExchangeChartParam(
-                    coinType = coinType,
-                    candleUnit = candleUnit,
-                    from = startDateTime,
-                    to = endDateTime,
-                ),
-                keyParam = keyPair,
-            )
+            TimeContext.future {
+                exchangeService.loadChart(
+                    param = SpotCoinExchangeChartParam(
+                        coinType = coinType,
+                        candleUnit = candleUnit,
+                        from = startDateTime,
+                        to = endDateTime,
+                    ),
+                    keyParam = keyPair,
+                )
+            }
         }
     }
 
