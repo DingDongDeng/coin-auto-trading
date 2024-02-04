@@ -78,11 +78,11 @@ class ChartService(
         chart.candles
             .sortedBy { it.candleDateTimeKst } // 혹시 모르니 한번 더 정렬
             .takeLast(400) // 마지막 400개
-            .windowed(CHART_CANDLE_MAX_COUNT, 1, true) { subList -> // 200개씩 처리
-                val subCandles = subList.toList()
-                if (subCandles.size < CHART_CANDLE_MAX_COUNT) {
+            .windowed(CHART_CANDLE_MAX_COUNT, 1, true) { subList ->
+                if (subList.size < CHART_CANDLE_MAX_COUNT) {
                     return@windowed
                 }
+                val subCandles = subList.toList() //deep copy
                 val candle = subCandles.last()
                 candles.add(
                     Candle(
