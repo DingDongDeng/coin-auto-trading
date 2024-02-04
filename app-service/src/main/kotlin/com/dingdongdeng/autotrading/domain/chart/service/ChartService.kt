@@ -81,10 +81,10 @@ class ChartService(
         )
         val exchangeService = exchangeServices.first { it.support(exchangeType) }
         val exchangeKeyPair = exchangeService.getKeyPair(keyPairId)
-        val chart = exchangeService.getChart(chartParam, exchangeKeyPair)
+        val exchangeChart = exchangeService.getChart(chartParam, exchangeKeyPair)
         val candles = mutableListOf<Candle>()
         //FIXME 병렬로 계산시켜보자
-        chart.candles
+        exchangeChart.candles
             .sortedBy { it.candleDateTimeKst } // 혹시 모르니 한번 더 정렬
             .takeLast(400) // 마지막 400개
             .windowed(CHART_CANDLE_MAX_COUNT, 1, true) { subList ->
@@ -114,9 +114,9 @@ class ChartService(
         }
 
         return Chart(
-            from = chart.from,
-            to = chart.to,
-            currentPrice = chart.currentPrice,
+            from = exchangeChart.from,
+            to = exchangeChart.to,
+            currentPrice = exchangeChart.currentPrice,
             candleUnit = candleUnit,
             candles = candles,
         )
