@@ -41,10 +41,11 @@ Content-Type: application/json
   ],
   "candleUnits": [
     "UNIT_1M",
+    "UNIT_5M",
     "UNIT_15M"
   ],
   "startDateTime": "2024-01-01T00:00:00",
-  "endDateTime": "2024-01-12T00:00:00",
+  "endDateTime": "2024-01-30T00:00:00",
   "keyPairId": "354db64e-e208-4dc3-ab8b-8478ab55dc89"
 }
 
