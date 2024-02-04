@@ -1,5 +1,6 @@
 package com.dingdongdeng.autotrading.infra.common.utils
 
+import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
 import java.time.LocalDateTime
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
@@ -26,8 +27,13 @@ object TimeContext {
         val timeContext = context().now
         return CompletableFuture.supplyAsync(
             {
-                update(timeContext)
-                process()
+                try {
+                    update(timeContext)
+                    process()
+                } catch (e: Exception) {
+                    log.error(e.message, e)
+                    throw e
+                }
             },
             executor
         )

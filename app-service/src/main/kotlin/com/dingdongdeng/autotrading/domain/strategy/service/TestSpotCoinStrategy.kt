@@ -3,6 +3,7 @@ package com.dingdongdeng.autotrading.domain.strategy.service
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyMakeTaskParam
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyTask
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
+import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
 import com.dingdongdeng.autotrading.infra.common.type.OrderType
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Component
@@ -13,6 +14,7 @@ class TestSpotCoinStrategy(
 ) : SpotCoinStrategySkeleton<TestSpotCoinStrategyConfig>() {
 
     override fun convertConfig(config: Map<String, Any>): TestSpotCoinStrategyConfig {
+        log.info("start test ...")
         return objectMapper.convertValue(config, TestSpotCoinStrategyConfig::class.java)
     }
 
@@ -44,42 +46,42 @@ class TestSpotCoinStrategy(
         params: List<SpotCoinStrategyMakeTaskParam>,
         config: TestSpotCoinStrategyConfig
     ): Boolean {
-        TODO("Not yet implemented")
+        return false
     }
 
     override fun thenBuyTrade(
         params: List<SpotCoinStrategyMakeTaskParam>,
         config: TestSpotCoinStrategyConfig
     ): List<SpotCoinStrategyTask> {
-        TODO("Not yet implemented")
+        return emptyList()
     }
 
     override fun whenProfitTrade(
         params: List<SpotCoinStrategyMakeTaskParam>,
         config: TestSpotCoinStrategyConfig
     ): Boolean {
-        TODO("Not yet implemented")
+        return false
     }
 
     override fun thenProfitTrade(
         params: List<SpotCoinStrategyMakeTaskParam>,
         config: TestSpotCoinStrategyConfig
     ): List<SpotCoinStrategyTask> {
-        TODO("Not yet implemented")
+        return emptyList()
     }
 
     override fun whenLossTrade(
         params: List<SpotCoinStrategyMakeTaskParam>,
         config: TestSpotCoinStrategyConfig
     ): Boolean {
-        TODO("Not yet implemented")
+        return false
     }
 
     override fun thenLossTrade(
         params: List<SpotCoinStrategyMakeTaskParam>,
         config: TestSpotCoinStrategyConfig
     ): List<SpotCoinStrategyTask> {
-        TODO("Not yet implemented")
+        return emptyList()
     }
 
     override fun support(param: CoinStrategyType): Boolean {
