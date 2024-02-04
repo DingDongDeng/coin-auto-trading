@@ -7,6 +7,7 @@ import com.dingdongdeng.autotrading.infra.common.annotation.Usecase
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
+import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
 import java.time.LocalDateTime
 
 @Usecase
@@ -67,15 +68,18 @@ class CoinAutoTradeUsecase(
         candleUnits: List<CandleUnit>,
         keyPairId: String,
     ) {
+        // 병렬 처리
         coinTypes.forEach { coinType ->
-            chartService.loadCharts(
-                coinType = coinType,
-                keyPairId = keyPairId,
-                exchangeType = exchangeType,
-                startDateTime = startDateTime,
-                endDateTime = endDateTime,
-                candleUnits = candleUnits,
-            )
+            TimeContext.future {
+                chartService.loadCharts(
+                    coinType = coinType,
+                    keyPairId = keyPairId,
+                    exchangeType = exchangeType,
+                    startDateTime = startDateTime,
+                    endDateTime = endDateTime,
+                    candleUnits = candleUnits,
+                )
+            }
         }
     }
 
