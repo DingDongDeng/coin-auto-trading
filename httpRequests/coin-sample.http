@@ -13,7 +13,7 @@ POST http://localhost:8080/coin/autotrade/register
 Content-Type: application/json
 
 {
-  "coinStrategyType": "PROTO",
+  "coinStrategyType": "TEST",
   "exchangeType": "UPBIT",
   "coinTypes": [
     "XRP"
@@ -43,12 +43,12 @@ Content-Type: application/json
     "UNIT_1M",
     "UNIT_15M"
   ],
-  "startDateTime": "2024-01-05T00:00:00",
+  "startDateTime": "2024-01-01T00:00:00",
   "endDateTime": "2024-01-12T00:00:00",
   "keyPairId": "354db64e-e208-4dc3-ab8b-8478ab55dc89"
 }
 
-### 백테스트 등록
+### 백테스트
 POST http://localhost:8080/coin/autotrade/backtest
 Content-Type: application/json
 
@@ -56,7 +56,7 @@ Content-Type: application/json
   "startDateTime": "2024-01-10T00:00:00",
   "endDateTime": "2024-01-12T00:00:00",
   "durationUnit": "UNIT_1M",
-  "coinStrategyType": "PROTO",
+  "coinStrategyType": "TEST",
   "coinTypes": [
     "ETHEREUM",
     "XRP"
