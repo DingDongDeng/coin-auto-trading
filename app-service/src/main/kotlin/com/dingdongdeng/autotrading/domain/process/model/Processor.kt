@@ -16,6 +16,7 @@ abstract class Processor(
     fun start() {
         status = ProcessStatus.RUNNING
         CompletableFuture.runAsync {
+            val startTime = System.currentTimeMillis()
             while (status == ProcessStatus.RUNNING && runnable()) {
                 try {
                     sleep()
@@ -27,6 +28,10 @@ abstract class Processor(
                     throw e
                 }
             }
+            val endTime = System.currentTimeMillis()
+            val elapsedTime = endTime - startTime
+
+            log.info("프로세서 종료 : {}, {}ms 소요", id, elapsedTime)
         }
     }
 
