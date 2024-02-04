@@ -80,13 +80,13 @@ class CachedExchangeCandleRepository(
             exchangeType = exchangeType,
             coinType = coinType,
             unit = unit,
-            from = from,
-            to = to.plusMinutes(unit.getMinuteSize() * CACHED_CANDLE_COUNT),
+            from = from.minusMinutes(unit.getMinuteSize() * (CACHED_CANDLE_COUNT * 1 / 4)), // 25%
+            to = to.plusMinutes(unit.getMinuteSize() * (CACHED_CANDLE_COUNT * 3 / 4)), // 75%
         )
         cachedData[key] = candles
     }
 
     companion object {
-        const val CACHED_CANDLE_COUNT = 1500 // 1500개 이상 저장
+        const val CACHED_CANDLE_COUNT = 10000
     }
 }
