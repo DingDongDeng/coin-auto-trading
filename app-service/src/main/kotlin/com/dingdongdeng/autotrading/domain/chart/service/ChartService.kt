@@ -34,7 +34,7 @@ class ChartService(
                     candleUnit = candleUnit,
                 )
             }
-        }.toTypedArray()
+        }
         return futures.map { it.join() }
     }
 
