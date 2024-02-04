@@ -9,6 +9,9 @@ import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.runBlocking
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
@@ -23,15 +26,17 @@ class ChartService(
         keyPairId: String,
         coinType: CoinType,
         candleUnits: List<CandleUnit>,
-    ): List<Chart> {
-        return candleUnits.map { candleUnit ->
-            makeChartProcess(
-                exchangeType = exchangeType,
-                keyPairId = keyPairId,
-                coinType = coinType,
-                candleUnit = candleUnit,
-            )
-        }
+    ): List<Chart> = runBlocking {
+        candleUnits.map { candleUnit ->
+            async {
+                makeChartProcess(
+                    exchangeType = exchangeType,
+                    keyPairId = keyPairId,
+                    coinType = coinType,
+                    candleUnit = candleUnit,
+                )
+            }
+        }.awaitAll()
     }
 
     fun loadCharts(
@@ -75,6 +80,7 @@ class ChartService(
         val exchangeKeyPair = exchangeService.getKeyPair(keyPairId)
         val chart = exchangeService.getChart(chartParam, exchangeKeyPair)
         val candles = mutableListOf<Candle>()
+        //FIXME 병렬로 계산시켜보자
         chart.candles
             .sortedBy { it.candleDateTimeKst } // 혹시 모르니 한번 더 정렬
             .takeLast(400) // 마지막 400개
