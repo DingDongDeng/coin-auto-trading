@@ -3,74 +3,83 @@ package com.dingdongdeng.autotrading.domain.strategy.service
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyMakeTaskParam
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyTask
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
-import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
-import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.OrderType
-import com.dingdongdeng.autotrading.infra.common.type.PriceType
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Component
 
 @Component
 class TestSpotCoinStrategy(
     private val objectMapper: ObjectMapper,
-) : SpotCoinStrategy {
-    var count = 0
-    override fun makeTask(
+) : SpotCoinStrategySkeleton<TestSpotCoinStrategyConfig>() {
+
+    override fun convertConfig(config: Map<String, Any>): TestSpotCoinStrategyConfig {
+        return objectMapper.convertValue(config, TestSpotCoinStrategyConfig::class.java)
+    }
+
+    override fun whenWaitTrades(
         params: List<SpotCoinStrategyMakeTaskParam>,
-        config: Map<String, Any>
+        config: TestSpotCoinStrategyConfig
+    ): Boolean {
+        return params.any { it.tradeInfo.existsWaitTrade() }
+    }
+
+    override fun thenWaitTrades(
+        params: List<SpotCoinStrategyMakeTaskParam>,
+        config: TestSpotCoinStrategyConfig
     ): List<SpotCoinStrategyTask> {
-        if (count++ % 100 != 0) {
-            return emptyList()
-        }
-
-        log.info("test ...")
-        val param = params.first()
-        val config = objectMapper.convertValue(config, TestSpotCoinStrategyConfig::class.java)
-
-        val currentPrice = param.getChart(CandleUnit.UNIT_15M).currentPrice
-        val charts = param.charts
-        val tradeInfo = param.tradeInfo
-        val indicators = charts.first().candles.first().getIndicators()
-
-        if (tradeInfo.existsWaitTrade()) {
-            return tradeInfo.getOldWaitTrades(30L)
-                .map {
-                    SpotCoinStrategyTask(
-                        coinType = it.coinType,
-                        volume = it.volume,
-                        price = it.price,
-                        orderType = OrderType.CANCEL,
-                        priceType = it.priceType,
-                        orderId = it.orderId,
-                    )
-                }
-        }
-
-        if (tradeInfo.volume == 0.0) {
-            return listOf(
+        return params.flatMap { it.tradeInfo.getOldWaitTrades(30L) }
+            .map {
                 SpotCoinStrategyTask(
-                    coinType = param.coinType,
-                    volume = 7.0,
-                    price = currentPrice,
-                    orderType = OrderType.BUY,
-                    priceType = PriceType.LIMIT,
+                    coinType = it.coinType,
+                    volume = it.volume,
+                    price = it.price,
+                    orderType = OrderType.CANCEL,
+                    priceType = it.priceType,
+                    orderId = it.orderId,
                 )
-            )
-        }
+            }
+    }
 
-        if (tradeInfo.volume == 7.0) {
-            return listOf(
-                SpotCoinStrategyTask(
-                    coinType = param.coinType,
-                    volume = 7.0,
-                    price = currentPrice,
-                    orderType = OrderType.SELL,
-                    priceType = PriceType.LIMIT,
-                )
-            )
-        }
+    override fun whenBuyTrade(
+        params: List<SpotCoinStrategyMakeTaskParam>,
+        config: TestSpotCoinStrategyConfig
+    ): Boolean {
+        TODO("Not yet implemented")
+    }
 
-        return emptyList()
+    override fun thenBuyTrade(
+        params: List<SpotCoinStrategyMakeTaskParam>,
+        config: TestSpotCoinStrategyConfig
+    ): List<SpotCoinStrategyTask> {
+        TODO("Not yet implemented")
+    }
+
+    override fun whenProfitTrade(
+        params: List<SpotCoinStrategyMakeTaskParam>,
+        config: TestSpotCoinStrategyConfig
+    ): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun thenProfitTrade(
+        params: List<SpotCoinStrategyMakeTaskParam>,
+        config: TestSpotCoinStrategyConfig
+    ): List<SpotCoinStrategyTask> {
+        TODO("Not yet implemented")
+    }
+
+    override fun whenLossTrade(
+        params: List<SpotCoinStrategyMakeTaskParam>,
+        config: TestSpotCoinStrategyConfig
+    ): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun thenLossTrade(
+        params: List<SpotCoinStrategyMakeTaskParam>,
+        config: TestSpotCoinStrategyConfig
+    ): List<SpotCoinStrategyTask> {
+        TODO("Not yet implemented")
     }
 
     override fun support(param: CoinStrategyType): Boolean {
