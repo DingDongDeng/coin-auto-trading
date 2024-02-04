@@ -10,6 +10,7 @@ import com.dingdongdeng.autotrading.infra.client.slack.SlackSender
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
+import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
 import java.util.UUID
 
 class CoinAutoTradeProcessor(
@@ -34,31 +35,9 @@ class CoinAutoTradeProcessor(
     slackSender = slackSender,
 ) {
     override fun process() {
-        val params = coinTypes.map { coinType ->
-            // 차트 조회
-            val charts = chartService.getCharts(
-                exchangeType = exchangeType,
-                keyPairId = keyPairId,
-                coinType = coinType,
-                candleUnits = candleUnits,
-            )
-
-            // 거래 정보 조회
-            val tradeInfo = coinTradeService.getTradeInfo(
-                exchangeType = exchangeType,
-                keyPairId = keyPairId,
-                autoTradeProcessorId = id,
-                coinType = coinType,
-                currentPrice = charts.first().currentPrice,
-            )
-
-            SpotCoinStrategyMakeTaskParam(
-                exchangeType = exchangeType,
-                coinType = coinType,
-                charts = charts,
-                tradeInfo = tradeInfo,
-            )
-        }
+        // 병렬 수행
+        val futures = coinTypes.map { coinType -> TimeContext.future { makeParamProcess(coinType) } }
+        val params = futures.map { it.join() }
 
         // 전략을 수행할 task 생성
         val tasks = coinStrategyService.getTask(
@@ -84,6 +63,32 @@ class CoinAutoTradeProcessor(
                 priceType = task.priceType,
             )
         }
+    }
+
+    private fun makeParamProcess(coinType: CoinType): SpotCoinStrategyMakeTaskParam {
+        // 차트 조회
+        val charts = chartService.getCharts(
+            exchangeType = exchangeType,
+            keyPairId = keyPairId,
+            coinType = coinType,
+            candleUnits = candleUnits,
+        )
+
+        // 거래 정보 조회
+        val tradeInfo = coinTradeService.getTradeInfo(
+            exchangeType = exchangeType,
+            keyPairId = keyPairId,
+            autoTradeProcessorId = id,
+            coinType = coinType,
+            currentPrice = charts.first().currentPrice,
+        )
+
+        return SpotCoinStrategyMakeTaskParam(
+            exchangeType = exchangeType,
+            coinType = coinType,
+            charts = charts,
+            tradeInfo = tradeInfo,
+        )
     }
 
     override fun runnable(): Boolean {
