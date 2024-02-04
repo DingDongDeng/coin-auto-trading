@@ -30,6 +30,7 @@ class TestSpotCoinStrategy(
         val currentPrice = param.getChart(CandleUnit.UNIT_15M).currentPrice
         val charts = param.charts
         val tradeInfo = param.tradeInfo
+        val indicators = charts.first().candles.first().getIndicators()
 
         if (tradeInfo.existsWaitTrade()) {
             return tradeInfo.getOldWaitTrades(30L)
