@@ -87,7 +87,7 @@ class ChartService(
                 if (subList.size < CHART_CANDLE_MAX_COUNT) {
                     return@windowed
                 }
-                val subCandles = subList.toList() //deep copy FIXME 리소스 많이 쓰는 중
+                val subCandles = subList.toList() //deep copy FIXME 상대적으로 리소스 많이 쓰는 중
                 val candle = subCandles.last()
                 candles.add(
                     Candle(
