@@ -24,14 +24,18 @@ class ChartService(
         coinType: CoinType,
         candleUnits: List<CandleUnit>,
     ): List<Chart> {
-        return candleUnits.map { candleUnit ->
-            makeChartProcess(
-                exchangeType = exchangeType,
-                keyPairId = keyPairId,
-                coinType = coinType,
-                candleUnit = candleUnit,
-            )
-        }
+        // 병렬 수행
+        val futures = candleUnits.map { candleUnit ->
+            TimeContext.future {
+                makeChartProcess(
+                    exchangeType = exchangeType,
+                    keyPairId = keyPairId,
+                    coinType = coinType,
+                    candleUnit = candleUnit,
+                )
+            }
+        }.toTypedArray()
+        return futures.map { it.join() }
     }
 
 
@@ -84,7 +88,7 @@ class ChartService(
                 if (subList.size < CHART_CANDLE_MAX_COUNT) {
                     return@windowed
                 }
-                val subCandles = subList.toList() //deep copy
+                val subCandles = subList.toList() //deep copy FIXME 리소스 많이 쓰는 중
                 val candle = subCandles.last()
                 candles.add(
                     Candle(
