@@ -9,9 +9,6 @@ import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.runBlocking
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
@@ -26,18 +23,17 @@ class ChartService(
         keyPairId: String,
         coinType: CoinType,
         candleUnits: List<CandleUnit>,
-    ): List<Chart> = runBlocking {
-        candleUnits.map { candleUnit ->
-            async {
-                makeChartProcess(
-                    exchangeType = exchangeType,
-                    keyPairId = keyPairId,
-                    coinType = coinType,
-                    candleUnit = candleUnit,
-                )
-            }
-        }.awaitAll()
+    ): List<Chart> {
+        return candleUnits.map { candleUnit ->
+            makeChartProcess(
+                exchangeType = exchangeType,
+                keyPairId = keyPairId,
+                coinType = coinType,
+                candleUnit = candleUnit,
+            )
+        }
     }
+
 
     fun loadCharts(
         exchangeType: ExchangeType,
