@@ -2,9 +2,12 @@ package com.dingdongdeng.autotrading.infra.common.utils
 
 import java.time.LocalDateTime
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Executors
 
 object TimeContext {
     private val timeContextThreadLocal = ThreadLocal.withInitial { Context() }
+    private val executor = Executors.newFixedThreadPool(100)
+
     fun now(): LocalDateTime {
         val context = timeContextThreadLocal.get()
         return context.now()
@@ -21,10 +24,13 @@ object TimeContext {
 
     fun <T> future(process: () -> T): CompletableFuture<T> {
         val timeContext = context().now
-        return CompletableFuture.supplyAsync {
-            update(timeContext)
-            process()
-        }
+        return CompletableFuture.supplyAsync(
+            {
+                update(timeContext)
+                process()
+            },
+            executor
+        )
     }
 
     private fun context(): Context = timeContextThreadLocal.get()
