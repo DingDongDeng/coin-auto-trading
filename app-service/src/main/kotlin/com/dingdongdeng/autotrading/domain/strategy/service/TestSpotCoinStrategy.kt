@@ -83,7 +83,7 @@ class TestSpotCoinStrategy(
     }
 
     override fun support(param: CoinStrategyType): Boolean {
-        return param == CoinStrategyType.PROTO
+        return param == CoinStrategyType.TEST
     }
 }
 
