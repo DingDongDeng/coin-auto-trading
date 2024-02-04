@@ -38,7 +38,6 @@ class ChartService(
         return futures.map { it.join() }
     }
 
-
     fun loadCharts(
         exchangeType: ExchangeType,
         keyPairId: String,
