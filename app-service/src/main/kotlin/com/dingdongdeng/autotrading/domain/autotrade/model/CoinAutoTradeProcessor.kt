@@ -13,8 +13,8 @@ import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import java.util.UUID
 
 class CoinAutoTradeProcessor(
-    private val _id: String = "AUTOTRADE-${UUID.randomUUID()}",
-    private val _userId: Long,
+    override val id: String = "AUTOTRADE-${UUID.randomUUID()}",
+    override val userId: Long,
     val coinStrategyType: CoinStrategyType,
     val exchangeType: ExchangeType,
     val coinTypes: List<CoinType>,
@@ -22,15 +22,14 @@ class CoinAutoTradeProcessor(
     val keyPairId: String,
     val config: Map<String, Any>,
     private val duration: Long = 60 * 1000, // milliseconds
-    private val slackSender: SlackSender,
+    private val slackSender: SlackSender?,
 
     private val chartService: ChartService,
     private val coinTradeService: CoinTradeService,
     private val coinStrategyService: CoinStrategyService,
 ) : Processor(
-    id = _id,
-    userId = _userId,
-    isRunnable = { true },
+    id = id,
+    userId = userId,
     duration = duration,
     slackSender = slackSender,
 ) {
@@ -85,5 +84,9 @@ class CoinAutoTradeProcessor(
                 priceType = task.priceType,
             )
         }
+    }
+
+    override fun runnable(): Boolean {
+        return true
     }
 }
