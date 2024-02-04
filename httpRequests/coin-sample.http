@@ -49,7 +49,7 @@ Content-Type: application/json
 }
 
 ### 백테스트 등록
-POST http://localhost:8080/coin/autotrade/backtest/register
+POST http://localhost:8080/coin/autotrade/backtest
 Content-Type: application/json
 
 {
@@ -72,7 +72,7 @@ Content-Type: application/json
 }
 
 ### 자동매매 시작
-POST http://localhost:8080/coin/autotrade/BACKTEST-c8b20a20-790b-429d-8883-0af806b5280e/start
+POST http://localhost:8080/coin/autotrade/BACKTEST-351d3add-c676-4b27-9b34-0843572fd726/start
 Content-Type: application/json
 
 ### 자동매매 정지

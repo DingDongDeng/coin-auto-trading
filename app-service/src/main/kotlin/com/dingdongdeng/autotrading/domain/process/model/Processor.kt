@@ -7,23 +7,22 @@ import java.util.UUID
 import java.util.concurrent.CompletableFuture
 
 abstract class Processor(
-    val id: String = UUID.randomUUID().toString(),
-    val userId: Long,
+    open val id: String = UUID.randomUUID().toString(),
+    open val userId: Long,
     private var status: ProcessStatus = ProcessStatus.INIT,
-    private val isRunnable: () -> Boolean,
     private val duration: Long = 60 * 1000, // milliseconds
-    private val slackSender: SlackSender,
+    private val slackSender: SlackSender?,
 ) {
     fun start() {
         status = ProcessStatus.RUNNING
         CompletableFuture.runAsync {
-            while (status == ProcessStatus.RUNNING && isRunnable()) {
+            while (status == ProcessStatus.RUNNING && runnable()) {
                 try {
                     sleep()
                     process()
                 } catch (e: Exception) {
                     log.error("processor 동작 중 실패, id={}, e.meesage={}", id, e.message, e)
-                    slackSender.send("userId : $userId, processorId : $id", e)
+                    slackSender?.send("userId : $userId, processorId : $id", e)
                     this.stop()
                     throw e
                 }
@@ -39,7 +38,9 @@ abstract class Processor(
         status = ProcessStatus.TERMINATED
     }
 
-    protected abstract fun process()
+    abstract fun process()
+
+    protected abstract fun runnable(): Boolean
 
     private fun sleep() {
         if (duration <= 0) {
