@@ -26,9 +26,10 @@ import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
+import com.dingdongdeng.autotrading.infra.common.utils.toUtc
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 @Service
 class UpbitSpotCoinExchangeService(
@@ -183,6 +184,11 @@ class UpbitSpotCoinExchangeService(
             throw WarnException(userMessage = "이미 캔들이 존재하는 구간입니다. $from ~ $to")
         }
 
+        /**
+         * from <= 범위 <= to 캔들을 조회해야함
+         * to부터 from까지 N개씩 순차적으로 조회하면서 전체 리스트 저장
+         * 그 과정에서 의도치 않은 업비트 응답을 방어하기 위해 버퍼를 두어 조회API를 사용
+         */
         var now = to
         while (true) {
             val isCompleted = now.isBefore(from) || now.isEqual(from)
@@ -202,8 +208,8 @@ class UpbitSpotCoinExchangeService(
             val candles = response
                 .filter {
                     it.candleDateTimeKst.isEqual(to) // <= to 범위를 위해 필터 (엣지 범위)
-                            || it.candleDateTimeKst.isEqual(now).not() // 범위 < now 형태로 만들어서 이전 검색 범위와 겹치지 않도록함
-                            && it.candleDateTimeKst.isBefore(from).not() // from <= 범위를 위해 필터 (엣지 범위)
+                        || it.candleDateTimeKst.isEqual(now).not() // 범위 < now 형태로 만들어서 이전 검색 범위와 겹치지 않도록함
+                        && it.candleDateTimeKst.isBefore(from).not() // from <= 범위를 위해 필터 (엣지 범위)
                 }
                 .map {
                     ExchangeCandle(
@@ -221,19 +227,29 @@ class UpbitSpotCoinExchangeService(
                     )
                 }
 
-            // 거래소에 간혹 캔들을 누락된채로 보내줌...
+            // 거래소에 간혹 캔들을 누락된채로 보내줌
+            // 백테스트에서 문제되는 경우가 많아 mock 캔들을 생성해서 저장
             if (ExchangeUtils.hasMissingCandle(param.candleUnit, candles.map { it.candleDateTimeKst })) {
-                log.warn(
-                    "거래소 API응답에 누락된 캔들이 존재, coinType={}, candleUnit={}, missingDateTimes={}, ranged={}~{}",
-                    param.coinType,
+                ExchangeUtils.findMissingCandles(
                     param.candleUnit,
-                    ExchangeUtils.findMissingCandles(
-                        param.candleUnit,
-                        candles.map { it.candleDateTimeKst }
-                    ),
-                    candles.first().candleDateTimeKst,
-                    candles.last().candleDateTimeKst,
-                )
+                    candles.map { it.candleDateTimeKst }
+                ).forEach { candleDateTimeKst ->
+                    val nextCandle = candles.first { candleDateTimeKst.isBefore(it.candleDateTimeKst) }
+                    val mockCandle = ExchangeCandle(
+                        exchangeType = EXCHANGE_TYPE,
+                        coinType = param.coinType,
+                        unit = param.candleUnit,
+                        candleDateTimeUtc = candleDateTimeKst.toUtc(),
+                        candleDateTimeKst = candleDateTimeKst,
+                        openingPrice = nextCandle.openingPrice,
+                        highPrice = nextCandle.highPrice,
+                        lowPrice = nextCandle.lowPrice,
+                        closingPrice = nextCandle.closingPrice,
+                        accTradePrice = nextCandle.accTradePrice,
+                        accTradeVolume = nextCandle.accTradeVolume,
+                    )
+                    exchangeCandleRepository.save(mockCandle)
+                }
             }
 
             exchangeCandleRepository.saveAll(candles)
