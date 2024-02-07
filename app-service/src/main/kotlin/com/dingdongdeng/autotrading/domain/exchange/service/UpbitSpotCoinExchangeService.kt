@@ -26,7 +26,6 @@ import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
-import com.dingdongdeng.autotrading.infra.common.utils.toUtc
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.UUID
@@ -227,31 +226,7 @@ class UpbitSpotCoinExchangeService(
                     )
                 }
 
-            // 거래소에 간혹 캔들을 누락된채로 보내줌
-            // 백테스트에서 문제되는 경우가 많아 mock 캔들을 생성해서 저장
-            if (ExchangeUtils.hasMissingCandle(param.candleUnit, candles.map { it.candleDateTimeKst })) {
-                ExchangeUtils.findMissingCandles(
-                    param.candleUnit,
-                    candles.map { it.candleDateTimeKst }
-                ).forEach { candleDateTimeKst ->
-                    val nextCandle = candles.first { candleDateTimeKst.isBefore(it.candleDateTimeKst) }
-                    val mockCandle = ExchangeCandle(
-                        exchangeType = EXCHANGE_TYPE,
-                        coinType = param.coinType,
-                        unit = param.candleUnit,
-                        candleDateTimeUtc = candleDateTimeKst.toUtc(),
-                        candleDateTimeKst = candleDateTimeKst,
-                        openingPrice = nextCandle.openingPrice,
-                        highPrice = nextCandle.highPrice,
-                        lowPrice = nextCandle.lowPrice,
-                        closingPrice = nextCandle.closingPrice,
-                        accTradePrice = nextCandle.accTradePrice,
-                        accTradeVolume = nextCandle.accTradeVolume,
-                    )
-                    exchangeCandleRepository.save(mockCandle)
-                }
-            }
-
+            // 거래소에서 일부 캔들이 누락되어 조회되는 경우가 빈번함
             exchangeCandleRepository.saveAll(candles)
 
             now = response.first().candleDateTimeKst
