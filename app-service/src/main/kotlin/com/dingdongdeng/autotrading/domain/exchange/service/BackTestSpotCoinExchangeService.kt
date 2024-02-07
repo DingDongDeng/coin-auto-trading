@@ -8,8 +8,6 @@ import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartP
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrder
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderParam
 import com.dingdongdeng.autotrading.domain.exchange.repository.CachedExchangeCandleRepository
-import com.dingdongdeng.autotrading.domain.exchange.utils.ExchangeUtils
-import com.dingdongdeng.autotrading.infra.common.exception.CriticalException
 import com.dingdongdeng.autotrading.infra.common.exception.WarnException
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
@@ -51,7 +49,7 @@ class BackTestSpotCoinExchangeService(
 
     // from <= 조회범위 <= to
     override fun getChart(param: SpotCoinExchangeChartParam, keyParam: ExchangeKeyPair): ExchangeChart {
-        val exchangeType = ExchangeType.UPBIT // 업비트 차트를 사용
+        val exchangeType = EXCHANGE_TYPE_FOR_BACKTEST
 
         // 캔들 조회
         val candles = exchangeCandleRepository.findAllExchangeCandle(
@@ -92,18 +90,6 @@ class BackTestSpotCoinExchangeService(
                     accTradeVolume = it.accTradeVolume,
                 )
             } + virtualCandle
-
-        // 거래소에 간혹 캔들을 누락된채로 보내줌...
-        if (ExchangeUtils.hasMissingCandle(param.candleUnit, candles.map { it.candleDateTimeKst })) {
-            throw CriticalException.of("""
-                [백테스트] 거래소 API응답에 누락된 캔들이 존재, coinType=${param.coinType}, candleUnit=${param.candleUnit}, missingDateTimes=${
-                ExchangeUtils.findMissingCandles(
-                    param.candleUnit,
-                    candles.map { it.candleDateTimeKst }
-                )
-            }
-            """.trimIndent())
-        }
 
         return ExchangeChart(
             from = param.from,
@@ -166,5 +152,6 @@ class BackTestSpotCoinExchangeService(
 
     companion object {
         val EXCHANGE_TYPE = ExchangeType.BACKTEST
+        val EXCHANGE_TYPE_FOR_BACKTEST = ExchangeType.UPBIT // 업비트 차트로 백테스트 진행
     }
 }
