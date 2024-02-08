@@ -63,9 +63,10 @@ class CachedExchangeCandleRepository(
         to: LocalDateTime,
     ): List<ExchangeCandle> {
         val candles = cachedData[key]
-        return candles!!.filter {
-            (from.isAfter(it.candleDateTimeKst) || to.isBefore(it.candleDateTimeKst)).not()
-        }
+
+        val startIndex = candles!!.indexOfFirst { from.isAfter(it.candleDateTimeKst).not() }
+        val endIndex = candles!!.indexOfLast { to.isBefore(it.candleDateTimeKst).not() }
+        return candles!!.subList(startIndex, endIndex + 1)
     }
 
     private fun saveCachedData(
@@ -87,6 +88,6 @@ class CachedExchangeCandleRepository(
     }
 
     companion object {
-        const val CACHED_CANDLE_COUNT = 10000
+        const val CACHED_CANDLE_COUNT = 1500
     }
 }
