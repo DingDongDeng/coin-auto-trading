@@ -5,6 +5,7 @@ import com.dingdongdeng.autotrading.domain.chart.model.Chart
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartParam
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
 import com.dingdongdeng.autotrading.domain.indicator.service.IndicatorService
+import com.dingdongdeng.autotrading.infra.common.exception.CriticalException
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
@@ -84,30 +85,35 @@ class ChartService(
         val exchangeChart = exchangeService.getChart(chartParam, exchangeKeyPair)
         val candles = mutableListOf<Candle>()
 
-        exchangeChart.candles
+        val exchangeCandles = exchangeChart.candles
             .sortedBy { it.candleDateTimeKst } // 혹시 모르니 한번 더 정렬
             .takeLast(400) // 마지막 400개
-            .windowed(CHART_CANDLE_MAX_COUNT, 1, true) { subList ->
-                if (subList.size < CHART_CANDLE_MAX_COUNT) {
-                    return@windowed
-                }
-                val subCandles = subList.toList() //deep copy
-                val candle = subCandles.last()
-                candles.add(
-                    Candle(
-                        candleUnit = candle.candleUnit,
-                        candleDateTimeUtc = candle.candleDateTimeUtc,
-                        candleDateTimeKst = candle.candleDateTimeKst,
-                        openingPrice = candle.openingPrice,
-                        highPrice = candle.highPrice,
-                        lowPrice = candle.lowPrice,
-                        closingPrice = candle.closingPrice,
-                        accTradePrice = candle.accTradePrice,
-                        accTradeVolume = candle.accTradeVolume,
-                        indicators = { indicatorService.calculate(subCandles) }
-                    )
-                )
+        for (i in 0..200) {
+            val startIndex = i
+            val endIndex = startIndex + CHART_CANDLE_MAX_COUNT - 1
+
+            val subCandles = exchangeCandles.subList(startIndex, endIndex + 1) // 참조만 변경 (deep copy x)
+
+            if (subCandles.size < CHART_CANDLE_MAX_COUNT) {
+                throw CriticalException.of("생성된 subClass가 적절한 개수가 아님")
             }
+            val candle = subCandles.last()
+            candles.add(
+                Candle(
+                    candleUnit = candle.candleUnit,
+                    candleDateTimeUtc = candle.candleDateTimeUtc,
+                    candleDateTimeKst = candle.candleDateTimeKst,
+                    openingPrice = candle.openingPrice,
+                    highPrice = candle.highPrice,
+                    lowPrice = candle.lowPrice,
+                    closingPrice = candle.closingPrice,
+                    accTradePrice = candle.accTradePrice,
+                    accTradeVolume = candle.accTradeVolume,
+                    indicators = { indicatorService.calculate(subCandles) }
+                )
+            )
+        }
+
 
         if (candles.size < CHART_CANDLE_MAX_COUNT) {
             throw RuntimeException("캔들의 보조 지표 계산을 위한 적절한 수의 과거 캔들을 추출하는데 실패")
