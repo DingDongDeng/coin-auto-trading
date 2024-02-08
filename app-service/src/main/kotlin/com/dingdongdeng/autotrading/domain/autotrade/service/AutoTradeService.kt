@@ -23,6 +23,7 @@ class AutoTradeService(
 
     private val slackSender: SlackSender,
 ) {
+    //FIXME 마켓 조회했을때 종목 상태가 warn이면 exception 던지자
     fun register(
         userId: Long,
         coinStrategyType: CoinStrategyType,
