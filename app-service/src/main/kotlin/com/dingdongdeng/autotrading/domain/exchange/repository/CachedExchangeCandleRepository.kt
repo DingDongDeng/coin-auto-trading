@@ -20,8 +20,8 @@ class CachedExchangeCandleRepository(
         from: LocalDateTime,
         to: LocalDateTime,
     ): List<ExchangeCandle> {
-        synchronized(this) {
-            val key = makeCacheKey(exchangeType, coinType, unit)
+        val key = makeCacheKey(exchangeType, coinType, unit)
+        synchronized(key) {
             if (isEnoughCacheData(key, from, to).not()) {
                 saveCachedData(key, exchangeType, coinType, unit, from, to)
             }
