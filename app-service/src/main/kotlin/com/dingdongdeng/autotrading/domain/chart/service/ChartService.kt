@@ -83,7 +83,7 @@ class ChartService(
         val exchangeKeyPair = exchangeService.getKeyPair(keyPairId)
         val exchangeChart = exchangeService.getChart(chartParam, exchangeKeyPair)
         val candles = mutableListOf<Candle>()
-        //FIXME 병렬로 계산시켜보자
+
         exchangeChart.candles
             .sortedBy { it.candleDateTimeKst } // 혹시 모르니 한번 더 정렬
             .takeLast(400) // 마지막 400개
@@ -91,7 +91,7 @@ class ChartService(
                 if (subList.size < CHART_CANDLE_MAX_COUNT) {
                     return@windowed
                 }
-                val subCandles = subList.toList() //deep copy FIXME 상대적으로 리소스 많이 쓰는 중
+                val subCandles = subList.toList() //deep copy
                 val candle = subCandles.last()
                 candles.add(
                     Candle(
