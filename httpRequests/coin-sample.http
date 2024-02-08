@@ -36,16 +36,23 @@ Content-Type: application/json
 {
   "exchangeType": "UPBIT",
   "coinTypes": [
-    "XRP",
-    "ETHEREUM"
+    "BITCOIN",
+    "ETHEREUM",
+    "NEO",
+    "METAL"
   ],
   "candleUnits": [
     "UNIT_1M",
+    "UNIT_3M",
     "UNIT_5M",
-    "UNIT_15M"
+    "UNIT_10M",
+    "UNIT_15M",
+    "UNIT_30M",
+    "UNIT_60M",
+    "UNIT_240M"
   ],
-  "startDateTime": "2024-01-01T00:00:00",
-  "endDateTime": "2024-01-30T00:00:00",
+  "startDateTime": "2023-09-01T00:00:00",
+  "endDateTime": "2024-04-01T00:00:00",
   "keyPairId": "354db64e-e208-4dc3-ab8b-8478ab55dc89"
 }
 
@@ -59,13 +66,20 @@ Content-Type: application/json
   "durationUnit": "UNIT_1M",
   "coinStrategyType": "TEST",
   "coinTypes": [
+    "BITCOIN",
     "ETHEREUM",
-    "XRP"
+    "NEO",
+    "METAL"
   ],
   "candleUnits": [
     "UNIT_1M",
+    "UNIT_3M",
     "UNIT_5M",
-    "UNIT_15M"
+    "UNIT_10M",
+    "UNIT_15M",
+    "UNIT_30M",
+    "UNIT_60M",
+    "UNIT_240M"
   ],
   "config": {
     "configA": "TESTA",
