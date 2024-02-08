@@ -88,6 +88,6 @@ class CachedExchangeCandleRepository(
     }
 
     companion object {
-        const val CACHED_CANDLE_COUNT = 1500
+        const val CACHED_CANDLE_COUNT = 200
     }
 }
