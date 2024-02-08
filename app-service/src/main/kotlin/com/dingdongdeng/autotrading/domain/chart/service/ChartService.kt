@@ -95,7 +95,7 @@ class ChartService(
             val subCandles = exchangeCandles.subList(startIndex, endIndex + 1) // 참조만 변경 (deep copy x)
 
             if (subCandles.size < CHART_CANDLE_MAX_COUNT) {
-                throw CriticalException.of("생성된 subClass가 적절한 개수가 아님")
+                throw CriticalException.of("생성된 subCandles가 적절한 개수가 아님")
             }
             val candle = subCandles.last()
             candles.add(
