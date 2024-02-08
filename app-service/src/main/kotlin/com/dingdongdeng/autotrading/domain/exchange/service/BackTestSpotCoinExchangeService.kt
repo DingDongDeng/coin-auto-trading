@@ -1,6 +1,5 @@
 package com.dingdongdeng.autotrading.domain.exchange.service
 
-import com.dingdongdeng.autotrading.domain.exchange.entity.ExchangeCandle
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChart
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChartCandle
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeKeyPair
@@ -8,12 +7,16 @@ import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartP
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrder
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderParam
 import com.dingdongdeng.autotrading.domain.exchange.repository.CachedExchangeCandleRepository
+import com.dingdongdeng.autotrading.infra.common.exception.CriticalException
 import com.dingdongdeng.autotrading.infra.common.exception.WarnException
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
+import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.type.TradeState
 import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import java.util.UUID
 import kotlin.math.max
 import kotlin.math.min
@@ -64,14 +67,15 @@ class BackTestSpotCoinExchangeService(
         // 예를 들어, 15분봉일때, 현재시간이 13:17이라면 13:15에 대한 가상캔들을 새로 만들어야한다.
         // DB에서 조회한 13:15캔들은 13:30까지의 상태가 반영되었기 때문이다.
         val virtualCandle = makeVirtualCandle(
+            coinType = param.coinType,
             candleUnit = param.candleUnit,
-            minUnitCandles = exchangeCandleRepository.findAllExchangeCandle(
-                exchangeType = exchangeType,
-                coinType = param.coinType,
-                unit = CandleUnit.min(),
-                from = candles.last().candleDateTimeKst,
-                to = TimeContext.now(),
-            )
+            from = param.to.minusMinutes( // N분봉이 거래소에서 누락됐을수도 있으므로 param.to 기준으로 다시 계산
+                candles.last().candleDateTimeKst.until(
+                    param.to,
+                    ChronoUnit.MINUTES
+                ) % param.candleUnit.getMinuteSize()
+            ),
+            to = param.to, // 백테스트에서는 now 사용됨
         )
 
         // 최종 캔들
@@ -119,7 +123,33 @@ class BackTestSpotCoinExchangeService(
         return exchangeType == EXCHANGE_TYPE
     }
 
-    private fun makeVirtualCandle(candleUnit: CandleUnit, minUnitCandles: List<ExchangeCandle>): ExchangeChartCandle {
+    private fun makeVirtualCandle(
+        coinType: CoinType,
+        candleUnit: CandleUnit,
+        from: LocalDateTime,
+        to: LocalDateTime
+    ): ExchangeChartCandle {
+
+        // 큰 단위의 캔들을 다시 만들기 위해 가장 작은 단위의 캔들을 조회
+        val minUnitCandles = exchangeCandleRepository.findAllExchangeCandle(
+            exchangeType = EXCHANGE_TYPE_FOR_BACKTEST,
+            coinType = coinType,
+            unit = CandleUnit.min(),
+            from = from,
+            to = to,
+        ).takeIf { it.isNotEmpty() } // 거래소 캔들이 누락되어 있음 (캔들이 누락된 경우가 빈번함)
+            ?: exchangeCandleRepository.findAllExchangeCandle(
+                exchangeType = EXCHANGE_TYPE_FOR_BACKTEST,
+                coinType = coinType,
+                unit = CandleUnit.min(),
+                from = from.minusMinutes(3), // 과거 캔들로 메꾼다다. (미래 캔들로 하면 선행 지표처럼 작용할수도 있으니 주의)
+                to = to,
+            ).takeLast(1)
+
+        if (minUnitCandles.isEmpty()) {
+            throw CriticalException.of("백테스트를 위한 minCandles 조회에 실패하였습니다.")
+        }
+
         val candleDateTimeUtc = minUnitCandles.first().candleDateTimeUtc
         val candleDateTimeKst = minUnitCandles.first().candleDateTimeKst
         val openingPrice = minUnitCandles.first().openingPrice
