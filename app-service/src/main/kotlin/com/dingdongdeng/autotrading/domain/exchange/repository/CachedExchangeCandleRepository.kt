@@ -34,7 +34,13 @@ class CachedExchangeCandleRepository(
         coinType: CoinType,
         unit: CandleUnit,
     ): String {
-        return "$exchangeType:$coinType:$unit"
+        val sb = StringBuilder()
+        sb.append(exchangeType)
+            .append(":")
+            .append(coinType)
+            .append(":")
+            .append(unit)
+        return sb.toString()
     }
 
     private fun isEnoughCacheData(
