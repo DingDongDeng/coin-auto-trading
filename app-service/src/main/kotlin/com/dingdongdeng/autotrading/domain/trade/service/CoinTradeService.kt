@@ -9,7 +9,6 @@ import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.type.OrderType
 import com.dingdongdeng.autotrading.infra.common.type.PriceType
-import com.dingdongdeng.autotrading.infra.common.type.TradeState
 import org.springframework.stereotype.Service
 
 @Service
@@ -28,7 +27,7 @@ class CoinTradeService(
         val notSyncedTradeHistories = coinTradeHistoryService.findAllTradeHistory(autoTradeProcessorId, coinType)
         val syncedTradeHistories = notSyncedTradeHistories.map { notSyncedTradeHistory ->
             // WAIT 상태의 거래건들 업데이트
-            if (notSyncedTradeHistory.state == TradeState.WAIT) {
+            if (notSyncedTradeHistory.isWait()) {
                 val exchangeService = exchangeServices.first { it.support(exchangeType) }
                 val exchangeKeyPair = exchangeService.getKeyPair(keyPairId)
                 val order = exchangeService.getOrder(notSyncedTradeHistory.orderId, exchangeKeyPair)
