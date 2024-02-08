@@ -142,12 +142,12 @@ class BackTestSpotCoinExchangeService(
                 exchangeType = EXCHANGE_TYPE_FOR_BACKTEST,
                 coinType = coinType,
                 unit = CandleUnit.min(),
-                from = from.minusMinutes(3), // 과거 캔들로 메꾼다다. (미래 캔들로 하면 선행 지표처럼 작용할수도 있으니 주의)
+                from = from.minusMinutes(120), // 과거 캔들로 메꾼다다. (미래 캔들로 하면 선행 지표처럼 작용할수도 있으니 주의)
                 to = to,
             ).takeLast(1)
 
         if (minUnitCandles.isEmpty()) {
-            throw CriticalException.of("백테스트를 위한 minCandles 조회에 실패하였습니다.")
+            throw CriticalException.of("백테스트를 위한 minCandles 조회에 실패하였습니다. coinType=$coinType, unitType=$candleUnit from=$from, to=$to")
         }
 
         val candleDateTimeUtc = minUnitCandles.first().candleDateTimeUtc
