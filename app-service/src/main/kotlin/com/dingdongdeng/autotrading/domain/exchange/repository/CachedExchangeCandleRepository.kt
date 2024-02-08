@@ -88,6 +88,6 @@ class CachedExchangeCandleRepository(
     }
 
     companion object {
-        const val CACHED_CANDLE_COUNT = 200
+        const val CACHED_CANDLE_COUNT = 200 // 테스트 결과 200개가 가장 효율적
     }
 }
