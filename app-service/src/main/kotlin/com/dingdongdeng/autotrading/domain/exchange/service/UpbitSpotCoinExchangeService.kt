@@ -164,7 +164,7 @@ class UpbitSpotCoinExchangeService(
     }
 
     // from <= 저장 범위 <= to
-    override fun loadChart(
+    override fun loadChart( //FIXME chart 서비스로 빼고, 여기서는 getCharts만 남기자?
         param: SpotCoinExchangeChartParam,
         keyParam: ExchangeKeyPair
     ) {
