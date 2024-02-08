@@ -25,18 +25,19 @@ class CoinTradeService(
         coinType: CoinType,
         currentPrice: Double,
     ): CoinTradeInfo {
-
-        // WAIT 상태의 거래건들 업데이트
         val notSyncedTradeHistories = coinTradeHistoryService.findAllTradeHistory(autoTradeProcessorId, coinType)
-        val waitTradeHistories = notSyncedTradeHistories.filter { it.state == TradeState.WAIT }
-        waitTradeHistories.forEach { waitTradeHistory ->
-            val exchangeService = exchangeServices.first { it.support(exchangeType) }
-            val exchangeKeyPair = exchangeService.getKeyPair(keyPairId)
-            val order = exchangeService.getOrder(waitTradeHistory.orderId, exchangeKeyPair)
-            coinTradeHistoryService.record(makeTradeHistory(waitTradeHistory.id, order, autoTradeProcessorId))
+        val syncedTradeHistories = notSyncedTradeHistories.map { notSyncedTradeHistory ->
+            // WAIT 상태의 거래건들 업데이트
+            if (notSyncedTradeHistory.state == TradeState.WAIT) {
+                val exchangeService = exchangeServices.first { it.support(exchangeType) }
+                val exchangeKeyPair = exchangeService.getKeyPair(keyPairId)
+                val order = exchangeService.getOrder(notSyncedTradeHistory.orderId, exchangeKeyPair)
+                coinTradeHistoryService.record(makeTradeHistory(notSyncedTradeHistory.id, order, autoTradeProcessorId))
+            } else {
+                notSyncedTradeHistory
+            }
         }
 
-        val syncedTradeHistories = coinTradeHistoryService.findAllTradeHistory(autoTradeProcessorId, coinType)
         val buyTradeHistories = syncedTradeHistories.filter { it.isBuyOrder() }
         val sellTradeHistories = syncedTradeHistories.filter { it.isSellOrder() }
 
@@ -46,13 +47,15 @@ class CoinTradeService(
         val valuePrice = (volume * currentPrice)
         val originPrice = (volume * averagePrice)
 
+        //FIXME 승률도 넣으면 좋을듯
+
         return CoinTradeInfo(
             volume = buyTradeHistories.sumOf { it.volume } - sellTradeHistories.sumOf { it.volume },
             averagePrice = averagePrice,
             valuePrice = valuePrice,
             originPrice = originPrice,
             profitPrice = (valuePrice - originPrice),
-            coinTradeHistory = coinTradeHistoryService.findAllTradeHistory(autoTradeProcessorId, coinType)
+            coinTradeHistory = syncedTradeHistories,
         )
     }
 
