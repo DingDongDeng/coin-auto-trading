@@ -7,4 +7,5 @@ data class ExchangeChart(
     val to: LocalDateTime,
     val currentPrice: Double,
     val candles: List<ExchangeChartCandle>,
+    val missingCandles: List<LocalDateTime>,
 )

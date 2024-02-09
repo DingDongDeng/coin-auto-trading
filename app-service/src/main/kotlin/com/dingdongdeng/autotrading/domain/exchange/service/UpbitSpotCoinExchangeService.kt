@@ -1,6 +1,5 @@
 package com.dingdongdeng.autotrading.domain.exchange.service
 
-import com.dingdongdeng.autotrading.domain.exchange.entity.ExchangeCandle
 import com.dingdongdeng.autotrading.domain.exchange.entity.ExchangeKey
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChart
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChartCandle
@@ -144,93 +143,16 @@ class UpbitSpotCoinExchangeService(
             )
         }
 
-        // 누락된 캔들 확인 (거래소에서 간헐적으로 발생)
-        if (ExchangeUtils.hasMissingCandle(param.candleUnit, resultCandles.map { it.candleDateTimeKst })) {
-            log.warn(
-                "누락된 캔들이 존재, coinType=${param.coinType}, candleUnit=${param.candleUnit}, missingDateTimes=${
-                    ExchangeUtils.findMissingCandles(
-                        param.candleUnit,
-                        resultCandles.map { it.candleDateTimeKst })
-                }"
-            )
-        }
-
         return ExchangeChart(
             from = param.from,
             to = param.to,
             currentPrice = totalResponse.last().tradePrice,
             candles = resultCandles,
+            //FIXME from, to에 인접한 엣지케이스는 감지가 안될거같은데?
+            missingCandles = ExchangeUtils.findMissingCandles(
+                param.candleUnit,
+                resultCandles.map { it.candleDateTimeKst }),
         )
-    }
-
-    // from <= 저장 범위 <= to
-    override fun loadChart( //FIXME chart 서비스로 빼고, 여기서는 getCharts만 남기자?
-        param: SpotCoinExchangeChartParam,
-        keyParam: ExchangeKeyPair
-    ) {
-        val from = param.from
-        val to = param.to
-
-        val count = exchangeCandleRepository.countByExchangeCandle(
-            exchangeType = EXCHANGE_TYPE,
-            coinType = param.coinType,
-            unit = param.candleUnit,
-            from = param.from,
-            to = param.to,
-        )
-
-        if (count > 0) {
-            throw WarnException(userMessage = "이미 캔들이 존재하는 구간입니다. $from ~ $to")
-        }
-
-        /**
-         * from <= 범위 <= to 캔들을 조회해야함
-         * to부터 from까지 N개씩 순차적으로 조회하면서 전체 리스트 저장
-         * 그 과정에서 의도치 않은 업비트 응답을 방어하기 위해 버퍼를 두어 조회API를 사용
-         */
-        var now = to
-        while (true) {
-            val isCompleted = now.isBefore(from) || now.isEqual(from)
-            if (isCompleted) {
-                log.info("캔들 저장 완료, from={}, to={}", from, to)
-                break
-            }
-            val response = requestCandles(
-                unit = param.candleUnit,
-                coinType = param.coinType,
-                to = now.plusMinutes(2), // 조회 범위 버퍼
-                candleUnit = param.candleUnit,
-                chunkSize = param.chunkSize,
-                keyParam = keyParam,
-            ).filter { it.candleDateTimeKst.isAfter(now).not() } // 버퍼에 의해 추가로 검색된 범위 필터
-
-            val candles = response
-                .filter {
-                    it.candleDateTimeKst.isEqual(to) // <= to 범위를 위해 필터 (엣지 범위)
-                        || it.candleDateTimeKst.isEqual(now).not() // 범위 < now 형태로 만들어서 이전 검색 범위와 겹치지 않도록함
-                        && it.candleDateTimeKst.isBefore(from).not() // from <= 범위를 위해 필터 (엣지 범위)
-                }
-                .map {
-                    ExchangeCandle(
-                        exchangeType = EXCHANGE_TYPE,
-                        coinType = param.coinType,
-                        unit = param.candleUnit,
-                        candleDateTimeUtc = it.candleDateTimeUtc,
-                        candleDateTimeKst = it.candleDateTimeKst,
-                        openingPrice = it.openingPrice,
-                        highPrice = it.highPrice,
-                        lowPrice = it.lowPrice,
-                        closingPrice = it.tradePrice,
-                        accTradePrice = it.candleAccTradePrice,
-                        accTradeVolume = it.candleAccTradeVolume,
-                    )
-                }
-
-            // 거래소에서 일부 캔들이 누락되어 조회되는 경우가 빈번함
-            exchangeCandleRepository.saveAll(candles)
-
-            now = response.first().candleDateTimeKst
-        }
     }
 
     override fun getKeyPair(keyPairId: String): ExchangeKeyPair {
