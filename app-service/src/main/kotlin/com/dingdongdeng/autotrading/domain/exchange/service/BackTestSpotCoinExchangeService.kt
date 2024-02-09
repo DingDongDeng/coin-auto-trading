@@ -1,6 +1,6 @@
 package com.dingdongdeng.autotrading.domain.exchange.service
 
-import com.dingdongdeng.autotrading.domain.chart.repository.CachedExchangeCandleRepository
+import com.dingdongdeng.autotrading.domain.chart.repository.CachedCoinCandleRepository
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChart
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChartCandle
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeKeyPair
@@ -23,7 +23,7 @@ import kotlin.math.min
 
 @Service
 class BackTestSpotCoinExchangeService(
-    private val exchangeCandleRepository: CachedExchangeCandleRepository,
+    private val exchangeCandleRepository: CachedCoinCandleRepository,
 ) : SpotCoinExchangeService {
 
     override fun order(param: SpotCoinExchangeOrderParam, keyParam: ExchangeKeyPair): SpotCoinExchangeOrder {

@@ -1,6 +1,6 @@
 package com.dingdongdeng.autotrading.domain.chart.repository
 
-import com.dingdongdeng.autotrading.domain.chart.entity.ExchangeCandle
+import com.dingdongdeng.autotrading.domain.chart.entity.CoinCandle
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
@@ -8,12 +8,12 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.time.LocalDateTime
 
-interface ExchangeCandleRepository : JpaRepository<ExchangeCandle, Long> {
+interface CoinCandleRepository : JpaRepository<CoinCandle, Long> {
 
     @Query(
         """
         select candle
-        from ExchangeCandle candle
+        from CoinCandle candle
         where candle.exchangeType = :exchangeType
         and candle.coinType = :coinType
         and candle.unit = :unit
@@ -27,12 +27,12 @@ interface ExchangeCandleRepository : JpaRepository<ExchangeCandle, Long> {
         unit: CandleUnit,
         from: LocalDateTime,
         to: LocalDateTime,
-    ): List<ExchangeCandle>
+    ): List<CoinCandle>
 
     @Query(
         """
         select count(candle)
-        from ExchangeCandle candle
+        from CoinCandle candle
         where candle.exchangeType = :exchangeType
         and candle.coinType = :coinType
         and candle.unit = :unit

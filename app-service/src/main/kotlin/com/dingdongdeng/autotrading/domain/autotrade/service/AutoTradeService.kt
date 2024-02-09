@@ -2,7 +2,7 @@ package com.dingdongdeng.autotrading.domain.autotrade.service
 
 import com.dingdongdeng.autotrading.domain.autotrade.model.CoinAutoTradeProcessor
 import com.dingdongdeng.autotrading.domain.autotrade.model.CoinBackTestProcessor
-import com.dingdongdeng.autotrading.domain.chart.service.ChartService
+import com.dingdongdeng.autotrading.domain.chart.service.CoinChartService
 import com.dingdongdeng.autotrading.domain.process.service.ProcessService
 import com.dingdongdeng.autotrading.domain.strategy.service.CoinStrategyService
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
@@ -17,7 +17,7 @@ import java.time.LocalDateTime
 @Service
 class AutoTradeService(
     private val processService: ProcessService,
-    private val chartService: ChartService,
+    private val coinChartService: CoinChartService,
     private val coinTradeService: CoinTradeService,
     private val coinStrategyService: CoinStrategyService,
 
@@ -45,7 +45,7 @@ class AutoTradeService(
                 duration = 60_000,
                 slackSender = slackSender,
 
-                chartService = chartService,
+                coinChartService = coinChartService,
                 coinTradeService = coinTradeService,
                 coinStrategyService = coinStrategyService,
             )
@@ -73,7 +73,7 @@ class AutoTradeService(
             duration = 0,
             slackSender = slackSender,
 
-            chartService = chartService,
+            coinChartService = coinChartService,
             coinTradeService = coinTradeService,
             coinStrategyService = coinStrategyService,
         )

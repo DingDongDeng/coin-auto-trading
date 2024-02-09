@@ -1,6 +1,6 @@
 package com.dingdongdeng.autotrading.domain.autotrade.model
 
-import com.dingdongdeng.autotrading.domain.chart.service.ChartService
+import com.dingdongdeng.autotrading.domain.chart.service.CoinChartService
 import com.dingdongdeng.autotrading.domain.process.model.Processor
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyMakeTaskParam
 import com.dingdongdeng.autotrading.domain.strategy.service.CoinStrategyService
@@ -25,7 +25,7 @@ class CoinAutoTradeProcessor(
     private val duration: Long = 60 * 1000, // milliseconds
     private val slackSender: SlackSender?,
 
-    private val chartService: ChartService,
+    private val coinChartService: CoinChartService,
     private val coinTradeService: CoinTradeService,
     private val coinStrategyService: CoinStrategyService,
 ) : Processor(
@@ -66,7 +66,7 @@ class CoinAutoTradeProcessor(
 
     private fun makeParamProcess(coinType: CoinType): SpotCoinStrategyMakeTaskParam {
         // 차트 조회
-        val charts = chartService.getCharts(
+        val charts = coinChartService.getCharts(
             exchangeType = exchangeType,
             keyPairId = keyPairId,
             coinType = coinType,

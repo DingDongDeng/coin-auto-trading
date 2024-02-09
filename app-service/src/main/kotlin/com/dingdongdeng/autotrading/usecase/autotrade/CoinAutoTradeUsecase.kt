@@ -1,7 +1,7 @@
 package com.dingdongdeng.autotrading.usecase.autotrade
 
 import com.dingdongdeng.autotrading.domain.autotrade.service.AutoTradeService
-import com.dingdongdeng.autotrading.domain.chart.service.ChartService
+import com.dingdongdeng.autotrading.domain.chart.service.CoinChartService
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.infra.common.annotation.Usecase
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
@@ -13,7 +13,7 @@ import java.time.LocalDateTime
 @Usecase
 class CoinAutoTradeUsecase(
     private val autoTradeService: AutoTradeService,
-    private val chartService: ChartService,
+    private val coinChartService: CoinChartService,
 ) {
 
     fun register(
@@ -69,7 +69,7 @@ class CoinAutoTradeUsecase(
         keyPairId: String,
     ) {
         AsyncUtils.joinAll(coinTypes) { coinType ->
-            chartService.loadCharts(
+            coinChartService.loadCharts(
                 coinType = coinType,
                 keyPairId = keyPairId,
                 exchangeType = exchangeType,

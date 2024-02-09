@@ -1,6 +1,6 @@
 package com.dingdongdeng.autotrading.domain.chart.repository
 
-import com.dingdongdeng.autotrading.domain.chart.entity.ExchangeCandle
+import com.dingdongdeng.autotrading.domain.chart.entity.CoinCandle
 import com.dingdongdeng.autotrading.infra.common.exception.CriticalException
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
@@ -9,10 +9,10 @@ import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
 
 @Repository
-class CachedExchangeCandleRepository(
-    private val exchangeCandleRepository: ExchangeCandleRepository,
+class CachedCoinCandleRepository(
+    private val coinCandleRepository: CoinCandleRepository,
 ) {
-    private val cachedData = mutableMapOf<String, List<ExchangeCandle>>()
+    private val cachedData = mutableMapOf<String, List<CoinCandle>>()
 
     fun findAllExchangeCandle(
         exchangeType: ExchangeType,
@@ -20,7 +20,7 @@ class CachedExchangeCandleRepository(
         unit: CandleUnit,
         from: LocalDateTime,
         to: LocalDateTime,
-    ): List<ExchangeCandle> {
+    ): List<CoinCandle> {
         val key = makeCacheKey(exchangeType, coinType, unit)
         synchronized(key) {
             if (isEnoughCacheData(key, from, to).not()) {
@@ -68,7 +68,7 @@ class CachedExchangeCandleRepository(
         key: String,
         from: LocalDateTime,
         to: LocalDateTime,
-    ): List<ExchangeCandle> {
+    ): List<CoinCandle> {
         val candles = cachedData[key]
 
         if (candles.isNullOrEmpty()) {
@@ -88,7 +88,7 @@ class CachedExchangeCandleRepository(
         from: LocalDateTime,
         to: LocalDateTime,
     ) {
-        val candles = exchangeCandleRepository.findAllExchangeCandle(
+        val candles = coinCandleRepository.findAllExchangeCandle(
             exchangeType = exchangeType,
             coinType = coinType,
             unit = unit,

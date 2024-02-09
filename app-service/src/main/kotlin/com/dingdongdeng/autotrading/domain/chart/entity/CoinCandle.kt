@@ -16,19 +16,19 @@ import java.time.LocalDateTime
 
 @Entity
 @Table(
-    name = "exchange_candle",
+    name = "coin_candle",
     indexes = [
         Index(
-            name = "idx_exchange_candle_1",
+            name = "idx_coin_candle_1",
             columnList = "exchange_type,coin_type,candle_unit,candle_date_time_kst",
             unique = true
         ),
     ]
 )
-class ExchangeCandle(
+class CoinCandle(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "exchange_candle_id")
+    @Column(name = "coin_candle_id")
     val id: Long? = null,
     @Enumerated(EnumType.STRING)
     @Column(name = "exchange_type")
