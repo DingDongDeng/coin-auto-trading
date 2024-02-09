@@ -1,9 +1,12 @@
 package com.dingdongdeng.autotrading.domain.chart.service
 
+import com.dingdongdeng.autotrading.domain.chart.entity.CoinCandle
 import com.dingdongdeng.autotrading.domain.chart.model.Candle
 import com.dingdongdeng.autotrading.domain.chart.model.Chart
+import com.dingdongdeng.autotrading.domain.chart.repository.CoinCandleRepository
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartParam
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
+import com.dingdongdeng.autotrading.domain.exchange.utils.ExchangeUtils
 import com.dingdongdeng.autotrading.domain.indicator.service.IndicatorService
 import com.dingdongdeng.autotrading.infra.common.exception.CriticalException
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
@@ -15,9 +18,10 @@ import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
 @Service
-class ChartService(
+class CoinChartService(
     private val exchangeServices: List<SpotCoinExchangeService>,
     private val indicatorService: IndicatorService,
+    private val coinCandleRepository: CoinCandleRepository,
 ) {
 
     fun getCharts(
@@ -44,18 +48,14 @@ class ChartService(
         endDateTime: LocalDateTime,
         candleUnits: List<CandleUnit>,
     ) {
-        val exchangeService = exchangeServices.first { it.support(exchangeType) }
-        val keyPair = exchangeService.getKeyPair(keyPairId)
-
         AsyncUtils.joinAll(candleUnits) { candleUnit ->
-            exchangeService.loadChart(
-                param = SpotCoinExchangeChartParam(
-                    coinType = coinType,
-                    candleUnit = candleUnit,
-                    from = startDateTime,
-                    to = endDateTime,
-                ),
-                keyParam = keyPair,
+            loadChartProcess(
+                exchangeType = exchangeType,
+                coinType = coinType,
+                candleUnit = candleUnit,
+                from = startDateTime,
+                to = endDateTime,
+                keyPairId = keyPairId,
             )
         }
     }
@@ -121,7 +121,71 @@ class ChartService(
         )
     }
 
+    fun loadChartProcess(
+        exchangeType: ExchangeType,
+        coinType: CoinType,
+        candleUnit: CandleUnit,
+        from: LocalDateTime,
+        to: LocalDateTime,
+        keyPairId: String,
+    ) {
+        val exchangeService = exchangeServices.first { it.support(exchangeType) }
+        val keyParam = exchangeService.getKeyPair(keyPairId)
+
+        /*
+         *  아래 과정을 구간별 반복
+         *  1. DB에 해당 범위에 없는 캔들을 특정한다. (ExchangeUtils.findMissingCandles())
+         *  2. 거래소에서 캔들을 조회한다
+         *  3. DB에 없는 캔들들을 저장한다.
+         */
+        var startDateTime = from
+        while (true) {
+            if (startDateTime.isAfter(to)) {
+                break
+            }
+            val endDateTime = startDateTime.plusMinutes(candleUnit.getMinuteSize() * CHART_LOAD_CHUNK_SIZE)
+
+            // DB에 이미 존재하는 캔들
+            val dbCandles = coinCandleRepository.findAllExchangeCandle(
+                exchangeType = exchangeType,
+                coinType = coinType,
+                unit = candleUnit,
+                from = startDateTime,
+                to = endDateTime,
+            )
+
+            // DB에 존재하지 않는 캔들
+            val exchangeChart = exchangeService.getChart(
+                SpotCoinExchangeChartParam(coinType, candleUnit, startDateTime, endDateTime),
+                keyParam
+            )
+            val missingCandleDateTimes =
+                ExchangeUtils.findMissingCandles(candleUnit, dbCandles.map { it.candleDateTimeKst })
+            val missingCandles = exchangeChart.candles.filter { missingCandleDateTimes.contains(it.candleDateTimeKst) }
+                .map {
+                    CoinCandle(
+                        exchangeType = exchangeType,
+                        coinType = coinType,
+                        unit = candleUnit,
+                        candleDateTimeUtc = it.candleDateTimeUtc,
+                        candleDateTimeKst = it.candleDateTimeKst,
+                        openingPrice = it.openingPrice,
+                        highPrice = it.highPrice,
+                        lowPrice = it.lowPrice,
+                        closingPrice = it.closingPrice,
+                        accTradePrice = it.accTradePrice,
+                        accTradeVolume = it.accTradeVolume,
+                    )
+                }
+
+            // DB에 존재하지 않는 캔들 저장
+            coinCandleRepository.saveAll(missingCandles)
+            startDateTime = endDateTime
+        }
+    }
+
     companion object {
         private const val CHART_CANDLE_MAX_COUNT = 200
+        private const val CHART_LOAD_CHUNK_SIZE = 1000
     }
 }
