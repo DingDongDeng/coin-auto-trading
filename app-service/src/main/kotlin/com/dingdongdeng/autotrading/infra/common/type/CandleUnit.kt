@@ -20,11 +20,6 @@ enum class CandleUnit(
     UNIT_1W("1주 봉", UnitType.WEEK, 1),
     ;
 
-    //FIXME 제거좀
-    fun getMinuteSize(): Long {
-        return (this.unitType.seconds / 60) * this.size
-    }
-
     fun getSecondSize(): Long {
         return this.unitType.seconds * this.size
     }

@@ -71,7 +71,7 @@ class CoinChartService(
             coinType = coinType,
             candleUnit = candleUnit,
             // 보조지표 계산을 위해 3배로 조회(버퍼)
-            from = now.minusMinutes(3 * CHART_CANDLE_MAX_COUNT * candleUnit.getMinuteSize()),
+            from = now.minusSeconds(3 * CHART_CANDLE_MAX_COUNT * candleUnit.getSecondSize()),
             to = now,
         )
         val exchangeService = exchangeServices.first { it.support(exchangeType) }
@@ -143,7 +143,7 @@ class CoinChartService(
             if (startDateTime.isAfter(to)) {
                 break
             }
-            val endDateTime = startDateTime.plusMinutes(candleUnit.getMinuteSize() * CHART_LOAD_CHUNK_SIZE)
+            val endDateTime = startDateTime.plusSeconds(candleUnit.getSecondSize() * CHART_LOAD_CHUNK_SIZE)
 
             // DB에 이미 존재하는 캔들
             val dbCandles = coinCandleRepository.findAllExchangeCandle(

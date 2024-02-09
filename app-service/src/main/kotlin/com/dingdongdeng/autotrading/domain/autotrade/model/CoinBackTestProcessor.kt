@@ -30,7 +30,7 @@ class CoinBackTestProcessor(
             TimeContext.update { startDateTime }
             initialize = true
         }
-        val now = TimeContext.now().plusMinutes(durationUnit.getMinuteSize())
+        val now = TimeContext.now().plusSeconds(durationUnit.getSecondSize())
         TimeContext.update { now }
         return now.isBefore(endDateTime)
     }

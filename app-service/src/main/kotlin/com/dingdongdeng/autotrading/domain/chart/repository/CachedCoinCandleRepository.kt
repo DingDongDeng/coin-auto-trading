@@ -92,8 +92,8 @@ class CachedCoinCandleRepository(
             exchangeType = exchangeType,
             coinType = coinType,
             unit = unit,
-            from = from.minusMinutes(unit.getMinuteSize() * (CACHED_CANDLE_COUNT * 1 / 4)), // 25%
-            to = to.plusMinutes(unit.getMinuteSize() * (CACHED_CANDLE_COUNT * 3 / 4)), // 75%
+            from = from.minusSeconds(unit.getSecondSize() * (CACHED_CANDLE_COUNT * 1 / 4)), // 25%
+            to = to.plusSeconds(unit.getSecondSize() * (CACHED_CANDLE_COUNT * 3 / 4)), // 75%
         )
         cachedData[key] = candles
     }
