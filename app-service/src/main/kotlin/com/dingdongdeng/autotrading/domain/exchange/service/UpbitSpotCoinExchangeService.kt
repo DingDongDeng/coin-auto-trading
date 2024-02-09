@@ -7,9 +7,7 @@ import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeKeyPair
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartParam
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrder
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderParam
-import com.dingdongdeng.autotrading.domain.exchange.repository.ExchangeCandleRepository
 import com.dingdongdeng.autotrading.domain.exchange.repository.ExchangeKeyRepository
-import com.dingdongdeng.autotrading.domain.exchange.utils.ExchangeUtils
 import com.dingdongdeng.autotrading.infra.client.upbit.CandleRequest
 import com.dingdongdeng.autotrading.infra.client.upbit.CandleResponse
 import com.dingdongdeng.autotrading.infra.client.upbit.MarketType

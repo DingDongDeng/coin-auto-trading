@@ -1,10 +1,10 @@
-package com.dingdongdeng.autotrading.domain.exchange.utils
+package com.dingdongdeng.autotrading.domain.chart.utils
 
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
-object ExchangeUtils {
+object ChartUtils {
 
     fun findMissingCandles(candleUnit: CandleUnit, candleDateTimes: List<LocalDateTime>): List<LocalDateTime> {
         val missingCandles = mutableListOf<LocalDateTime>()
