@@ -134,7 +134,7 @@ class CoinChartService(
 
         /*
          *  아래 과정을 구간별 반복
-         *  1. DB에 해당 범위에 없는 캔들을 특정한다. (ExchangeUtils.findMissingCandles())
+         *  1. DB에 해당 범위에 없는 캔들을 특정한다.
          *  2. 거래소에서 캔들을 조회한다
          *  3. DB에 없는 캔들들을 저장한다.
          */
