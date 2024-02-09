@@ -32,7 +32,6 @@ class UpbitSpotCoinExchangeService(
     private val upbitApiClient: UpbitApiClient,
     private val upbitTokenGenerator: UpbitTokenGenerator,
     private val exchangeKeyRepository: ExchangeKeyRepository,
-    private val exchangeCandleRepository: ExchangeCandleRepository,
 ) : SpotCoinExchangeService {
 
     override fun order(param: SpotCoinExchangeOrderParam, keyParam: ExchangeKeyPair): SpotCoinExchangeOrder {
@@ -146,10 +145,6 @@ class UpbitSpotCoinExchangeService(
             to = param.to,
             currentPrice = totalResponse.last().tradePrice,
             candles = resultCandles,
-            //FIXME from, to에 인접한 엣지케이스는 감지가 안될거같은데?
-            missingCandles = ExchangeUtils.findMissingCandles(
-                param.candleUnit,
-                resultCandles.map { it.candleDateTimeKst }),
         )
     }
 
