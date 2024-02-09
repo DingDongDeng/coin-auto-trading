@@ -9,6 +9,7 @@ import com.dingdongdeng.autotrading.infra.common.exception.CriticalException
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
+import com.dingdongdeng.autotrading.infra.common.utils.AsyncUtils
 import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -25,18 +26,14 @@ class ChartService(
         coinType: CoinType,
         candleUnits: List<CandleUnit>,
     ): List<Chart> {
-        // 병렬 수행
-        val futures = candleUnits.map { candleUnit ->
-            TimeContext.future {
-                makeChartProcess(
-                    exchangeType = exchangeType,
-                    keyPairId = keyPairId,
-                    coinType = coinType,
-                    candleUnit = candleUnit,
-                )
-            }
+        return AsyncUtils.joinAll(candleUnits) { candleUnit ->
+            makeChartProcess(
+                exchangeType = exchangeType,
+                keyPairId = keyPairId,
+                coinType = coinType,
+                candleUnit = candleUnit,
+            )
         }
-        return futures.map { it.join() }
     }
 
     fun loadCharts(
@@ -50,19 +47,16 @@ class ChartService(
         val exchangeService = exchangeServices.first { it.support(exchangeType) }
         val keyPair = exchangeService.getKeyPair(keyPairId)
 
-        // 병렬 처리
-        candleUnits.forEach { candleUnit ->
-            TimeContext.future {
-                exchangeService.loadChart(
-                    param = SpotCoinExchangeChartParam(
-                        coinType = coinType,
-                        candleUnit = candleUnit,
-                        from = startDateTime,
-                        to = endDateTime,
-                    ),
-                    keyParam = keyPair,
-                )
-            }
+        AsyncUtils.joinAll(candleUnits) { candleUnit ->
+            exchangeService.loadChart(
+                param = SpotCoinExchangeChartParam(
+                    coinType = coinType,
+                    candleUnit = candleUnit,
+                    from = startDateTime,
+                    to = endDateTime,
+                ),
+                keyParam = keyPair,
+            )
         }
     }
 

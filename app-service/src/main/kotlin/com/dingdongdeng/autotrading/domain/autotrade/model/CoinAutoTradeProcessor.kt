@@ -10,7 +10,7 @@ import com.dingdongdeng.autotrading.infra.client.slack.SlackSender
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
-import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
+import com.dingdongdeng.autotrading.infra.common.utils.AsyncUtils
 import java.util.UUID
 
 class CoinAutoTradeProcessor(
@@ -36,8 +36,7 @@ class CoinAutoTradeProcessor(
 ) {
     override fun process() {
         // 병렬 수행
-        val futures = coinTypes.map { coinType -> TimeContext.future { makeParamProcess(coinType) } }
-        val params = futures.map { it.join() }
+        val params = AsyncUtils.joinAll(coinTypes) { coinType -> makeParamProcess(coinType) }
 
         // 전략을 수행할 task 생성
         val tasks = coinStrategyService.getTask(
