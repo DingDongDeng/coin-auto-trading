@@ -51,7 +51,7 @@ Content-Type: application/json
     "UNIT_60M",
     "UNIT_240M"
   ],
-  "startDateTime": "2023-09-01T00:00:00",
+  "startDateTime": "2024-01-01T00:00:00",
   "endDateTime": "2024-04-01T00:00:00",
   "keyPairId": "354db64e-e208-4dc3-ab8b-8478ab55dc89"
 }
@@ -61,8 +61,8 @@ POST http://localhost:8080/coin/autotrade/backtest
 Content-Type: application/json
 
 {
-  "startDateTime": "2024-01-10T00:00:00",
-  "endDateTime": "2024-01-30T00:00:00",
+  "startDateTime": "2024-02-15T00:00:00",
+  "endDateTime": "2024-04-01T00:00:00",
   "durationUnit": "UNIT_1M",
   "coinStrategyType": "TEST",
   "coinTypes": [
@@ -78,8 +78,7 @@ Content-Type: application/json
     "UNIT_10M",
     "UNIT_15M",
     "UNIT_30M",
-    "UNIT_60M",
-    "UNIT_240M"
+    "UNIT_60M"
   ],
   "config": {
     "configA": "TESTA",
