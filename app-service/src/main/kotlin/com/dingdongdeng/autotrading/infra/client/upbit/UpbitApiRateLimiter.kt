@@ -29,7 +29,7 @@ class UpbitApiRateLimiter {
             }
 
             // API가 초당 N번 호출되었다면 sleep
-            if (countPerSeconds > 6) {
+            if (countPerSeconds > 4) {
                 Thread.sleep(1000)
                 log.warn("업비트API 호출량 조절을 위해 sleep 동작")
                 resetState()
