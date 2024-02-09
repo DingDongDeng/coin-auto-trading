@@ -1,6 +1,6 @@
 package com.dingdongdeng.autotrading.infra.common.type
 
-import java.util.*
+import java.util.EnumMap
 
 
 enum class CandleUnit(
@@ -20,8 +20,13 @@ enum class CandleUnit(
     UNIT_1W("1주 봉", UnitType.WEEK, 1),
     ;
 
+    //FIXME 제거좀
     fun getMinuteSize(): Long {
-        return this.unitType.minute * this.size
+        return (this.unitType.seconds / 60) * this.size
+    }
+
+    fun getSecondSize(): Long {
+        return this.unitType.seconds * this.size
     }
 
     companion object {
@@ -42,9 +47,10 @@ enum class CandleUnit(
 
 enum class UnitType(
     val desc: String,
-    val minute: Long,
+    val order: Int,
+    val seconds: Long,
 ) {
-    MIN("분", 1),
-    DAY("일", 24 * 60),
-    WEEK("주", 7 * 24 * 60)
+    MIN("분", 1, 1 * 60),
+    DAY("일", 2, 24 * 60 * 60),
+    WEEK("주", 3, 7 * 24 * 60 * 60)
 }

@@ -13,10 +13,10 @@ import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.type.TradeState
+import com.dingdongdeng.autotrading.infra.common.utils.CandleDateTimeUtils
 import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 import java.util.UUID
 import kotlin.math.max
 import kotlin.math.min
@@ -69,12 +69,7 @@ class BackTestSpotCoinExchangeService(
         val virtualCandle = makeVirtualCandle(
             coinType = param.coinType,
             candleUnit = param.candleUnit,
-            from = param.to.minusMinutes( // N분봉이 거래소에서 누락됐을수도 있으므로 param.to 기준으로 다시 계산
-                candles.last().candleDateTimeKst.until(
-                    param.to,
-                    ChronoUnit.MINUTES
-                ) % param.candleUnit.getMinuteSize()
-            ),
+            from = CandleDateTimeUtils.makeUnitDateTime(param.to, param.candleUnit),
             to = param.to, // 백테스트에서는 now 사용됨
         )
 

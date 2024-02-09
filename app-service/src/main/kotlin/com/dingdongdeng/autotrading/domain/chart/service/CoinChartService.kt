@@ -4,7 +4,6 @@ import com.dingdongdeng.autotrading.domain.chart.entity.CoinCandle
 import com.dingdongdeng.autotrading.domain.chart.model.Candle
 import com.dingdongdeng.autotrading.domain.chart.model.Chart
 import com.dingdongdeng.autotrading.domain.chart.repository.CoinCandleRepository
-import com.dingdongdeng.autotrading.domain.chart.utils.ChartUtils
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartParam
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
 import com.dingdongdeng.autotrading.domain.indicator.service.IndicatorService
@@ -13,6 +12,7 @@ import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.utils.AsyncUtils
+import com.dingdongdeng.autotrading.infra.common.utils.CandleDateTimeUtils
 import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -159,8 +159,12 @@ class CoinChartService(
                 SpotCoinExchangeChartParam(coinType, candleUnit, startDateTime, endDateTime),
                 keyParam
             )
-            val missingCandleDateTimes =
-                ChartUtils.findMissingCandles(candleUnit, dbCandles.map { it.candleDateTimeKst })
+            val missingCandleDateTimes = CandleDateTimeUtils.findMissingDateTimes(
+                candleUnit = candleUnit,
+                from = startDateTime,
+                to = endDateTime,
+                candleDateTimes = dbCandles.map { it.candleDateTimeKst }
+            )
             val missingCandles = exchangeChart.candles.filter { missingCandleDateTimes.contains(it.candleDateTimeKst) }
                 .map {
                     CoinCandle(
