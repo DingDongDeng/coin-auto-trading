@@ -1,6 +1,6 @@
-package com.dingdongdeng.autotrading.domain.exchange.repository
+package com.dingdongdeng.autotrading.domain.chart.repository
 
-import com.dingdongdeng.autotrading.domain.exchange.entity.ExchangeCandle
+import com.dingdongdeng.autotrading.domain.chart.entity.ExchangeCandle
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType

@@ -1,4 +1,4 @@
-package com.dingdongdeng.autotrading.domain.exchange.entity
+package com.dingdongdeng.autotrading.domain.chart.entity
 
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
