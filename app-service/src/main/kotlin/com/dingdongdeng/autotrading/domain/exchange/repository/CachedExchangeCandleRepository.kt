@@ -1,6 +1,7 @@
 package com.dingdongdeng.autotrading.domain.exchange.repository
 
 import com.dingdongdeng.autotrading.domain.exchange.entity.ExchangeCandle
+import com.dingdongdeng.autotrading.infra.common.exception.CriticalException
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
@@ -69,6 +70,10 @@ class CachedExchangeCandleRepository(
         to: LocalDateTime,
     ): List<ExchangeCandle> {
         val candles = cachedData[key]
+
+        if (candles.isNullOrEmpty()) {
+            throw CriticalException.of("캐싱된 데이터가 존재하지 않습니다. key=$key, from=$from, to=$to")
+        }
 
         val startIndex = candles!!.indexOfFirst { from.isAfter(it.candleDateTimeKst).not() }
         val endIndex = candles!!.indexOfLast { to.isBefore(it.candleDateTimeKst).not() }
