@@ -1,6 +1,6 @@
-package com.dingdongdeng.autotrading.domain.backtest.service.impl
+package com.dingdongdeng.autotrading.domain.backtest.service
 
-import com.dingdongdeng.autotrading.domain.backtest.service.VirtualCoinChartService
+import com.dingdongdeng.autotrading.domain.backtest.repository.VirtualCoinCandleRepository
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChart
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChartCandle
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeKeyPair
@@ -18,7 +18,7 @@ import java.util.UUID
 
 @Service
 class BackTestSpotCoinExchangeService(
-    private val virtualCoinChartService: VirtualCoinChartService,
+    private val virtualCoinCandleRepository: VirtualCoinCandleRepository,
 ) : SpotCoinExchangeService {
 
     override fun order(param: SpotCoinExchangeOrderParam, keyParam: ExchangeKeyPair): SpotCoinExchangeOrder {
@@ -47,7 +47,7 @@ class BackTestSpotCoinExchangeService(
 
     // from <= 조회범위 <= to
     override fun getChart(param: SpotCoinExchangeChartParam, keyParam: ExchangeKeyPair): ExchangeChart {
-        val candles = virtualCoinChartService.findAllCoinCandle(
+        val candles = virtualCoinCandleRepository.findAllCoinCandle(
             exchangeType = EXCHANGE_TYPE_FOR_BACKTEST,
             coinType = param.coinType,
             unit = param.candleUnit,
@@ -68,7 +68,7 @@ class BackTestSpotCoinExchangeService(
         }
 
         if (candles.isEmpty()) {
-            throw CriticalException.of("백테스트 캔들 조회 결과가 존재하지 않음, exchangeType=${EXCHANGE_TYPE_FOR_BACKTEST},  unit=${param.candleUnit}, from=${param.from}, to=${param.to}")
+            throw CriticalException.of("백테스트 캔들 조회 결과가 존재하지 않음, exchangeType=$EXCHANGE_TYPE_FOR_BACKTEST,  unit=${param.candleUnit}, from=${param.from}, to=${param.to}")
         }
 
         return ExchangeChart(
