@@ -55,4 +55,6 @@ class CoinCandle(
     val accTradePrice: Double,
     @Column(name = "acc_trade_volume")
     val accTradeVolume: Double,
+    @Column(name = "is_mock")
+    val mock: Boolean = false,
 )
