@@ -141,7 +141,7 @@ class UpbitSpotCoinExchangeService(
         }
 
         if (totalResponse.isEmpty()) {
-            log.warn("거래소 캔들 조회 결과가 존재하지 않음, exchangeType=${EXCHANGE_TYPE},  unit=${param.candleUnit}, from=${param.from}, to=${param.to}")
+            log.warn("거래소 캔들 조회 결과가 존재하지 않음, exchangeType=${EXCHANGE_TYPE},  coinType=${param.coinType}, unit=${param.candleUnit}, from=${param.from}, to=${param.to}")
         }
 
         return ExchangeChart(
