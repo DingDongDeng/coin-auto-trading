@@ -44,7 +44,6 @@ class AutoTradeService(
                 config = config,
                 duration = 60_000,
                 slackSender = slackSender,
-
                 coinChartService = coinChartService,
                 coinTradeService = coinTradeService,
                 coinStrategyService = coinStrategyService,
@@ -62,27 +61,18 @@ class AutoTradeService(
         candleUnits: List<CandleUnit>,
         config: Map<String, Any>,
     ): String {
-        val autoTradeProcessor = CoinAutoTradeProcessor(
-            userId = userId,
-            coinStrategyType = coinStrategyType,
-            exchangeType = ExchangeType.BACKTEST,
-            coinTypes = coinTypes,
-            candleUnits = candleUnits,
-            keyPairId = "",
-            config = config,
-            duration = 0,
-            slackSender = slackSender,
-
-            coinChartService = coinChartService,
-            coinTradeService = coinTradeService,
-            coinStrategyService = coinStrategyService,
-        )
         val backTestProcessor = CoinBackTestProcessor(
             userId = userId,
             startDateTime = startDateTime,
             endDateTime = endDateTime,
             durationUnit = durationUnit,
-            autoTradeProcessor = autoTradeProcessor,
+            coinStrategyType = coinStrategyType,
+            coinTypes = coinTypes,
+            candleUnits = candleUnits,
+            config = config,
+            coinChartService = coinChartService,
+            coinTradeService = coinTradeService,
+            coinStrategyService = coinStrategyService,
         )
         processService.register(backTestProcessor)
         processService.start(backTestProcessor.id)
