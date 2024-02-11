@@ -1,7 +1,6 @@
 package com.dingdongdeng.autotrading.domain.trade.model
 
 import com.dingdongdeng.autotrading.domain.trade.entity.CoinTradeHistory
-import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
 
 data class CoinTradeInfo(
     val volume: Double,     // 수량        ex) 이더리움 1.38개 보유
@@ -13,10 +12,7 @@ data class CoinTradeInfo(
 ) {
     fun existsWaitTrade(): Boolean = coinTradeHistory.any { it.isWait() }
 
-    fun getOldWaitTrades(seconds: Long): List<CoinTradeHistory> { //FIXME 도메인 로직 이동좀
-        return coinTradeHistory.filter {
-            // 대기 상태이면서 N초 이상 지난 거래들
-            it.isWait() && it.tradedAt < TimeContext.now().minusSeconds(seconds)
-        }
+    fun getOldWaitTrades(seconds: Long): List<CoinTradeHistory> {
+        return coinTradeHistory.filter { it.isOldWait(seconds) }
     }
 }

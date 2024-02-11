@@ -78,4 +78,5 @@ class CoinTradeHistory(
 
     fun isWait(): Boolean = this.state == TradeState.WAIT
 
+    fun isOldWait(waitSeconds: Long): Boolean = isWait() && tradedAt < TimeContext.now().minusSeconds(waitSeconds)
 }
