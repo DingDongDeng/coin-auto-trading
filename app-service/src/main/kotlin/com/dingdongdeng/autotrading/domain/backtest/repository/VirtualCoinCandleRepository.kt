@@ -29,7 +29,7 @@ class VirtualCoinCandleRepository(
         // 캔들 조회
         val dbCandles = cachedCoinCandleRepository.findAllCoinCandle(exchangeType, coinType, unit, from, to)
 
-        // 누락되어 있는 캔들 생성
+        // 누락되어 있는 캔들 생성 (거래소에서 조회한 캔들이 누락된 경우가 흔함)
         val missingCandles = CandleDateTimeUtils
             .findMissingDateTimes(unit, from, to, dbCandles.map { it.candleDateTimeKst })
             .map { missingCandleDateTime ->
@@ -38,10 +38,7 @@ class VirtualCoinCandleRepository(
                     coinType = coinType,
                     unit = unit,
                     from = missingCandleDateTime,
-                    to = minDate(
-                        CandleDateTimeUtils.makeUnitDateTime(from.plusSeconds(1), CandleUnit.min()),
-                        to //FIXME plus 1초 넘 무식한가?
-                    ),
+                    to = minDate(missingCandleDateTime.plusSeconds(unit.getSecondSize()), to),
                 )
             }
 
@@ -82,7 +79,7 @@ class VirtualCoinCandleRepository(
                 exchangeType = BackTestSpotCoinExchangeService.EXCHANGE_TYPE_FOR_BACKTEST,
                 coinType = coinType,
                 unit = CandleUnit.min(),
-                from = from.minusHours(10), // 과거 캔들로 메꾼다다. (미래 캔들로 하면 선행 지표처럼 작용할수도 있으니 주의)
+                from = from.minusHours(10), // 과거 캔들로 메꾼다. (미래 캔들로 하면 선행 지표처럼 작용할수도 있으니 주의)
                 to = to,
             ).takeLast(1)
 
