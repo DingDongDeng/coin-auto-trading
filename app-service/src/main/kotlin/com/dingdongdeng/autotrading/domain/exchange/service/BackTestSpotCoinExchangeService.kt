@@ -23,7 +23,7 @@ import kotlin.math.min
 
 @Service
 class BackTestSpotCoinExchangeService(
-    private val exchangeCandleRepository: CachedCoinCandleRepository,
+    private val cachedCoinCandleRepository: CachedCoinCandleRepository,
 ) : SpotCoinExchangeService {
 
     override fun order(param: SpotCoinExchangeOrderParam, keyParam: ExchangeKeyPair): SpotCoinExchangeOrder {
@@ -55,7 +55,7 @@ class BackTestSpotCoinExchangeService(
         val exchangeType = EXCHANGE_TYPE_FOR_BACKTEST
 
         // 캔들 조회
-        val candles = exchangeCandleRepository.findAllExchangeCandle(
+        val candles = cachedCoinCandleRepository.findAllExchangeCandle(
             exchangeType = exchangeType,
             coinType = param.coinType,
             unit = param.candleUnit,
@@ -122,14 +122,14 @@ class BackTestSpotCoinExchangeService(
     ): ExchangeChartCandle {
 
         // 큰 단위의 캔들을 다시 만들기 위해 가장 작은 단위의 캔들을 조회
-        val minUnitCandles = exchangeCandleRepository.findAllExchangeCandle(
+        val minUnitCandles = cachedCoinCandleRepository.findAllExchangeCandle(
             exchangeType = EXCHANGE_TYPE_FOR_BACKTEST,
             coinType = coinType,
             unit = CandleUnit.min(),
             from = from,
             to = to,
         ).takeIf { it.isNotEmpty() } // 거래소 캔들이 누락되어 있음 (캔들이 누락된 경우가 빈번함)
-            ?: exchangeCandleRepository.findAllExchangeCandle(
+            ?: cachedCoinCandleRepository.findAllExchangeCandle(
                 exchangeType = EXCHANGE_TYPE_FOR_BACKTEST,
                 coinType = coinType,
                 unit = CandleUnit.min(),
