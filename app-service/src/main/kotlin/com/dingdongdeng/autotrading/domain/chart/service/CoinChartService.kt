@@ -109,7 +109,7 @@ class CoinChartService(
         }
 
         if (candles.size < CHART_CANDLE_MAX_COUNT) {
-            throw RuntimeException("캔들의 보조 지표 계산을 위한 적절한 수의 과거 캔들을 추출하는데 실패")
+            throw CriticalException.of("캔들의 보조 지표 계산을 위한 적절한 수의 과거 캔들을 추출하는데 실패")
         }
 
         return Chart(
