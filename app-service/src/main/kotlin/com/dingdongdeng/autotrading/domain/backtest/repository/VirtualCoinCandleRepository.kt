@@ -82,7 +82,9 @@ class VirtualCoinCandleRepository(
                 exchangeType = BackTestSpotCoinExchangeService.EXCHANGE_TYPE_FOR_BACKTEST,
                 coinType = coinType,
                 unit = CandleUnit.min(),
-                from = from.minusHours(10), // 과거 캔들로 메꾼다. (미래 캔들로 하면 선행 지표처럼 작용할수도 있으니 주의)
+                from = from.minusSeconds(
+                    CandleUnit.min().getSecondSize() * 15
+                ), // 과거 캔들로 메꾼다. (미래 캔들로 하면 선행 지표처럼 작용할수도 있으니 주의)
                 to = to,
             ).takeLast(1)
 
