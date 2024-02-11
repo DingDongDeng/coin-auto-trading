@@ -1,7 +1,7 @@
 package com.dingdongdeng.autotrading.domain.autotrade.service
 
 import com.dingdongdeng.autotrading.domain.autotrade.model.CoinAutoTradeProcessor
-import com.dingdongdeng.autotrading.domain.autotrade.model.CoinBackTestProcessor
+import com.dingdongdeng.autotrading.domain.backtest.model.CoinBackTestProcessor
 import com.dingdongdeng.autotrading.domain.chart.service.CoinChartService
 import com.dingdongdeng.autotrading.domain.process.service.ProcessService
 import com.dingdongdeng.autotrading.domain.strategy.service.CoinStrategyService
