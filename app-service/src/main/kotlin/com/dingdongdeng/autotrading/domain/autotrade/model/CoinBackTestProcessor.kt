@@ -50,6 +50,9 @@ class CoinBackTestProcessor(
     private var initialize = false
 
     override fun process() {
+        // FIXME 백테스트를 하기 적합한 DB상태 인지 확인하기?
+        //  mock 캔들 비율이라던가... 차트 로딩이 누락된 구간이 존재한다거나
+        //  백테하기 충분하지 않은 데이터 구간은 스킵한다거나?
         autoTradeProcessor.process()
     }
 
