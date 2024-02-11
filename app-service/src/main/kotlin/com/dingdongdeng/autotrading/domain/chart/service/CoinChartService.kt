@@ -154,18 +154,21 @@ class CoinChartService(
                 to = endDateTime,
             )
 
-            // DB에 존재하지 않는 캔들
+            // 거래소에서 조회한 캔들
             val exchangeChart = exchangeService.getChart(
                 SpotCoinExchangeChartParam(coinType, candleUnit, startDateTime, endDateTime),
                 keyParam
             )
-            val missingCandleDateTimes = CandleDateTimeUtils.findMissingDateTimes(
+
+            // DB에 존재하지 않는 캔들
+            val dbMissingCandleDateTimes = CandleDateTimeUtils.findMissingDateTimes(
                 candleUnit = candleUnit,
                 from = startDateTime,
                 to = endDateTime,
                 candleDateTimes = dbCandles.map { it.candleDateTimeKst }
             )
-            val missingCandles = exchangeChart.candles.filter { missingCandleDateTimes.contains(it.candleDateTimeKst) }
+            val dbMissingCandles =
+                exchangeChart.candles.filter { dbMissingCandleDateTimes.contains(it.candleDateTimeKst) }
                 .map {
                     CoinCandle(
                         exchangeType = exchangeType,
@@ -183,7 +186,7 @@ class CoinChartService(
                 }
 
             // DB에 존재하지 않는 캔들 저장
-            coinCandleRepository.saveAll(missingCandles)
+            coinCandleRepository.saveAll(dbMissingCandles)
             startDateTime = endDateTime
         }
     }
