@@ -54,11 +54,11 @@ class CachedCoinCandleRepository(
             return false
         }
         val firstDateTime = cachedCandles.first().candleDateTimeKst
-        if (from.isBefore(firstDateTime)) {
+        if (from < firstDateTime) {
             return false
         }
         val lastDateTime = cachedCandles.last().candleDateTimeKst
-        if (to.isAfter(lastDateTime)) {
+        if (to > lastDateTime) {
             return false
         }
         return true
@@ -75,9 +75,9 @@ class CachedCoinCandleRepository(
             throw CriticalException.of("캐싱된 데이터가 존재하지 않습니다. key=$key, from=$from, to=$to")
         }
 
-        val startIndex = candles!!.indexOfFirst { from.isAfter(it.candleDateTimeKst).not() }
-        val endIndex = candles!!.indexOfLast { to.isBefore(it.candleDateTimeKst).not() }
-        return candles!!.subList(startIndex, endIndex + 1)
+        val startIndex = candles.indexOfFirst { from <= it.candleDateTimeKst }
+        val endIndex = candles.indexOfLast { to >= it.candleDateTimeKst }
+        return candles.subList(startIndex, endIndex + 1)
     }
 
     private fun saveCachedData(

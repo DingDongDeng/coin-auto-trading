@@ -107,7 +107,7 @@ class UpbitSpotCoinExchangeService(
         // from <= 조회 범위 <= to 를 만족하도록 부족한 캔들을 조회
         while (true) {
             val firstCandle = totalResponse.first()
-            val isCompleted = firstCandle.candleDateTimeKst.isBefore(param.from)
+            val isCompleted = firstCandle.candleDateTimeKst < param.from
             if (isCompleted) {
                 log.info("캔들 조회 완료, from={}, to={}", param.from, param.to)
                 break
@@ -124,7 +124,7 @@ class UpbitSpotCoinExchangeService(
         }
         // 범위를 넘는 캔들 제거
         totalResponse =
-            totalResponse.filter { (it.candleDateTimeKst.isAfter(param.to) || it.candleDateTimeKst.isBefore(param.from)).not() }
+            totalResponse.filter { it.candleDateTimeKst >= param.from && it.candleDateTimeKst <= param.to }
 
         val resultCandles = totalResponse.map {
             ExchangeChartCandle(

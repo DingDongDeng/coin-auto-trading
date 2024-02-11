@@ -140,7 +140,7 @@ class CoinChartService(
          */
         var startDateTime = from
         while (true) {
-            if (startDateTime.isAfter(to)) {
+            if (startDateTime > to) {
                 break
             }
             val endDateTime = startDateTime.plusSeconds(candleUnit.getSecondSize() * CHART_LOAD_CHUNK_SIZE)

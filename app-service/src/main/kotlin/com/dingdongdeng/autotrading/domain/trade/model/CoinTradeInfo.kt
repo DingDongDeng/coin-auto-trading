@@ -1,7 +1,6 @@
 package com.dingdongdeng.autotrading.domain.trade.model
 
 import com.dingdongdeng.autotrading.domain.trade.entity.CoinTradeHistory
-import com.dingdongdeng.autotrading.infra.common.type.TradeState
 import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
 
 data class CoinTradeInfo(
@@ -17,7 +16,7 @@ data class CoinTradeInfo(
     fun getOldWaitTrades(seconds: Long): List<CoinTradeHistory> { //FIXME 도메인 로직 이동좀
         return coinTradeHistory.filter {
             // 대기 상태이면서 N초 이상 지난 거래들
-            it.state == TradeState.WAIT && it.tradedAt.isBefore(TimeContext.now().minusSeconds(seconds))
+            it.isWait() && it.tradedAt < TimeContext.now().minusSeconds(seconds)
         }
     }
 }
