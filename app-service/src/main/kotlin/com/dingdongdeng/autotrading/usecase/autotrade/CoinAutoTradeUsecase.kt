@@ -1,6 +1,6 @@
 package com.dingdongdeng.autotrading.usecase.autotrade
 
-import com.dingdongdeng.autotrading.domain.autotrade.service.AutoTradeService
+import com.dingdongdeng.autotrading.domain.autotrade.service.CoinAutoTradeService
 import com.dingdongdeng.autotrading.domain.chart.service.CoinChartService
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.infra.common.annotation.Usecase
@@ -12,7 +12,7 @@ import java.time.LocalDateTime
 
 @Usecase
 class CoinAutoTradeUsecase(
-    private val autoTradeService: AutoTradeService,
+    private val coinAutoTradeService: CoinAutoTradeService,
     private val coinChartService: CoinChartService,
 ) {
 
@@ -26,7 +26,7 @@ class CoinAutoTradeUsecase(
         config: Map<String, Any>
     ): String {
         // 자동매매 등록
-        return autoTradeService.register(
+        return coinAutoTradeService.register(
             userId = userId,
             coinStrategyType = coinStrategyType,
             exchangeType = exchangeType,
@@ -48,7 +48,7 @@ class CoinAutoTradeUsecase(
         config: Map<String, Any>
     ): String {
         // 백테스트 실행
-        return autoTradeService.backTest(
+        return coinAutoTradeService.backTest(
             startDateTime = startDateTime,
             endDateTime = endDateTime,
             durationUnit = durationUnit,
@@ -81,17 +81,17 @@ class CoinAutoTradeUsecase(
     }
 
     fun start(autoTradeProcessorId: String): String {
-        autoTradeService.start(autoTradeProcessorId)
+        coinAutoTradeService.start(autoTradeProcessorId)
         return autoTradeProcessorId
     }
 
     fun stop(autoTradeProcessorId: String): String {
-        autoTradeService.stop(autoTradeProcessorId)
+        coinAutoTradeService.stop(autoTradeProcessorId)
         return autoTradeProcessorId
     }
 
     fun terminate(autoTradeProcessorId: String): String {
-        autoTradeService.terminate(autoTradeProcessorId)
+        coinAutoTradeService.terminate(autoTradeProcessorId)
         return autoTradeProcessorId
     }
 }

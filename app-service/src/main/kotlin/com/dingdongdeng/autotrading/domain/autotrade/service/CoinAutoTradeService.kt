@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
 @Service
-class AutoTradeService(
+class CoinAutoTradeService(
     private val processService: ProcessService,
     private val coinChartService: CoinChartService,
     private val coinTradeService: CoinTradeService,
