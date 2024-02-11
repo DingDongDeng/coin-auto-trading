@@ -38,7 +38,10 @@ class VirtualCoinCandleRepository(
                     coinType = coinType,
                     unit = unit,
                     from = missingCandleDateTime,
-                    to = minDate(missingCandleDateTime.plusSeconds(unit.getSecondSize()), to),
+                    to = minDate(
+                        missingCandleDateTime.plusSeconds(unit.getSecondSize()),
+                        to
+                    ).minusSeconds(1), // from <= 범위 < to 조회를 위해 1초 마이너스
                 )
             }
 
@@ -84,7 +87,7 @@ class VirtualCoinCandleRepository(
             ).takeLast(1)
 
         if (minUnitCandles.isEmpty()) {
-            throw CriticalException.of("백테스트를 위한 minCandles 조회에 실패하였습니다. coinType=$coinType, unitType=$unit from=$from, to=$to")
+            throw CriticalException.of("백테스트를 위한 minUnitCandles 조회에 실패, exchangeType=$exchangeType, coinType=$coinType, unitType=$unit from=$from, to=$to")
         }
 
         val openingPrice = minUnitCandles.first().openingPrice
