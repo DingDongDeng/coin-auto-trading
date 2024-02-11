@@ -152,7 +152,7 @@ class CoinChartService(
             ).candles
 
             // DB에 이미 존재하는 캔들
-            val dbCandles = coinCandleRepository.findAllExchangeCandle(
+            val dbCandles = coinCandleRepository.findAllCoinCandle(
                 exchangeType = exchangeType,
                 coinType = coinType,
                 unit = candleUnit,

@@ -14,7 +14,7 @@ class CachedCoinCandleRepository(
 ) {
     private val cachedData = mutableMapOf<String, List<CoinCandle>>()
 
-    fun findAllExchangeCandle(
+    fun findAllCoinCandle(
         exchangeType: ExchangeType,
         coinType: CoinType,
         unit: CandleUnit,
@@ -88,7 +88,7 @@ class CachedCoinCandleRepository(
         from: LocalDateTime,
         to: LocalDateTime,
     ) {
-        val candles = coinCandleRepository.findAllExchangeCandle(
+        val candles = coinCandleRepository.findAllCoinCandle(
             exchangeType = exchangeType,
             coinType = coinType,
             unit = unit,

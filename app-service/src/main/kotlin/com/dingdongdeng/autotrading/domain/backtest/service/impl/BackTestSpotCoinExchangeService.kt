@@ -1,4 +1,4 @@
-package com.dingdongdeng.autotrading.domain.backtest.service
+package com.dingdongdeng.autotrading.domain.backtest.service.impl
 
 import com.dingdongdeng.autotrading.domain.chart.repository.CachedCoinCandleRepository
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChart
@@ -56,7 +56,7 @@ class BackTestSpotCoinExchangeService(
         val exchangeType = EXCHANGE_TYPE_FOR_BACKTEST
 
         // 캔들 조회
-        val candles = cachedCoinCandleRepository.findAllExchangeCandle(
+        val candles = cachedCoinCandleRepository.findAllCoinCandle(
             exchangeType = exchangeType,
             coinType = param.coinType,
             unit = param.candleUnit,
@@ -123,14 +123,14 @@ class BackTestSpotCoinExchangeService(
     ): ExchangeChartCandle {
 
         // 큰 단위의 캔들을 다시 만들기 위해 가장 작은 단위의 캔들을 조회
-        val minUnitCandles = cachedCoinCandleRepository.findAllExchangeCandle(
+        val minUnitCandles = cachedCoinCandleRepository.findAllCoinCandle(
             exchangeType = EXCHANGE_TYPE_FOR_BACKTEST,
             coinType = coinType,
             unit = CandleUnit.min(),
             from = from,
             to = to,
         ).takeIf { it.isNotEmpty() } // 거래소 캔들이 누락되어 있음 (캔들이 누락된 경우가 빈번함)
-            ?: cachedCoinCandleRepository.findAllExchangeCandle(
+            ?: cachedCoinCandleRepository.findAllCoinCandle(
                 exchangeType = EXCHANGE_TYPE_FOR_BACKTEST,
                 coinType = coinType,
                 unit = CandleUnit.min(),

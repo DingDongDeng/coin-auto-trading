@@ -21,29 +21,11 @@ interface CoinCandleRepository : JpaRepository<CoinCandle, Long> {
         order by candle.candleDateTimeKst
     """
     )
-    fun findAllExchangeCandle(
+    fun findAllCoinCandle(
         exchangeType: ExchangeType,
         coinType: CoinType,
         unit: CandleUnit,
         from: LocalDateTime,
         to: LocalDateTime,
     ): List<CoinCandle>
-
-    @Query(
-        """
-        select count(candle)
-        from CoinCandle candle
-        where candle.exchangeType = :exchangeType
-        and candle.coinType = :coinType
-        and candle.unit = :unit
-        and candle.candleDateTimeKst between :from and :to
-    """
-    )
-    fun countByExchangeCandle(
-        exchangeType: ExchangeType,
-        coinType: CoinType,
-        unit: CandleUnit,
-        from: LocalDateTime,
-        to: LocalDateTime,
-    ): Long
 }
