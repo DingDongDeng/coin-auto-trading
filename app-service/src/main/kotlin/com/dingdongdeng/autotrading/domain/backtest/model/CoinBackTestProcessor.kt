@@ -53,6 +53,7 @@ class CoinBackTestProcessor(
     private var initialize = false
 
     init {
+        validateLoadedCandleRange()
         validateBackTestRange()
     }
 
@@ -79,6 +80,10 @@ class CoinBackTestProcessor(
         }
     }
 
+    private fun validateLoadedCandleRange() {
+
+    }
+
     private fun getAvailBackTestRanges(coinType: CoinType): List<AvailBackTestRange> {
         val minUnit = CandleUnit.min()
         val missingCandles = coinChartService.getMissingChart(
@@ -103,8 +108,8 @@ class CoinBackTestProcessor(
                 AvailBackTestRange(
                     exchangeType = exchangeType,
                     coinType = coinType,
-                    startDateTime = firstMissingDateTime,
-                    endDateTime = lastMissingDateTime,
+                    startDateTime = firstMissingDateTime.plusSeconds(minUnit.getSecondSize()),
+                    endDateTime = lastMissingDateTime.minusSeconds(minUnit.getSecondSize()),
                 )
             )
         }
