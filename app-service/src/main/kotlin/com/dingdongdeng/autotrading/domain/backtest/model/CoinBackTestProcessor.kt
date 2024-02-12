@@ -22,6 +22,7 @@ class CoinBackTestProcessor(
     val durationUnit: CandleUnit, // 백테스트 시간 간격
 
     val coinStrategyType: CoinStrategyType,
+    val exchangeType: ExchangeType,
     val coinTypes: List<CoinType>,
     val candleUnits: List<CandleUnit>,
     val config: Map<String, Any>,
@@ -70,21 +71,43 @@ class CoinBackTestProcessor(
     }
 
     private fun validateBackTestRange() {
-        val availBackTestRanges = getAvailBackTestRanges(coinTypes, startDateTime, endDateTime)
         coinTypes.forEach { coinType ->
+            val availBackTestRanges = getAvailBackTestRanges(coinType)
             if (availBackTestRanges.none { it.isRanged(coinType, startDateTime, endDateTime) }) {
                 throw WarnException.of("백테스트 불가능한 구간입니다. availBackTestRanges=$availBackTestRanges")
             }
         }
     }
 
-    private fun getAvailBackTestRanges(
-        coinTypes: List<CoinType>,
-        startDateTime: LocalDateTime,
-        endDateTime: LocalDateTime
-    ): List<AvailBackTestRange> {
-        // FIXME 테스트 가능 영역 교집합을 리턴
+    private fun getAvailBackTestRanges(coinType: CoinType): List<AvailBackTestRange> {
+        val minUnit = CandleUnit.min()
+        val missingCandles = coinChartService.getMissingChart(
+            exchangeType = exchangeType,
+            coinType = coinType,
+            candleUnit = minUnit,
+            from = startDateTime,
+            to = endDateTime,
+        ).candles
 
-        return emptyList()
+        val availBackTestRanges = mutableListOf<AvailBackTestRange>()
+        missingCandles.windowed(2, 1) { subList ->
+            val firstMissingDateTime = subList.first().candleDateTimeKst
+            val lastMissingDateTime = subList.last().candleDateTimeKst
+
+            // 누락된 캔들이 연속된 시간에 존재하면 생략
+            if (firstMissingDateTime.plusSeconds(minUnit.getSecondSize()) >= lastMissingDateTime) {
+                return@windowed
+            }
+
+            availBackTestRanges.add(
+                AvailBackTestRange(
+                    exchangeType = exchangeType,
+                    coinType = coinType,
+                    startDateTime = firstMissingDateTime,
+                    endDateTime = lastMissingDateTime,
+                )
+            )
+        }
+        return availBackTestRanges
     }
 }
