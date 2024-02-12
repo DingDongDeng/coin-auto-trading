@@ -1,6 +1,5 @@
 package com.dingdongdeng.autotrading.domain.backtest.model
 
-import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import java.time.LocalDateTime
@@ -8,7 +7,6 @@ import java.time.LocalDateTime
 data class AvailBackTestRange(
     val exchangeType: ExchangeType,
     val coinType: CoinType,
-    val candleUnit: CandleUnit,
     val startDateTime: LocalDateTime,
     val endDateTime: LocalDateTime,
 ) {
