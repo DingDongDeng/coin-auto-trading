@@ -81,6 +81,7 @@ class CoinDashBoardController(
                 durationUnit = request.durationUnit,
                 userId = 1234, //FIXME
                 coinStrategyType = request.coinStrategyType,
+                exchangeType = request.exchangeType,
                 coinTypes = request.coinTypes,
                 candleUnits = request.candleUnits,
                 config = request.config,
