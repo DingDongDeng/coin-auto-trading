@@ -46,6 +46,7 @@ class CoinAutoTradeUsecase(
         durationUnit: CandleUnit, // 백테스트 시간 간격
         userId: Long,
         coinStrategyType: CoinStrategyType,
+        exchangeType: ExchangeType,
         coinTypes: List<CoinType>,
         candleUnits: List<CandleUnit>,
         config: Map<String, Any>
@@ -57,6 +58,7 @@ class CoinAutoTradeUsecase(
             durationUnit = durationUnit,
             userId = userId,
             coinStrategyType = coinStrategyType,
+            exchangeType = exchangeType,
             coinTypes = coinTypes,
             candleUnits = candleUnits,
             config = config,
