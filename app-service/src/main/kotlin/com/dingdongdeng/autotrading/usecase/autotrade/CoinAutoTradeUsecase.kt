@@ -10,6 +10,7 @@ import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.utils.AsyncUtils
+import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
 import java.time.LocalDateTime
 
 @Usecase
@@ -73,6 +74,9 @@ class CoinAutoTradeUsecase(
         candleUnits: List<CandleUnit>,
         keyPairId: String,
     ) {
+        if (endDateTime > TimeContext.now()) {
+            throw WarnException.of("현재 시점보다 미래의 캔들을 다운로드 할 수 없습니다.")
+        }
         if (candleUnits.contains(CandleUnit.min()).not()) {
             throw WarnException.of("거래소의 캔들을 서버에 다운로드 할때는 가장 작은 캔들 단위를 포함해야만 합니다. min=${CandleUnit.min()}")
         }
