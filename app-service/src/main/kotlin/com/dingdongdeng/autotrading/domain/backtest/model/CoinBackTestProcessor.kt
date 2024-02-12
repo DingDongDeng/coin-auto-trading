@@ -111,49 +111,13 @@ class CoinBackTestProcessor(
             )
         }
 
-        val mergedAvailBackTestRanges = mutableListOf<AvailBackTestRange>()
-        for ((index, availBackTestRange) in availBackTestRanges.withIndex()) {
-
-        }
-
-        availBackTestRanges.windowed(2, 1, true) { subList ->
-            if (subList.size == 1 && (mergedAvailBackTestRanges.last().endDateTime != subList.first().endDateTime)) {
-                mergedAvailBackTestRanges.add(subList.first())
-                return@windowed
-            }
-            val firstAvailBackTestRange = subList.first()
-            val secondAvailBackTestRange = subList.last()
-            if (firstAvailBackTestRange.endDateTime.plusSeconds(minUnit.getSecondSize() * 3) < secondAvailBackTestRange.startDateTime) {
-                // N분 이상 차이남
-                mergedAvailBackTestRanges.add(firstAvailBackTestRange)
-            } else {
-                // N분 이하로 차이남
-                mergedAvailBackTestRanges.add(
-                    AvailBackTestRange(
-                        exchangeType = exchangeType,
-                        coinType = coinType,
-                        startDateTime = firstAvailBackTestRange.startDateTime,
-                        endDateTime = secondAvailBackTestRange.endDateTime,
-                    )
-                )
-            }
-        }
-        return mergedAvailBackTestRanges
+        return merge(availBackTestRanges)
     }
 
-    private fun merge(o1: AvailBackTestRange, o2: AvailBackTestRange): AvailBackTestRange {
-        return AvailBackTestRange(
-            exchangeType = o1.exchangeType,
-            coinType = o1.coinType,
-            startDateTime = o1.startDateTime,
-            endDateTime = o2.endDateTime,
-        )
-    }
-
-    private fun mergeByGpt(list: List<AvailBackTestRange>) {
+    private fun merge(list: List<AvailBackTestRange>): List<AvailBackTestRange> {
         if (list.size <= 1) return list // 리스트 크기가 1 이하이면 그대로 반환
 
-        var mergedList = list.sortedBy { it.startDateTime } // 시작 시간을 기준으로 리스트 정렬
+        var mergedList = list.sortedBy { it.startDateTime }.toMutableList() // 시작 시간을 기준으로 리스트 정렬
 
         var merged = true
         while (merged) {
@@ -168,7 +132,7 @@ class CoinBackTestProcessor(
                 // 현재 범위와 다음 범위의 시간 간격 계산
                 val timeGap = Duration.between(currentRange.endDateTime, nextRange.startDateTime).toMinutes()
 
-                if (timeGap <= 3) {
+                if (timeGap <= 10) {
                     // 시간 간격이 3분 이내이면 범위를 병합
                     merged = true
                     mergedList.removeAt(i)
