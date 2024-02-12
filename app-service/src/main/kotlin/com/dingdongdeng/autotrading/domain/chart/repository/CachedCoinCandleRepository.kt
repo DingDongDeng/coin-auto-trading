@@ -77,6 +77,11 @@ class CachedCoinCandleRepository(
 
         val startIndex = candles.indexOfFirst { from <= it.candleDateTimeKst }
         val endIndex = candles.indexOfLast { to >= it.candleDateTimeKst }
+
+        if (startIndex == -1 || endIndex == -1) {
+            throw CriticalException.of("캐싱된 데이터에서 대상을 찾지 못했습니다. key=$key, from=$from, to=$to")
+        }
+
         return candles.subList(startIndex, endIndex + 1)
     }
 

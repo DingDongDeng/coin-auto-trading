@@ -11,7 +11,6 @@ import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
-import java.time.Duration
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -82,81 +81,23 @@ class CoinBackTestProcessor(
 
     private fun getAvailBackTestRanges(coinType: CoinType): List<AvailBackTestRange> {
         val minUnit = CandleUnit.min()
-        val missingCandles = coinChartService.getMissingChart(
+        val missingDateTimes = coinChartService.getMissingChart(
             exchangeType = exchangeType,
             coinType = coinType,
             candleUnit = minUnit,
             from = startDateTime,
             to = endDateTime,
-        ).candles
+        ).candles.map { it.candleDateTimeKst }
 
-        val availBackTestRanges = mutableListOf<AvailBackTestRange>()
-        missingCandles.windowed(2, 1) { subList ->
-            val firstMissingDateTime = subList.first().candleDateTimeKst
-            val lastMissingDateTime = subList.last().candleDateTimeKst
+        val availBackTestRanges = AvailBackTestRange.fromMissingDateTimes(
+            exchangeType = exchangeType,
+            coinType = coinType,
+            candleUnit = minUnit,
+            startDateTime = startDateTime,
+            endDateTime = endDateTime,
+            missingDateTimes = missingDateTimes,
+        )
 
-            // 누락된 캔들이 연속된 시간에 존재하면 생략
-            if (firstMissingDateTime.plusSeconds(minUnit.getSecondSize()) >= lastMissingDateTime) {
-                return@windowed
-            }
-
-            availBackTestRanges.add(
-                AvailBackTestRange(
-                    exchangeType = exchangeType,
-                    coinType = coinType,
-                    startDateTime = firstMissingDateTime.plusSeconds(minUnit.getSecondSize()),
-                    endDateTime = lastMissingDateTime.minusSeconds(minUnit.getSecondSize()),
-                )
-            )
-        }
-
-        if (availBackTestRanges.first().startDateTime != startDateTime) {
-            availBackTestRanges.add(
-                0,
-                AvailBackTestRange(
-                    exchangeType = exchangeType,
-                    coinType = coinType,
-                    startDateTime = startDateTime,
-                    endDateTime = missingCandles.first().candleDateTimeKst.minusSeconds(minUnit.getSecondSize()),
-                )
-            )
-        }
-
-        if (availBackTestRanges.last().endDateTime != endDateTime) {
-            availBackTestRanges.add(
-                0,
-                AvailBackTestRange(
-                    exchangeType = exchangeType,
-                    coinType = coinType,
-                    startDateTime = missingCandles.last().candleDateTimeKst.plusSeconds(minUnit.getSecondSize()),
-                    endDateTime = endDateTime,
-                )
-            )
-        }
-
-        return merge(availBackTestRanges)
-    }
-
-    private fun merge(list: List<AvailBackTestRange>): List<AvailBackTestRange> {
-        if (list.size <= 1) return list // 리스트 크기가 1 이하이면 그대로 반환
-
-        return list.sortedBy { it.startDateTime }.fold(emptyList()) { acc, range ->
-            if (acc.isEmpty()) {
-                listOf(range)
-            } else {
-                val lastRange = acc.last()
-                val timeGap = Duration.between(lastRange.endDateTime, range.startDateTime).toMinutes()
-                if (timeGap <= 10) {
-                    acc.dropLast(1) + AvailBackTestRange(
-                        lastRange.exchangeType,
-                        lastRange.coinType,
-                        lastRange.startDateTime,
-                        range.endDateTime
-                    )
-                } else {
-                    acc + range
-                }
-            }
-        }
+        return AvailBackTestRange.merge(availBackTestRanges, minUnit.getSecondSize() * 10)
     }
 }
