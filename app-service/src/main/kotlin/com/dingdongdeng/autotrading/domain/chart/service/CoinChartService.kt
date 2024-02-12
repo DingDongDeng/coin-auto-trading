@@ -1,9 +1,12 @@
 package com.dingdongdeng.autotrading.domain.chart.service
 
 import com.dingdongdeng.autotrading.domain.chart.entity.CoinCandle
+import com.dingdongdeng.autotrading.domain.chart.entity.MissingCoinCandle
 import com.dingdongdeng.autotrading.domain.chart.model.Candle
 import com.dingdongdeng.autotrading.domain.chart.model.Chart
 import com.dingdongdeng.autotrading.domain.chart.repository.CoinCandleRepository
+import com.dingdongdeng.autotrading.domain.chart.repository.MissingCoinCandleRepository
+import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChartCandle
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartParam
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
 import com.dingdongdeng.autotrading.domain.indicator.service.IndicatorService
@@ -14,6 +17,7 @@ import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.utils.AsyncUtils
 import com.dingdongdeng.autotrading.infra.common.utils.CandleDateTimeUtils
 import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
+import com.dingdongdeng.autotrading.infra.common.utils.toUtc
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
@@ -22,6 +26,7 @@ class CoinChartService(
     private val exchangeServices: List<SpotCoinExchangeService>,
     private val indicatorService: IndicatorService,
     private val coinCandleRepository: CoinCandleRepository,
+    private val missingCoinCandleRepository: MissingCoinCandleRepository,
 ) {
 
     fun getCharts(
@@ -134,9 +139,11 @@ class CoinChartService(
 
         /*
          *  아래 과정을 구간별 반복
-         *  1. DB에 해당 범위에 없는 캔들을 특정한다.
-         *  2. 거래소에서 캔들을 조회한다
-         *  3. DB에 없는 캔들들을 저장한다.
+         *  1. 거래소에서 캔들을 조회한다.
+         *  2. 거래소에서 누락된 캔들을 특정한다.
+         *  3. 거래소에서 누락된 캔들 정보를 저장한다.
+         *  4. DB에 저장되지 않는 캔들을 특정한다.
+         *  5. DB에 없는 캔들을 저장한다.
          */
         var startDateTime = from
         while (true) {
@@ -151,43 +158,112 @@ class CoinChartService(
                 keyParam
             ).candles
 
-            // DB에 이미 존재하는 캔들
-            val dbCandles = coinCandleRepository.findAllCoinCandle(
+            loadMissingCandle(
                 exchangeType = exchangeType,
                 coinType = coinType,
-                unit = candleUnit,
-                from = startDateTime,
-                to = endDateTime,
-            )
-            val dbMissingCandleDateTimes = CandleDateTimeUtils.findMissingDateTimes(
                 candleUnit = candleUnit,
-                from = startDateTime,
-                to = endDateTime,
-                candleDateTimes = dbCandles.map { it.candleDateTimeKst }
+                startDateTime = startDateTime,
+                endDateTime = endDateTime,
+                exchangeCandles = exchangeCandles
             )
-            // DB에 존재하지 않는 캔들
-            val dbMissingCandles =
-                exchangeCandles.filter { dbMissingCandleDateTimes.contains(it.candleDateTimeKst) }
-                    .map {
-                        CoinCandle(
-                            exchangeType = exchangeType,
-                            coinType = coinType,
-                            unit = candleUnit,
-                            candleDateTimeUtc = it.candleDateTimeUtc,
-                            candleDateTimeKst = it.candleDateTimeKst,
-                            openingPrice = it.openingPrice,
-                            highPrice = it.highPrice,
-                            lowPrice = it.lowPrice,
-                            closingPrice = it.closingPrice,
-                            accTradePrice = it.accTradePrice,
-                            accTradeVolume = it.accTradeVolume,
-                        )
-                    }
-            // DB에 존재하지 않는 캔들 저장
-            coinCandleRepository.saveAll(dbMissingCandles)
+            loadExchangeCandle(
+                exchangeType = exchangeType,
+                coinType = coinType,
+                candleUnit = candleUnit,
+                startDateTime = startDateTime,
+                endDateTime = endDateTime,
+                exchangeCandles = exchangeCandles
+            )
 
             startDateTime = endDateTime
         }
+    }
+
+    private fun loadMissingCandle(
+        exchangeType: ExchangeType,
+        coinType: CoinType,
+        candleUnit: CandleUnit,
+        startDateTime: LocalDateTime,
+        endDateTime: LocalDateTime,
+        exchangeCandles: List<ExchangeChartCandle>
+    ) {
+        // 거래소에서 누락된 캔들 시간
+        val exchangeMissingCandleDateTimes = CandleDateTimeUtils.findMissingDateTimes(
+            candleUnit = candleUnit,
+            from = startDateTime,
+            to = endDateTime,
+            candleDateTimes = exchangeCandles.map { it.candleDateTimeKst }
+        )
+
+        // DB에 이미 저장되어있는 누락 시간
+        val missingCandleDateTimes = missingCoinCandleRepository.findAllMissingCoinCandle(
+            exchangeType = exchangeType,
+            coinType = coinType,
+            unit = candleUnit,
+            from = startDateTime,
+            to = endDateTime,
+        ).map { it.candleDateTimeKst }
+
+        // DB에 저장되어있지 않은 누락 시간
+        val missingCandles =
+            exchangeMissingCandleDateTimes
+                .filter { missingCandleDateTimes.contains(it).not() }
+                .map { missingDateTime ->
+                    MissingCoinCandle(
+                        exchangeType = exchangeType,
+                        coinType = coinType,
+                        unit = candleUnit,
+                        candleDateTimeUtc = missingDateTime.toUtc(),
+                        candleDateTimeKst = missingDateTime,
+                    )
+                }
+
+        // 거래소에 존재하지 않는 누락 캔들 저장
+        missingCoinCandleRepository.saveAll(missingCandles)
+    }
+
+    private fun loadExchangeCandle(
+        exchangeType: ExchangeType,
+        coinType: CoinType,
+        candleUnit: CandleUnit,
+        startDateTime: LocalDateTime,
+        endDateTime: LocalDateTime,
+        exchangeCandles: List<ExchangeChartCandle>
+    ) {
+        // DB에 이미 존재하는 캔들
+        val dbCandles = coinCandleRepository.findAllCoinCandle(
+            exchangeType = exchangeType,
+            coinType = coinType,
+            unit = candleUnit,
+            from = startDateTime,
+            to = endDateTime,
+        )
+        val dbMissingCandleDateTimes = CandleDateTimeUtils.findMissingDateTimes(
+            candleUnit = candleUnit,
+            from = startDateTime,
+            to = endDateTime,
+            candleDateTimes = dbCandles.map { it.candleDateTimeKst }
+        )
+        // DB에 존재하지 않는 캔들
+        val dbMissingCandles =
+            exchangeCandles.filter { dbMissingCandleDateTimes.contains(it.candleDateTimeKst) }
+                .map {
+                    CoinCandle(
+                        exchangeType = exchangeType,
+                        coinType = coinType,
+                        unit = candleUnit,
+                        candleDateTimeUtc = it.candleDateTimeUtc,
+                        candleDateTimeKst = it.candleDateTimeKst,
+                        openingPrice = it.openingPrice,
+                        highPrice = it.highPrice,
+                        lowPrice = it.lowPrice,
+                        closingPrice = it.closingPrice,
+                        accTradePrice = it.accTradePrice,
+                        accTradeVolume = it.accTradeVolume,
+                    )
+                }
+        // DB에 존재하지 않는 캔들 저장
+        coinCandleRepository.saveAll(dbMissingCandles)
     }
 
     companion object {
