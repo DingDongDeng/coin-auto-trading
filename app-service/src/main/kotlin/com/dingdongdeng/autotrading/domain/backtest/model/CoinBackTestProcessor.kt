@@ -117,49 +117,27 @@ class CoinBackTestProcessor(
     private fun merge(list: List<AvailBackTestRange>): List<AvailBackTestRange> {
         if (list.size <= 1) return list // 리스트 크기가 1 이하이면 그대로 반환
 
-        var mergedList = list.sortedBy { it.startDateTime }.toMutableList() // 시작 시간을 기준으로 리스트 정렬
-
-        var merged = true
-        while (merged) {
-            merged = false
-            val newList = mutableListOf<AvailBackTestRange>()
-
-            var i = 0
-            while (i < mergedList.size - 1) {
-                val currentRange = mergedList[i]
-                val nextRange = mergedList[i + 1]
-
-                // 현재 범위와 다음 범위의 시간 간격 계산
-                val timeGap = Duration.between(currentRange.endDateTime, nextRange.startDateTime).toMinutes()
-
+        return list.sortedBy { it.startDateTime }.fold(mutableListOf()) { acc, range ->
+            if (acc.isEmpty()) {
+                acc.add(range)
+            } else {
+                val lastRange = acc.last()
+                val timeGap = Duration.between(lastRange.endDateTime, range.startDateTime).toMinutes()
                 if (timeGap <= 10) {
-                    // 시간 간격이 3분 이내이면 범위를 병합
-                    merged = true
-                    mergedList.removeAt(i)
-                    mergedList.removeAt(i)
-                    mergedList.add(
-                        i, AvailBackTestRange(
-                        currentRange.exchangeType,
-                        currentRange.coinType,
-                        currentRange.startDateTime,
-                        nextRange.endDateTime
-                    )
+                    acc.removeAt(acc.size - 1)
+                    acc.add(
+                        AvailBackTestRange(
+                            lastRange.exchangeType,
+                            lastRange.coinType,
+                            lastRange.startDateTime,
+                            range.endDateTime
+                        )
                     )
                 } else {
-                    // 시간 간격이 3분보다 크면 현재 범위를 병합된 리스트에 추가하고 다음 범위를 현재 범위로 설정
-                    newList.add(currentRange)
-                    i++
+                    acc.add(range)
                 }
             }
-
-            // 남은 마지막 요소 추가
-            if (i == mergedList.size - 1) {
-                newList.add(mergedList[i])
-            }
-
-            mergedList = newList
+            acc
         }
-
-        return mergedList
     }
 }
