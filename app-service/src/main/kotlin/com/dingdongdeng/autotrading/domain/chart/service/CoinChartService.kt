@@ -11,6 +11,7 @@ import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartP
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
 import com.dingdongdeng.autotrading.domain.indicator.service.IndicatorService
 import com.dingdongdeng.autotrading.infra.common.exception.CriticalException
+import com.dingdongdeng.autotrading.infra.common.exception.WarnException
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
@@ -45,6 +46,38 @@ class CoinChartService(
             )
         }
     }
+
+    fun getMissingChart(
+        exchangeType: ExchangeType,
+        coinType: CoinType,
+        candleUnit: CandleUnit,
+        from: LocalDateTime,
+        to: LocalDateTime,
+    ): Chart {
+        val missingCandles =
+            missingCoinCandleRepository.findAllMissingCoinCandle(exchangeType, coinType, candleUnit, from, to)
+        return Chart(
+            from = from,
+            to = to,
+            currentPrice = 0.0,
+            candleUnit = candleUnit,
+            candles = missingCandles.map { missingCandle ->
+                Candle(
+                    candleUnit = candleUnit,
+                    candleDateTimeUtc = missingCandle.candleDateTimeUtc,
+                    candleDateTimeKst = missingCandle.candleDateTimeKst,
+                    openingPrice = 0.0,
+                    highPrice = 0.0,
+                    lowPrice = 0.0,
+                    closingPrice = 0.0,
+                    accTradePrice = 0.0,
+                    accTradeVolume = 0.0,
+                    indicators = { throw WarnException.of("missingCandle은 보조지표를 지원하지 않음") },
+                )
+            },
+        )
+    }
+
 
     fun loadCharts(
         exchangeType: ExchangeType,
