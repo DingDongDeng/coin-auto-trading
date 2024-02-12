@@ -1,4 +1,4 @@
-package com.dingdongdeng.autotrading.domain.backtest.service
+package com.dingdongdeng.autotrading.domain.backtest.service.impl
 
 import com.dingdongdeng.autotrading.domain.backtest.repository.VirtualCoinCandleRepository
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChart

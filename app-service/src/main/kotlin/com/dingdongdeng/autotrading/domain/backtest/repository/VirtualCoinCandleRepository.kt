@@ -1,6 +1,5 @@
 package com.dingdongdeng.autotrading.domain.backtest.repository
 
-import com.dingdongdeng.autotrading.domain.backtest.service.BackTestSpotCoinExchangeService
 import com.dingdongdeng.autotrading.domain.chart.entity.CoinCandle
 import com.dingdongdeng.autotrading.domain.chart.repository.CachedCoinCandleRepository
 import com.dingdongdeng.autotrading.infra.common.exception.CriticalException
@@ -79,7 +78,7 @@ class VirtualCoinCandleRepository(
             to = to,
         ).takeIf { it.isNotEmpty() } // 거래소 캔들이 누락되어 있음 (캔들이 누락된 경우가 빈번함)
             ?: cachedCoinCandleRepository.findAllCoinCandle(
-                exchangeType = BackTestSpotCoinExchangeService.EXCHANGE_TYPE_FOR_BACKTEST,
+                exchangeType = exchangeType,
                 coinType = coinType,
                 unit = CandleUnit.min(),
                 from = from.minusSeconds(
