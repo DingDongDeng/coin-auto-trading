@@ -5,6 +5,7 @@ import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyTask
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
 import com.dingdongdeng.autotrading.infra.common.type.OrderType
+import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Component
 
@@ -14,7 +15,7 @@ class TestSpotCoinStrategy(
 ) : SimpleSpotCoinStrategy<TestSpotCoinStrategyConfig>() {
 
     override fun convertConfig(config: Map<String, Any>): TestSpotCoinStrategyConfig {
-        log.info("start test ...")
+        log.info("start test ... ${TimeContext.now()}")
         return objectMapper.convertValue(config, TestSpotCoinStrategyConfig::class.java)
     }
 
