@@ -22,7 +22,7 @@ class CachedCoinCandleRepository(
         to: LocalDateTime,
     ): List<CoinCandle> {
         val key = makeCacheKey(exchangeType, coinType, unit)
-        synchronized(key) {
+        synchronized(this) {
             if (isEnoughCacheData(key, from, to).not()) {
                 saveCachedData(key, exchangeType, coinType, unit, from, to)
             }
