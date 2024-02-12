@@ -1,6 +1,7 @@
 package com.dingdongdeng.autotrading.usecase.autotrade
 
 import com.dingdongdeng.autotrading.domain.autotrade.service.CoinAutoTradeService
+import com.dingdongdeng.autotrading.domain.backtest.service.CoinBackTestService
 import com.dingdongdeng.autotrading.domain.chart.service.CoinChartService
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.infra.common.annotation.Usecase
@@ -14,6 +15,7 @@ import java.time.LocalDateTime
 @Usecase
 class CoinAutoTradeUsecase(
     private val coinAutoTradeService: CoinAutoTradeService,
+    private val coinBackTestService: CoinBackTestService,
     private val coinChartService: CoinChartService,
 ) {
 
@@ -49,7 +51,7 @@ class CoinAutoTradeUsecase(
         config: Map<String, Any>
     ): String {
         // 백테스트 실행
-        return coinAutoTradeService.backTest(
+        return coinBackTestService.backTest(
             startDateTime = startDateTime,
             endDateTime = endDateTime,
             durationUnit = durationUnit,
