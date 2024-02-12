@@ -1,6 +1,5 @@
 package com.dingdongdeng.autotrading.domain.chart.repository
 
-import com.dingdongdeng.autotrading.domain.chart.entity.CoinCandle
 import com.dingdongdeng.autotrading.domain.chart.entity.MissingCoinCandle
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
@@ -28,5 +27,5 @@ interface MissingCoinCandleRepository : JpaRepository<MissingCoinCandle, Long> {
         unit: CandleUnit,
         from: LocalDateTime,
         to: LocalDateTime,
-    ): List<CoinCandle>
+    ): List<MissingCoinCandle>
 }
