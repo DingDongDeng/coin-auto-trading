@@ -29,7 +29,6 @@ class CoinBackTestService(
         candleUnits: List<CandleUnit>,
         config: Map<String, Any>,
     ): String {
-        //FIXME 1분봉에 대한 누락 체크?
         val backTestProcessor = CoinBackTestProcessor(
             userId = userId,
             startDateTime = startDateTime,
