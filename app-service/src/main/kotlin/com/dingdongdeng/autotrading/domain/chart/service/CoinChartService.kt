@@ -151,10 +151,7 @@ class CoinChartService(
             if (startDateTime >= to) {
                 break
             }
-            val endDateTime = minDate(
-                startDateTime.plusSeconds(candleUnit.getSecondSize() * CHART_LOAD_CHUNK_SIZE),
-                to
-            )
+            val endDateTime = minDate(startDateTime.plusSeconds(candleUnit.getSecondSize() * CHART_LOAD_CHUNK_SIZE), to)
 
             // 거래소에서 조회한 캔들
             val exchangeCandles = exchangeService.getChart(
