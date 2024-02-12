@@ -17,6 +17,7 @@ import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.utils.AsyncUtils
 import com.dingdongdeng.autotrading.infra.common.utils.CandleDateTimeUtils
 import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
+import com.dingdongdeng.autotrading.infra.common.utils.minDate
 import com.dingdongdeng.autotrading.infra.common.utils.toUtc
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -147,10 +148,13 @@ class CoinChartService(
          */
         var startDateTime = from
         while (true) {
-            if (startDateTime > to) {
+            if (startDateTime >= to) {
                 break
             }
-            val endDateTime = startDateTime.plusSeconds(candleUnit.getSecondSize() * CHART_LOAD_CHUNK_SIZE)
+            val endDateTime = minDate(
+                startDateTime.plusSeconds(candleUnit.getSecondSize() * CHART_LOAD_CHUNK_SIZE),
+                to
+            )
 
             // 거래소에서 조회한 캔들
             val exchangeCandles = exchangeService.getChart(
