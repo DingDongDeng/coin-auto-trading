@@ -51,8 +51,8 @@ Content-Type: application/json
     "UNIT_60M",
     "UNIT_240M"
   ],
-  "startDateTime": "2024-01-01T00:00:00",
-  "endDateTime": "2024-04-01T00:00:00",
+  "startDateTime": "2023-01-01T00:00:00",
+  "endDateTime": "2023-04-01T00:00:00",
   "keyPairId": "354db64e-e208-4dc3-ab8b-8478ab55dc89"
 }
 
@@ -61,10 +61,11 @@ POST http://localhost:8080/coin/autotrade/backtest
 Content-Type: application/json
 
 {
-  "startDateTime": "2024-02-15T00:00:00",
-  "endDateTime": "2024-04-01T00:00:00",
+  "startDateTime": "2023-02-15T00:00:00",
+  "endDateTime": "2023-04-01T00:00:00",
   "durationUnit": "UNIT_1M",
   "coinStrategyType": "TEST",
+  "exchangeType": "UPBIT",
   "coinTypes": [
     "BITCOIN",
     "ETHEREUM",
