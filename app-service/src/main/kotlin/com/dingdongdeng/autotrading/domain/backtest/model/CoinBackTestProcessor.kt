@@ -53,7 +53,6 @@ class CoinBackTestProcessor(
     private var initialize = false
 
     init {
-        validateLoadedCandleRange()
         validateBackTestRange()
     }
 
@@ -78,10 +77,6 @@ class CoinBackTestProcessor(
                 throw WarnException.of("백테스트 불가능한 구간입니다. availBackTestRanges=$availBackTestRanges")
             }
         }
-    }
-
-    private fun validateLoadedCandleRange() {
-
     }
 
     private fun getAvailBackTestRanges(coinType: CoinType): List<AvailBackTestRange> {
