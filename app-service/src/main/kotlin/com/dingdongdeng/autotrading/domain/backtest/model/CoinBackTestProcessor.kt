@@ -71,8 +71,8 @@ class CoinBackTestProcessor(
     }
 
     private fun validateBackTestRange() {
+        val availBackTestRanges = coinTypes.flatMap { getAvailBackTestRanges(it) }
         coinTypes.forEach { coinType ->
-            val availBackTestRanges = getAvailBackTestRanges(coinType)
             if (availBackTestRanges.none { it.isRanged(coinType, startDateTime, endDateTime) }) {
                 throw WarnException.of("백테스트 불가능한 구간입니다. availBackTestRanges=$availBackTestRanges")
             }
