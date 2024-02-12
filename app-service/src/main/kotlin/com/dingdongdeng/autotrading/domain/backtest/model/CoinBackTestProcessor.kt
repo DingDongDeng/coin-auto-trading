@@ -90,7 +90,6 @@ class CoinBackTestProcessor(
             to = endDateTime,
         ).candles
 
-
         val availBackTestRanges = mutableListOf<AvailBackTestRange>()
         missingCandles.windowed(2, 1) { subList ->
             val firstMissingDateTime = subList.first().candleDateTimeKst
@@ -111,33 +110,53 @@ class CoinBackTestProcessor(
             )
         }
 
+        if (availBackTestRanges.first().startDateTime != startDateTime) {
+            availBackTestRanges.add(
+                0,
+                AvailBackTestRange(
+                    exchangeType = exchangeType,
+                    coinType = coinType,
+                    startDateTime = startDateTime,
+                    endDateTime = missingCandles.first().candleDateTimeKst.minusSeconds(minUnit.getSecondSize()),
+                )
+            )
+        }
+
+        if (availBackTestRanges.last().endDateTime != endDateTime) {
+            availBackTestRanges.add(
+                0,
+                AvailBackTestRange(
+                    exchangeType = exchangeType,
+                    coinType = coinType,
+                    startDateTime = missingCandles.last().candleDateTimeKst.plusSeconds(minUnit.getSecondSize()),
+                    endDateTime = endDateTime,
+                )
+            )
+        }
+
         return merge(availBackTestRanges)
     }
 
     private fun merge(list: List<AvailBackTestRange>): List<AvailBackTestRange> {
         if (list.size <= 1) return list // 리스트 크기가 1 이하이면 그대로 반환
 
-        return list.sortedBy { it.startDateTime }.fold(mutableListOf()) { acc, range ->
+        return list.sortedBy { it.startDateTime }.fold(emptyList()) { acc, range ->
             if (acc.isEmpty()) {
-                acc.add(range)
+                listOf(range)
             } else {
                 val lastRange = acc.last()
                 val timeGap = Duration.between(lastRange.endDateTime, range.startDateTime).toMinutes()
                 if (timeGap <= 10) {
-                    acc.removeAt(acc.size - 1)
-                    acc.add(
-                        AvailBackTestRange(
-                            lastRange.exchangeType,
-                            lastRange.coinType,
-                            lastRange.startDateTime,
-                            range.endDateTime
-                        )
+                    acc.dropLast(1) + AvailBackTestRange(
+                        lastRange.exchangeType,
+                        lastRange.coinType,
+                        lastRange.startDateTime,
+                        range.endDateTime
                     )
                 } else {
-                    acc.add(range)
+                    acc + range
                 }
             }
-            acc
         }
     }
 }
