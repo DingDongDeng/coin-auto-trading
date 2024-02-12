@@ -8,7 +8,6 @@ import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartP
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
 import com.dingdongdeng.autotrading.domain.indicator.service.IndicatorService
 import com.dingdongdeng.autotrading.infra.common.exception.CriticalException
-import com.dingdongdeng.autotrading.infra.common.exception.WarnException
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
@@ -49,9 +48,6 @@ class CoinChartService(
         endDateTime: LocalDateTime,
         candleUnits: List<CandleUnit>,
     ) {
-        if (candleUnits.contains(CandleUnit.min()).not()) {
-            throw WarnException.of("거래소의 캔들을 서버에 다운로드 할때는 가장 작은 캔들 단위를 포함해야만 합니다. min=${CandleUnit.min()}")
-        }
         AsyncUtils.joinAll(candleUnits) { candleUnit ->
             loadChartProcess(
                 exchangeType = exchangeType,

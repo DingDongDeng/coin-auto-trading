@@ -4,6 +4,7 @@ import com.dingdongdeng.autotrading.domain.autotrade.service.CoinAutoTradeServic
 import com.dingdongdeng.autotrading.domain.chart.service.CoinChartService
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.infra.common.annotation.Usecase
+import com.dingdongdeng.autotrading.infra.common.exception.WarnException
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
@@ -68,6 +69,9 @@ class CoinAutoTradeUsecase(
         candleUnits: List<CandleUnit>,
         keyPairId: String,
     ) {
+        if (candleUnits.contains(CandleUnit.min()).not()) {
+            throw WarnException.of("거래소의 캔들을 서버에 다운로드 할때는 가장 작은 캔들 단위를 포함해야만 합니다. min=${CandleUnit.min()}")
+        }
         AsyncUtils.joinAll(coinTypes) { coinType ->
             coinChartService.loadCharts(
                 coinType = coinType,
