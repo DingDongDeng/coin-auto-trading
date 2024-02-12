@@ -6,6 +6,7 @@ import com.dingdongdeng.autotrading.domain.process.model.Processor
 import com.dingdongdeng.autotrading.domain.strategy.service.CoinStrategyService
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.domain.trade.service.CoinTradeService
+import com.dingdongdeng.autotrading.infra.common.exception.WarnException
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
@@ -50,6 +51,10 @@ class CoinBackTestProcessor(
     )
     private var initialize = false
 
+    init {
+        validateBackTestRange()
+    }
+
     override fun process() {
         autoTradeProcessor.process()
     }
@@ -62,5 +67,24 @@ class CoinBackTestProcessor(
         val now = TimeContext.now().plusSeconds(durationUnit.getSecondSize())
         TimeContext.update { now }
         return now < endDateTime
+    }
+
+    private fun validateBackTestRange() {
+        val availBackTestRanges = getAvailBackTestRanges(coinTypes, startDateTime, endDateTime)
+        coinTypes.forEach { coinType ->
+            if (availBackTestRanges.none { it.isRanged(coinType, startDateTime, endDateTime) }) {
+                throw WarnException.of("백테스트 불가능한 구간입니다. availBackTestRanges=$availBackTestRanges")
+            }
+        }
+    }
+
+    private fun getAvailBackTestRanges(
+        coinTypes: List<CoinType>,
+        startDateTime: LocalDateTime,
+        endDateTime: LocalDateTime
+    ): List<AvailBackTestRange> {
+        // FIXME 테스트 가능 영역 교집합을 리턴
+
+        return emptyList()
     }
 }
