@@ -1,9 +1,9 @@
 package com.dingdongdeng.autotrading.domain.process.service
 
 import com.dingdongdeng.autotrading.domain.process.model.Processor
-import org.springframework.stereotype.Service
+import com.dingdongdeng.autotrading.infra.common.annotation.DomainService
 
-@Service
+@DomainService
 class ProcessService {
 
     private val storedProcessors = mutableMapOf<String, Processor>()

@@ -6,12 +6,12 @@ import com.dingdongdeng.autotrading.domain.indicator.model.Indicators
 import com.dingdongdeng.autotrading.domain.indicator.model.Ma
 import com.dingdongdeng.autotrading.domain.indicator.model.Macd
 import com.dingdongdeng.autotrading.domain.indicator.model.Obv
+import com.dingdongdeng.autotrading.infra.common.annotation.DomainService
 import com.tictactec.ta.lib.Core
 import com.tictactec.ta.lib.MAType
 import com.tictactec.ta.lib.MInteger
-import org.springframework.stereotype.Service
 
-@Service
+@DomainService
 class IndicatorService {
     private val core = Core()
 

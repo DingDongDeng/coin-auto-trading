@@ -5,13 +5,13 @@ import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderP
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
 import com.dingdongdeng.autotrading.domain.trade.entity.CoinTradeHistory
 import com.dingdongdeng.autotrading.domain.trade.model.CoinTradeInfo
+import com.dingdongdeng.autotrading.infra.common.annotation.DomainService
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.type.OrderType
 import com.dingdongdeng.autotrading.infra.common.type.PriceType
-import org.springframework.stereotype.Service
 
-@Service
+@DomainService
 class CoinTradeService(
     private val exchangeServices: List<SpotCoinExchangeService>,
     private val coinTradeHistoryService: CoinTradeHistoryService,

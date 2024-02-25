@@ -2,11 +2,11 @@ package com.dingdongdeng.autotrading.domain.trade.service
 
 import com.dingdongdeng.autotrading.domain.trade.entity.CoinTradeHistory
 import com.dingdongdeng.autotrading.domain.trade.repository.CoinTradeHistoryRepository
+import com.dingdongdeng.autotrading.infra.common.annotation.DomainService
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.TradeState
-import org.springframework.stereotype.Service
 
-@Service
+@DomainService
 class CoinTradeHistoryService(
     private val coinTradeHistoryRepository: CoinTradeHistoryRepository,
 ) {

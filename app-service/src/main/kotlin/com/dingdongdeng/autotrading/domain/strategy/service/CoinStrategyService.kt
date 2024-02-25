@@ -3,10 +3,10 @@ package com.dingdongdeng.autotrading.domain.strategy.service
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyMakeTaskParam
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyTask
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
+import com.dingdongdeng.autotrading.infra.common.annotation.DomainService
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
-import org.springframework.stereotype.Service
 
-@Service
+@DomainService
 class CoinStrategyService(
     private val strategies: List<SpotCoinStrategy>,
 ) {
