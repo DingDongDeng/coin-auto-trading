@@ -38,9 +38,11 @@ class VirtualCoinCandleRepository(
                     unit = unit,
                     from = missingCandleDateTime,
                     to = minDate(
-                        missingCandleDateTime.plusSeconds(unit.getSecondSize()),
+                        missingCandleDateTime
+                            .plusSeconds(unit.getSecondSize())
+                            .minusSeconds(1), // from <= 범위 < to 조회를 위해 1초 마이너스
                         to
-                    ).minusSeconds(1), // from <= 범위 < to 조회를 위해 1초 마이너스
+                    ),
                 )
             }
 
