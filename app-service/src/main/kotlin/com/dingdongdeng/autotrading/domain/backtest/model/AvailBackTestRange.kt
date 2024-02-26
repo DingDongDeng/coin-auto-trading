@@ -69,6 +69,20 @@ data class AvailBackTestRange(
                 )
             }
 
+            // 누락된 캔들 구간이 없어서 availBackTestRanges 범위를 계산하지 못함
+            if (availBackTestRanges.isEmpty()) {
+                availBackTestRanges.add(
+                    AvailBackTestRange(
+                        exchangeType = exchangeType,
+                        coinType = coinType,
+                        startDateTime = startDateTime,
+                        endDateTime = endDateTime,
+                    )
+                )
+                return availBackTestRanges
+            }
+
+            // 백테스트 시작 날짜를 추가
             if (availBackTestRanges.first().startDateTime != startDateTime) {
                 availBackTestRanges.add(
                     0,
@@ -81,6 +95,7 @@ data class AvailBackTestRange(
                 )
             }
 
+            // 백테스트 끝 날짜를 추가
             if (availBackTestRanges.last().endDateTime != endDateTime) {
                 availBackTestRanges.add(
                     0,
