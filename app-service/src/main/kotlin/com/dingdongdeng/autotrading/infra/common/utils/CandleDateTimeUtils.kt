@@ -2,6 +2,7 @@ package com.dingdongdeng.autotrading.infra.common.utils
 
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import java.time.DayOfWeek
+import java.time.Duration
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
@@ -89,6 +90,7 @@ object CandleDateTimeUtils {
     }
 
     fun diffSeconds(from: LocalDateTime, to: LocalDateTime): Long {
-        return ChronoUnit.SECONDS.between(from, to)
+        val duration = Duration.between(from, to)
+        return duration.seconds
     }
 }
