@@ -90,6 +90,17 @@ object CandleDateTimeUtils {
     }
 
     fun diffSeconds(from: LocalDateTime, to: LocalDateTime): Long {
+        // Duration을 사용하여 계산하면 백테스트에서 적지않은 시간을 사용함
+        // 단순 계산이 가능한 케이스에 한해서 직접 차이를 계산하여 시간 단축
+        if (from.dayOfMonth == to.dayOfMonth
+            && from.month == to.month
+            && from.year == to.year
+        ) {
+            val hourDiff = (to.hour - from.hour) * 60L * 60L
+            val minuteDiff = (to.minute - from.minute) * 60L
+            val secondDiff = (to.second - from.second)
+            return hourDiff + minuteDiff + secondDiff
+        }
         val duration = Duration.between(from, to)
         return duration.seconds
     }
