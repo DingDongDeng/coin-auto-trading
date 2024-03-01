@@ -32,10 +32,8 @@ class CachedCoinCandleRepository(
             if (cachedCandles.hasEnough(from, to)) {
                 return cachedCandles.get(from, to)
             }
-            // 과거 캔들을 조회하는 경우는 캐싱이 의미가 없음 (따라서 실제 DB에서 데이터를 조회)
-            // 시간 흐름에 따라 연속적으로 데이터를 조회하는 상황이 아닐것이기 때문
-            // 예를 들어,60분봉 2주전 누락된 캔들을 생성을 하려할때 등등
-            if (from < cachedCandles.firstDateTime) { //FIXME
+
+            if (cachedCandles.isRightContext(from, to)) {
                 return findData(exchangeType, coinType, unit, from, to)
             }
             return saveCachedData(exchangeType, coinType, unit, from, to).get(from, to)

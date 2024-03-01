@@ -18,7 +18,7 @@ data class CachedCandles(
 ) {
     val key = makeCacheKey(exchangeType, coinType, unit)
     private val dateTimes = candles.map { it.candleDateTimeKst }
-    val firstDateTime = candles.first().candleDateTimeKst
+    private val firstDateTime = candles.first().candleDateTimeKst
     private val lastDateTime = candles.last().candleDateTimeKst
 
     fun get(from: LocalDateTime, to: LocalDateTime): List<CoinCandle> {
@@ -60,6 +60,13 @@ data class CachedCandles(
             return false
         }
         return true
+    }
+
+    // 시간 맥락을 벗어나는 조회건들은 캐시 히트를 할 수 없음
+    // 시간 흐름에 따라 연속적으로 데이터를 조회하는 자연스러운 상황이 아닐것이기 때문
+    // 예를 들어,60분봉 2주전 누락된 캔들을 생성하려고 뜬금 없이 오래된 과거 캔들을 요청할때 등등
+    fun isRightContext(from: LocalDateTime, to: LocalDateTime): Boolean {
+        return from < firstDateTime
     }
 
     companion object {
