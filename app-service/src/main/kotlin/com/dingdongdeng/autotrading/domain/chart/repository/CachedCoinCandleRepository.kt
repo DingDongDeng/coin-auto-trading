@@ -90,6 +90,7 @@ data class CachedCandles(
     val candles: List<CoinCandle>,
 ) {
     val key = makeCacheKey(exchangeType, coinType, unit)
+    val dateTimes = candles.map { it.candleDateTimeKst }
     val firstDateTime = candles.first().candleDateTimeKst
     val lastDateTime = candles.last().candleDateTimeKst
 
@@ -107,14 +108,18 @@ data class CachedCandles(
         }
 
         val startIndex = indexMap[CandleDateTimeUtils.makeUnitDateTime(from, unit, true)]
-            ?: candles.indexOfFirst { from <= it.candleDateTimeKst }
+            ?: dateTimes.binarySearch(from).let { if (it < 0) -(it + 1) else it }
         val endIndex = indexMap[CandleDateTimeUtils.makeUnitDateTime(to, unit, false)]
-            ?: candles.indexOfLast { to >= it.candleDateTimeKst }
+            ?: dateTimes.binarySearch(to).let { if (it < 0) -(it + 2) else it }
+
         if (startIndex <= -1 || endIndex <= -1) {
             throw CriticalException.of("캐시 데이터에서 조회하려는 인덱스가 올바르지 않음, from=$from, to=$to, startIndex=$startIndex, endIndex=$endIndex, exchangeType=$exchangeType, coinType=$coinType, unit=$unit")
         }
         if (startIndex > endIndex) {
             throw CriticalException.of("캐시 데이터에서 조회하려는 인덱스가 올바르지 않음, from=$from, to=$to, startIndex=$startIndex, endIndex=$endIndex, exchangeType=$exchangeType, coinType=$coinType, unit=$unit")
+        }
+        if (candles[startIndex].candleDateTimeKst < from || candles[endIndex].candleDateTimeKst > to) {
+            throw CriticalException.of("계산된 인덱스 결과가 올바르지 않음")
         }
         return candles.subList(startIndex, endIndex + 1)
     }
