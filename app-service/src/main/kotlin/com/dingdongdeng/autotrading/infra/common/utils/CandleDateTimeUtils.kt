@@ -76,7 +76,7 @@ object CandleDateTimeUtils {
         val list = listOf(fromUnitDateTime) + candleDateTimes + toUnitDateTime
         list.zipWithNext { currentKst, nextKst ->
             val expectedDifference = candleUnit.getSecondSize()
-            val actualDifference = ChronoUnit.SECONDS.between(currentKst, nextKst)
+            val actualDifference = diffSeconds(currentKst, nextKst)
             if (actualDifference != expectedDifference) {
                 val missingCandleCount = (actualDifference / expectedDifference).toInt() - 1
                 val missingCandlesInRange = (1..missingCandleCount).map {
@@ -86,5 +86,9 @@ object CandleDateTimeUtils {
             }
         }
         return missingCandles
+    }
+
+    fun diffSeconds(from: LocalDateTime, to: LocalDateTime): Long {
+        return ChronoUnit.SECONDS.between(from, to)
     }
 }
