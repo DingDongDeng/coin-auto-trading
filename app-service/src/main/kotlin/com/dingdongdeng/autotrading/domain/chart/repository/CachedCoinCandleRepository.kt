@@ -94,6 +94,18 @@ data class CachedCandles(
     val lastDateTime = candles.last().candleDateTimeKst
 
     fun get(from: LocalDateTime, to: LocalDateTime): List<CoinCandle> {
+        // 하나의 캔들이 조회되어야 하는 경우
+        if (CandleDateTimeUtils.diffSeconds(from, to) < unit.getSecondSize()) {
+            val start = indexMap[CandleDateTimeUtils.makeUnitDateTime(from, unit, true)]
+            val end = indexMap[CandleDateTimeUtils.makeUnitDateTime(to, unit, false)]
+            if (start != end) {
+                throw CriticalException.of("예상된 결과와 다른 시간, start=$start, end=$end")
+            }
+            if (start == null) {
+                return emptyList()
+            }
+        }
+
         val startIndex = indexMap[CandleDateTimeUtils.makeUnitDateTime(from, unit, true)]
             ?: candles.indexOfFirst { from <= it.candleDateTimeKst }
         val endIndex = indexMap[CandleDateTimeUtils.makeUnitDateTime(to, unit, false)]
