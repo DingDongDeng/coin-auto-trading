@@ -3,7 +3,7 @@ package com.dingdongdeng.autotrading.domain.backtest.model
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
-import java.time.Duration
+import com.dingdongdeng.autotrading.infra.common.utils.CandleDateTimeUtils
 import java.time.LocalDateTime
 
 data class AvailBackTestRange(
@@ -25,7 +25,7 @@ data class AvailBackTestRange(
                     listOf(range)
                 } else {
                     val lastRange = acc.last()
-                    val timeGap = Duration.between(lastRange.endDateTime, range.startDateTime).toMinutes()
+                    val timeGap = CandleDateTimeUtils.diffSeconds(lastRange.endDateTime, range.startDateTime)
                     if (timeGap <= gapSeconds) {
                         acc.dropLast(1) + AvailBackTestRange(
                             lastRange.exchangeType,
