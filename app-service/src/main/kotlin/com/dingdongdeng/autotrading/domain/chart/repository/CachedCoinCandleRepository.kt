@@ -22,6 +22,9 @@ class CachedCoinCandleRepository(
         from: LocalDateTime,
         to: LocalDateTime,
     ): List<CoinCandle> {
+        if (from > to) {
+            throw CriticalException.of("조회 범위가 적절하지 않음, from=$from, to=$to")
+        }
         val key = CachedCandles.makeCacheKey(exchangeType, coinType, unit)
         synchronized(this) {
             val cachedCandles = cachedData[key] ?: saveCachedData(exchangeType, coinType, unit, from, to)
@@ -94,7 +97,7 @@ data class CachedCandles(
         val startIndex = indexMap[CandleDateTimeUtils.makeUnitDateTime(from, unit, true)]
             ?: candles.indexOfFirst { from <= it.candleDateTimeKst }
         val endIndex = indexMap[CandleDateTimeUtils.makeUnitDateTime(to, unit, false)]
-            ?: candles.indexOfLast { to <= it.candleDateTimeKst }
+            ?: candles.indexOfLast { to >= it.candleDateTimeKst }
         if (startIndex <= -1 || endIndex <= -1) {
             throw CriticalException.of("캐시 데이터에서 조회하려는 인덱스가 올바르지 않음, from=$from, to=$to, startIndex=$startIndex, endIndex=$endIndex, exchangeType=$exchangeType, coinType=$coinType, unit=$unit")
         }
