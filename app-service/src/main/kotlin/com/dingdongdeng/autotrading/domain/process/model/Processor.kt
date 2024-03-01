@@ -3,8 +3,8 @@ package com.dingdongdeng.autotrading.domain.process.model
 import com.dingdongdeng.autotrading.domain.process.type.ProcessStatus
 import com.dingdongdeng.autotrading.infra.client.slack.SlackSender
 import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
+import com.dingdongdeng.autotrading.infra.common.utils.AsyncUtils
 import java.util.UUID
-import java.util.concurrent.CompletableFuture
 
 abstract class Processor(
     open val id: String = UUID.randomUUID().toString(),
@@ -15,7 +15,7 @@ abstract class Processor(
 ) {
     fun start() {
         status = ProcessStatus.RUNNING
-        CompletableFuture.runAsync {
+        AsyncUtils.runAsync {
             val startTime = System.currentTimeMillis()
             while (status == ProcessStatus.RUNNING && runnable()) {
                 try {

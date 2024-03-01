@@ -2,6 +2,7 @@ package com.dingdongdeng.autotrading.domain.chart.repository
 
 import com.dingdongdeng.autotrading.domain.chart.entity.CoinCandle
 import com.dingdongdeng.autotrading.infra.common.exception.CriticalException
+import com.dingdongdeng.autotrading.infra.common.log.LoggingUtils
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
@@ -13,6 +14,7 @@ import java.time.LocalDateTime
 class CachedCoinCandleRepository(
     private val coinCandleRepository: CoinCandleRepository,
 ) {
+    // traceId 단위로 캐싱 데이터 관리
     private val cachedData = mutableMapOf<String, CachedCandles>()
 
     fun findAllCoinCandle(
@@ -34,7 +36,7 @@ class CachedCoinCandleRepository(
             // 과거 캔들을 조회하는 경우는 캐싱이 의미가 없음 (따라서 실제 DB에서 데이터를 조회)
             // 시간 흐름에 따라 연속적으로 데이터를 조회하는 상황이 아닐것이기 때문
             // 예를 들어,60분봉 2주전 누락된 캔들을 생성을 하려할때 등등
-            if (from < cachedCandles.firstDateTime) { //FIXME 스레드 컨텍스트로 만들어야겠다... 재시도하면 히트를 못하게되네!! 고쳐줘
+            if (from < cachedCandles.firstDateTime) { //FIXME
                 return findData(exchangeType, coinType, unit, from, to)
             }
             return saveCachedData(exchangeType, coinType, unit, from, to).get(from, to)
@@ -78,23 +80,23 @@ class CachedCoinCandleRepository(
     }
 
     companion object {
-        const val PREV_BUFFER_RATE = 10
-        const val NEXT_BUFFER_RATE = 90
-        const val CACHED_CANDLE_COUNT = 1000
+        private const val PREV_BUFFER_RATE = 10
+        private const val NEXT_BUFFER_RATE = 90
+        private const val CACHED_CANDLE_COUNT = 1000
     }
 }
 
 data class CachedCandles(
-    val exchangeType: ExchangeType,
-    val coinType: CoinType,
-    val unit: CandleUnit,
-    val indexMap: Map<LocalDateTime, Int>,
-    val candles: List<CoinCandle>,
+    private val exchangeType: ExchangeType,
+    private val coinType: CoinType,
+    private val unit: CandleUnit,
+    private val indexMap: Map<LocalDateTime, Int>,
+    private val candles: List<CoinCandle>,
 ) {
     val key = makeCacheKey(exchangeType, coinType, unit)
-    val dateTimes = candles.map { it.candleDateTimeKst }
+    private val dateTimes = candles.map { it.candleDateTimeKst }
     val firstDateTime = candles.first().candleDateTimeKst
-    val lastDateTime = candles.last().candleDateTimeKst
+    private val lastDateTime = candles.last().candleDateTimeKst
 
     fun get(from: LocalDateTime, to: LocalDateTime): List<CoinCandle> {
         val startIndex = indexMap[CandleDateTimeUtils.makeUnitDateTime(from, unit, true)]
@@ -160,7 +162,10 @@ data class CachedCandles(
             unit: CandleUnit,
         ): String {
             val sb = StringBuilder()
-            sb.append(exchangeType)
+            sb
+                .append(LoggingUtils.getTraceId())
+                .append(":")
+                .append(exchangeType)
                 .append(":")
                 .append(coinType)
                 .append(":")
