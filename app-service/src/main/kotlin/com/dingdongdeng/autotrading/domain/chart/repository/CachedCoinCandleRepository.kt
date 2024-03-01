@@ -34,7 +34,7 @@ class CachedCoinCandleRepository(
             // 과거 캔들을 조회하는 경우는 캐싱이 의미가 없음 (따라서 실제 DB에서 데이터를 조회)
             // 시간 흐름에 따라 연속적으로 데이터를 조회하는 상황이 아닐것이기 때문
             // 예를 들어,60분봉 2주전 누락된 캔들을 생성을 하려할때 등등
-            if (from < cachedCandles.firstDateTime) { //FIXME 스레드 컨텍스트로 만들어야겠다... 재시도하면 히트를 못하게되네
+            if (from < cachedCandles.firstDateTime) { //FIXME 스레드 컨텍스트로 만들어야겠다... 재시도하면 히트를 못하게되네!! 고쳐줘
                 return findData(exchangeType, coinType, unit, from, to)
             }
             return saveCachedData(exchangeType, coinType, unit, from, to).get(from, to)
@@ -78,7 +78,7 @@ class CachedCoinCandleRepository(
     }
 
     companion object {
-        const val CACHED_CANDLE_COUNT = 5000
+        const val CACHED_CANDLE_COUNT = 5000  //FIXME 로직들 안정화되면 적절한 캐시 사이즈도 찾아보자
     }
 }
 
@@ -95,18 +95,6 @@ data class CachedCandles(
     val lastDateTime = candles.last().candleDateTimeKst
 
     fun get(from: LocalDateTime, to: LocalDateTime): List<CoinCandle> {
-        // 하나의 캔들이 조회되어야 하는 경우
-        if (CandleDateTimeUtils.diffSeconds(from, to) < unit.getSecondSize()) {
-            val start = indexMap[CandleDateTimeUtils.makeUnitDateTime(from, unit, true)]
-            val end = indexMap[CandleDateTimeUtils.makeUnitDateTime(to, unit, false)]
-            if (start != end) {
-                throw CriticalException.of("예상된 결과와 다른 시간, start=$start, end=$end")
-            }
-            if (start == null) {
-                return emptyList()
-            }
-        }
-
         val startIndex = indexMap[CandleDateTimeUtils.makeUnitDateTime(from, unit, true)]
             ?: dateTimes.binarySearch(from).let { if (it < 0) -(it + 1) else it }
         val endIndex = indexMap[CandleDateTimeUtils.makeUnitDateTime(to, unit, false)]
@@ -115,7 +103,17 @@ data class CachedCandles(
         if (startIndex <= -1 || endIndex <= -1) {
             throw CriticalException.of("캐시 데이터에서 조회하려는 인덱스가 올바르지 않음, from=$from, to=$to, startIndex=$startIndex, endIndex=$endIndex, exchangeType=$exchangeType, coinType=$coinType, unit=$unit")
         }
+
+        // from ~ to 구간에 해당하는 캔들이 없는 경우
         if (startIndex > endIndex) {
+            val start = indexMap[CandleDateTimeUtils.makeUnitDateTime(from, unit, true)]
+            val end = indexMap[CandleDateTimeUtils.makeUnitDateTime(to, unit, false)]
+            if (start != end) {
+                throw CriticalException.of("예상된 결과와 다른 시간, start=$start, end=$end")
+            }
+            if (start == null) {
+                return emptyList()
+            }
             throw CriticalException.of("캐시 데이터에서 조회하려는 인덱스가 올바르지 않음, from=$from, to=$to, startIndex=$startIndex, endIndex=$endIndex, exchangeType=$exchangeType, coinType=$coinType, unit=$unit")
         }
         if (candles[startIndex].candleDateTimeKst < from || candles[endIndex].candleDateTimeKst > to) {
