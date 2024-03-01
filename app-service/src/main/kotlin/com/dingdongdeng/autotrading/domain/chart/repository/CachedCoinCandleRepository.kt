@@ -26,7 +26,7 @@ class CachedCoinCandleRepository(
             throw CriticalException.of("조회 범위가 적절하지 않음, from=$from, to=$to")
         }
         val key = CachedCandles.makeCacheKey(exchangeType, coinType, unit)
-        synchronized(this) {
+        synchronized(this) { //FIXME cachedDate key기준으로 싱크로 걸고 싶어
             val cachedCandles = cachedData[key] ?: saveCachedData(exchangeType, coinType, unit, from, to)
             if (cachedCandles.hasEnough(from, to)) {
                 return cachedCandles.get(from, to)
@@ -52,8 +52,8 @@ class CachedCoinCandleRepository(
             exchangeType = exchangeType,
             coinType = coinType,
             unit = unit,
-            from = from.minusSeconds(unit.getSecondSize() * (CACHED_CANDLE_COUNT * 10 / 100)), // 10%
-            to = to.plusSeconds(unit.getSecondSize() * (CACHED_CANDLE_COUNT * 90 / 100)), // 90%
+            from = from.minusSeconds(unit.getSecondSize() * (CACHED_CANDLE_COUNT * PREV_BUFFER_RATE / 100)),
+            to = to.plusSeconds(unit.getSecondSize() * (CACHED_CANDLE_COUNT * NEXT_BUFFER_RATE / 100)),
         )
         val cachedCandles = CachedCandles.of(exchangeType, coinType, unit, candles)
 
@@ -78,7 +78,9 @@ class CachedCoinCandleRepository(
     }
 
     companion object {
-        const val CACHED_CANDLE_COUNT = 5000  //FIXME 로직들 안정화되면 적절한 캐시 사이즈도 찾아보자
+        const val PREV_BUFFER_RATE = 10
+        const val NEXT_BUFFER_RATE = 90
+        const val CACHED_CANDLE_COUNT = 5000
     }
 }
 
