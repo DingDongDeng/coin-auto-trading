@@ -57,10 +57,15 @@ class VirtualCoinCandleRepository(
             to = to,
         )
 
-        val candles = (dbCandles + missingCandles).sortedBy { it.candleDateTimeKst }
+        val candles = mutableListOf<CoinCandle>().apply {
+            addAll(dbCandles)
+            addAll(missingCandles)
+            sortBy { it.candleDateTimeKst }
+            dropLast(1) // 가상 캔들 반영을 위해 마지막 캔들 제거
+            add(lastCandle)
+        }
 
-        return candles.subList(0, candles.size - 1) + lastCandle
-
+        return candles
     }
 
     private fun makeVirtualCandle(
