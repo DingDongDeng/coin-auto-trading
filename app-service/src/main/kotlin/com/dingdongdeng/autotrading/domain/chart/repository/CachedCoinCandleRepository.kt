@@ -80,7 +80,7 @@ class CachedCoinCandleRepository(
     companion object {
         const val PREV_BUFFER_RATE = 10
         const val NEXT_BUFFER_RATE = 90
-        const val CACHED_CANDLE_COUNT = 5000
+        const val CACHED_CANDLE_COUNT = 1000
     }
 }
 
