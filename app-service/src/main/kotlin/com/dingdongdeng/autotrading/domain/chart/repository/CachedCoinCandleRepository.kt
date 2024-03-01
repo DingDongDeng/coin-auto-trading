@@ -26,7 +26,7 @@ class CachedCoinCandleRepository(
             throw CriticalException.of("조회 범위가 적절하지 않음, from=$from, to=$to")
         }
         val key = CachedCandles.makeCacheKey(exchangeType, coinType, unit)
-        synchronized(this) { //FIXME cachedDate key기준으로 싱크로 걸고 싶어
+        synchronized(cachedData[key] ?: cachedData) {
             val cachedCandles = cachedData[key] ?: saveCachedData(exchangeType, coinType, unit, from, to)
             if (cachedCandles.hasEnough(from, to)) {
                 return cachedCandles.get(from, to)
