@@ -32,12 +32,11 @@ class CachedCoinCandleRepository(
             if (cachedCandles.hasEnough(from, to)) {
                 return cachedCandles.get(from, to)
             }
-
             if (cachedCandles.isRightContext(from, to)) {
-                return findData(exchangeType, coinType, unit, from, to)
+                return saveCachedData(exchangeType, coinType, unit, from, to).get(from, to)
             }
-            return saveCachedData(exchangeType, coinType, unit, from, to).get(from, to)
         }
+        return findData(exchangeType, coinType, unit, from, to)
     }
 
     private fun saveCachedData(
