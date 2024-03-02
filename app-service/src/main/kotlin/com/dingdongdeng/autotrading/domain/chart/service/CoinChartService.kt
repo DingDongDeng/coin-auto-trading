@@ -72,7 +72,7 @@ class CoinChartService(
                     closingPrice = 0.0,
                     accTradePrice = 0.0,
                     accTradeVolume = 0.0,
-                    indicators = { throw WarnException.of("missingCandle은 보조지표를 지원하지 않음") },
+                    indicatorsFunc = { throw WarnException.of("missingCandle은 보조지표를 지원하지 않음") },
                 )
             },
         )
@@ -142,7 +142,7 @@ class CoinChartService(
                     closingPrice = candle.closingPrice,
                     accTradePrice = candle.accTradePrice,
                     accTradeVolume = candle.accTradeVolume,
-                    indicators = { indicatorService.calculate(subCandles) }
+                    indicatorsFunc = { indicatorService.calculate(subCandles) }
                 )
             )
         }

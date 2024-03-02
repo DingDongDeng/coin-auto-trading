@@ -14,7 +14,9 @@ data class Candle(
     val closingPrice: Double, // 종가
     val accTradePrice: Double, // 누적 거래 금액
     val accTradeVolume: Double, // 누적 거래량
-    private val indicators: () -> Indicators, // 보조지표 계산
+    private val indicatorsFunc: () -> Indicators, // 보조지표 계산
 ) {
-    fun getIndicators(): Indicators = indicators()
+    private val indicators by lazy(indicatorsFunc)
+
+    fun getIndicators(): Indicators = indicators
 }
