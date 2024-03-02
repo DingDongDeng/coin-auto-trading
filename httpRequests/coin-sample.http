@@ -38,8 +38,7 @@ Content-Type: application/json
   "coinTypes": [
     "BITCOIN",
     "ETHEREUM",
-    "NEO",
-    "METAL"
+    "SOLANA"
   ],
   "candleUnits": [
     "UNIT_1M",
@@ -69,8 +68,7 @@ Content-Type: application/json
   "coinTypes": [
     "BITCOIN",
     "ETHEREUM",
-    "NEO",
-    "METAL"
+    "SOLANA"
   ],
   "candleUnits": [
     "UNIT_1M",
