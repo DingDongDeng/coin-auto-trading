@@ -1,5 +1,6 @@
-package com.dingdongdeng.autotrading.domain.strategy.service
+package com.dingdongdeng.autotrading.domain.strategy.component.impl
 
+import com.dingdongdeng.autotrading.domain.strategy.component.SimpleSpotCoinStrategy
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyMakeTaskParam
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyTask
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
