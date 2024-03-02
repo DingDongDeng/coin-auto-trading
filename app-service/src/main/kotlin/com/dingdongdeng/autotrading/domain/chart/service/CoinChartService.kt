@@ -151,6 +151,10 @@ class CoinChartService(
             throw CriticalException.of("캔들의 보조 지표 계산을 위한 적절한 수의 과거 캔들을 추출하는데 실패")
         }
 
+        if (candles.last().candleDateTimeKst != CandleDateTimeUtils.makeUnitDateTime(now, candleUnit)) {
+            throw CriticalException.of("생성된 캔들의 마지막 요소 시간이 단위시간과 상이함, now=$now, unit=$candleUnit, candleLastDateTime=${candles.last().candleDateTimeKst}")
+        }
+
         return Chart(
             from = exchangeChart.from,
             to = exchangeChart.to,
