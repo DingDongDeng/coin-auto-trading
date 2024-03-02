@@ -13,7 +13,7 @@ POST http://localhost:8080/coin/autotrade/register
 Content-Type: application/json
 
 {
-  "coinStrategyType": "TEST",
+  "coinStrategyType": "EXAMPLE",
   "exchangeType": "UPBIT",
   "coinTypes": [
     "BITCOIN",
@@ -65,7 +65,7 @@ Content-Type: application/json
   "startDateTime": "2023-02-15T00:00:00",
   "endDateTime": "2023-03-15T00:00:00",
   "durationUnit": "UNIT_1M",
-  "coinStrategyType": "TEST",
+  "coinStrategyType": "EXAMPLE",
   "exchangeType": "UPBIT",
   "coinTypes": [
     "BITCOIN",

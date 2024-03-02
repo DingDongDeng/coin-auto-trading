@@ -11,25 +11,25 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Component
 
 @Component
-class TestSpotCoinStrategy(
+class ExampleSpotCoinStrategy(
     private val objectMapper: ObjectMapper,
-) : SimpleSpotCoinStrategy<TestSpotCoinStrategyConfig>() {
+) : SimpleSpotCoinStrategy<ExampleSpotCoinStrategyConfig>() {
 
-    override fun convertConfig(config: Map<String, Any>): TestSpotCoinStrategyConfig {
+    override fun convertConfig(config: Map<String, Any>): ExampleSpotCoinStrategyConfig {
         log.info("start test ... ${TimeContext.now()}")
-        return objectMapper.convertValue(config, TestSpotCoinStrategyConfig::class.java)
+        return objectMapper.convertValue(config, ExampleSpotCoinStrategyConfig::class.java)
     }
 
     override fun whenWaitTrades(
         param: SpotCoinStrategyMakeTaskParam,
-        config: TestSpotCoinStrategyConfig
+        config: ExampleSpotCoinStrategyConfig
     ): Boolean {
         return param.tradeInfo.existsWaitTrade()
     }
 
     override fun thenWaitTrades(
         param: SpotCoinStrategyMakeTaskParam,
-        config: TestSpotCoinStrategyConfig
+        config: ExampleSpotCoinStrategyConfig
     ): List<SpotCoinStrategyTask> {
         return param.tradeInfo.getOldWaitTrades(30L)
             .map {
@@ -46,52 +46,52 @@ class TestSpotCoinStrategy(
 
     override fun whenBuyTrade(
         param: SpotCoinStrategyMakeTaskParam,
-        config: TestSpotCoinStrategyConfig
+        config: ExampleSpotCoinStrategyConfig
     ): Boolean {
         return false
     }
 
     override fun thenBuyTrade(
         param: SpotCoinStrategyMakeTaskParam,
-        config: TestSpotCoinStrategyConfig
+        config: ExampleSpotCoinStrategyConfig
     ): List<SpotCoinStrategyTask> {
         return emptyList()
     }
 
     override fun whenProfitTrade(
         param: SpotCoinStrategyMakeTaskParam,
-        config: TestSpotCoinStrategyConfig
+        config: ExampleSpotCoinStrategyConfig
     ): Boolean {
         return false
     }
 
     override fun thenProfitTrade(
         param: SpotCoinStrategyMakeTaskParam,
-        config: TestSpotCoinStrategyConfig
+        config: ExampleSpotCoinStrategyConfig
     ): List<SpotCoinStrategyTask> {
         return emptyList()
     }
 
     override fun whenLossTrade(
         param: SpotCoinStrategyMakeTaskParam,
-        config: TestSpotCoinStrategyConfig
+        config: ExampleSpotCoinStrategyConfig
     ): Boolean {
         return false
     }
 
     override fun thenLossTrade(
         param: SpotCoinStrategyMakeTaskParam,
-        config: TestSpotCoinStrategyConfig
+        config: ExampleSpotCoinStrategyConfig
     ): List<SpotCoinStrategyTask> {
         return emptyList()
     }
 
     override fun support(param: CoinStrategyType): Boolean {
-        return param == CoinStrategyType.TEST
+        return param == CoinStrategyType.EXAMPLE
     }
 }
 
-data class TestSpotCoinStrategyConfig(
+data class ExampleSpotCoinStrategyConfig(
     val configA: String,
     val configB: Int,
 )
