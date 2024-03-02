@@ -16,7 +16,9 @@ Content-Type: application/json
   "coinStrategyType": "TEST",
   "exchangeType": "UPBIT",
   "coinTypes": [
-    "XRP"
+    "BITCOIN",
+    "ETHEREUM",
+    "SOLANA"
   ],
   "candleUnits": [
     "UNIT_1M",
