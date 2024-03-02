@@ -51,8 +51,8 @@ class CachedCoinCandleRepository(
             exchangeType = exchangeType,
             coinType = coinType,
             unit = unit,
-            from = from.minusSeconds(unit.getSecondSize() * (CACHED_CANDLE_COUNT * PREV_BUFFER_RATE / 100)),
-            to = to.plusSeconds(unit.getSecondSize() * (CACHED_CANDLE_COUNT * NEXT_BUFFER_RATE / 100)),
+            from = from.minusSeconds(unit.getSecondSize() * PREV_BUFFER_COUNT),
+            to = to.plusSeconds(unit.getSecondSize() * NEXT_BUFFER_COUNT),
         )
         val cachedCandles = CachedCandles.of(exchangeType, coinType, unit, candles)
 
@@ -77,8 +77,7 @@ class CachedCoinCandleRepository(
     }
 
     companion object {
-        private const val PREV_BUFFER_RATE = 10
-        private const val NEXT_BUFFER_RATE = 90
-        private const val CACHED_CANDLE_COUNT = 1000
+        private const val PREV_BUFFER_COUNT = 100
+        private const val NEXT_BUFFER_COUNT = 900
     }
 }
