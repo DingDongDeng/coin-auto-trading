@@ -61,7 +61,7 @@ class VirtualCoinCandleRepository(
             addAll(dbCandles)
             addAll(missingCandles)
             sortBy { it.candleDateTimeKst }
-            dropLast(1) // 가상 캔들 반영을 위해 마지막 캔들 제거
+            removeAt(size - 1)
             add(lastCandle)
         }
 
