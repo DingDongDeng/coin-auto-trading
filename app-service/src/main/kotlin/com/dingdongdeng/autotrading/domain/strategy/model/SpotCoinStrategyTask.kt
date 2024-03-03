@@ -22,5 +22,33 @@ data class SpotCoinStrategyTask(
                 priceType = PriceType.LIMIT,
             )
         }
+
+        fun ofSellLimit(coinType: CoinType, volume: Double, price: Double): SpotCoinStrategyTask {
+            return SpotCoinStrategyTask(
+                coinType = coinType,
+                volume = volume,
+                price = price,
+                orderType = OrderType.SELL,
+                priceType = PriceType.LIMIT,
+            )
+        }
+
+        fun ofCancel(
+            orderId: String,
+            coinType: CoinType,
+            volume: Double,
+            price: Double,
+            priceType: PriceType
+        ): SpotCoinStrategyTask {
+            return SpotCoinStrategyTask(
+                orderId = orderId,
+                coinType = coinType,
+                volume = volume,
+                price = price,
+                orderType = OrderType.CANCEL,
+                priceType = priceType,
+            )
+
+        }
     }
 }
