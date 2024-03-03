@@ -9,4 +9,6 @@ data class Chart(
     val currentPrice: Double,
     val candleUnit: CandleUnit,
     val candles: List<Candle>,
-)
+) {
+    fun last(n: Int): Candle = candles[candles.size - 1 - n]
+}
