@@ -8,11 +8,12 @@ data class CoinTradeInfo(
     val valuePrice: Double,   // 현재 평가 금액     ex) 이더리움 평가 가치가 1,305,783원
     val originPrice: Double, // 매수했던 시점의 평가 금액
     val profitPrice: Double,   // 손익 평가 금액 ex) valuePrice - originPrice
-    val coinTradeHistory: List<CoinTradeHistory>,
+    val tradeHistory: List<CoinTradeHistory>,
 ) {
-    fun existsWaitTrade(): Boolean = coinTradeHistory.any { it.isWait() }
+    val existsWaitTrade = tradeHistory.any { it.isWait() }
+    val buyTradeHistory = tradeHistory.filter { it.isBuyOrder() }
 
     fun getOldWaitTrades(seconds: Long): List<CoinTradeHistory> {
-        return coinTradeHistory.filter { it.isOldWait(seconds) }
+        return tradeHistory.filter { it.isOldWait(seconds) }
     }
 }
