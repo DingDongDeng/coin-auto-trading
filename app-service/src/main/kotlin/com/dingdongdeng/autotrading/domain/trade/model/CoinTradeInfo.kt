@@ -11,14 +11,9 @@ data class CoinTradeInfo(
     val buyTradeHistories = tradeHistories.filter { it.isBuyOrder() }
     val sellTradeHistories = tradeHistories.filter { it.isSellOrder() }
 
-    val buyVolume = buyTradeHistories.sumOf { it.volume }
-    val buyValue = buyTradeHistories.sumOf { it.price * it.volume }
-    val sellVolume = sellTradeHistories.sumOf { it.volume }
-    val sellValue = sellTradeHistories.sumOf { it.price * it.volume }
-    val volume = buyVolume - sellVolume
-    val value = buyValue - sellValue
+    val volume = buyTradeHistories.sumOf { it.volume } - sellTradeHistories.sumOf { it.volume }
 
-    val averagePrice = if (volume == 0.0) 0.0 else (value / volume).round()
+    val averagePrice = if (volume == 0.0) 0.0 else (calcAveragePrice()).round()
     val currentValuePrice = (volume * currentPrice).round()   // 현재 평가 금액   ex) 보유수량 X 현재가
     val averageValuePrice = (volume * averagePrice).round() // 평단가 평가 금액   ex) 보유수량 X 평단가
     val profitPrice = (currentValuePrice - averageValuePrice) // 손익 평가 금액 ex) currentValuePrice - averageValuePrice
@@ -32,4 +27,22 @@ data class CoinTradeInfo(
     fun getOldWaitTrades(seconds: Long): List<CoinTradeHistory> {
         return tradeHistories.filter { it.isOldWait(seconds) }
     }
+
+    private fun calcAveragePrice(): Double {
+        var value = 0.0
+        var volume = 0.0
+        for (tradeHistory in tradeHistories) {
+            if (tradeHistory.isBuyOrder()) {
+                value += tradeHistory.price * tradeHistory.volume
+                volume += tradeHistory.volume
+            }
+            if (tradeHistory.isSellOrder()) {
+                value -= (value / volume) * tradeHistory.volume
+                volume -= tradeHistory.volume
+            }
+        }
+
+        return value / volume
+    }
+
 }
