@@ -37,16 +37,7 @@ class CoinTradeService(
             }
         }
 
-        val buyTradeHistories = syncedTradeHistories.filter { it.isBuyOrder() }
-        val sellTradeHistories = syncedTradeHistories.filter { it.isSellOrder() }
-
-        val volume = buyTradeHistories.sumOf { it.volume } - sellTradeHistories.sumOf { it.volume }
-        val value = buyTradeHistories.sumOf { it.price * it.volume } - sellTradeHistories.sumOf { it.price * it.volume }
-        val averagePrice = if (volume == 0.0) 0.0 else (value / volume)
-
         return CoinTradeInfo(
-            volume = buyTradeHistories.sumOf { it.volume } - sellTradeHistories.sumOf { it.volume },
-            averagePrice = averagePrice,
             currentPrice = currentPrice,
             tradeHistories = syncedTradeHistories,
         )
