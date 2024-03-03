@@ -10,6 +10,6 @@ data class Chart(
     val candleUnit: CandleUnit,
     val candles: List<Candle>,
 ) {
-    // 마지막 N번째 요소
+    // 마지막 N번째 요소 (0이 마지막 요소)
     fun last(idx: Int): Candle = candles[candles.size - 1 - idx]
 }
