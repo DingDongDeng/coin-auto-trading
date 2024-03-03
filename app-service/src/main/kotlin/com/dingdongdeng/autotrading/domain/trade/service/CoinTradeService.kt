@@ -48,7 +48,7 @@ class CoinTradeService(
             volume = buyTradeHistories.sumOf { it.volume } - sellTradeHistories.sumOf { it.volume },
             averagePrice = averagePrice,
             currentPrice = currentPrice,
-            tradeHistory = syncedTradeHistories,
+            tradeHistories = syncedTradeHistories,
         )
     }
 

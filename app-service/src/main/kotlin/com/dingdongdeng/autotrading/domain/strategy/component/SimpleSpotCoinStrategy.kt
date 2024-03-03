@@ -10,24 +10,25 @@ abstract class SimpleSpotCoinStrategy<T> : SpotCoinStrategy {
         config: Map<String, Any>
     ): List<SpotCoinStrategyTask> {
         val convertedConfig = convertConfig(config)
-        return params.map { param ->
+        return params.flatMap { param ->
             if (whenWaitTrades(param, convertedConfig)) {
-                return thenWaitTrades(param, convertedConfig)
+                return@flatMap thenWaitTrades(param, convertedConfig)
             }
 
             if (whenBuyTrade(param, convertedConfig)) {
-                return thenBuyTrade(param, convertedConfig)
+                return@flatMap thenBuyTrade(param, convertedConfig)
             }
 
-            if (whenProfitTrade(param, convertedConfig)) {
-                return thenProfitTrade(param, convertedConfig)
-            }
+            if (param.tradeInfo.hasVolume) {
+                if (whenProfitTrade(param, convertedConfig)) {
+                    return@flatMap thenProfitTrade(param, convertedConfig)
+                }
 
-            if (whenLossTrade(param, convertedConfig)) {
-                return thenLossTrade(param, convertedConfig)
+                if (whenLossTrade(param, convertedConfig)) {
+                    return@flatMap thenLossTrade(param, convertedConfig)
+                }
             }
-
-            return emptyList()
+            return@flatMap emptyList()
         }
     }
 

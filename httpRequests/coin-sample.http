@@ -73,16 +73,10 @@ Content-Type: application/json
     "SOLANA"
   ],
   "candleUnits": [
-    "UNIT_1M",
-    "UNIT_3M",
-    "UNIT_5M",
-    "UNIT_10M",
-    "UNIT_15M",
-    "UNIT_30M",
-    "UNIT_60M"
+    "UNIT_15M"
   ],
   "config": {
-    "onceTradeAmount": 100000,
+    "onceTradeAmount": 100000
   }
 }
 
