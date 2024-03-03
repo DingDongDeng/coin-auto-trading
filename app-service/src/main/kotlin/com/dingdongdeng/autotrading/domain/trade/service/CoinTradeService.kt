@@ -43,18 +43,12 @@ class CoinTradeService(
         val volume = buyTradeHistories.sumOf { it.volume } - sellTradeHistories.sumOf { it.volume }
         val value = buyTradeHistories.sumOf { it.price * it.volume } - sellTradeHistories.sumOf { it.price * it.volume }
         val averagePrice = if (volume == 0.0) 0.0 else (value / volume)
-        val valuePrice = (volume * currentPrice)
-        val originPrice = (volume * averagePrice)
-
-        //FIXME 승률도 넣으면 좋을듯
 
         return CoinTradeInfo(
             volume = buyTradeHistories.sumOf { it.volume } - sellTradeHistories.sumOf { it.volume },
             averagePrice = averagePrice,
-            valuePrice = valuePrice,
-            originPrice = originPrice,
-            profitPrice = (valuePrice - originPrice),
-            coinTradeHistory = syncedTradeHistories,
+            currentPrice = currentPrice,
+            tradeHistory = syncedTradeHistories,
         )
     }
 
