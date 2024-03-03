@@ -2,10 +2,12 @@ package com.dingdongdeng.autotrading.domain.chart.repository
 
 import com.dingdongdeng.autotrading.domain.chart.entity.CoinCandle
 import com.dingdongdeng.autotrading.domain.chart.model.CachedCandles
+import com.dingdongdeng.autotrading.infra.cache.CacheConfig
 import com.dingdongdeng.autotrading.infra.common.exception.CriticalException
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
 
@@ -16,6 +18,7 @@ class CachedCoinCandleRepository(
     // traceId 단위로 캐싱 데이터 관리
     private val cachedData = mutableMapOf<String, CachedCandles>()
 
+    @Cacheable(value = [CacheConfig.QUERY_CACHE_MANAGER], key = "{#exchangeType, #coinType, #unit, #from, #to}")
     fun findAllCoinCandle(
         exchangeType: ExchangeType,
         coinType: CoinType,

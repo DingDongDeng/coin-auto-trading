@@ -8,6 +8,10 @@ plugins {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
 
+    // cache
+    implementation("org.springframework.boot:spring-boot-starter-cache")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
+
     // jpa & querydsl
     api("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
