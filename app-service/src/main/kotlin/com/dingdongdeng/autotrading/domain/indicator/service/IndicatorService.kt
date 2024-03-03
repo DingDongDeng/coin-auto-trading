@@ -35,6 +35,27 @@ class IndicatorService {
     fun getMv(candles: List<ExchangeChartCandle>): Ma {
         val inReal = candles.map { it.closingPrice }.toDoubleArray()
 
+        // SMA 10
+        val SMA10_TIME_PERIOD = 10
+        val sma10OutBegIdx = MInteger()
+        val sma10OutNBElement = MInteger()
+        val sma10OutReal = DoubleArray(inReal.size)
+        core.sma(0, inReal.size - 1, inReal, SMA10_TIME_PERIOD, sma10OutBegIdx, sma10OutNBElement, sma10OutReal)
+
+        // SMA 20
+        val SMA20_TIME_PERIOD = 20
+        val sma20OutBegIdx = MInteger()
+        val sma20OutNBElement = MInteger()
+        val sma20OutReal = DoubleArray(inReal.size)
+        core.sma(0, inReal.size - 1, inReal, SMA20_TIME_PERIOD, sma20OutBegIdx, sma20OutNBElement, sma20OutReal)
+
+        // SMA 60
+        val SMA60_TIME_PERIOD = 60
+        val sma60OutBegIdx = MInteger()
+        val sma60OutNBElement = MInteger()
+        val sma60OutReal = DoubleArray(inReal.size)
+        core.sma(0, inReal.size - 1, inReal, SMA60_TIME_PERIOD, sma60OutBegIdx, sma60OutNBElement, sma60OutReal)
+        
         // SMA 120
         val SMA120_TIME_PERIOD = 120
         val sma120OutBegIdx = MInteger()
@@ -57,6 +78,9 @@ class IndicatorService {
         core.ema(0, inReal.size - 1, inReal, EMA60_TIME_PERIOD, ema60OutBegIdx, ema60OutNBElement, ema60OutReal)
 
         return Ma(
+            sma10 = sma10OutReal[sma10OutNBElement.value - 1],
+            sma20 = sma20OutReal[sma20OutNBElement.value - 1],
+            sma60 = sma60OutReal[sma60OutNBElement.value - 1],
             sma120 = sma120OutReal[sma120OutNBElement.value - 1],
             sma200 = sma200OutReal[sma200OutNBElement.value - 1],
             ema60 = ema60OutReal[ema60OutNBElement.value - 1],
