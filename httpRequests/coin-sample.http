@@ -82,8 +82,7 @@ Content-Type: application/json
     "UNIT_60M"
   ],
   "config": {
-    "configA": "TESTA",
-    "configB": 123
+    "onceTradeAmount": 100000,
   }
 }
 
