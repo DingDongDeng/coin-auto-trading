@@ -1,7 +1,7 @@
 package com.dingdongdeng.autotrading.presentation.dashboard.controller
 
+import com.dingdongdeng.autotrading.application.auth.AuthUseCase
 import com.dingdongdeng.autotrading.application.autotrade.CoinAutoTradeUseCase
-import com.dingdongdeng.autotrading.application.key.AuthUseCase
 import com.dingdongdeng.autotrading.infra.web.CommonResponse
 import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinAutotradeChartLoadRequest
 import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinAutotradeRegisterRequest

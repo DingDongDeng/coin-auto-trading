@@ -1,4 +1,4 @@
-package com.dingdongdeng.autotrading.application.key
+package com.dingdongdeng.autotrading.application.auth
 
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
 import com.dingdongdeng.autotrading.infra.common.annotation.UseCase
