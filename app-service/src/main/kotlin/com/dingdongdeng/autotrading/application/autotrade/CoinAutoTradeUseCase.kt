@@ -1,8 +1,9 @@
 package com.dingdongdeng.autotrading.application.autotrade
 
-import com.dingdongdeng.autotrading.domain.autotrade.service.CoinAutoTradeService
-import com.dingdongdeng.autotrading.domain.backtest.service.CoinBackTestService
+import com.dingdongdeng.autotrading.domain.autotrade.factory.AutoTradeProcessorFactory
+import com.dingdongdeng.autotrading.domain.backtest.factory.BackTestProcessorFactory
 import com.dingdongdeng.autotrading.domain.chart.service.CoinChartService
+import com.dingdongdeng.autotrading.domain.process.service.ProcessService
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.infra.common.annotation.UseCase
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
@@ -13,8 +14,9 @@ import java.time.LocalDateTime
 
 @UseCase
 class CoinAutoTradeUseCase(
-    private val coinAutoTradeService: CoinAutoTradeService,
-    private val coinBackTestService: CoinBackTestService,
+    private val processService: ProcessService,
+    private val autoTradeProcessorFactory: AutoTradeProcessorFactory,
+    private val backTestProcessorFactory: BackTestProcessorFactory,
     private val coinChartService: CoinChartService,
 ) {
 
@@ -28,7 +30,7 @@ class CoinAutoTradeUseCase(
         config: Map<String, Any>
     ): String {
         // 자동매매 등록
-        return coinAutoTradeService.register(
+        val processor = autoTradeProcessorFactory.of(
             userId = userId,
             coinStrategyType = coinStrategyType,
             exchangeType = exchangeType,
@@ -37,6 +39,7 @@ class CoinAutoTradeUseCase(
             keyPairId = keyPairId,
             config = config,
         )
+        return processService.register(processor)
     }
 
     fun backTest(
@@ -51,7 +54,7 @@ class CoinAutoTradeUseCase(
         config: Map<String, Any>
     ): String {
         // 백테스트 실행
-        return coinBackTestService.backTest(
+        val processor = backTestProcessorFactory.of(
             startDateTime = startDateTime,
             endDateTime = endDateTime,
             durationUnit = durationUnit,
@@ -62,6 +65,9 @@ class CoinAutoTradeUseCase(
             candleUnits = candleUnits,
             config = config,
         )
+        processService.register(processor)
+        processService.start(processor.id)
+        return processor.id
     }
 
     fun loadCharts(
@@ -85,40 +91,17 @@ class CoinAutoTradeUseCase(
     }
 
     fun start(autoTradeProcessorId: String): String {
-        coinAutoTradeService.start(autoTradeProcessorId)
+        processService.start(autoTradeProcessorId)
         return autoTradeProcessorId
     }
 
     fun stop(autoTradeProcessorId: String): String {
-        coinAutoTradeService.stop(autoTradeProcessorId)
+        processService.stop(autoTradeProcessorId)
         return autoTradeProcessorId
     }
 
     fun terminate(autoTradeProcessorId: String): String {
-        coinAutoTradeService.terminate(autoTradeProcessorId)
+        processService.terminate(autoTradeProcessorId)
         return autoTradeProcessorId
-    }
-
-    fun getAutoTrades() {
-
-    }
-
-    fun getBackTests() {
-
-        /**
-         * FIXME 아래 내용을 해보자
-         *  화면을 먼저 기획해보자
-         *  - 내 벡테스트 목록을 조회
-         *  - 백테스트 결과 조회
-         *      - 월별 수익율
-         *          - 코인별 수익율
-         *      - 월별 승율
-         *          - 코인별 승율
-         *      - 주문 리스트 (매수, 익절, 손절)
-         *      - 시물레이션한 차트 리스트
-         *          - 캔들 정보
-         *          - 보조지표 정보
-         *          - 주문정보
-         */
     }
 }
