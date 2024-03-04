@@ -1,4 +1,4 @@
-package com.dingdongdeng.autotrading.usecase.key
+package com.dingdongdeng.autotrading.application.key
 
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
 import com.dingdongdeng.autotrading.infra.common.annotation.Usecase

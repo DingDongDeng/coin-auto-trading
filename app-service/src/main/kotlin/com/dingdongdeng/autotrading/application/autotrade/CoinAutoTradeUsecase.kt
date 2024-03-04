@@ -1,4 +1,4 @@
-package com.dingdongdeng.autotrading.usecase.autotrade
+package com.dingdongdeng.autotrading.application.autotrade
 
 import com.dingdongdeng.autotrading.domain.autotrade.service.CoinAutoTradeService
 import com.dingdongdeng.autotrading.domain.backtest.service.CoinBackTestService
@@ -105,5 +105,28 @@ class CoinAutoTradeUsecase(
     fun terminate(autoTradeProcessorId: String): String {
         coinAutoTradeService.terminate(autoTradeProcessorId)
         return autoTradeProcessorId
+    }
+
+    fun getAutoTrades() {
+
+    }
+
+    fun getBackTests() {
+
+        /**
+         * FIXME
+         *  화면을 먼저 기획해보자
+         *  - 내 벡테스트 목록을 조회
+         *  - 백테스트 결과 조회
+         *      - 월별 수익율
+         *          - 코인별 수익율
+         *      - 월별 승율
+         *          - 코인별 승율
+         *      - 주문 리스트 (매수, 익절, 손절)
+         *      - 시물레이션한 차트 리스트
+         *          - 캔들 정보
+         *          - 보조지표 정보
+         *          - 주문정보
+         */
     }
 }

@@ -1,12 +1,12 @@
 package com.dingdongdeng.autotrading.presentation.dashboard.controller
 
+import com.dingdongdeng.autotrading.application.autotrade.CoinAutoTradeUsecase
+import com.dingdongdeng.autotrading.application.key.CoinKeyUsecase
 import com.dingdongdeng.autotrading.infra.web.CommonResponse
 import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinAutotradeChartLoadRequest
 import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinAutotradeRegisterRequest
 import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinBackTestRegisterRequest
 import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinExchangeKeyRegisterRequest
-import com.dingdongdeng.autotrading.usecase.autotrade.CoinAutoTradeUsecase
-import com.dingdongdeng.autotrading.usecase.key.CoinKeyUsecase
 import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
