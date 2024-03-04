@@ -72,8 +72,9 @@ class CoinTradeHistory(
     fun isBuyOrder(): Boolean = orderType == OrderType.BUY && state == TradeState.DONE
     fun isSellOrder(): Boolean = orderType == OrderType.SELL && state == TradeState.DONE
 
-    fun cancel() {
+    fun cancel(): CoinTradeHistory {
         this.state = TradeState.CANCEL
+        return this
     }
 
     fun isWait(): Boolean = this.state == TradeState.WAIT

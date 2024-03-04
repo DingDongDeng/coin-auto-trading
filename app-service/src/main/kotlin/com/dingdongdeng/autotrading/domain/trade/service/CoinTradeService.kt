@@ -31,7 +31,7 @@ class CoinTradeService(
                 val exchangeService = exchangeServices.first { it.support(exchangeType) }
                 val exchangeKeyPair = exchangeService.getKeyPair(keyPairId)
                 val order = exchangeService.getOrder(notSyncedTradeHistory.orderId, exchangeKeyPair)
-                coinTradeHistoryService.record(makeTradeHistory(notSyncedTradeHistory.id, order, autoTradeProcessorId))
+                coinTradeHistoryService.save(makeTradeHistory(notSyncedTradeHistory.id, order, autoTradeProcessorId))
             } else {
                 notSyncedTradeHistory
             }
@@ -73,12 +73,13 @@ class CoinTradeService(
 
         // 취소 상태 업데이트
         if (orderResponse.orderType == OrderType.CANCEL) {
-            coinTradeHistoryService.cancel(orderResponse.orderId)
+            val history = coinTradeHistoryService.findTradeHistory(orderResponse.orderId)
+            coinTradeHistoryService.save(history.cancel())
             return
         }
 
         // 매수, 매도 기록
-        coinTradeHistoryService.record(
+        coinTradeHistoryService.save(
             makeTradeHistory(
                 order = orderResponse,
                 autoTradeProcessorId = autoTradeProcessorId
