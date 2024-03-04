@@ -1,28 +1,26 @@
-package com.dingdongdeng.autotrading.domain.autotrade.service
+package com.dingdongdeng.autotrading.domain.autotrade.factory
 
 import com.dingdongdeng.autotrading.domain.autotrade.model.CoinAutoTradeProcessor
 import com.dingdongdeng.autotrading.domain.chart.service.CoinChartService
-import com.dingdongdeng.autotrading.domain.process.service.ProcessService
+import com.dingdongdeng.autotrading.domain.process.model.Processor
 import com.dingdongdeng.autotrading.domain.strategy.service.CoinStrategyService
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.domain.trade.service.CoinTradeService
 import com.dingdongdeng.autotrading.infra.client.slack.SlackSender
-import com.dingdongdeng.autotrading.infra.common.annotation.DomainService
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
+import org.springframework.stereotype.Component
 
-@DomainService
-class CoinAutoTradeService(
-    private val processService: ProcessService,
+@Component
+class AutoTradeProcessorFactory(
     private val coinChartService: CoinChartService,
     private val coinTradeService: CoinTradeService,
     private val coinStrategyService: CoinStrategyService,
-
     private val slackSender: SlackSender,
 ) {
     //FIXME 마켓 조회했을때 종목 상태가 warn이면 exception 던지자
-    fun register(
+    fun of(
         userId: Long,
         coinStrategyType: CoinStrategyType,
         exchangeType: ExchangeType,
@@ -30,9 +28,8 @@ class CoinAutoTradeService(
         candleUnits: List<CandleUnit>,
         keyPairId: String,
         config: Map<String, Any>,
-    ): String {
-        return processService.register(
-            CoinAutoTradeProcessor(
+    ): Processor {
+        return CoinAutoTradeProcessor(
                 userId = userId,
                 coinStrategyType = coinStrategyType,
                 exchangeType = exchangeType,
@@ -46,18 +43,5 @@ class CoinAutoTradeService(
                 coinTradeService = coinTradeService,
                 coinStrategyService = coinStrategyService,
             )
-        )
-    }
-
-    fun start(autoTradeProcessorId: String) {
-        processService.start(autoTradeProcessorId)
-    }
-
-    fun stop(autoTradeProcessorId: String) {
-        processService.stop(autoTradeProcessorId)
-    }
-
-    fun terminate(autoTradeProcessorId: String) {
-        processService.terminate(autoTradeProcessorId)
     }
 }

@@ -1,26 +1,25 @@
-package com.dingdongdeng.autotrading.domain.backtest.service
+package com.dingdongdeng.autotrading.domain.backtest.factory
 
 import com.dingdongdeng.autotrading.domain.backtest.model.CoinBackTestProcessor
 import com.dingdongdeng.autotrading.domain.chart.service.CoinChartService
-import com.dingdongdeng.autotrading.domain.process.service.ProcessService
+import com.dingdongdeng.autotrading.domain.process.model.Processor
 import com.dingdongdeng.autotrading.domain.strategy.service.CoinStrategyService
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.domain.trade.service.CoinTradeService
-import com.dingdongdeng.autotrading.infra.common.annotation.DomainService
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
+import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
-@DomainService
-class CoinBackTestService(
-    private val processService: ProcessService,
+@Component
+class BackTestProcessorFactory(
     private val coinChartService: CoinChartService,
     private val coinTradeService: CoinTradeService,
     private val coinStrategyService: CoinStrategyService,
 ) {
 
-    fun backTest(
+    fun of(
         startDateTime: LocalDateTime,
         endDateTime: LocalDateTime,
         durationUnit: CandleUnit, // 백테스트 시간 간격
@@ -30,8 +29,8 @@ class CoinBackTestService(
         coinTypes: List<CoinType>,
         candleUnits: List<CandleUnit>,
         config: Map<String, Any>,
-    ): String {
-        val backTestProcessor = CoinBackTestProcessor(
+    ): Processor {
+        return CoinBackTestProcessor(
             userId = userId,
             startDateTime = startDateTime,
             endDateTime = endDateTime,
@@ -45,8 +44,5 @@ class CoinBackTestService(
             coinTradeService = coinTradeService,
             coinStrategyService = coinStrategyService,
         )
-        processService.register(backTestProcessor)
-        processService.start(backTestProcessor.id)
-        return backTestProcessor.id
     }
 }
