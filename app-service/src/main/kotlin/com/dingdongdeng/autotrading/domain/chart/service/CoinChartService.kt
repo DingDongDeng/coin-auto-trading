@@ -87,6 +87,12 @@ class CoinChartService(
         endDateTime: LocalDateTime,
         candleUnits: List<CandleUnit>,
     ) {
+        if (endDateTime > TimeContext.now()) {
+            throw WarnException.of("현재 시점보다 미래의 캔들을 다운로드 할 수 없습니다.")
+        }
+        if (candleUnits.contains(CandleUnit.min()).not()) {
+            throw WarnException.of("거래소의 캔들을 서버에 다운로드 할때는 가장 작은 캔들 단위를 포함해야만 합니다. min=${CandleUnit.min()}")
+        }
         AsyncUtils.joinAll(candleUnits) { candleUnit ->
             loadChartProcess(
                 exchangeType = exchangeType,

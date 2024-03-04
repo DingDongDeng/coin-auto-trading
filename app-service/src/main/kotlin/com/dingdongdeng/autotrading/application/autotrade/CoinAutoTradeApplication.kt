@@ -5,12 +5,10 @@ import com.dingdongdeng.autotrading.domain.backtest.service.CoinBackTestService
 import com.dingdongdeng.autotrading.domain.chart.service.CoinChartService
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.infra.common.annotation.Application
-import com.dingdongdeng.autotrading.infra.common.exception.WarnException
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.utils.AsyncUtils
-import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
 import java.time.LocalDateTime
 
 @Application
@@ -74,12 +72,6 @@ class CoinAutoTradeApplication(
         candleUnits: List<CandleUnit>,
         keyPairId: String,
     ) {
-        if (endDateTime > TimeContext.now()) {
-            throw WarnException.of("현재 시점보다 미래의 캔들을 다운로드 할 수 없습니다.")
-        }
-        if (candleUnits.contains(CandleUnit.min()).not()) {
-            throw WarnException.of("거래소의 캔들을 서버에 다운로드 할때는 가장 작은 캔들 단위를 포함해야만 합니다. min=${CandleUnit.min()}")
-        }
         AsyncUtils.joinAll(coinTypes) { coinType ->
             coinChartService.loadCharts(
                 coinType = coinType,
@@ -114,7 +106,7 @@ class CoinAutoTradeApplication(
     fun getBackTests() {
 
         /**
-         * FIXME
+         * FIXME 아래 내용을 해보자
          *  화면을 먼저 기획해보자
          *  - 내 벡테스트 목록을 조회
          *  - 백테스트 결과 조회
