@@ -43,9 +43,6 @@ class CoinAutoTradeProcessor(
             params = params,
             config = config,
             strategyType = coinStrategyType,
-            keyPairId = keyPairId,
-            autoTradeProcessorId = id,
-            exchangeType = exchangeType
         )
 
         // 거래 (매수, 매도, 취소)

@@ -5,7 +5,6 @@ import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyMakeTa
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyTask
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.infra.common.annotation.DomainService
-import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 
 @DomainService
 class CoinStrategyService(
@@ -16,9 +15,6 @@ class CoinStrategyService(
         params: List<SpotCoinStrategyMakeTaskParam>,
         config: Map<String, Any>,
         strategyType: CoinStrategyType,
-        autoTradeProcessorId: String,
-        keyPairId: String,
-        exchangeType: ExchangeType,
     ): List<SpotCoinStrategyTask> {
         val strategyService = strategies.first { it.support(strategyType) }
         return strategyService.makeTask(params, config)
