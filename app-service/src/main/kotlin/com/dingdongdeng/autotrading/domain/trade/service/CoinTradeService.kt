@@ -5,6 +5,7 @@ import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderP
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
 import com.dingdongdeng.autotrading.domain.trade.entity.CoinTradeHistory
 import com.dingdongdeng.autotrading.domain.trade.model.CoinTradeInfo
+import com.dingdongdeng.autotrading.domain.trade.repository.CoinTradeHistoryRepository
 import com.dingdongdeng.autotrading.infra.common.annotation.DomainService
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
@@ -14,7 +15,7 @@ import com.dingdongdeng.autotrading.infra.common.type.PriceType
 @DomainService
 class CoinTradeService(
     private val exchangeServices: List<SpotCoinExchangeService>,
-    private val coinTradeHistoryService: CoinTradeHistoryService,
+    private val coinTradeHistoryRepository: CoinTradeHistoryRepository,
 ) {
 
     fun getTradeInfo(
@@ -24,14 +25,15 @@ class CoinTradeService(
         coinType: CoinType,
         currentPrice: Double,
     ): CoinTradeInfo {
-        val notSyncedTradeHistories = coinTradeHistoryService.findAllTradeHistory(autoTradeProcessorId, coinType)
+        val notSyncedTradeHistories =
+            coinTradeHistoryRepository.findAllCoinTradeHistories(autoTradeProcessorId, coinType)
         val syncedTradeHistories = notSyncedTradeHistories.map { notSyncedTradeHistory ->
             // WAIT 상태의 거래건들 업데이트
             if (notSyncedTradeHistory.isWait()) {
                 val exchangeService = exchangeServices.first { it.support(exchangeType) }
                 val exchangeKeyPair = exchangeService.getKeyPair(keyPairId)
                 val order = exchangeService.getOrder(notSyncedTradeHistory.orderId, exchangeKeyPair)
-                coinTradeHistoryService.save(makeTradeHistory(notSyncedTradeHistory.id, order, autoTradeProcessorId))
+                coinTradeHistoryRepository.save(makeTradeHistory(notSyncedTradeHistory.id, order, autoTradeProcessorId))
             } else {
                 notSyncedTradeHistory
             }
@@ -73,13 +75,13 @@ class CoinTradeService(
 
         // 취소 상태 업데이트
         if (orderResponse.orderType == OrderType.CANCEL) {
-            val history = coinTradeHistoryService.findTradeHistory(orderResponse.orderId)
-            coinTradeHistoryService.save(history.cancel())
+            val history = coinTradeHistoryRepository.findByOrderId(orderResponse.orderId)
+            coinTradeHistoryRepository.save(history.cancel())
             return
         }
 
         // 매수, 매도 기록
-        coinTradeHistoryService.save(
+        coinTradeHistoryRepository.save(
             makeTradeHistory(
                 order = orderResponse,
                 autoTradeProcessorId = autoTradeProcessorId
