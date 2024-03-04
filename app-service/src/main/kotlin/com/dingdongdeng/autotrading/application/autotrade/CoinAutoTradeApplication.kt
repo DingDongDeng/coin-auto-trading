@@ -4,7 +4,7 @@ import com.dingdongdeng.autotrading.domain.autotrade.service.CoinAutoTradeServic
 import com.dingdongdeng.autotrading.domain.backtest.service.CoinBackTestService
 import com.dingdongdeng.autotrading.domain.chart.service.CoinChartService
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
-import com.dingdongdeng.autotrading.infra.common.annotation.Usecase
+import com.dingdongdeng.autotrading.infra.common.annotation.Application
 import com.dingdongdeng.autotrading.infra.common.exception.WarnException
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
@@ -13,8 +13,8 @@ import com.dingdongdeng.autotrading.infra.common.utils.AsyncUtils
 import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
 import java.time.LocalDateTime
 
-@Usecase
-class CoinAutoTradeUsecase(
+@Application
+class CoinAutoTradeApplication(
     private val coinAutoTradeService: CoinAutoTradeService,
     private val coinBackTestService: CoinBackTestService,
     private val coinChartService: CoinChartService,
