@@ -2,7 +2,7 @@ package com.dingdongdeng.autotrading.application.autotrade
 
 import com.dingdongdeng.autotrading.domain.autotrade.factory.AutoTradeProcessorFactory
 import com.dingdongdeng.autotrading.domain.chart.service.CoinChartService
-import com.dingdongdeng.autotrading.domain.process.service.ProcessService
+import com.dingdongdeng.autotrading.domain.process.repository.ProcessRepository
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.infra.common.annotation.UseCase
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
@@ -13,7 +13,7 @@ import java.time.LocalDateTime
 
 @UseCase
 class CoinAutoTradeUseCase(
-    private val processService: ProcessService,
+    private val processRepository: ProcessRepository,
     private val autoTradeProcessorFactory: AutoTradeProcessorFactory,
     private val coinChartService: CoinChartService,
 ) {
@@ -37,7 +37,7 @@ class CoinAutoTradeUseCase(
             keyPairId = keyPairId,
             config = config,
         )
-        return processService.register(processor)
+        return processRepository.save(processor)
     }
 
     fun loadCharts(
@@ -61,17 +61,20 @@ class CoinAutoTradeUseCase(
     }
 
     fun start(autoTradeProcessorId: String): String {
-        processService.start(autoTradeProcessorId)
+        val processor = processRepository.findById(autoTradeProcessorId)
+        processor.start()
         return autoTradeProcessorId
     }
 
     fun stop(autoTradeProcessorId: String): String {
-        processService.stop(autoTradeProcessorId)
+        val processor = processRepository.findById(autoTradeProcessorId)
+        processor.stop()
         return autoTradeProcessorId
     }
 
     fun terminate(autoTradeProcessorId: String): String {
-        processService.terminate(autoTradeProcessorId)
+        val processor = processRepository.findById(autoTradeProcessorId)
+        processor.terminate()
         return autoTradeProcessorId
     }
 }

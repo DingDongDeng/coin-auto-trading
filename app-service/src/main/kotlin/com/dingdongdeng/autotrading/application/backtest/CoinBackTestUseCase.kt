@@ -1,7 +1,7 @@
 package com.dingdongdeng.autotrading.application.backtest
 
 import com.dingdongdeng.autotrading.domain.backtest.factory.BackTestProcessorFactory
-import com.dingdongdeng.autotrading.domain.process.service.ProcessService
+import com.dingdongdeng.autotrading.domain.process.repository.ProcessRepository
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.infra.common.annotation.UseCase
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
@@ -11,7 +11,7 @@ import java.time.LocalDateTime
 
 @UseCase
 class CoinBackTestUseCase(
-    private val processService: ProcessService,
+    private val processRepository: ProcessRepository,
     private val backTestProcessorFactory: BackTestProcessorFactory,
 ) {
     fun backTest(
@@ -37,9 +37,8 @@ class CoinBackTestUseCase(
             candleUnits = candleUnits,
             config = config,
         )
-        processService.register(processor)
-        processService.start(processor.id)
+        processRepository.save(processor)
+        processor.start()
         return processor.id
     }
-
 }
