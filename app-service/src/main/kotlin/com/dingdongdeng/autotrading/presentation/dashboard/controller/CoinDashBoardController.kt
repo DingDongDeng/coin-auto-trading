@@ -1,7 +1,7 @@
 package com.dingdongdeng.autotrading.presentation.dashboard.controller
 
-import com.dingdongdeng.autotrading.application.autotrade.CoinAutoTradeApplication
-import com.dingdongdeng.autotrading.application.key.CoinKeyApplication
+import com.dingdongdeng.autotrading.application.autotrade.CoinAutoTradeUseCase
+import com.dingdongdeng.autotrading.application.key.CoinKeyUseCase
 import com.dingdongdeng.autotrading.infra.web.CommonResponse
 import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinAutotradeChartLoadRequest
 import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinAutotradeRegisterRequest
@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/coin")
 @RestController
 class CoinDashBoardController(
-    private val coinAutoTradeApplication: CoinAutoTradeApplication,
-    private val coinKeyApplication: CoinKeyApplication,
+    private val coinAutoTradeUseCase: CoinAutoTradeUseCase,
+    private val coinKeyUseCase: CoinKeyUseCase,
 ) {
 
     @PostMapping("/exchange-key/register")
@@ -27,7 +27,7 @@ class CoinDashBoardController(
         //@SessionAttribute userId: Long,
     ): CommonResponse<String> {
         return CommonResponse(
-            body = coinKeyApplication.registerKey(
+            body = coinKeyUseCase.registerKey(
                 exchangeType = request.exchangeType,
                 accessKey = request.accessKey,
                 secretKey = request.secretKey,
@@ -42,7 +42,7 @@ class CoinDashBoardController(
         //@SessionAttribute userId: Long,
     ): CommonResponse<String> {
         return CommonResponse(
-            body = coinAutoTradeApplication.register(
+            body = coinAutoTradeUseCase.register(
                 userId = 12345, //FIXME
                 coinStrategyType = request.coinStrategyType,
                 exchangeType = request.exchangeType,
@@ -58,7 +58,7 @@ class CoinDashBoardController(
     fun chartLoad(
         @Valid @RequestBody request: CoinAutotradeChartLoadRequest,
     ): CommonResponse<Boolean> {
-        coinAutoTradeApplication.loadCharts(
+        coinAutoTradeUseCase.loadCharts(
             exchangeType = request.exchangeType,
             coinTypes = request.coinTypes,
             startDateTime = request.startDateTime,
@@ -75,7 +75,7 @@ class CoinDashBoardController(
         //@SessionAttribute userId: Long,
     ): CommonResponse<String> {
         return CommonResponse(
-            body = coinAutoTradeApplication.backTest(
+            body = coinAutoTradeUseCase.backTest(
                 startDateTime = request.startDateTime,
                 endDateTime = request.endDateTime,
                 durationUnit = request.durationUnit,
@@ -94,7 +94,7 @@ class CoinDashBoardController(
         @PathVariable autoTradeProcessorId: String,
     ): CommonResponse<String> {
         return CommonResponse(
-            body = coinAutoTradeApplication.start(autoTradeProcessorId)
+            body = coinAutoTradeUseCase.start(autoTradeProcessorId)
         )
     }
 
@@ -103,7 +103,7 @@ class CoinDashBoardController(
         @PathVariable autoTradeProcessorId: String,
     ): CommonResponse<String> {
         return CommonResponse(
-            body = coinAutoTradeApplication.stop(autoTradeProcessorId)
+            body = coinAutoTradeUseCase.stop(autoTradeProcessorId)
         )
     }
 
@@ -112,7 +112,7 @@ class CoinDashBoardController(
         @PathVariable autoTradeProcessorId: String,
     ): CommonResponse<String> {
         return CommonResponse(
-            body = coinAutoTradeApplication.terminate(autoTradeProcessorId)
+            body = coinAutoTradeUseCase.terminate(autoTradeProcessorId)
         )
     }
 }

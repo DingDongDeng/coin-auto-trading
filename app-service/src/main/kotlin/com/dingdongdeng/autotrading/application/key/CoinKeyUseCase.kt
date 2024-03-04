@@ -1,11 +1,11 @@
 package com.dingdongdeng.autotrading.application.key
 
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
-import com.dingdongdeng.autotrading.infra.common.annotation.Application
+import com.dingdongdeng.autotrading.infra.common.annotation.UseCase
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 
-@Application
-class CoinKeyApplication(
+@UseCase
+class CoinKeyUseCase(
     private val coinExchangeServices: List<SpotCoinExchangeService>
 ) {
     fun registerKey(
