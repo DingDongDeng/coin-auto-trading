@@ -5,7 +5,7 @@ import com.dingdongdeng.autotrading.infra.common.annotation.UseCase
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 
 @UseCase
-class CoinKeyUseCase(
+class AuthUseCase(
     private val coinExchangeServices: List<SpotCoinExchangeService>
 ) {
     fun registerKey(
