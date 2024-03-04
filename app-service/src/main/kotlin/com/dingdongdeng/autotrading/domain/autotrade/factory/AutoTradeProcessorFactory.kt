@@ -2,7 +2,6 @@ package com.dingdongdeng.autotrading.domain.autotrade.factory
 
 import com.dingdongdeng.autotrading.domain.autotrade.model.CoinAutoTradeProcessor
 import com.dingdongdeng.autotrading.domain.chart.service.CoinChartService
-import com.dingdongdeng.autotrading.domain.process.model.Processor
 import com.dingdongdeng.autotrading.domain.strategy.service.CoinStrategyService
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.domain.trade.service.CoinTradeService
@@ -28,7 +27,7 @@ class AutoTradeProcessorFactory(
         candleUnits: List<CandleUnit>,
         keyPairId: String,
         config: Map<String, Any>,
-    ): Processor {
+    ): CoinAutoTradeProcessor {
         return CoinAutoTradeProcessor(
                 userId = userId,
                 coinStrategyType = coinStrategyType,

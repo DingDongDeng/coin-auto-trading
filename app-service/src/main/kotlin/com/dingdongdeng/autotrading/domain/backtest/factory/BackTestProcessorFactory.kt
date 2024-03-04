@@ -2,7 +2,6 @@ package com.dingdongdeng.autotrading.domain.backtest.factory
 
 import com.dingdongdeng.autotrading.domain.backtest.model.CoinBackTestProcessor
 import com.dingdongdeng.autotrading.domain.chart.service.CoinChartService
-import com.dingdongdeng.autotrading.domain.process.model.Processor
 import com.dingdongdeng.autotrading.domain.strategy.service.CoinStrategyService
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.domain.trade.service.CoinTradeService
@@ -29,7 +28,7 @@ class BackTestProcessorFactory(
         coinTypes: List<CoinType>,
         candleUnits: List<CandleUnit>,
         config: Map<String, Any>,
-    ): Processor {
+    ): CoinBackTestProcessor {
         return CoinBackTestProcessor(
             userId = userId,
             startDateTime = startDateTime,
