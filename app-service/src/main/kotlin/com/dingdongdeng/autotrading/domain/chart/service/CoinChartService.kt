@@ -9,7 +9,7 @@ import com.dingdongdeng.autotrading.domain.chart.repository.MissingCoinCandleRep
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChartCandle
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartParam
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
-import com.dingdongdeng.autotrading.domain.indicator.service.IndicatorService
+import com.dingdongdeng.autotrading.domain.indicator.factory.IndicatorFactory
 import com.dingdongdeng.autotrading.infra.common.annotation.DomainService
 import com.dingdongdeng.autotrading.infra.common.exception.CriticalException
 import com.dingdongdeng.autotrading.infra.common.exception.WarnException
@@ -26,7 +26,6 @@ import java.time.LocalDateTime
 @DomainService
 class CoinChartService(
     private val exchangeServices: List<SpotCoinExchangeService>,
-    private val indicatorService: IndicatorService,
     private val coinCandleRepository: CoinCandleRepository,
     private val missingCoinCandleRepository: MissingCoinCandleRepository,
 ) {
@@ -148,7 +147,7 @@ class CoinChartService(
                     closingPrice = candle.closingPrice,
                     accTradePrice = candle.accTradePrice,
                     accTradeVolume = candle.accTradeVolume,
-                    indicatorsFunc = { indicatorService.calculate(subCandles) }
+                    indicatorsFunc = { IndicatorFactory.calculate(subCandles) }
                 )
             )
         }

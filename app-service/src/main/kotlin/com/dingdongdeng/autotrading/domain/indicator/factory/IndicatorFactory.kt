@@ -1,4 +1,4 @@
-package com.dingdongdeng.autotrading.domain.indicator.service
+package com.dingdongdeng.autotrading.domain.indicator.factory
 
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChartCandle
 import com.dingdongdeng.autotrading.domain.indicator.model.BollingerBands
@@ -6,13 +6,11 @@ import com.dingdongdeng.autotrading.domain.indicator.model.Indicators
 import com.dingdongdeng.autotrading.domain.indicator.model.Ma
 import com.dingdongdeng.autotrading.domain.indicator.model.Macd
 import com.dingdongdeng.autotrading.domain.indicator.model.Obv
-import com.dingdongdeng.autotrading.infra.common.annotation.DomainService
 import com.tictactec.ta.lib.Core
 import com.tictactec.ta.lib.MAType
 import com.tictactec.ta.lib.MInteger
 
-@DomainService
-class IndicatorService {
+object IndicatorFactory {
     private val core = Core()
 
     fun calculate(candles: List<ExchangeChartCandle>): Indicators {

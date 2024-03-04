@@ -3,6 +3,7 @@ package com.dingdongdeng.autotrading.domain.indicator.service
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeKeyPair
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartParam
 import com.dingdongdeng.autotrading.domain.exchange.service.UpbitSpotCoinExchangeService
+import com.dingdongdeng.autotrading.domain.indicator.factory.IndicatorFactory
 import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
@@ -16,8 +17,8 @@ import java.time.LocalDateTime
 
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @SpringBootTest
-class IndicatorServiceTest(
-    val indicatorService: IndicatorService,
+class IndicatorFactoryTest(
+    val indicatorService: IndicatorFactory,
     val upbitSpotCoinExchangeService: UpbitSpotCoinExchangeService,
 ) {
     val keyParam = ExchangeKeyPair(
