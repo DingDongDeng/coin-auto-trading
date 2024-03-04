@@ -2,8 +2,8 @@ package com.dingdongdeng.autotrading.domain.autotrade.model
 
 import com.dingdongdeng.autotrading.domain.chart.service.CoinChartService
 import com.dingdongdeng.autotrading.domain.process.model.Processor
+import com.dingdongdeng.autotrading.domain.strategy.component.SpotCoinStrategy
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyMakeTaskParam
-import com.dingdongdeng.autotrading.domain.strategy.service.CoinStrategyService
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.domain.trade.service.CoinTradeService
 import com.dingdongdeng.autotrading.infra.client.slack.SlackSender
@@ -25,9 +25,9 @@ class CoinAutoTradeProcessor(
     private val duration: Long = 60 * 1000, // milliseconds
     private val slackSender: SlackSender?,
 
+    private val strategy: SpotCoinStrategy,
     private val coinChartService: CoinChartService,
     private val coinTradeService: CoinTradeService,
-    private val coinStrategyService: CoinStrategyService,
 ) : Processor(
     id = id,
     userId = userId,
@@ -39,11 +39,7 @@ class CoinAutoTradeProcessor(
         val params = AsyncUtils.joinAll(coinTypes) { coinType -> makeParamProcess(coinType) }
 
         // 전략을 수행할 task 생성
-        val tasks = coinStrategyService.getTask(
-            params = params,
-            config = config,
-            strategyType = coinStrategyType,
-        )
+        val tasks = strategy.makeTask(params, config)
 
         // 거래 (매수, 매도, 취소)
         tasks.forEach { task ->
