@@ -1,7 +1,6 @@
 package com.dingdongdeng.autotrading.application.autotrade
 
 import com.dingdongdeng.autotrading.domain.autotrade.factory.AutoTradeProcessorFactory
-import com.dingdongdeng.autotrading.domain.backtest.factory.BackTestProcessorFactory
 import com.dingdongdeng.autotrading.domain.chart.service.CoinChartService
 import com.dingdongdeng.autotrading.domain.process.service.ProcessService
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
@@ -16,7 +15,6 @@ import java.time.LocalDateTime
 class CoinAutoTradeUseCase(
     private val processService: ProcessService,
     private val autoTradeProcessorFactory: AutoTradeProcessorFactory,
-    private val backTestProcessorFactory: BackTestProcessorFactory,
     private val coinChartService: CoinChartService,
 ) {
 
@@ -40,34 +38,6 @@ class CoinAutoTradeUseCase(
             config = config,
         )
         return processService.register(processor)
-    }
-
-    fun backTest(
-        startDateTime: LocalDateTime,
-        endDateTime: LocalDateTime,
-        durationUnit: CandleUnit, // 백테스트 시간 간격
-        userId: Long,
-        coinStrategyType: CoinStrategyType,
-        exchangeType: ExchangeType,
-        coinTypes: List<CoinType>,
-        candleUnits: List<CandleUnit>,
-        config: Map<String, Any>
-    ): String {
-        // 백테스트 실행
-        val processor = backTestProcessorFactory.of(
-            startDateTime = startDateTime,
-            endDateTime = endDateTime,
-            durationUnit = durationUnit,
-            userId = userId,
-            coinStrategyType = coinStrategyType,
-            exchangeType = exchangeType,
-            coinTypes = coinTypes,
-            candleUnits = candleUnits,
-            config = config,
-        )
-        processService.register(processor)
-        processService.start(processor.id)
-        return processor.id
     }
 
     fun loadCharts(

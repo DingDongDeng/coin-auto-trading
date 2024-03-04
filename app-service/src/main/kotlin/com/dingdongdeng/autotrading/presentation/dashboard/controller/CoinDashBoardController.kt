@@ -2,6 +2,7 @@ package com.dingdongdeng.autotrading.presentation.dashboard.controller
 
 import com.dingdongdeng.autotrading.application.auth.AuthUseCase
 import com.dingdongdeng.autotrading.application.autotrade.CoinAutoTradeUseCase
+import com.dingdongdeng.autotrading.application.backtest.CoinBackTestUseCase
 import com.dingdongdeng.autotrading.infra.web.CommonResponse
 import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinAutotradeChartLoadRequest
 import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinAutotradeRegisterRequest
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class CoinDashBoardController(
     private val coinAutoTradeUseCase: CoinAutoTradeUseCase,
+    private val coinBackTestUseCase: CoinBackTestUseCase,
     private val authUseCase: AuthUseCase,
 ) {
 
@@ -75,7 +77,7 @@ class CoinDashBoardController(
         //@SessionAttribute userId: Long,
     ): CommonResponse<String> {
         return CommonResponse(
-            body = coinAutoTradeUseCase.backTest(
+            body = coinBackTestUseCase.backTest(
                 startDateTime = request.startDateTime,
                 endDateTime = request.endDateTime,
                 durationUnit = request.durationUnit,
