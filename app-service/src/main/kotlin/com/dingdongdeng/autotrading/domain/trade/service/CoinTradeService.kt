@@ -25,13 +25,13 @@ class CoinTradeService(
         coinType: CoinType,
         currentPrice: Double,
     ): CoinTradeInfo {
+        val exchangeService = exchangeServices.first { it.support(exchangeType) }
+        val exchangeKeyPair = exchangeService.getKeyPair(keyPairId)
         val notSyncedTradeHistories =
             coinTradeHistoryRepository.findAllCoinTradeHistories(autoTradeProcessorId, coinType)
         val syncedTradeHistories = notSyncedTradeHistories.map { notSyncedTradeHistory ->
             // WAIT 상태의 거래건들 업데이트
             if (notSyncedTradeHistory.isWait()) {
-                val exchangeService = exchangeServices.first { it.support(exchangeType) }
-                val exchangeKeyPair = exchangeService.getKeyPair(keyPairId)
                 val order = exchangeService.getOrder(notSyncedTradeHistory.orderId, exchangeKeyPair)
                 coinTradeHistoryRepository.save(makeTradeHistory(notSyncedTradeHistory.id, order, autoTradeProcessorId))
             } else {
@@ -90,12 +90,12 @@ class CoinTradeService(
     }
 
     private fun makeTradeHistory(
-        coinTradehistoryId: Long? = null,
+        coinTradeHistoryId: Long? = null,
         order: SpotCoinExchangeOrder,
         autoTradeProcessorId: String
     ): CoinTradeHistory {
         return CoinTradeHistory(
-            id = coinTradehistoryId,
+            id = coinTradeHistoryId,
             orderId = order.orderId,
             state = order.tradeState,
             processorId = autoTradeProcessorId,
