@@ -18,13 +18,12 @@ class CoinTradeService(
     private val coinTradeHistoryRepository: CoinTradeHistoryRepository,
 ) {
 
-    fun getTradeInfo(
+    fun syncTradeHistories(
         exchangeType: ExchangeType,
         keyPairId: String,
         autoTradeProcessorId: String,
         coinType: CoinType,
-        currentPrice: Double,
-    ): CoinTradeInfo {
+    ): List<CoinTradeHistory> {
         val exchangeService = exchangeServices.first { it.support(exchangeType) }
         val exchangeKeyPair = exchangeService.getKeyPair(keyPairId)
         val notSyncedTradeHistories =
@@ -38,10 +37,18 @@ class CoinTradeService(
                 notSyncedTradeHistory
             }
         }
+        return syncedTradeHistories
+    }
 
+    fun getTradeInfo(
+        autoTradeProcessorId: String,
+        coinType: CoinType,
+        currentPrice: Double,
+    ): CoinTradeInfo {
+        val tradeHistories = coinTradeHistoryRepository.findAllCoinTradeHistories(autoTradeProcessorId, coinType)
         return CoinTradeInfo(
             currentPrice = currentPrice,
-            tradeHistories = syncedTradeHistories,
+            tradeHistories = tradeHistories,
         )
     }
 

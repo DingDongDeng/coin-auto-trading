@@ -4,7 +4,6 @@ import com.dingdongdeng.autotrading.domain.chart.service.CoinChartService
 import com.dingdongdeng.autotrading.domain.process.model.Processor
 import com.dingdongdeng.autotrading.domain.strategy.component.SpotCoinStrategy
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyMakeTaskParam
-import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.domain.trade.service.CoinTradeService
 import com.dingdongdeng.autotrading.infra.client.slack.SlackSender
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
@@ -16,7 +15,6 @@ import java.util.UUID
 class CoinAutoTradeProcessor(
     override val id: String = "AUTOTRADE-${UUID.randomUUID()}",
     override val userId: Long,
-    val coinStrategyType: CoinStrategyType,
     val exchangeType: ExchangeType,
     val coinTypes: List<CoinType>,
     val candleUnits: List<CandleUnit>,
@@ -67,20 +65,14 @@ class CoinAutoTradeProcessor(
         )
 
         // 거래 정보 조회
+        coinTradeService.syncTradeHistories(exchangeType, keyPairId, id, coinType)
         val tradeInfo = coinTradeService.getTradeInfo(
-            exchangeType = exchangeType,
-            keyPairId = keyPairId,
             autoTradeProcessorId = id,
             coinType = coinType,
-            currentPrice = charts.first().currentPrice,
+            currentPrice = charts.first().currentPrice
         )
 
-        return SpotCoinStrategyMakeTaskParam(
-            exchangeType = exchangeType,
-            coinType = coinType,
-            charts = charts,
-            tradeInfo = tradeInfo,
-        )
+        return SpotCoinStrategyMakeTaskParam(exchangeType, coinType, charts, tradeInfo)
     }
 
     override fun runnable(): Boolean {

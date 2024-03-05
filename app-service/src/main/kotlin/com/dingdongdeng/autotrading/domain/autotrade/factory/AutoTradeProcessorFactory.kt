@@ -15,22 +15,21 @@ import org.springframework.stereotype.Component
 class AutoTradeProcessorFactory(
     private val coinChartService: CoinChartService,
     private val coinTradeService: CoinTradeService,
+    private val strategies: List<SpotCoinStrategy>,
     private val slackSender: SlackSender,
 ) {
     //FIXME 마켓 조회했을때 종목 상태가 warn이면 exception 던지자
     fun of(
         userId: Long,
-        coinStrategyType: CoinStrategyType,
         exchangeType: ExchangeType,
         coinTypes: List<CoinType>,
         candleUnits: List<CandleUnit>,
         keyPairId: String,
         config: Map<String, Any>,
-        strategy: SpotCoinStrategy,
+        coinStrategyType: CoinStrategyType,
     ): CoinAutoTradeProcessor {
         return CoinAutoTradeProcessor(
             userId = userId,
-            coinStrategyType = coinStrategyType,
             exchangeType = exchangeType,
             coinTypes = coinTypes,
             candleUnits = candleUnits,
@@ -38,7 +37,7 @@ class AutoTradeProcessorFactory(
             config = config,
             duration = 60_000,
             slackSender = slackSender,
-            strategy = strategy,
+            strategy = strategies.first { it.support(coinStrategyType) },
             coinChartService = coinChartService,
             coinTradeService = coinTradeService,
         )

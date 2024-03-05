@@ -3,7 +3,6 @@ package com.dingdongdeng.autotrading.application.autotrade
 import com.dingdongdeng.autotrading.domain.autotrade.factory.AutoTradeProcessorFactory
 import com.dingdongdeng.autotrading.domain.chart.service.CoinChartService
 import com.dingdongdeng.autotrading.domain.process.repository.ProcessRepository
-import com.dingdongdeng.autotrading.domain.strategy.component.SpotCoinStrategy
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.infra.common.annotation.UseCase
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
@@ -16,7 +15,6 @@ import java.time.LocalDateTime
 class CoinAutoTradeUseCase(
     private val processRepository: ProcessRepository,
     private val autoTradeProcessorFactory: AutoTradeProcessorFactory,
-    private val strategies: List<SpotCoinStrategy>,
     private val coinChartService: CoinChartService,
 ) {
 
@@ -32,13 +30,12 @@ class CoinAutoTradeUseCase(
         // 자동매매 등록
         val processor = autoTradeProcessorFactory.of(
             userId = userId,
-            coinStrategyType = coinStrategyType,
             exchangeType = exchangeType,
             coinTypes = coinTypes,
             candleUnits = candleUnits,
             keyPairId = keyPairId,
             config = config,
-            strategy = strategies.first { it.support(coinStrategyType) }
+            coinStrategyType = coinStrategyType,
         )
         return processRepository.save(processor)
     }
