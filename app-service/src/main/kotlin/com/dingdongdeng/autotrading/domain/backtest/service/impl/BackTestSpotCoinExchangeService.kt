@@ -31,7 +31,7 @@ class BackTestSpotCoinExchangeService(
             tradeState = TradeState.DONE,
             exchangeType = EXCHANGE_TYPE,
             coinType = param.coinType,
-            fee = param.volume * param.price * (0.05 / 100), // upbit 수수료 0.05% 적용
+            fee = param.volume * param.price * (FEE_RATE / 100),
             orderDateTime = TimeContext.now(),
             cancelDateTime = null,
         )
@@ -96,7 +96,8 @@ class BackTestSpotCoinExchangeService(
     }
 
     companion object {
-        val EXCHANGE_TYPE = ExchangeType.BACKTEST
-        val EXCHANGE_TYPE_FOR_BACKTEST = ExchangeType.UPBIT // 업비트 차트로 백테스트 진행
+        private val EXCHANGE_TYPE = ExchangeType.BACKTEST_UPBIT
+        private val EXCHANGE_TYPE_FOR_BACKTEST = ExchangeType.UPBIT // 업비트 차트로 백테스트 진행
+        private val FEE_RATE = 0.05 // upbit 수수료 0.05% 적용
     }
 }
