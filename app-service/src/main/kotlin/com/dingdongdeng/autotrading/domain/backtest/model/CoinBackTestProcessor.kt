@@ -36,7 +36,7 @@ class CoinBackTestProcessor(
     private val autoTradeProcessor: Processor = CoinAutoTradeProcessor(
         id = id,
         userId = userId,
-        exchangeType = ExchangeType.BACKTEST,
+        exchangeType = exchangeType,
         coinTypes = coinTypes,
         candleUnits = candleUnits,
         keyPairId = "",
@@ -65,6 +65,15 @@ class CoinBackTestProcessor(
         val now = TimeContext.now().plusSeconds(durationUnit.getSecondSize())
         TimeContext.update { now }
         return now < endDateTime
+    }
+
+    fun getResults() {
+        // FIXME 진행율도 알 수 있으면 좋겠어
+        coinTypes.map { coinType ->
+            //FIXME 아래에 시간을 못넣으니까 불편하네 스펙 수정해야겠다
+            val charts = coinChartService.getCharts(exchangeType, "", coinType, listOf(CandleUnit.min()))
+            coinTradeService.getTradeInfo(id, coinType, charts.first().currentPrice)
+        }
     }
 
     private fun validateBackTestRange() {
