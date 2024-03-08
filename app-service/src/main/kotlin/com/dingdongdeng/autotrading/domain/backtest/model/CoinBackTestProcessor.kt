@@ -4,6 +4,7 @@ import com.dingdongdeng.autotrading.domain.autotrade.model.CoinAutoTradeProcesso
 import com.dingdongdeng.autotrading.domain.process.model.Processor
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
+import com.dingdongdeng.autotrading.infra.common.utils.minDate
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -20,6 +21,7 @@ class CoinBackTestProcessor(
     slackSender = null,
 ) {
 
+    private var now = startDateTime
     private var initialize = false
 
     override fun process() {
@@ -31,8 +33,9 @@ class CoinBackTestProcessor(
             TimeContext.update { startDateTime }
             initialize = true
         }
-        val now = TimeContext.now().plusSeconds(durationUnit.getSecondSize())
-        TimeContext.update { now }
-        return now < endDateTime
+        val nextNow = minDate(TimeContext.now().plusSeconds(durationUnit.getSecondSize()), endDateTime)
+        TimeContext.update { nextNow }
+        now = nextNow
+        return nextNow < endDateTime
     }
 }
