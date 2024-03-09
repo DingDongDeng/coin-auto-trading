@@ -57,6 +57,28 @@ Content-Type: application/json
   "keyPairId": "354db64e-e208-4dc3-ab8b-8478ab55dc89"
 }
 
+### 백테스트 (비트코인 차트 검증용)
+POST http://localhost:8080/coin/autotrade/backtest
+Content-Type: application/json
+
+{
+  "startDateTime": "2023-02-15T00:00:00",
+  "endDateTime": "2023-03-31T00:00:00",
+  "durationUnit": "UNIT_1M",
+  "coinStrategyType": "UPBIT_CHART_VALIDATE",
+  "exchangeType": "BACKTEST_UPBIT",
+  "coinTypes": [
+    "BITCOIN"
+  ],
+  "candleUnits": [
+    "UNIT_1M",
+    "UNIT_15M"
+  ],
+  "config": {
+    "onceTradeAmount": 100000
+  }
+}
+
 ### 백테스트
 POST http://localhost:8080/coin/autotrade/backtest
 Content-Type: application/json
