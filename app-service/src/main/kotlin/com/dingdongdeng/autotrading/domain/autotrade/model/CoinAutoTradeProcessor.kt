@@ -1,16 +1,19 @@
 package com.dingdongdeng.autotrading.domain.autotrade.model
 
-import com.dingdongdeng.autotrading.domain.chart.service.CoinChartService
+import com.dingdongdeng.autotrading.domain.chart.model.Chart
 import com.dingdongdeng.autotrading.domain.process.model.Processor
 import com.dingdongdeng.autotrading.domain.strategy.component.SpotCoinStrategy
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyMakeTaskParam
-import com.dingdongdeng.autotrading.domain.trade.service.CoinTradeService
+import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyTask
+import com.dingdongdeng.autotrading.domain.trade.entity.CoinTradeHistory
+import com.dingdongdeng.autotrading.domain.trade.model.CoinTradeInfo
 import com.dingdongdeng.autotrading.infra.client.slack.SlackSender
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.utils.AsyncUtils
 import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
+import java.time.LocalDateTime
 import java.util.UUID
 
 class CoinAutoTradeProcessor(
@@ -25,8 +28,10 @@ class CoinAutoTradeProcessor(
     private val slackSender: SlackSender?,
 
     private val strategy: SpotCoinStrategy,
-    private val coinChartService: CoinChartService,
-    private val coinTradeService: CoinTradeService,
+    private val chartFinder: (coinType: CoinType, now: LocalDateTime) -> List<Chart>,
+    private val tradeExecutor: (processorId: String, task: SpotCoinStrategyTask) -> Unit,
+    private val tradeSyncer: (processorId: String, coinType: CoinType) -> List<CoinTradeHistory>,
+    private val tradeInfoFinder: (processorId: String, coinType: CoinType, currentPrice: Double) -> CoinTradeInfo,
 ) : Processor(
     id = id,
     userId = userId,
@@ -41,49 +46,22 @@ class CoinAutoTradeProcessor(
         val tasks = strategy.makeTask(params, config)
 
         // 거래 (매수, 매도, 취소)
-        tasks.forEach { task ->
-            coinTradeService.trade(
-                orderId = task.orderId,
-                autoTradeProcessorId = id,
-                exchangeType = exchangeType,
-                keyPairId = keyPairId,
-                orderType = task.orderType,
-                coinType = task.coinType,
-                volume = task.volume,
-                price = task.price,
-                priceType = task.priceType,
-            )
-        }
+        tasks.forEach { task -> tradeExecutor(id, task) }
     }
 
     private fun makeParamProcess(coinType: CoinType): SpotCoinStrategyMakeTaskParam {
         // 차트 조회
         val now = TimeContext.now()
-        val charts = coinChartService.getCharts(
-            exchangeType = exchangeType,
-            keyPairId = keyPairId,
-            coinType = coinType,
-            candleUnits = candleUnits,
-            count = CHART_CANDLE_COUNT,
-            to = now,
-        )
+        val charts = chartFinder(coinType, now)
 
         // 거래 정보 조회
-        coinTradeService.syncTradeHistories(exchangeType, keyPairId, id, coinType)
-        val tradeInfo = coinTradeService.getTradeInfo(
-            autoTradeProcessorId = id,
-            coinType = coinType,
-            currentPrice = charts.first().currentPrice
-        )
+        tradeSyncer(id, coinType)
+        val tradeInfo = tradeInfoFinder(id, coinType, charts.first().currentPrice)
 
         return SpotCoinStrategyMakeTaskParam(exchangeType, coinType, charts, tradeInfo)
     }
 
     override fun runnable(): Boolean {
         return true
-    }
-
-    companion object {
-        private const val CHART_CANDLE_COUNT = 200
     }
 }
