@@ -65,7 +65,7 @@ class CoinAutoTradeProcessor(
             coinType = coinType,
             candleUnits = candleUnits,
             count = CHART_CANDLE_COUNT,
-            dateTime = now,
+            to = now,
         )
 
         // 거래 정보 조회
