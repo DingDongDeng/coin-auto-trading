@@ -35,6 +35,8 @@ class CoinChartService(
         keyPairId: String,
         coinType: CoinType,
         candleUnits: List<CandleUnit>,
+        from: LocalDateTime,
+        to: LocalDateTime,
     ): List<Chart> {
         return AsyncUtils.joinAll(candleUnits) { candleUnit ->
             makeChartProcess(
@@ -42,6 +44,8 @@ class CoinChartService(
                 keyPairId = keyPairId,
                 coinType = coinType,
                 candleUnit = candleUnit,
+                from = from,
+                to = to,
             )
         }
     }
@@ -109,30 +113,27 @@ class CoinChartService(
         keyPairId: String,
         coinType: CoinType,
         candleUnit: CandleUnit,
+        from: LocalDateTime,
+        to: LocalDateTime,
     ): Chart {
-        val now = TimeContext.now()
         val chartParam = SpotCoinExchangeChartParam(
             coinType = coinType,
             candleUnit = candleUnit,
-            // 보조지표 계산을 위해 3배로 조회(버퍼)
-            from = now.minusSeconds(3 * CHART_CANDLE_MAX_COUNT * candleUnit.getSecondSize()),
-            to = now,
+            from = from.minusSeconds(candleUnit.getSecondSize() * (CALCULATE_INDICATOR_CANDLE_COUNT + CANDLE_COUNT_BUFFER)),
+            to = to,
         )
         val exchangeService = exchangeServices.first { it.support(exchangeType) }
         val exchangeKeyPair = exchangeService.getKeyPair(keyPairId)
         val exchangeChart = exchangeService.getChart(chartParam, exchangeKeyPair)
-        val candles = mutableListOf<Candle>()
+        val exchangeCandles = exchangeChart.candles.sortedBy { it.candleDateTimeKst } // 혹시 모르니 한번 더 정렬
 
-        val exchangeCandles = exchangeChart.candles
-            .sortedBy { it.candleDateTimeKst } // 혹시 모르니 한번 더 정렬
-            .takeLast(400) // 마지막 400개
-        for (i in 0..200) {
-            val startIndex = i
-            val endIndex = startIndex + CHART_CANDLE_MAX_COUNT - 1
+        val candles = mutableListOf<Candle>()
+        for (startIndex in exchangeCandles.indices) {
+            val endIndex = startIndex + CALCULATE_INDICATOR_CANDLE_COUNT - 1
 
             val subCandles = exchangeCandles.subList(startIndex, endIndex + 1) // 참조만 변경 (deep copy x)
 
-            if (subCandles.size < CHART_CANDLE_MAX_COUNT) {
+            if (subCandles.size < CALCULATE_INDICATOR_CANDLE_COUNT) {
                 throw CriticalException.of("생성된 subCandles가 적절한 개수가 아님")
             }
             val candle = subCandles.last()
@@ -152,18 +153,22 @@ class CoinChartService(
             )
         }
 
-        if (candles.size < CHART_CANDLE_MAX_COUNT) {
+        if (candles.size < CALCULATE_INDICATOR_CANDLE_COUNT) {
             throw CriticalException.of("캔들의 보조 지표 계산을 위한 적절한 수의 과거 캔들을 추출하는데 실패")
         }
 
-        if (candles.last().candleDateTimeKst != CandleDateTimeUtils.makeUnitDateTime(now, candleUnit)) {
-            throw CriticalException.of("생성된 캔들의 마지막 요소 시간이 단위시간과 상이함, now=$now, unit=$candleUnit, candleLastDateTime=${candles.last().candleDateTimeKst}")
+        if (candles.last().candleDateTimeKst != CandleDateTimeUtils.makeUnitDateTime(to, candleUnit)) {
+            throw CriticalException.of("생성된 캔들의 마지막 요소 시간이 단위시간과 상이함, to=$to, unit=$candleUnit, candleLastDateTime=${candles.last().candleDateTimeKst}")
+        }
+
+        if (candles.first().candleDateTimeKst != CandleDateTimeUtils.makeUnitDateTime(from, candleUnit, true)) {
+            throw CriticalException.of("생성된 캔들의 첫번째 요소 시간이 단위시간과 상이함, from=$from, unit=$candleUnit, candleLastDateTime=${candles.first().candleDateTimeKst}")
         }
 
         return Chart(
-            from = exchangeChart.from,
-            to = exchangeChart.to,
-            currentPrice = exchangeChart.currentPrice,
+            from = candles.first().candleDateTimeKst,
+            to = candles.last().candleDateTimeKst,
+            currentPrice = candles.last().closingPrice,
             candleUnit = candleUnit,
             candles = candles,
         )
@@ -310,7 +315,8 @@ class CoinChartService(
     }
 
     companion object {
-        private const val CHART_CANDLE_MAX_COUNT = 200
+        private const val CANDLE_COUNT_BUFFER = 50 // 캔들 유실 케이스 고려
+        private const val CALCULATE_INDICATOR_CANDLE_COUNT = 200
         private const val CHART_LOAD_CHUNK_SIZE = 1000
     }
 }
