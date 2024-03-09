@@ -10,6 +10,7 @@ import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.utils.AsyncUtils
+import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
 import java.util.UUID
 
 class CoinAutoTradeProcessor(
@@ -57,11 +58,14 @@ class CoinAutoTradeProcessor(
 
     private fun makeParamProcess(coinType: CoinType): SpotCoinStrategyMakeTaskParam {
         // 차트 조회
+        val now = TimeContext.now()
         val charts = coinChartService.getCharts(
             exchangeType = exchangeType,
             keyPairId = keyPairId,
             coinType = coinType,
             candleUnits = candleUnits,
+            count = CHART_CANDLE_COUNT,
+            dateTime = now,
         )
 
         // 거래 정보 조회
@@ -77,5 +81,9 @@ class CoinAutoTradeProcessor(
 
     override fun runnable(): Boolean {
         return true
+    }
+
+    companion object {
+        private const val CHART_CANDLE_COUNT = 200
     }
 }
