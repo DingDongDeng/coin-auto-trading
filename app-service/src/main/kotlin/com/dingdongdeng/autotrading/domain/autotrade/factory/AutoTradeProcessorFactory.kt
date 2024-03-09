@@ -75,8 +75,6 @@ class AutoTradeProcessorFactory(
             userId = userId,
             exchangeType = exchangeType,
             coinTypes = coinTypes,
-            candleUnits = candleUnits,
-            keyPairId = keyPairId,
             config = config,
             duration = 60_000,
             slackSender = slackSender,
