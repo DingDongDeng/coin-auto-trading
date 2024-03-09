@@ -35,7 +35,7 @@ class CoinChartService(
         keyPairId: String,
         coinType: CoinType,
         candleUnits: List<CandleUnit>,
-        from: LocalDateTime,
+        count: Int,
         to: LocalDateTime,
     ): List<Chart> {
         return AsyncUtils.joinAll(candleUnits) { candleUnit ->
@@ -44,7 +44,7 @@ class CoinChartService(
                 keyPairId = keyPairId,
                 coinType = coinType,
                 candleUnit = candleUnit,
-                from = from,
+                from = to.minusSeconds(count * candleUnit.getSecondSize()),
                 to = to,
             )
         }
