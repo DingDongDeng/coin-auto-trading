@@ -5,8 +5,11 @@ import com.dingdongdeng.autotrading.domain.process.model.Processor
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
 import com.dingdongdeng.autotrading.infra.common.utils.minDate
+import com.dingdongdeng.autotrading.infra.common.utils.round
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import java.util.UUID
+import kotlin.math.abs
 
 class CoinBackTestProcessor(
     override val id: String = "BACKTEST-${UUID.randomUUID()}",
@@ -38,4 +41,12 @@ class CoinBackTestProcessor(
         now = nextNow
         return nextNow < endDateTime
     }
+
+    fun progressRate(): Double {
+        val totalDiff = abs(startDateTime.until(endDateTime, ChronoUnit.SECONDS))
+        val progressDiff = abs(startDateTime.until(now, ChronoUnit.SECONDS))
+        return (progressDiff.toDouble() / totalDiff.toDouble()).round(2.0)
+    }
+
+    fun now(): LocalDateTime = now
 }
