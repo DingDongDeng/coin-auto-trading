@@ -8,7 +8,6 @@ import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyTask
 import com.dingdongdeng.autotrading.domain.trade.entity.CoinTradeHistory
 import com.dingdongdeng.autotrading.domain.trade.model.CoinTradeInfo
 import com.dingdongdeng.autotrading.infra.client.slack.SlackSender
-import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.utils.AsyncUtils
@@ -21,7 +20,6 @@ class CoinAutoTradeProcessor(
     override val userId: Long,
     val exchangeType: ExchangeType,
     val coinTypes: List<CoinType>,
-    val candleUnits: List<CandleUnit>,
     val keyPairId: String,
     val config: Map<String, Any>,
     private val duration: Long = 60 * 1000, // milliseconds
