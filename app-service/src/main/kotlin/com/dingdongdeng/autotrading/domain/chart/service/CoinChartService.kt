@@ -131,6 +131,14 @@ class CoinChartService(
         for (startIndex in exchangeCandles.indices) {
             val endIndex = startIndex + CALCULATE_INDICATOR_CANDLE_COUNT - 1
 
+            if (endIndex >= exchangeCandles.size) {
+                break
+            }
+
+            if (exchangeCandles[endIndex].candleDateTimeKst < from) {
+                continue
+            }
+
             val subCandles = exchangeCandles.subList(startIndex, endIndex + 1) // 참조만 변경 (deep copy x)
 
             if (subCandles.size < CALCULATE_INDICATOR_CANDLE_COUNT) {
