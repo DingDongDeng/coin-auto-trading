@@ -90,6 +90,8 @@ Content-Type: application/json
   "coinStrategyType": "EXAMPLE",
   "exchangeType": "BACKTEST_UPBIT",
   "coinTypes": [
+    "BITCOIN",
+    "ETHEREUM",
     "SOLANA"
   ],
   "candleUnits": [
