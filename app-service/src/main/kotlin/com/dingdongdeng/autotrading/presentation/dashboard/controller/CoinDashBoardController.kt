@@ -25,7 +25,7 @@ class CoinDashBoardController(
     private val authUseCase: AuthUseCase,
 ) {
 
-    @PostMapping("/exchange-key/register")
+    @PostMapping("/exchange-key")
     fun exchangeKeyRegister(
         @Valid @RequestBody request: CoinExchangeKeyRegisterRequest,
         //@SessionAttribute userId: Long,
@@ -40,7 +40,7 @@ class CoinDashBoardController(
         )
     }
 
-    @PostMapping("/autotrade/register")
+    @PostMapping("/processor/autotrade")
     fun autotradeRegister(
         @Valid @RequestBody request: CoinAutotradeRegisterRequest,
         //@SessionAttribute userId: Long,
@@ -73,7 +73,7 @@ class CoinDashBoardController(
         return CommonResponse(true)
     }
 
-    @PostMapping("/autotrade/backtest")
+    @PostMapping("/processor/backtest")
     fun backTest(
         @Valid @RequestBody request: CoinBackTestRegisterRequest,
         //@SessionAttribute userId: Long,
@@ -93,37 +93,37 @@ class CoinDashBoardController(
         )
     }
 
-    @GetMapping("/backtest/{processorId}")
+    @GetMapping("/processor/backtest/{processorId}")
     fun getBackTestResult(@PathVariable processorId: String): CommonResponse<CoinBackTestResultDto> {
         return CommonResponse(
             body = coinBackTestUseCase.getResult(processorId)
         )
     }
 
-    @PostMapping("/autotrade/{autoTradeProcessorId}/start")
-    fun autotradeStart(
-        @PathVariable autoTradeProcessorId: String,
+    @PostMapping("/processor/{processorId}/start")
+    fun processorStart(
+        @PathVariable processorId: String,
     ): CommonResponse<String> {
         return CommonResponse(
-            body = coinAutoTradeUseCase.start(autoTradeProcessorId)
+            body = coinAutoTradeUseCase.start(processorId)
         )
     }
 
-    @PostMapping("/autotrade/{autoTradeProcessorId}/stop")
-    fun autotradeStop(
-        @PathVariable autoTradeProcessorId: String,
+    @PostMapping("/processor/{processorId}/stop")
+    fun processorStop(
+        @PathVariable processorId: String,
     ): CommonResponse<String> {
         return CommonResponse(
-            body = coinAutoTradeUseCase.stop(autoTradeProcessorId)
+            body = coinAutoTradeUseCase.stop(processorId)
         )
     }
 
-    @PostMapping("/autotrade/{autoTradeProcessorId}/terminate")
-    fun autotradeTerminate(
-        @PathVariable autoTradeProcessorId: String,
+    @PostMapping("/processor/{processorId}/terminate")
+    fun processorTerminate(
+        @PathVariable processorId: String,
     ): CommonResponse<String> {
         return CommonResponse(
-            body = coinAutoTradeUseCase.terminate(autoTradeProcessorId)
+            body = coinAutoTradeUseCase.terminate(processorId)
         )
     }
 }

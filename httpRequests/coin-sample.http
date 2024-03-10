@@ -1,5 +1,5 @@
 ### 거래소 키 등록
-POST http://localhost:8080/coin/exchange-key/register
+POST http://localhost:8080/coin/exchange-key
 Content-Type: application/json
 
 {
@@ -9,7 +9,7 @@ Content-Type: application/json
 }
 
 ### 자동매매 등록
-POST http://localhost:8080/coin/autotrade/register
+POST http://localhost:8080/coin/processor/autotrade
 Content-Type: application/json
 
 {
@@ -58,7 +58,7 @@ Content-Type: application/json
 }
 
 ### 백테스트 (비트코인 차트 검증용)
-POST http://localhost:8080/coin/autotrade/backtest
+POST http://localhost:8080/coin/processor/backtest
 Content-Type: application/json
 
 {
@@ -80,7 +80,7 @@ Content-Type: application/json
 }
 
 ### 백테스트
-POST http://localhost:8080/coin/autotrade/backtest
+POST http://localhost:8080/coin/processor/backtest
 Content-Type: application/json
 
 {
@@ -90,8 +90,6 @@ Content-Type: application/json
   "coinStrategyType": "EXAMPLE",
   "exchangeType": "BACKTEST_UPBIT",
   "coinTypes": [
-    "BITCOIN",
-    "ETHEREUM",
     "SOLANA"
   ],
   "candleUnits": [
@@ -104,16 +102,16 @@ Content-Type: application/json
 
 
 ### 백테스트 결과 조회
-GET http://localhost:8080/coin/backtest/BACKTEST-7d49641a-ddd2-468b-aa7d-f86cddcb18f5
+GET http://localhost:8080/coin/processor/backtest/1f99708a-276f-4e29-af1a-eef0714fc2f4/
 
 ### 자동매매 시작
-POST http://localhost:8080/coin/autotrade/BACKTEST-351d3add-c676-4b27-9b34-0843572fd726/start
+POST http://localhost:8080/coin/processor/BACKTEST-351d3add-c676-4b27-9b34-0843572fd726/start
 Content-Type: application/json
 
 ### 자동매매 정지
-POST http://localhost:8080/coin/autotrade/160f2665-4f86-4d19-b6bf-7ef3f4fede46/stop
+POST http://localhost:8080/coin/processor/160f2665-4f86-4d19-b6bf-7ef3f4fede46/stop
 Content-Type: application/json
 
 ### 자동매매 제거
-POST http://localhost:8080/coin/autotrade/bdb74ff9-2d3a-4494-8ed4-70995ae7b748/terminate
+POST http://localhost:8080/coin/processor/bdb74ff9-2d3a-4494-8ed4-70995ae7b748/terminate
 Content-Type: application/json
