@@ -14,7 +14,7 @@ data class CoinTradeSummary(
     val sellTradeHistories = tradeHistories.filter { it.isSellOrder() }
 
     val volume = buyTradeHistories.sumOf { it.volume } - sellTradeHistories.sumOf { it.volume }
-    val fee = tradeHistories.sumOf { it.fee }
+    val fee = tradeHistories.sumOf { it.fee }.round()
 
     val buyValuePrice = buyTradeHistories.sumOf { it.volume * it.price }
     val sellValuePrice = sellTradeHistories.sumOf { it.volume * it.price }
