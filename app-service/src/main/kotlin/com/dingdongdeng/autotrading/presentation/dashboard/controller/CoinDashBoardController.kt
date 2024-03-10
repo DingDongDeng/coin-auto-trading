@@ -3,12 +3,14 @@ package com.dingdongdeng.autotrading.presentation.dashboard.controller
 import com.dingdongdeng.autotrading.application.auth.AuthUseCase
 import com.dingdongdeng.autotrading.application.autotrade.CoinAutoTradeUseCase
 import com.dingdongdeng.autotrading.application.backtest.CoinBackTestUseCase
+import com.dingdongdeng.autotrading.application.backtest.model.CoinBackTestResultDto
 import com.dingdongdeng.autotrading.infra.web.CommonResponse
 import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinAutotradeChartLoadRequest
 import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinAutotradeRegisterRequest
 import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinBackTestRegisterRequest
 import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinExchangeKeyRegisterRequest
 import jakarta.validation.Valid
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -88,6 +90,13 @@ class CoinDashBoardController(
                 candleUnits = request.candleUnits,
                 config = request.config,
             ),
+        )
+    }
+
+    @GetMapping("/backtest/{processorId}")
+    fun getBackTestResult(@PathVariable processorId: String): CommonResponse<CoinBackTestResultDto> {
+        return CommonResponse(
+            body = coinBackTestUseCase.getResult(processorId)
         )
     }
 
