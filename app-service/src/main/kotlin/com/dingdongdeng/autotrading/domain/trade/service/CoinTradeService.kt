@@ -1,16 +1,20 @@
 package com.dingdongdeng.autotrading.domain.trade.service
 
+import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartParam
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrder
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderParam
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
 import com.dingdongdeng.autotrading.domain.trade.entity.CoinTradeHistory
-import com.dingdongdeng.autotrading.domain.trade.model.CoinTradeInfo
+import com.dingdongdeng.autotrading.domain.trade.model.CoinTradeResult
+import com.dingdongdeng.autotrading.domain.trade.model.CoinTradeSummary
 import com.dingdongdeng.autotrading.domain.trade.repository.CoinTradeHistoryRepository
+import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.type.OrderType
 import com.dingdongdeng.autotrading.infra.common.type.PriceType
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 @Service
 class CoinTradeService(
@@ -40,16 +44,50 @@ class CoinTradeService(
         return syncedTradeHistories
     }
 
-    fun getTradeInfo(
+    fun getTradeSummary(
+        exchangeType: ExchangeType,
+        keyPairId: String,
         autoTradeProcessorId: String,
         coinType: CoinType,
-        currentPrice: Double,
-    ): CoinTradeInfo {
-        val tradeHistories = coinTradeHistoryRepository.findAllCoinTradeHistories(autoTradeProcessorId, coinType)
-        return CoinTradeInfo(
+        now: LocalDateTime,
+    ): CoinTradeSummary {
+        val tradeHistories = coinTradeHistoryRepository
+            .findAllCoinTradeHistories(autoTradeProcessorId, coinType)
+            .filter { it.tradedAt <= now }
+        val currentPrice = getCurrentPrice(
+            exchangeType = exchangeType,
+            keyPairId = keyPairId,
+            coinType = coinType,
+            now = now,
+        )
+        return CoinTradeSummary(
+            now = now,
             processorId = autoTradeProcessorId,
             currentPrice = currentPrice,
             tradeHistories = tradeHistories,
+        )
+    }
+
+    fun getTradeResult(
+        exchangeType: ExchangeType,
+        keyPairId: String,
+        autoTradeProcessorId: String,
+        coinTypes: List<CoinType>,
+        now: LocalDateTime,
+    ): CoinTradeResult {
+        val tradeSummaries = coinTypes.map { coinType ->
+            this.getTradeSummary(
+                exchangeType = exchangeType,
+                keyPairId = keyPairId,
+                autoTradeProcessorId = autoTradeProcessorId,
+                coinType = coinType,
+                now = now,
+            )
+        }
+        return CoinTradeResult(
+            now = now,
+            processorId = autoTradeProcessorId,
+            tradeSummaries = tradeSummaries,
         )
     }
 
@@ -116,5 +154,25 @@ class CoinTradeService(
             fee = order.fee,
             tradedAt = if (order.orderType == OrderType.CANCEL) order.cancelDateTime!! else order.orderDateTime!!,
         )
+    }
+
+    private fun getCurrentPrice(
+        exchangeType: ExchangeType,
+        keyPairId: String,
+        coinType: CoinType,
+        now: LocalDateTime
+    ): Double {
+        val exchangeService = exchangeServices.first { it.support(exchangeType) }
+        val keyPair = exchangeService.getKeyPair(keyPairId)
+        val chart = exchangeService.getChart(
+            param = SpotCoinExchangeChartParam(
+                coinType = coinType,
+                candleUnit = CandleUnit.min(),
+                from = now.minusSeconds(CandleUnit.min().getSecondSize() * 2),
+                to = now,
+            ),
+            keyParam = keyPair
+        )
+        return chart.currentPrice
     }
 }
