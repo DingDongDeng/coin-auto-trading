@@ -12,17 +12,7 @@ data class CoinBackTestResult(
     val totalProfitRate: Double,
     val totalProfitPrice: Double,
     val totalFee: Double,
-    val monthlyStats: Map<CoinType, List<CoinBackTestStatistics>>,
     val tradeHistories: Map<CoinType, List<CoinBackTestTradeHistory>>,
-)
-
-data class CoinBackTestStatistics(
-    // 기간별 통계
-    val coinType: CoinType,
-    val from: LocalDateTime,
-    val to: LocalDateTime,
-    val profitRate: Double, // 수익율
-    val profitPrice: Double, // 수익금
 )
 
 data class CoinBackTestTradeHistory(
