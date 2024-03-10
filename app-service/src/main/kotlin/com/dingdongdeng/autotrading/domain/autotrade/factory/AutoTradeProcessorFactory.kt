@@ -64,7 +64,7 @@ class AutoTradeProcessorFactory(
 
         // 거래 정보 조회
         val tradeInfoFinder = { processorId: String, coinType: CoinType, now: LocalDateTime ->
-            coinTradeService.getTradeInfo(
+            coinTradeService.getTradeSummary(
                 exchangeType = exchangeType,
                 keyPairId = keyPairId,
                 autoTradeProcessorId = processorId,
