@@ -6,7 +6,7 @@ import com.dingdongdeng.autotrading.domain.strategy.component.SpotCoinStrategy
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyMakeTaskParam
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyTask
 import com.dingdongdeng.autotrading.domain.trade.entity.CoinTradeHistory
-import com.dingdongdeng.autotrading.domain.trade.model.CoinTradeInfo
+import com.dingdongdeng.autotrading.domain.trade.model.CoinTradeSummary
 import com.dingdongdeng.autotrading.infra.client.slack.SlackSender
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
@@ -28,7 +28,7 @@ class CoinAutoTradeProcessor(
     private val chartFinder: (coinType: CoinType, now: LocalDateTime) -> List<Chart>,
     private val tradeExecutor: (processorId: String, task: SpotCoinStrategyTask) -> Unit,
     private val tradeSyncer: (processorId: String, coinType: CoinType) -> List<CoinTradeHistory>,
-    private val tradeInfoFinder: (processorId: String, coinType: CoinType, now: LocalDateTime) -> CoinTradeInfo,
+    private val tradeInfoFinder: (processorId: String, coinType: CoinType, now: LocalDateTime) -> CoinTradeSummary,
 ) : Processor(
     id = id,
     userId = userId,
