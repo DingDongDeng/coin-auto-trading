@@ -69,17 +69,19 @@ class CoinBackTestUseCase(
             totalProfitRate = tradeResult.totalProfitRate,
             totalProfitPrice = tradeResult.totalProfitPrice,
             totalFee = tradeResult.totalFee,
-            tradeHistories = tradeResult.summaries.associate {
-                it.tradeHistories.first().coinType to it.tradeHistories.map { history ->
-                    CoinBackTestTradeHistory(
-                        coinType = history.coinType,
-                        orderType = history.orderType,
-                        volume = history.volume,
-                        price = history.price,
-                        tradeAt = history.tradedAt,
-                    )
-                }
-            },
+            tradeHistories = tradeResult.summaries
+                .filter { it.tradeHistories.isNotEmpty() }
+                .associate {
+                    it.tradeHistories.first().coinType to it.tradeHistories.map { history ->
+                        CoinBackTestTradeHistory(
+                            coinType = history.coinType,
+                            orderType = history.orderType,
+                            volume = history.volume,
+                            price = history.price,
+                            tradeAt = history.tradedAt,
+                        )
+                    }
+                },
         )
     }
 }
