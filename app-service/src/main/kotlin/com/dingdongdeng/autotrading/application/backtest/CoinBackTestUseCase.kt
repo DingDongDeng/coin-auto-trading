@@ -37,7 +37,6 @@ class CoinBackTestUseCase(
             exchangeType = exchangeType,
             coinTypes = coinTypes,
             candleUnits = candleUnits,
-            keyPairId = "",
             config = config,
             coinStrategyType = coinStrategyType,
         )

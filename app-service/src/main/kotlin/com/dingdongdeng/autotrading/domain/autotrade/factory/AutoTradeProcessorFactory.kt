@@ -26,7 +26,7 @@ class AutoTradeProcessorFactory(
         exchangeType: ExchangeType,
         coinTypes: List<CoinType>,
         candleUnits: List<CandleUnit>,
-        keyPairId: String,
+        keyPairId: String = "",
         config: Map<String, Any>,
         coinStrategyType: CoinStrategyType,
     ): CoinAutoTradeProcessor {
