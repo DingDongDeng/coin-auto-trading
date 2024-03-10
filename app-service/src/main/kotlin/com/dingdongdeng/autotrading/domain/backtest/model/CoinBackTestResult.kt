@@ -9,10 +9,10 @@ data class CoinBackTestResult(
     val progressRate: Double,
     val startDateTime: LocalDateTime,
     val endDateTime: LocalDateTime,
-    val profitRate: Double,
-    val profitPrice: Double,
-    val fee: Double,
-    val statistics: Map<CoinType, List<CoinBackTestStatistics>>,
+    val totalProfitRate: Double,
+    val totalProfitPrice: Double,
+    val totalFee: Double,
+    val monthlyStats: Map<CoinType, List<CoinBackTestStatistics>>,
     val tradeHistories: Map<CoinType, List<CoinBackTestTradeHistory>>,
 )
 
