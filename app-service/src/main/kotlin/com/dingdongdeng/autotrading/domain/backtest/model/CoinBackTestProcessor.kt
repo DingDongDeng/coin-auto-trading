@@ -3,6 +3,8 @@ package com.dingdongdeng.autotrading.domain.backtest.model
 import com.dingdongdeng.autotrading.domain.autotrade.model.CoinAutoTradeProcessor
 import com.dingdongdeng.autotrading.domain.process.model.Processor
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
+import com.dingdongdeng.autotrading.infra.common.type.CoinType
+import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
 import com.dingdongdeng.autotrading.infra.common.utils.minDate
 import com.dingdongdeng.autotrading.infra.common.utils.round
@@ -13,6 +15,8 @@ import kotlin.math.abs
 
 class CoinBackTestProcessor(
     override val id: String = "BACKTEST-${UUID.randomUUID()}",
+    val exchangeType: ExchangeType,
+    val coinTypes: List<CoinType>,
     val startDateTime: LocalDateTime,
     val endDateTime: LocalDateTime,
     val durationUnit: CandleUnit, // 백테스트 시간 간격
