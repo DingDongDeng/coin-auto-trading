@@ -28,7 +28,7 @@ class CoinAutoTradeProcessor(
     private val chartFinder: (coinType: CoinType, now: LocalDateTime) -> List<Chart>,
     private val tradeExecutor: (processorId: String, task: SpotCoinStrategyTask) -> Unit,
     private val tradeSyncer: (processorId: String, coinType: CoinType) -> List<CoinTradeHistory>,
-    private val tradeInfoFinder: (processorId: String, coinType: CoinType, currentPrice: Double) -> CoinTradeInfo,
+    private val tradeInfoFinder: (processorId: String, coinType: CoinType, now: LocalDateTime) -> CoinTradeInfo,
 ) : Processor(
     id = id,
     userId = userId,
@@ -53,7 +53,7 @@ class CoinAutoTradeProcessor(
 
         // 거래 정보 조회
         tradeSyncer(id, coinType)
-        val tradeInfo = tradeInfoFinder(id, coinType, charts.first().currentPrice)
+        val tradeInfo = tradeInfoFinder(id, coinType, now)
 
         return SpotCoinStrategyMakeTaskParam(exchangeType, coinType, charts, tradeInfo)
     }
