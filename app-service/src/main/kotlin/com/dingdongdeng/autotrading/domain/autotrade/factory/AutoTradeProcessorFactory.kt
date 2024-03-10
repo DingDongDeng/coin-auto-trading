@@ -63,11 +63,12 @@ class AutoTradeProcessorFactory(
         }
 
         // 거래 정보 조회
-        val tradeInfoFinder = { processorId: String, coinType: CoinType, currentPrice: Double ->
+        val tradeInfoFinder = { processorId: String, coinType: CoinType, now: LocalDateTime ->
             coinTradeService.getTradeInfo(
+                exchangeType = exchangeType,
                 autoTradeProcessorId = processorId,
                 coinType = coinType,
-                currentPrice = currentPrice,
+                now = now,
             )
         }
 
