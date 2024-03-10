@@ -16,7 +16,7 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 class CoinAutoTradeProcessor(
-    override val id: String = "AUTOTRADE-${UUID.randomUUID()}",
+    override val id: String = "${UUID.randomUUID()}",
     override val userId: Long,
     val exchangeType: ExchangeType,
     val coinTypes: List<CoinType>,
