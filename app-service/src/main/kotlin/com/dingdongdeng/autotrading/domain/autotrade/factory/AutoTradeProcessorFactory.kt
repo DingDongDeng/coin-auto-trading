@@ -66,6 +66,7 @@ class AutoTradeProcessorFactory(
         val tradeInfoFinder = { processorId: String, coinType: CoinType, now: LocalDateTime ->
             coinTradeService.getTradeInfo(
                 exchangeType = exchangeType,
+                keyPairId = keyPairId,
                 autoTradeProcessorId = processorId,
                 coinType = coinType,
                 now = now,
