@@ -87,7 +87,7 @@ class CoinTradeService(
         return CoinTradeResult(
             now = now,
             processorId = autoTradeProcessorId,
-            tradeSummaries = tradeSummaries,
+            summaries = tradeSummaries,
         )
     }
 
