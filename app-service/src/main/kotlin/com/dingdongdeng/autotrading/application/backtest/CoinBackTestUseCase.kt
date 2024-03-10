@@ -1,12 +1,13 @@
 package com.dingdongdeng.autotrading.application.backtest
 
+import com.dingdongdeng.autotrading.application.backtest.model.CoinBackTestResultDto
+import com.dingdongdeng.autotrading.application.backtest.model.CoinBackTestTradeHistory
 import com.dingdongdeng.autotrading.domain.autotrade.factory.AutoTradeProcessorFactory
 import com.dingdongdeng.autotrading.domain.backtest.factory.BackTestProcessorFactory
 import com.dingdongdeng.autotrading.domain.backtest.model.CoinBackTestProcessor
-import com.dingdongdeng.autotrading.domain.backtest.model.CoinBackTestResult
-import com.dingdongdeng.autotrading.domain.backtest.service.CoinBackTestService
 import com.dingdongdeng.autotrading.domain.process.repository.ProcessRepository
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
+import com.dingdongdeng.autotrading.domain.trade.service.CoinTradeService
 import com.dingdongdeng.autotrading.infra.common.annotation.UseCase
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
@@ -18,7 +19,7 @@ class CoinBackTestUseCase(
     private val processRepository: ProcessRepository,
     private val autoTradeProcessorFactory: AutoTradeProcessorFactory,
     private val backTestProcessorFactory: BackTestProcessorFactory,
-    private val coinBackTestService: CoinBackTestService,
+    private val coinTradeService: CoinTradeService,
 ) {
     fun backTest(
         startDateTime: LocalDateTime,
@@ -52,8 +53,33 @@ class CoinBackTestUseCase(
         return backTestProcessor.id
     }
 
-    fun getResult(backTestProcessorId: String): CoinBackTestResult {
+    fun getResult(backTestProcessorId: String): CoinBackTestResultDto {
         val processor = processRepository.findById(backTestProcessorId) as CoinBackTestProcessor
-        return coinBackTestService.getResults(processor)
+        val tradeResult = coinTradeService.getTradeResult(
+            exchangeType = processor.exchangeType,
+            autoTradeProcessorId = processor.id,
+            coinTypes = processor.coinTypes,
+            now = processor.now(),
+        )
+        return CoinBackTestResultDto(
+            backTestProcessorId = processor.id,
+            progressRate = processor.progressRate(),
+            startDateTime = processor.startDateTime,
+            endDateTime = processor.endDateTime,
+            totalProfitRate = tradeResult.totalProfitRate,
+            totalProfitPrice = tradeResult.totalProfitPrice,
+            totalFee = tradeResult.totalFee,
+            tradeHistories = tradeResult.summaries.associate {
+                it.tradeHistories.first().coinType to it.tradeHistories.map { history ->
+                    CoinBackTestTradeHistory(
+                        coinType = history.coinType,
+                        orderType = history.orderType,
+                        volume = history.volume,
+                        price = history.price,
+                        tradeAt = history.tradedAt,
+                    )
+                }
+            },
+        )
     }
 }
