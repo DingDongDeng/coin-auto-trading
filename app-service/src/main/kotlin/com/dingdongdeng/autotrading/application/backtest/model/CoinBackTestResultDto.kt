@@ -1,10 +1,10 @@
-package com.dingdongdeng.autotrading.domain.backtest.model
+package com.dingdongdeng.autotrading.application.backtest.model
 
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.OrderType
 import java.time.LocalDateTime
 
-data class CoinBackTestResult(
+data class CoinBackTestResultDto(
     val backTestProcessorId: String,
     val progressRate: Double,
     val startDateTime: LocalDateTime,
