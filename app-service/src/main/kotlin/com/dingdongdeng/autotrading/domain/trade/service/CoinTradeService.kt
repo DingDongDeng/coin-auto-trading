@@ -47,6 +47,7 @@ class CoinTradeService(
     ): CoinTradeInfo {
         val tradeHistories = coinTradeHistoryRepository.findAllCoinTradeHistories(autoTradeProcessorId, coinType)
         return CoinTradeInfo(
+            processorId = autoTradeProcessorId,
             currentPrice = currentPrice,
             tradeHistories = tradeHistories,
         )

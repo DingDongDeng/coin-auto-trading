@@ -5,6 +5,7 @@ import com.dingdongdeng.autotrading.infra.common.utils.round
 import java.time.LocalDateTime
 
 data class CoinTradeInfo(
+    val processorId: String,
     val currentPrice: Double,
     val tradeHistories: List<CoinTradeHistory>,
 ) {
@@ -19,6 +20,8 @@ data class CoinTradeInfo(
     val profitPrice = (currentValuePrice - averageValuePrice) // 손익 평가 금액 ex) currentValuePrice - averageValuePrice
     val profitRate =
         if (averageValuePrice == 0.0) 0.0 else ((profitPrice / averageValuePrice) * 100.0).round(2.0)// 수익율 (xx.xx%)
+
+    val fee = tradeHistories.sumOf { it.fee }
 
     val existsWaitTrade = tradeHistories.any { it.isWait() }
     val hasVolume = volume != 0.0
@@ -44,5 +47,4 @@ data class CoinTradeInfo(
 
         return value / volume
     }
-
 }
