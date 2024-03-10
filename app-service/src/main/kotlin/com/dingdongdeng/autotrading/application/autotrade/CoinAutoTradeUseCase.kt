@@ -60,21 +60,21 @@ class CoinAutoTradeUseCase(
         }
     }
 
-    fun start(autoTradeProcessorId: String): String {
-        val processor = processRepository.findById(autoTradeProcessorId)
+    fun start(processorId: String): String {
+        val processor = processRepository.findById(processorId)
         processor.start()
-        return autoTradeProcessorId
+        return processorId
     }
 
-    fun stop(autoTradeProcessorId: String): String {
-        val processor = processRepository.findById(autoTradeProcessorId)
+    fun stop(processorId: String): String {
+        val processor = processRepository.findById(processorId)
         processor.stop()
-        return autoTradeProcessorId
+        return processorId
     }
 
-    fun terminate(autoTradeProcessorId: String): String {
-        val processor = processRepository.findById(autoTradeProcessorId)
+    fun terminate(processorId: String): String {
+        val processor = processRepository.findById(processorId)
         processor.terminate()
-        return autoTradeProcessorId
+        return processorId
     }
 }
