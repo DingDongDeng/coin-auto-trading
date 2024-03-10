@@ -10,11 +10,9 @@ import com.dingdongdeng.autotrading.infra.common.utils.minDate
 import com.dingdongdeng.autotrading.infra.common.utils.round
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
-import java.util.UUID
 import kotlin.math.abs
 
 class CoinBackTestProcessor(
-    override val id: String = "BACKTEST-${UUID.randomUUID()}",
     val exchangeType: ExchangeType,
     val coinTypes: List<CoinType>,
     val startDateTime: LocalDateTime,
@@ -22,7 +20,7 @@ class CoinBackTestProcessor(
     val durationUnit: CandleUnit, // 백테스트 시간 간격
     private val autoTradeProcessor: CoinAutoTradeProcessor,
 ) : Processor(
-    id = id,
+    id = autoTradeProcessor.id,
     userId = autoTradeProcessor.userId,
     duration = 0,
     slackSender = null,
