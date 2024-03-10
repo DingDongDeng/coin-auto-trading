@@ -10,6 +10,7 @@ data class CoinTradeResult(
 ) {
     val totalCurrentValuePrice = summaries.sumOf { it.currentValuePrice }
     val totalAverageValuePrice = summaries.sumOf { it.averageValuePrice }
+    val totalAccProfitValuePrice = summaries.sumOf { it.accProfitValuePrice }
     val totalProfitPrice = totalCurrentValuePrice - totalAverageValuePrice
     val totalProfitRate =
         if (totalAverageValuePrice == 0.0) 0.0 else ((totalProfitPrice / totalAverageValuePrice) * 100.0).round(2.0)// 수익율 (xx.xx%)

@@ -67,6 +67,7 @@ class CoinBackTestUseCase(
             endDateTime = processor.endDateTime,
             totalProfitRate = tradeResult.totalProfitRate,
             totalProfitPrice = tradeResult.totalProfitPrice,
+            totalAccProfitValuePrice = tradeResult.totalAccProfitValuePrice,
             totalFee = tradeResult.totalFee,
             tradeHistories = tradeResult.summaries
                 .filter { it.tradeHistories.isNotEmpty() }
