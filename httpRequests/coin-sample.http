@@ -102,6 +102,10 @@ Content-Type: application/json
   }
 }
 
+
+### 백테스트 결과 조회
+GET http://localhost:8080/coin/backtest/BACKTEST-7d49641a-ddd2-468b-aa7d-f86cddcb18f5
+
 ### 자동매매 시작
 POST http://localhost:8080/coin/autotrade/BACKTEST-351d3add-c676-4b27-9b34-0843572fd726/start
 Content-Type: application/json
