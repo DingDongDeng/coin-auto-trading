@@ -17,6 +17,7 @@ class BackTestProcessorFactory(
 ) {
 
     fun of(
+        exchangeType: ExchangeType,
         startDateTime: LocalDateTime,
         endDateTime: LocalDateTime,
         durationUnit: CandleUnit, // 백테스트 시간 간격
@@ -29,6 +30,8 @@ class BackTestProcessorFactory(
             }
         }
         return CoinBackTestProcessor(
+            exchangeType = exchangeType,
+            coinTypes = autoTradeProcessor.coinTypes,
             startDateTime = startDateTime,
             endDateTime = endDateTime,
             durationUnit = durationUnit,
