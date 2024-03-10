@@ -32,7 +32,7 @@ class CoinChartService(
 
     fun getCharts(
         exchangeType: ExchangeType,
-        keyPairId: String,
+        keyPairId: String = "",
         coinType: CoinType,
         candleUnits: List<CandleUnit>,
         count: Int,
@@ -169,6 +169,7 @@ class CoinChartService(
             throw CriticalException.of("생성된 캔들의 마지막 요소 시간이 단위시간과 상이함, to=$to, unit=$candleUnit, candleLastDateTime=${candles.last().candleDateTimeKst}")
         }
 
+        //FIXME 백테는 안터질거같은데 실제 운영에서는 터질듯?? (캔들 누락)
         if (candles.first().candleDateTimeKst != CandleDateTimeUtils.makeUnitDateTime(from, candleUnit, true)) {
             throw CriticalException.of("생성된 캔들의 첫번째 요소 시간이 단위시간과 상이함, from=$from, unit=$candleUnit, candleLastDateTime=${candles.first().candleDateTimeKst}")
         }
