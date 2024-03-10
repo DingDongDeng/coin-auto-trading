@@ -4,7 +4,8 @@ import com.dingdongdeng.autotrading.domain.trade.entity.CoinTradeHistory
 import com.dingdongdeng.autotrading.infra.common.utils.round
 import java.time.LocalDateTime
 
-data class CoinTradeInfo(
+data class CoinTradeSummary(
+    val now: LocalDateTime,
     val processorId: String,
     val currentPrice: Double,
     val tradeHistories: List<CoinTradeHistory>,
