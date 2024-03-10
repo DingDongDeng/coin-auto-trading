@@ -19,7 +19,7 @@ abstract class SimpleSpotCoinStrategy<T> : SpotCoinStrategy {
                 return@flatMap thenBuyTrade(param, convertedConfig)
             }
 
-            if (param.tradeInfo.hasVolume) {
+            if (param.tradeSummary.hasVolume) {
                 if (whenProfitTrade(param, convertedConfig)) {
                     return@flatMap thenProfitTrade(param, convertedConfig)
                 }
