@@ -6,4 +6,8 @@ enum class TradeState(
     WAIT("체결 대기"),
     DONE("체결 완료"),
     CANCEL("주문 취소"),
+    ;
+
+    fun isWait(): Boolean = this == WAIT
+    fun isDone(): Boolean = this == DONE
 }
