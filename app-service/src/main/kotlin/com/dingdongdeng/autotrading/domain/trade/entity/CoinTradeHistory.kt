@@ -62,6 +62,8 @@ class CoinTradeHistory(
     val price: Double,
     @Column(name = "fee")
     val fee: Double,
+    @Column(name = "profit")
+    val profit: Double,
     @Column(name = "traded_at")
     val tradedAt: LocalDateTime,
     @Column(name = "created_at")
@@ -69,15 +71,15 @@ class CoinTradeHistory(
     @Column(name = "updated_at")
     val updatedAt: LocalDateTime = TimeContext.now(),
 ) {
-    fun isBuyOrder(): Boolean = orderType == OrderType.BUY && state == TradeState.DONE
-    fun isSellOrder(): Boolean = orderType == OrderType.SELL && state == TradeState.DONE
+    fun isBuyOrder(): Boolean = orderType.isBuy() && state.isDone()
+    fun isSellOrder(): Boolean = orderType.isSell() && state.isDone()
 
     fun cancel(): CoinTradeHistory {
         this.state = TradeState.CANCEL
         return this
     }
 
-    fun isWait(): Boolean = this.state == TradeState.WAIT
+    fun isWait(): Boolean = state.isWait()
 
     fun isOldWait(waitSeconds: Long): Boolean = isWait() && tradedAt < TimeContext.now().minusSeconds(waitSeconds)
 }

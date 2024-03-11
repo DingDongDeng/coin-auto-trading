@@ -8,11 +8,14 @@ import com.dingdongdeng.autotrading.domain.trade.entity.CoinTradeHistory
 import com.dingdongdeng.autotrading.domain.trade.model.CoinTradeResult
 import com.dingdongdeng.autotrading.domain.trade.model.CoinTradeSummary
 import com.dingdongdeng.autotrading.domain.trade.repository.CoinTradeHistoryRepository
+import com.dingdongdeng.autotrading.infra.common.exception.CriticalException
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.type.OrderType
 import com.dingdongdeng.autotrading.infra.common.type.PriceType
+import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
+import com.dingdongdeng.autotrading.infra.common.utils.round
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
@@ -36,7 +39,7 @@ class CoinTradeService(
             // WAIT 상태의 거래건들 업데이트
             if (notSyncedTradeHistory.isWait()) {
                 val order = exchangeService.getOrder(notSyncedTradeHistory.orderId, exchangeKeyPair)
-                coinTradeHistoryRepository.save(makeTradeHistory(notSyncedTradeHistory.id, order, autoTradeProcessorId))
+                coinTradeHistoryRepository.save(updateTradeHistory(notSyncedTradeHistory, order))
             } else {
                 notSyncedTradeHistory
             }
@@ -104,8 +107,8 @@ class CoinTradeService(
     ) {
         val exchangeService = exchangeServices.first { it.support(exchangeType) }
         val exchangeKeyPair = exchangeService.getKeyPair(keyPairId)
-        val orderResponse = when (orderType) {
-            OrderType.BUY, OrderType.SELL -> {
+        val orderResponse = when {
+            orderType.isBuy() || orderType.isSell() -> {
                 val param = SpotCoinExchangeOrderParam(
                     coinType = coinType,
                     orderType = orderType,
@@ -116,7 +119,8 @@ class CoinTradeService(
                 exchangeService.order(param, exchangeKeyPair)
             }
 
-            OrderType.CANCEL -> exchangeService.cancel(orderId!!, exchangeKeyPair)
+            orderType.isCancel() -> exchangeService.cancel(orderId!!, exchangeKeyPair)
+            else -> throw CriticalException.of("확인되지 않은 주문 타입 orderType=$orderType")
         }
 
         // 취소 상태 업데이트
@@ -127,21 +131,51 @@ class CoinTradeService(
         }
 
         // 매수, 매도 기록
+        val tradeSummary = this.getTradeSummary(
+            exchangeType = exchangeType,
+            keyPairId = keyPairId,
+            autoTradeProcessorId = autoTradeProcessorId,
+            coinType = coinType,
+            now = TimeContext.now(),
+        )
+        val profit =
+            if (orderType.isSell()) ((orderResponse.price - tradeSummary.averagePrice) * orderResponse.volume).round() - orderResponse.fee.round() else 0.0
         coinTradeHistoryRepository.save(
             makeTradeHistory(
                 order = orderResponse,
-                autoTradeProcessorId = autoTradeProcessorId
+                autoTradeProcessorId = autoTradeProcessorId,
+                profit = profit,
             )
         )
     }
 
-    private fun makeTradeHistory(
-        coinTradeHistoryId: Long? = null,
+    private fun updateTradeHistory(
+        history: CoinTradeHistory,
         order: SpotCoinExchangeOrder,
-        autoTradeProcessorId: String
     ): CoinTradeHistory {
         return CoinTradeHistory(
-            id = coinTradeHistoryId,
+            id = history.id,
+            orderId = order.orderId,
+            state = order.tradeState,
+            processorId = history.processorId,
+            exchangeType = order.exchangeType,
+            coinType = order.coinType,
+            orderType = order.orderType,
+            priceType = order.priceType,
+            volume = order.volume,
+            price = order.price,
+            fee = order.fee,
+            profit = history.profit,
+            tradedAt = if (order.orderType == OrderType.CANCEL) order.cancelDateTime!! else order.orderDateTime!!,
+        )
+    }
+
+    private fun makeTradeHistory(
+        order: SpotCoinExchangeOrder,
+        autoTradeProcessorId: String,
+        profit: Double,
+    ): CoinTradeHistory {
+        return CoinTradeHistory(
             orderId = order.orderId,
             state = order.tradeState,
             processorId = autoTradeProcessorId,
@@ -152,6 +186,7 @@ class CoinTradeService(
             volume = order.volume,
             price = order.price,
             fee = order.fee,
+            profit = profit,
             tradedAt = if (order.orderType == OrderType.CANCEL) order.cancelDateTime!! else order.orderDateTime!!,
         )
     }

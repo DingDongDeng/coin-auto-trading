@@ -21,7 +21,8 @@ data class CoinTradeSummary(
     val averagePrice = if (volume == 0.0) 0.0 else (calcAveragePrice()).round()
     val currentValuePrice = (volume * currentPrice).round()   // 현재 평가 금액   ex) 보유수량 X 현재가
     val averageValuePrice = (volume * averagePrice).round() // 평단가 평가 금액   ex) 보유수량 X 평단가
-    val accProfitValuePrice = (sellValuePrice - buyValuePrice - fee).round() // 누적 이익금
+
+    val accProfitPrice = (sellTradeHistories.sumOf { it.profit }).round() // 누적 이익금
     val profitPrice = (currentValuePrice - averageValuePrice) // 손익 평가 금액 ex) currentValuePrice - averageValuePrice
     val profitRate =
         if (averageValuePrice == 0.0) 0.0 else ((profitPrice / averageValuePrice) * 100.0).round(2.0)// 수익율 (xx.xx%)
