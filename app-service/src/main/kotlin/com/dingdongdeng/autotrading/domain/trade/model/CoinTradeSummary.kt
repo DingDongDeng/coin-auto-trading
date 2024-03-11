@@ -1,7 +1,6 @@
 package com.dingdongdeng.autotrading.domain.trade.model
 
 import com.dingdongdeng.autotrading.domain.trade.entity.CoinTradeHistory
-import com.dingdongdeng.autotrading.infra.common.utils.round
 import java.time.LocalDateTime
 
 data class CoinTradeSummary(
@@ -14,18 +13,18 @@ data class CoinTradeSummary(
     val sellTradeHistories = tradeHistories.filter { it.isSellOrder() }
 
     val volume = buyTradeHistories.sumOf { it.volume } - sellTradeHistories.sumOf { it.volume }
-    val fee = tradeHistories.sumOf { it.fee }.round()
+    val fee = tradeHistories.sumOf { it.fee }
 
     val buyValuePrice = buyTradeHistories.sumOf { it.volume * it.price }
     val sellValuePrice = sellTradeHistories.sumOf { it.volume * it.price }
-    val averagePrice = if (volume == 0.0) 0.0 else (calcAveragePrice()).round()
-    val currentValuePrice = (volume * currentPrice).round()   // 현재 평가 금액   ex) 보유수량 X 현재가
-    val averageValuePrice = (volume * averagePrice).round() // 평단가 평가 금액   ex) 보유수량 X 평단가
+    val averagePrice = if (volume == 0.0) 0.0 else (calcAveragePrice())
+    val currentValuePrice = (volume * currentPrice)   // 현재 평가 금액   ex) 보유수량 X 현재가
+    val averageValuePrice = (volume * averagePrice) // 평단가 평가 금액   ex) 보유수량 X 평단가
 
-    val accProfitPrice = (sellTradeHistories.sumOf { it.profit }).round() // 누적 이익금
+    val accProfitPrice = (sellTradeHistories.sumOf { it.profit }) // 누적 이익금
     val profitPrice = (currentValuePrice - averageValuePrice) // 손익 평가 금액 ex) currentValuePrice - averageValuePrice
     val profitRate =
-        if (averageValuePrice == 0.0) 0.0 else ((profitPrice / averageValuePrice) * 100.0).round(2.0)// 수익율 (xx.xx%)
+        if (averageValuePrice == 0.0) 0.0 else ((profitPrice / averageValuePrice) * 100.0)// 수익율 (xx.xx%)
 
 
     val existsWaitTrade = tradeHistories.any { it.isWait() }

@@ -12,6 +12,7 @@ import com.dingdongdeng.autotrading.infra.common.annotation.UseCase
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
+import com.dingdongdeng.autotrading.infra.common.utils.round
 import java.time.LocalDateTime
 
 @UseCase
@@ -60,15 +61,16 @@ class CoinBackTestUseCase(
             coinTypes = processor.coinTypes,
             now = processor.now(),
         )
+
         return CoinBackTestResultDto(
             backTestProcessorId = processor.id,
-            progressRate = processor.progressRate(),
+            progressRate = processor.progressRate().round(2.0),
             startDateTime = processor.startDateTime,
             endDateTime = processor.endDateTime,
-            totalProfitRate = tradeResult.totalProfitRate,
-            totalProfitPrice = tradeResult.totalProfitPrice,
-            totalAccProfitValuePrice = tradeResult.totalAccProfitPrice,
-            totalFee = tradeResult.totalFee,
+            totalProfitRate = tradeResult.totalProfitRate.round(2.0),
+            totalProfitPrice = tradeResult.totalProfitPrice.round(),
+            totalAccProfitValuePrice = tradeResult.totalAccProfitPrice.round(),
+            totalFee = tradeResult.totalFee.round(),
             tradeHistories = tradeResult.summaries
                 .filter { it.tradeHistories.isNotEmpty() }
                 .associate {
@@ -76,9 +78,9 @@ class CoinBackTestUseCase(
                         CoinBackTestTradeHistory(
                             coinType = history.coinType,
                             orderType = history.orderType,
-                            volume = history.volume,
-                            price = history.price,
-                            profit = history.profit,
+                            volume = history.volume.round(8.0),
+                            price = history.price.round(),
+                            profit = history.profit.round(),
                             tradeAt = history.tradedAt,
                         )
                     }

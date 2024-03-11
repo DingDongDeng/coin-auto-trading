@@ -15,7 +15,6 @@ import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.type.OrderType
 import com.dingdongdeng.autotrading.infra.common.type.PriceType
 import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
-import com.dingdongdeng.autotrading.infra.common.utils.round
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
@@ -139,7 +138,7 @@ class CoinTradeService(
             now = TimeContext.now(),
         )
         val profit =
-            if (orderType.isSell()) ((orderResponse.price - tradeSummary.averagePrice) * orderResponse.volume).round() - orderResponse.fee.round() else 0.0
+            if (orderType.isSell()) ((orderResponse.price - tradeSummary.averagePrice) * orderResponse.volume) - orderResponse.fee else 0.0
         coinTradeHistoryRepository.save(
             makeTradeHistory(
                 order = orderResponse,

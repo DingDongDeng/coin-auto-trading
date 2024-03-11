@@ -7,7 +7,6 @@ import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
 import com.dingdongdeng.autotrading.infra.common.utils.minDate
-import com.dingdongdeng.autotrading.infra.common.utils.round
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import kotlin.math.abs
@@ -47,7 +46,8 @@ class CoinBackTestProcessor(
     fun progressRate(): Double {
         val totalDiff = abs(startDateTime.until(endDateTime, ChronoUnit.SECONDS))
         val progressDiff = abs(startDateTime.until(now, ChronoUnit.SECONDS))
-        return (progressDiff.toDouble() / totalDiff.toDouble()).round(2.0)
+        // xx.xx%
+        return (progressDiff.toDouble() / totalDiff.toDouble()) * 100
     }
 
     fun now(): LocalDateTime = now
