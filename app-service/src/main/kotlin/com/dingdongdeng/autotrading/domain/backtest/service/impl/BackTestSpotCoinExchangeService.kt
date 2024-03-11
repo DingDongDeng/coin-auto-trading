@@ -13,6 +13,7 @@ import com.dingdongdeng.autotrading.infra.common.exception.WarnException
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.type.TradeState
 import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
+import com.dingdongdeng.autotrading.infra.common.utils.round
 import org.springframework.stereotype.Service
 import java.util.UUID
 
@@ -31,7 +32,7 @@ class BackTestSpotCoinExchangeService(
             tradeState = TradeState.DONE,
             exchangeType = EXCHANGE_TYPE,
             coinType = param.coinType,
-            fee = param.volume * param.price * (FEE_RATE / 100),
+            fee = (param.volume * param.price * (FEE_RATE / 100)).round(),
             orderDateTime = TimeContext.now(),
             cancelDateTime = null,
         )
