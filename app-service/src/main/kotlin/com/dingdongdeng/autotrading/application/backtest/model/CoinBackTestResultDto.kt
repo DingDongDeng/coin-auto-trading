@@ -21,5 +21,6 @@ data class CoinBackTestTradeHistory(
     val orderType: OrderType,
     val volume: Double,
     val price: Double,
+    val profit: Double,
     val tradeAt: LocalDateTime,
 )
