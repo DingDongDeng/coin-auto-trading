@@ -99,6 +99,6 @@ class BackTestSpotCoinExchangeService(
     companion object {
         private val EXCHANGE_TYPE = ExchangeType.BACKTEST_UPBIT
         private val EXCHANGE_TYPE_FOR_BACKTEST = ExchangeType.UPBIT // 업비트 차트로 백테스트 진행
-        private val FEE_RATE = 0.05 // upbit 수수료 0.05% 적용
+        private const val FEE_RATE = 0.05 // upbit 수수료 0.05% 적용
     }
 }
