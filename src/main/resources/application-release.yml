@@ -1,2 +1,0 @@
-slack:
-  webHookUrl: ${SLACK_WEB_HOOK_URL}
