@@ -6,6 +6,10 @@ plugins {
     id("project.build-front-conventions")
 }
 
+buildFrontEnd {
+    frontEndProject = project(":app-view:dashboard")
+}
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
 
