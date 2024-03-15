@@ -1,6 +1,8 @@
 package com.dingdongdeng.autotrading.infra.common.utils
 
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.YearMonth
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
@@ -16,6 +18,16 @@ fun LocalDateTime.toUtc(): LocalDateTime {
         .atZone(ZoneId.of("Asia/Seoul"))
         .withZoneSameInstant(ZoneId.of("UTC"))
         .toLocalDateTime()
+}
+
+fun LocalDateTime.atStartOfMonth(): LocalDate {
+    val localDate = this.toLocalDate()
+    return LocalDate.of(localDate.year, localDate.month, 1)
+}
+
+fun LocalDateTime.atEndOfMonth(): LocalDate {
+    val localDate = this.toLocalDate()
+    return YearMonth.of(localDate.year, localDate.month).atEndOfMonth()
 }
 
 fun minDate(d1: LocalDateTime, d2: LocalDateTime): LocalDateTime {
