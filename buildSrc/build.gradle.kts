@@ -23,4 +23,7 @@ dependencies {
     implementation("com.avast.gradle:gradle-docker-compose-plugin:0.16.12")
     implementation("org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:4.3.0.3225")
     implementation("com.google.cloud.tools:jib-gradle-plugin:3.4.0")
+
+    // front
+    implementation("com.github.node-gradle.node:com.github.node-gradle.node.gradle.plugin:3.2.1")
 }
