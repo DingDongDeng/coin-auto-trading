@@ -6,7 +6,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
 
 object AsyncUtils {
-    private val executor = Executors.newFixedThreadPool(100)
+    private val executor = Executors.newVirtualThreadPerTaskExecutor()
 
     fun runAsync(process: () -> Unit) {
         val traceContext = LoggingUtils.getLogData()
