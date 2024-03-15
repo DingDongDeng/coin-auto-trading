@@ -1,9 +1,11 @@
 package com.dingdongdeng.autotrading.domain.trade.model
 
 import com.dingdongdeng.autotrading.domain.trade.entity.CoinTradeHistory
+import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import java.time.LocalDateTime
 
 data class CoinTradeSummary(
+    val coinType: CoinType,
     val now: LocalDateTime,
     val processorId: String,
     val currentPrice: Double,

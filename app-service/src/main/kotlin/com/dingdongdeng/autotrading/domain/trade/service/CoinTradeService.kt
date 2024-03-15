@@ -63,6 +63,7 @@ class CoinTradeService(
             now = now,
         )
         return CoinTradeSummary(
+            coinType = coinType,
             now = now,
             processorId = autoTradeProcessorId,
             currentPrice = currentPrice,
