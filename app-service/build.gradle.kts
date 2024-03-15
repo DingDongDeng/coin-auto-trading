@@ -3,6 +3,7 @@ plugins {
     id("project.integration-test-conventions")
     id("project.kotlin-conventions")
     id("project.spring-conventions")
+    id("project.build-front-conventions")
 }
 
 dependencies {
