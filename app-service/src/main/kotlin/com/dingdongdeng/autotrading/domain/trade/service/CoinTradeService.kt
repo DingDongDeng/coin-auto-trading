@@ -6,6 +6,8 @@ import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderP
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
 import com.dingdongdeng.autotrading.domain.trade.entity.CoinTradeHistory
 import com.dingdongdeng.autotrading.domain.trade.model.CoinTradeResult
+import com.dingdongdeng.autotrading.domain.trade.model.CoinTradeResultDetail
+import com.dingdongdeng.autotrading.domain.trade.model.CoinTradeStatistics
 import com.dingdongdeng.autotrading.domain.trade.model.CoinTradeSummary
 import com.dingdongdeng.autotrading.domain.trade.repository.CoinTradeHistoryRepository
 import com.dingdongdeng.autotrading.infra.common.exception.CriticalException
@@ -14,8 +16,12 @@ import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.type.OrderType
 import com.dingdongdeng.autotrading.infra.common.type.PriceType
+import com.dingdongdeng.autotrading.infra.common.utils.LocalDateUtils
 import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
+import com.dingdongdeng.autotrading.infra.common.utils.atEndOfMonth
+import com.dingdongdeng.autotrading.infra.common.utils.atStartOfMonth
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Service
@@ -46,6 +52,43 @@ class CoinTradeService(
         return syncedTradeHistories
     }
 
+    fun getTradeResult(
+        exchangeType: ExchangeType,
+        keyPairId: String = "",
+        processorId: String,
+        coinTypes: List<CoinType>,
+        now: LocalDateTime,
+    ): CoinTradeResult {
+        val tradeDetails = coinTypes.map { coinType ->
+            val summary = this.getTradeSummary(
+                exchangeType = exchangeType,
+                keyPairId = keyPairId,
+                autoTradeProcessorId = processorId,
+                coinType = coinType,
+                now = now,
+            )
+
+            val statistics = this.getTradeMonthlyStats(
+                exchangeType = exchangeType,
+                processorId = processorId,
+                coinType = coinType,
+                fromMonth = summary.tradeHistories.first().tradedAt.atStartOfMonth(),
+                toMonth = now.atEndOfMonth(),
+            )
+
+            CoinTradeResultDetail(
+                summary = summary,
+                statistics = statistics,
+            )
+        }
+
+        return CoinTradeResult(
+            now = now,
+            processorId = processorId,
+            details = tradeDetails,
+        )
+    }
+
     fun getTradeSummary(
         exchangeType: ExchangeType,
         keyPairId: String,
@@ -71,27 +114,30 @@ class CoinTradeService(
         )
     }
 
-    fun getTradeResult(
+    fun getTradeMonthlyStats(
         exchangeType: ExchangeType,
-        keyPairId: String = "",
-        autoTradeProcessorId: String,
-        coinTypes: List<CoinType>,
-        now: LocalDateTime,
-    ): CoinTradeResult {
-        val tradeSummaries = coinTypes.map { coinType ->
-            this.getTradeSummary(
-                exchangeType = exchangeType,
-                keyPairId = keyPairId,
-                autoTradeProcessorId = autoTradeProcessorId,
+        processorId: String,
+        coinType: CoinType,
+        fromMonth: LocalDate,
+        toMonth: LocalDate,
+    ): List<CoinTradeStatistics> {
+        val tradeHistories = coinTradeHistoryRepository
+            .findAllCoinTradeHistories(processorId, coinType)
+            .filter { it.tradedAt.toLocalDate() >= fromMonth && it.tradedAt.toLocalDate() <= toMonth }
+        val monthlyHistoriesMap = tradeHistories.groupBy { Pair(it.tradedAt.year, it.tradedAt.month.value) }
+        return monthlyHistoriesMap.map { monthlyHistories ->
+            val year = monthlyHistories.key.first
+            val month = monthlyHistories.key.second
+            val histories = monthlyHistories.value
+
+            CoinTradeStatistics(
                 coinType = coinType,
-                now = now,
+                from = LocalDateUtils.atStartOfMonth(year, month),
+                to = LocalDateUtils.atEndOfMonth(year, month),
+                processorId = processorId,
+                tradeHistories = histories,
             )
         }
-        return CoinTradeResult(
-            now = now,
-            processorId = autoTradeProcessorId,
-            summaries = tradeSummaries,
-        )
     }
 
     fun trade(
