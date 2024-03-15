@@ -19,6 +19,6 @@ tasks.register<NpmTask>("npmBuild") {
 
 tasks.register("clean") {
     doFirst {
-        delete("build/dist")
+        delete("dist")
     }
 }
