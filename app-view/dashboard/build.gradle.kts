@@ -17,7 +17,7 @@ tasks.register<NpmTask>("npmBuild") {
     args = listOf("run", "build")
 }
 
-tasks.register("clean") {
+tasks.register("npmClean") {
     doFirst {
         delete("dist")
     }
