@@ -6,7 +6,6 @@ plugins {
     id("project.build-front-conventions")
 }
 
-
 // Configure the extension using a DSL block
 buildFrontEnd {
     val targetProject = project(":app-view:dashboard")
