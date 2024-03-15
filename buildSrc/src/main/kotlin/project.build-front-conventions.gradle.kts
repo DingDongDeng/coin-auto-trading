@@ -18,11 +18,11 @@ tasks.named<ProcessResources>("processResources") {
 
 // (2)
 project.task("buildFrontEnd") {
-    dependsOn("copyFiles")
+    dependsOn("copyBuildResult")
 }
 
 // (3)
-tasks.register<Copy>("copyFiles") {
+tasks.register<Copy>("copyBuildResult") {
     dependsOn("npmBuild")
     from(extension.frontEndProjectBuildPath)
     into(extension.currentProjectBuildPath)
