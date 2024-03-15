@@ -72,7 +72,7 @@ class CoinBackTestUseCase(
             totalProfitPrice = tradeResult.totalProfitPrice.round(),
             totalAccProfitValuePrice = tradeResult.totalAccProfitPrice.round(),
             totalFee = tradeResult.totalFee.round(),
-            tradeHistories = tradeResult.details
+            tradeHistoriesMap = tradeResult.details
                 .map { it.summary }
                 .filter { it.tradeHistories.isNotEmpty() }
                 .associate {
@@ -89,7 +89,7 @@ class CoinBackTestUseCase(
                     }
                     coinType to histories
                 },
-            tradeStatistics = tradeResult.details
+            tradeStatisticsMap = tradeResult.details
                 .map { it.statistics }
                 .associate {
                     val coinType = it.first().coinType

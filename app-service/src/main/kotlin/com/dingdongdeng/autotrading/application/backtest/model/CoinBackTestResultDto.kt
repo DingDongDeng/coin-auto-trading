@@ -14,8 +14,8 @@ data class CoinBackTestResultDto(
     val totalProfitPrice: Double,
     val totalAccProfitValuePrice: Double, // 수수료 제외되어있음
     val totalFee: Double,
-    val tradeHistories: Map<CoinType, List<CoinBackTestTradeHistory>>,
-    val tradeStatistics: Map<CoinType, List<CoinBackTestTradeStatistics>>
+    val tradeHistoriesMap: Map<CoinType, List<CoinBackTestTradeHistory>>,
+    val tradeStatisticsMap: Map<CoinType, List<CoinBackTestTradeStatistics>>
 )
 
 data class CoinBackTestTradeHistory(
