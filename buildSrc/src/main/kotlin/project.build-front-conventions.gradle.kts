@@ -11,29 +11,26 @@ interface BuildFrontEndPluginExtension {
 
 val extension = project.extensions.create<BuildFrontEndPluginExtension>("buildFrontEnd")
 
+// (1)
+tasks.named<ProcessResources>("processResources") {
+    dependsOn("buildFrontEnd")
+}
+
+// (2)
 project.task("buildFrontEnd") {
     dependsOn("copyFiles")
 }
 
-// npmBuild 태스크를 생성하고 설정합니다.
-tasks.register("npmBuild") {
-    val frontEndProject = extension.frontEndProject
-    // frontProject의 npmBuild 태스크에 의존성을 설정합니다.
-    dependsOn(frontEndProject.tasks.getByName("npmBuild"))
-}
-
-// copyFiles 태스크를 생성하고 설정합니다.
+// (3)
 tasks.register<Copy>("copyFiles") {
-    // npmBuild 태스크가 완료된 후에 실행되도록 dependsOn을 설정합니다.
     dependsOn("npmBuild")
-
-    // Vue.js 프로젝트의 빌드 결과물을 복사할 위치를 지정합니다.
     from(extension.frontEndProjectBuildPath)
     into(extension.currentProjectBuildPath)
 }
 
-// processResources 태스크를 수정합니다.
-tasks.named<ProcessResources>("processResources") {
-    // buildFront 태스크가 완료된 후에 실행되도록 dependsOn을 설정합니다.
-    dependsOn("buildFrontEnd")
+// (4)
+tasks.register("npmBuild") {
+    val frontEndProject = extension.frontEndProject
+    dependsOn(frontEndProject.tasks.getByName("npmBuild"))
 }
+
