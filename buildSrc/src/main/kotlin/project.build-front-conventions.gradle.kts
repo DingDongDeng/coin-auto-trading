@@ -4,19 +4,35 @@ plugins {
 // custom extension : https://docs.gradle.org/current/userguide/custom_plugins.html
 
 interface BuildFrontEndExtension {
-    var frontEndProject: Project
+    var frontEndProject: Project?
+    var frontBuildPath: String?
+    var currentBuildPath: String?
 }
 
 // 프로젝트 확장(extension)을 설정합니다.
-val frontendExtensionBuild = extensions.create<BuildFrontEndExtension>("buildFrontEnd")
+val buildFrontEndExtension = extensions.create<BuildFrontEndExtension>("buildFrontEnd")
 
 // frontProject 변수를 설정합니다.
-val frontProject = frontendExtensionBuild.frontEndProject
+val frontEndProject = buildFrontEndExtension.frontEndProject
+if (frontEndProject == null) {
+    throw RuntimeException(
+        """
+       // frontEndProject는 필수값입니다.
+       
+       ex) 아래 extension을 추가해주세요.
+       buildFrontEnd {
+          frontEndProject = project(":app-view:dashboard")
+       } 
+    """.trimIndent()
+    )
+}
+val frontProjectBuildPath = buildFrontEndExtension.frontBuildPath ?: "${frontEndProject!!.projectDir}/dist"
+val currentProjectBuildPath = buildFrontEndExtension.currentBuildPath ?: "$projectDir/src/main/resources/static"
 
 // npmBuild 태스크를 생성하고 설정합니다.
 tasks.register("npmBuild") {
     // frontProject의 npmBuild 태스크에 의존성을 설정합니다.
-    dependsOn(frontProject.tasks.getByName("npmBuild"))
+    dependsOn(frontEndProject!!.tasks.getByName("npmBuild"))
 }
 
 // copyFiles 태스크를 생성하고 설정합니다.
@@ -25,8 +41,8 @@ tasks.register<Copy>("copyFiles") {
     dependsOn("npmBuild")
 
     // Vue.js 프로젝트의 빌드 결과물을 복사할 위치를 지정합니다.
-    from("${frontProject.projectDir}/dist")
-    into("$projectDir/src/main/resources/static")
+    from(frontProjectBuildPath)
+    into(currentProjectBuildPath)
 }
 
 // buildFront 태스크를 생성하고 설정합니다.
