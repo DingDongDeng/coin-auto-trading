@@ -2,6 +2,7 @@ package com.dingdongdeng.autotrading.application.backtest
 
 import com.dingdongdeng.autotrading.application.backtest.model.CoinBackTestResultDto
 import com.dingdongdeng.autotrading.application.backtest.model.CoinBackTestTradeHistory
+import com.dingdongdeng.autotrading.application.backtest.model.CoinBackTestTradeStatistics
 import com.dingdongdeng.autotrading.domain.autotrade.factory.AutoTradeProcessorFactory
 import com.dingdongdeng.autotrading.domain.backtest.factory.BackTestProcessorFactory
 import com.dingdongdeng.autotrading.domain.backtest.model.CoinBackTestProcessor
@@ -57,7 +58,7 @@ class CoinBackTestUseCase(
         val processor = processRepository.findById(backTestProcessorId) as CoinBackTestProcessor
         val tradeResult = coinTradeService.getTradeResult(
             exchangeType = processor.exchangeType,
-            autoTradeProcessorId = processor.id,
+            processorId = processor.id,
             coinTypes = processor.coinTypes,
             now = processor.now(),
         )
@@ -71,10 +72,12 @@ class CoinBackTestUseCase(
             totalProfitPrice = tradeResult.totalProfitPrice.round(),
             totalAccProfitValuePrice = tradeResult.totalAccProfitPrice.round(),
             totalFee = tradeResult.totalFee.round(),
-            tradeHistories = tradeResult.summaries
+            tradeHistories = tradeResult.details
+                .map { it.summary }
                 .filter { it.tradeHistories.isNotEmpty() }
                 .associate {
-                    it.tradeHistories.first().coinType to it.tradeHistories.map { history ->
+                    val coinType = it.tradeHistories.first().coinType
+                    val histories = it.tradeHistories.map { history ->
                         CoinBackTestTradeHistory(
                             coinType = history.coinType,
                             orderType = history.orderType,
@@ -84,6 +87,21 @@ class CoinBackTestUseCase(
                             tradeAt = history.tradedAt,
                         )
                     }
+                    coinType to histories
+                },
+            tradeStatistics = tradeResult.details
+                .map { it.statistics }
+                .associate {
+                    val coinType = it.first().coinType
+                    val statistics = it.map { stat ->
+                        CoinBackTestTradeStatistics(
+                            coinType = stat.coinType,
+                            from = stat.from,
+                            to = stat.to,
+                            totalAccProfitPrice = stat.totalAccProfitPrice.round(),
+                        )
+                    }
+                    coinType to statistics
                 },
         )
     }
