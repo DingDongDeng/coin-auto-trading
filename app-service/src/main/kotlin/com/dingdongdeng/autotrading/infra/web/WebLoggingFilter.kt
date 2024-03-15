@@ -24,21 +24,24 @@ class WebLoggingFilter(
 
         try {
             val requestBody = objectMapper.readTree(cachingRequestWrapper.contentAsByteArray)
-            log.info(
-                "[TRANSACTION][REQ] httpMethod={}, requestUrl={}, requestBody={}",
-                request.method, request.requestURL, requestBody
-            )
+            log.info("[TRANSACTION][REQ] httpMethod=${request.method}, requestUrl=${request.requestURL}, requestBody=$requestBody")
             filterChain.doFilter(cachingRequestWrapper, cachingResponseWrapper)
-            val responseBody = objectMapper.readTree(cachingResponseWrapper.contentAsByteArray)
-            log.info(
-                "[TRANSACTION][RES] httpMethod={}, requestUrl={}, httpStatus={}, responseBody={}",
-                request.method, request.requestURL, response.status, responseBody
-            )
+            val responseBody =
+                if (hasJsonBody(response)) objectMapper.readTree(cachingResponseWrapper.contentAsByteArray) else objectMapper.createObjectNode()
+            log.info("[TRANSACTION][RES] httpMethod=${request.method}, requestUrl=${request.requestURL}, httpStatus=${response.status}, responseBody=${responseBody}")
             cachingResponseWrapper.copyBodyToResponse()
         } catch (e: Exception) {
+            log.error(e.message, e)
             throw e
         } finally {
             LoggingUtils.clear()
         }
+    }
+
+    private fun hasJsonBody(response: HttpServletResponse): Boolean {
+        if (response.contentType == null) {
+            return false
+        }
+        return response.contentType.contains("json")
     }
 }
