@@ -15,10 +15,6 @@ buildFrontEnd {
     currentProjectBuildPath = "$projectDir/src/main/resources/static"
 }
 
-//buildFrontEnd {
-//    frontEndProject = ":app-view:dashboard")
-//}
-
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
 
