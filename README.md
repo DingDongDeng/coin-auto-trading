@@ -14,9 +14,9 @@
 #### 스펙
 
 ```
-jdk 17 
-spring boot 2.7.2
-gradle 7.5.0
+jdk 21
+spring boot 3.2.1
+gradle 8.6
 ```
 #### 브렌치 전략
 ```
