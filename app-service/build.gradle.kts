@@ -6,9 +6,18 @@ plugins {
     id("project.build-front-conventions")
 }
 
+
+// Configure the extension using a DSL block
 buildFrontEnd {
-    frontEndProject = project(":app-view:dashboard")
+    val targetProject = project(":app-view:dashboard")
+    frontEndProject = targetProject
+    frontEndProjectBuildPath = "${targetProject.projectDir}/dist"
+    currentProjectBuildPath = "$projectDir/src/main/resources/static"
 }
+
+//buildFrontEnd {
+//    frontEndProject = ":app-view:dashboard")
+//}
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
