@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.http.MediaType
 import org.springframework.web.filter.OncePerRequestFilter
 import org.springframework.web.util.ContentCachingRequestWrapper
 import org.springframework.web.util.ContentCachingResponseWrapper
@@ -42,6 +43,6 @@ class WebLoggingFilter(
         if (response.contentType == null) {
             return false
         }
-        return response.contentType.contains("json")
+        return response.contentType.contains(MediaType.APPLICATION_JSON.type)
     }
 }
