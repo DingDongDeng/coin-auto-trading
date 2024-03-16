@@ -1,8 +1,8 @@
 package com.dingdongdeng.autotrading.infra.common.type
 
 enum class ExchangeType(
-    val desc: String,
-) {
+    override val desc: String,
+) : DescriptionType {
     UPBIT("업비트"),
     BINANCE("바이낸스"),
     BACKTEST_UPBIT("업비트 백테스트")
