@@ -1,8 +1,8 @@
 package com.dingdongdeng.autotrading.infra.common.type
 
 enum class CoinType(
-    val desc: String,
-) {
+    override val desc: String,
+) : DescriptionType {
     BITCOIN("비트코인"),
     ETHEREUM("이더리움"),
     NEO("네오"),
@@ -123,5 +123,4 @@ enum class CoinType(
     ASTAR("아스타"),
     SPACE_ID("스페이스아이디"),
     ;
-
 }
