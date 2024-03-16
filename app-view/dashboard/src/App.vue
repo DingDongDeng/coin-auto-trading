@@ -5,10 +5,9 @@
         </v-navigation-drawer>
 
         <v-main>
-            <v-container>
+            <v-container class="pa-10">
                 <router-view/>
             </v-container>
-            
         </v-main>
 
      
