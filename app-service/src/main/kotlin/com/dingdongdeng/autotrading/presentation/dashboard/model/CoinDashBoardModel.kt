@@ -65,11 +65,7 @@ data class CoinAutotradeChartLoadRequest(
 
     @field:NotBlank(message = "keyPairId는 필수 입력값입니다.")
     val keyPairId: String? = null,
-) {
-    init {
-        check(startDateTime!! < endDateTime!!) { "startDateTime은 endDateTime보다 과거 시간이어야 합니다." }
-    }
-}
+)
 
 data class CoinBackTestRegisterRequest(
     val startDateTime: LocalDateTime,
