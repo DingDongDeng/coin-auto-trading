@@ -51,12 +51,12 @@ class CoinDashBoardController(
         return CommonResponse(
             body = coinAutoTradeUseCase.register(
                 userId = 12345, //FIXME
-                coinStrategyType = request.coinStrategyType,
-                exchangeType = request.exchangeType,
-                coinTypes = request.coinTypes,
-                candleUnits = request.candleUnits,
-                keyPairId = request.keyPairId,
-                config = request.config,
+                coinStrategyType = request.coinStrategyType!!,
+                exchangeType = request.exchangeType!!,
+                coinTypes = request.coinTypes!!,
+                candleUnits = request.candleUnits!!,
+                keyPairId = request.keyPairId!!,
+                config = request.config!!,
             )
         )
     }
