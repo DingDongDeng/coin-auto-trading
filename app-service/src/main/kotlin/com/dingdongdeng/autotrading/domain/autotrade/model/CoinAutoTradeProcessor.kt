@@ -20,6 +20,7 @@ class CoinAutoTradeProcessor(
     override val userId: Long,
     val exchangeType: ExchangeType,
     val coinTypes: List<CoinType>,
+    val keyPairId: String,
     val config: Map<String, Any>,
     override val duration: Long = 60 * 1000, // milliseconds
     private val slackSender: SlackSender?,

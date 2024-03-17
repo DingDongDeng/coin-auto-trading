@@ -72,7 +72,7 @@ class CoinTradeService(
                 exchangeType = exchangeType,
                 processorId = processorId,
                 coinType = coinType,
-                fromMonth = summary.tradeHistories.first().tradedAt.atStartOfMonth(),
+                fromMonth = if (summary.tradeHistories.isEmpty()) now.atStartOfMonth() else summary.tradeHistories.first().tradedAt.atStartOfMonth(),
                 toMonth = now.atEndOfMonth(),
             )
 

@@ -102,7 +102,6 @@ Content-Type: application/json
   }
 }
 
-
 ### 백테스트 결과 조회
 GET http://localhost:8080/coin/processor/backtest/1f99708a-276f-4e29-af1a-eef0714fc2f4/
 
@@ -122,4 +121,8 @@ Content-Type: application/json
 
 ### 자동매매 제거
 POST http://localhost:8080/coin/processor/bdb74ff9-2d3a-4494-8ed4-70995ae7b748/terminate
+Content-Type: application/json
+
+### 자동매매 결과 조회
+GET http://localhost:8080/coin/processor/autotrade/2ee8da61-b263-4082-b885-e848c38cec94
 Content-Type: application/json

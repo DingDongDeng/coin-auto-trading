@@ -3,6 +3,7 @@ package com.dingdongdeng.autotrading.presentation.dashboard.controller
 import com.dingdongdeng.autotrading.application.auth.AuthUseCase
 import com.dingdongdeng.autotrading.application.autotrade.CoinAutoTradeUseCase
 import com.dingdongdeng.autotrading.application.autotrade.model.CoinAutoTradeProcessorDto
+import com.dingdongdeng.autotrading.application.autotrade.model.CoinAutoTradeResultDto
 import com.dingdongdeng.autotrading.application.backtest.CoinBackTestUseCase
 import com.dingdongdeng.autotrading.application.backtest.model.CoinBackTestProcessorDto
 import com.dingdongdeng.autotrading.application.backtest.model.CoinBackTestResultDto
@@ -144,6 +145,13 @@ class CoinDashBoardController(
     ): CommonResponse<String> {
         return CommonResponse(
             body = coinAutoTradeUseCase.terminate(processorId)
+        )
+    }
+
+    @GetMapping("/processor/autotrade/{processorId}")
+    fun getAutoTradeResult(@PathVariable processorId: String): CommonResponse<CoinAutoTradeResultDto> {
+        return CommonResponse(
+            body = coinAutoTradeUseCase.getResult(processorId)
         )
     }
 }

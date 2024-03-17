@@ -1,18 +1,25 @@
 package com.dingdongdeng.autotrading.application.autotrade
 
+import com.dingdongdeng.autotrading.application.autotrade.model.CoinAutoTradeHistory
 import com.dingdongdeng.autotrading.application.autotrade.model.CoinAutoTradeProcessorDto
+import com.dingdongdeng.autotrading.application.autotrade.model.CoinAutoTradeResultDto
+import com.dingdongdeng.autotrading.application.autotrade.model.CoinAutoTradeStatistics
 import com.dingdongdeng.autotrading.domain.autotrade.factory.AutoTradeProcessorFactory
 import com.dingdongdeng.autotrading.domain.autotrade.model.CoinAutoTradeProcessor
 import com.dingdongdeng.autotrading.domain.process.repository.ProcessRepository
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
+import com.dingdongdeng.autotrading.domain.trade.service.CoinTradeService
 import com.dingdongdeng.autotrading.infra.common.annotation.UseCase
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
+import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
+import com.dingdongdeng.autotrading.infra.common.utils.round
 
 @UseCase
 class CoinAutoTradeUseCase(
     private val processRepository: ProcessRepository,
+    private val coinTradeService: CoinTradeService,
     private val autoTradeProcessorFactory: AutoTradeProcessorFactory,
 ) {
 
@@ -53,21 +60,72 @@ class CoinAutoTradeUseCase(
         }
     }
 
-    fun start(processorId: String): String {
-        val processor = processRepository.findById(processorId)
+    fun start(autoTradeProcessorId: String): String {
+        val processor = processRepository.findById(autoTradeProcessorId)
         processor.start()
-        return processorId
+        return autoTradeProcessorId
     }
 
-    fun stop(processorId: String): String {
-        val processor = processRepository.findById(processorId)
+    fun stop(autoTradeProcessorId: String): String {
+        val processor = processRepository.findById(autoTradeProcessorId)
         processor.stop()
-        return processorId
+        return autoTradeProcessorId
     }
 
-    fun terminate(processorId: String): String {
-        val processor = processRepository.findById(processorId)
+    fun terminate(autoTradeProcessorId: String): String {
+        val processor = processRepository.findById(autoTradeProcessorId)
         processor.terminate()
-        return processorId
+        return autoTradeProcessorId
+    }
+
+    fun getResult(autoTradeProcessorId: String): CoinAutoTradeResultDto {
+        val processor = processRepository.findById(autoTradeProcessorId) as CoinAutoTradeProcessor
+        val tradeResult = coinTradeService.getTradeResult(
+            exchangeType = processor.exchangeType,
+            processorId = processor.id,
+            keyPairId = processor.keyPairId,
+            coinTypes = processor.coinTypes,
+            now = TimeContext.now(),
+        )
+
+        return CoinAutoTradeResultDto(
+            autoTradeProcessorId = processor.id,
+            totalProfitRate = tradeResult.totalProfitRate.round(2.0),
+            totalProfitPrice = tradeResult.totalProfitPrice.round(),
+            totalAccProfitValuePrice = tradeResult.totalAccProfitPrice.round(),
+            totalFee = tradeResult.totalFee.round(),
+            tradeHistoriesMap = tradeResult.details
+                .map { it.summary }
+                .filter { it.tradeHistories.isNotEmpty() }
+                .associate {
+                    val coinType = it.tradeHistories.first().coinType
+                    val histories = it.tradeHistories.map { history ->
+                        CoinAutoTradeHistory(
+                            coinType = history.coinType,
+                            orderType = history.orderType,
+                            volume = history.volume.round(8.0),
+                            price = history.price.round(),
+                            profit = history.profit.round(),
+                            tradeAt = history.tradedAt,
+                        )
+                    }
+                    coinType to histories
+                },
+            tradeStatisticsMap = tradeResult.details
+                .map { it.statistics }
+                .associate {
+                    val coinType = it.first().coinType
+                    val statistics = it.map { stat ->
+                        CoinAutoTradeStatistics(
+                            coinType = stat.coinType,
+                            from = stat.from,
+                            to = stat.to,
+                            totalAccProfitPrice = stat.totalAccProfitPrice.round(),
+                        )
+                    }
+                    coinType to statistics
+                },
+        )
+
     }
 }
