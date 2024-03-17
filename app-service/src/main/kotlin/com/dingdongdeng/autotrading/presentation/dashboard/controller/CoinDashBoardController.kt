@@ -2,6 +2,7 @@ package com.dingdongdeng.autotrading.presentation.dashboard.controller
 
 import com.dingdongdeng.autotrading.application.auth.AuthUseCase
 import com.dingdongdeng.autotrading.application.autotrade.CoinAutoTradeUseCase
+import com.dingdongdeng.autotrading.application.autotrade.model.CoinAutoTradeProcessorDto
 import com.dingdongdeng.autotrading.application.backtest.CoinBackTestUseCase
 import com.dingdongdeng.autotrading.application.backtest.model.CoinBackTestResultDto
 import com.dingdongdeng.autotrading.infra.web.CommonResponse
@@ -97,6 +98,15 @@ class CoinDashBoardController(
     fun getBackTestResult(@PathVariable processorId: String): CommonResponse<CoinBackTestResultDto> {
         return CommonResponse(
             body = coinBackTestUseCase.getResult(processorId)
+        )
+    }
+
+    @GetMapping("/processor")
+    fun processList(
+        //@SessionAttribute userId: Long,
+    ): CommonResponse<List<CoinAutoTradeProcessorDto>> {
+        return CommonResponse(
+            body = coinAutoTradeUseCase.getList(userId = 1234)
         )
     }
 

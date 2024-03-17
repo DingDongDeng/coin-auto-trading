@@ -1,6 +1,8 @@
 package com.dingdongdeng.autotrading.application.autotrade
 
+import com.dingdongdeng.autotrading.application.autotrade.model.CoinAutoTradeProcessorDto
 import com.dingdongdeng.autotrading.domain.autotrade.factory.AutoTradeProcessorFactory
+import com.dingdongdeng.autotrading.domain.autotrade.model.CoinAutoTradeProcessor
 import com.dingdongdeng.autotrading.domain.chart.service.CoinChartService
 import com.dingdongdeng.autotrading.domain.process.repository.ProcessRepository
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
@@ -56,6 +58,22 @@ class CoinAutoTradeUseCase(
                 startDateTime = startDateTime,
                 endDateTime = endDateTime,
                 candleUnits = candleUnits,
+            )
+        }
+    }
+
+    fun getList(userId: Long): List<CoinAutoTradeProcessorDto> {
+        val processors = processRepository.findAll(userId)
+        return processors.map {
+            it as CoinAutoTradeProcessor
+            CoinAutoTradeProcessorDto(
+                id = it.id,
+                userId = it.userId,
+                status = it.status,
+                duration = it.duration,
+                exchangeType = it.exchangeType,
+                coinTypes = it.coinTypes,
+                config = it.config,
             )
         }
     }

@@ -9,10 +9,12 @@ import java.util.UUID
 abstract class Processor(
     open val id: String = UUID.randomUUID().toString(),
     open val userId: Long,
-    private var status: ProcessStatus = ProcessStatus.INIT,
-    private val duration: Long = 60 * 1000, // milliseconds
+    val duration: Long = 60 * 1000, // milliseconds
     private val slackSender: SlackSender?,
 ) {
+    var status: ProcessStatus = ProcessStatus.INIT
+        private set
+
     fun start() {
         status = ProcessStatus.RUNNING
         AsyncUtils.runAsync {
