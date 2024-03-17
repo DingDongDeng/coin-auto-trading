@@ -9,4 +9,6 @@ enum class ProcessStatus {
     ;
 
     fun isRunning(): Boolean = this == RUNNING
+    fun isFail(): Boolean = this == FAIL
+    fun isStop(): Boolean = this == STOPPED
 }

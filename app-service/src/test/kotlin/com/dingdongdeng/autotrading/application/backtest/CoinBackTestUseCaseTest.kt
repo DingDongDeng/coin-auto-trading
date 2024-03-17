@@ -1,5 +1,6 @@
 package com.dingdongdeng.autotrading.application.backtest
 
+import com.dingdongdeng.autotrading.domain.backtest.model.CoinBackTestProcessor
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeKeyPair
 import com.dingdongdeng.autotrading.domain.process.repository.ProcessorRepository
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
@@ -8,6 +9,8 @@ import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.test.TestEnv
+import com.dingdongdeng.autotrading.test.waitByCondition
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
@@ -42,7 +45,7 @@ class CoinBackTestUseCaseTest(
             this["onceTradeAmount"] = 100000
         }
 
-        // when, then
+        // when
         val backTestProcessorId = suite.backTest(
             startDateTime = startDateTime,
             endDateTime = endDateTime,
@@ -54,9 +57,12 @@ class CoinBackTestUseCaseTest(
             candleUnits = candleUnits,
             config = config,
         )
-        val backTestProcessor = processorRepository.findById(backTestProcessorId)
+        val backTestProcessor = processorRepository.findById(backTestProcessorId) as CoinBackTestProcessor
         backTestProcessor.start()
 
-
+        // then
+        waitByCondition { backTestProcessor.progressRate() >= 99.99 }
+        Assertions.assertEquals(backTestProcessor.status.isStop(), true)
+        Assertions.assertEquals(backTestProcessor.status.isFail(), false)
     }
 }
