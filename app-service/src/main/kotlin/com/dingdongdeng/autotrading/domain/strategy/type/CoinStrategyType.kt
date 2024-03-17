@@ -6,6 +6,6 @@ enum class CoinStrategyType(
     override val desc: String,
 ) : DescriptionType {
     EXAMPLE("코인 현물 전략 예제(RSI 매매)"),
-    UPBIT_CHART_VALIDATE("백테스트 환경 교차 검증을 위한 업비트 차트 임의 구간 비교"),
+    UPBIT_CHART_VALIDATE("[테스트 코드 사용] 업비트 차트 기반 벨리데이션"),
     ;
 }
