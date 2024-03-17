@@ -1,5 +1,6 @@
 package com.dingdongdeng.autotrading.application.backtest
 
+import com.dingdongdeng.autotrading.application.backtest.model.CoinBackTestProcessorDto
 import com.dingdongdeng.autotrading.application.backtest.model.CoinBackTestResultDto
 import com.dingdongdeng.autotrading.application.backtest.model.CoinBackTestTradeHistory
 import com.dingdongdeng.autotrading.application.backtest.model.CoinBackTestTradeStatistics
@@ -52,6 +53,21 @@ class CoinBackTestUseCase(
         processRepository.save(backTestProcessor)
         backTestProcessor.start()
         return backTestProcessor.id
+    }
+
+    fun getList(userId: Long): List<CoinBackTestProcessorDto> {
+        val processors = processRepository.findAll(userId)
+        return processors.filterIsInstance<CoinBackTestProcessor>().map {
+            CoinBackTestProcessorDto(
+                id = it.id,
+                userId = it.userId,
+                status = it.status,
+                duration = it.duration,
+                exchangeType = it.exchangeType,
+                coinTypes = it.coinTypes,
+                config = it.config(),
+            )
+        }
     }
 
     fun getResult(backTestProcessorId: String): CoinBackTestResultDto {

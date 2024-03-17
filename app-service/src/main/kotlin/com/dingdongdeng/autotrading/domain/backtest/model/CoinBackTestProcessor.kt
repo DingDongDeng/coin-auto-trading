@@ -50,5 +50,7 @@ class CoinBackTestProcessor(
         return (progressDiff.toDouble() / totalDiff.toDouble()) * 100
     }
 
+    fun config(): Map<String, Any> = autoTradeProcessor.config
+
     fun now(): LocalDateTime = now
 }

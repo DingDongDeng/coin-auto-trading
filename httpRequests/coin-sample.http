@@ -106,8 +106,11 @@ Content-Type: application/json
 ### 백테스트 결과 조회
 GET http://localhost:8080/coin/processor/backtest/1f99708a-276f-4e29-af1a-eef0714fc2f4/
 
-### 프로세서 목록 조회
-GET http://localhost:8080/coin/processor
+### 자동매매 프로세서 목록 조회
+GET http://localhost:8080/coin/processor/autotrade
+
+### 백테스트 프로세서 목록 조회
+GET http://localhost:8080/coin/processor/backtest
 
 ### 자동매매 시작
 POST http://localhost:8080/coin/processor/BACKTEST-351d3add-c676-4b27-9b34-0843572fd726/start

@@ -64,8 +64,7 @@ class CoinAutoTradeUseCase(
 
     fun getList(userId: Long): List<CoinAutoTradeProcessorDto> {
         val processors = processRepository.findAll(userId)
-        return processors.map {
-            it as CoinAutoTradeProcessor
+        return processors.filterIsInstance<CoinAutoTradeProcessor>().map {
             CoinAutoTradeProcessorDto(
                 id = it.id,
                 userId = it.userId,
