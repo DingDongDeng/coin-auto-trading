@@ -35,9 +35,9 @@ class CoinDashBoardController(
     ): CommonResponse<String> {
         return CommonResponse(
             body = authUseCase.registerKey(
-                exchangeType = request.exchangeType,
-                accessKey = request.accessKey,
-                secretKey = request.secretKey,
+                exchangeType = request.exchangeType!!,
+                accessKey = request.accessKey!!,
+                secretKey = request.secretKey!!,
                 userId = 12345, //FIXME
             )
         )

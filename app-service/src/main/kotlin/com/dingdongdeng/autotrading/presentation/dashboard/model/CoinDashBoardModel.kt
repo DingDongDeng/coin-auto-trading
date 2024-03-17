@@ -4,14 +4,18 @@ import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
+import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 import java.time.LocalDateTime
 
 data class CoinExchangeKeyRegisterRequest(
-    val exchangeType: ExchangeType,
-    val accessKey: String,
-    val secretKey: String,
+    @field:NotNull(message = "exchangeType는 필수 입력값입니다.")
+    val exchangeType: ExchangeType? = null,
+    @field:NotBlank(message = "accessKey는 필수 입력값입니다.")
+    val accessKey: String? = null,
+    @field:NotBlank(message = "secretKey는 필수 입력값입니다.")
+    val secretKey: String? = null,
 )
 
 data class CoinAutotradeRegisterRequest(
