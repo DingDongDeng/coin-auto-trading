@@ -13,8 +13,10 @@ import java.time.LocalDateTime
 data class CoinExchangeKeyRegisterRequest(
     @field:NotNull(message = "exchangeType는 필수 입력값입니다.")
     val exchangeType: ExchangeType? = null,
+
     @field:NotBlank(message = "accessKey는 필수 입력값입니다.")
     val accessKey: String? = null,
+
     @field:NotBlank(message = "secretKey는 필수 입력값입니다.")
     val secretKey: String? = null,
 )
@@ -22,36 +24,45 @@ data class CoinExchangeKeyRegisterRequest(
 data class CoinAutotradeRegisterRequest(
     @field:NotNull(message = "coinStrategyType는 필수 입력값입니다.")
     val coinStrategyType: CoinStrategyType? = null,
+
     @field:NotNull(message = "exchangeType는 필수 입력값입니다.")
     val exchangeType: ExchangeType? = null,
+
     @field:Size(message = "coinTypes는 최소 1개 이상 요소가 필요합니다.", min = 1)
     @field:NotNull(message = "coinTypes는 필수 입력값입니다.")
     val coinTypes: List<CoinType>? = null,
+
     @field:Size(message = "candleUnits는 최소 1개 이상 요소가 필요합니다.", min = 1)
     @field:NotNull(message = "candleUnits는 필수 입력값입니다.")
     val candleUnits: List<CandleUnit>? = null,
+
     @field:NotBlank(message = "keyPairId는 필수 입력값입니다.")
     val keyPairId: String? = null,
+
     @field:NotNull(message = "config는 필수 입력값입니다.")
     val config: Map<String, Any>? = null,
-) {
-}
+)
 
 data class CoinAutotradeChartLoadRequest(
     @field:NotNull(message = "exchangeType는 필수 입력값입니다.")
     val exchangeType: ExchangeType? = null,
+
     @field:Size(message = "coinTypes는 최소 1개 이상 요소가 필요합니다.", min = 1)
     @field:NotNull(message = "coinTypes는 필수 입력값입니다.")
     val coinTypes: List<CoinType>? = null,
+
     @field:Size(message = "candleUnits는 최소 1개 이상 요소가 필요합니다.", min = 1)
     @field:NotNull(message = "candleUnits는 필수 입력값입니다.")
     val candleUnits: List<CandleUnit>? = null,
+
     @field:Past(message = "startDateTime는 현재보다 과거 시간이어야 합니다.")
-    @field:NotBlank(message = "startDateTime는 필수 입력값입니다.")
+    @field:NotNull(message = "startDateTime는 필수 입력값입니다.")
     val startDateTime: LocalDateTime? = null,
+
     @field:Past(message = "endDateTime는 현재보다 과거 시간이어야 합니다.")
-    @field:NotBlank(message = "endDateTime는 필수 입력값입니다.")
+    @field:NotNull(message = "endDateTime는 필수 입력값입니다.")
     val endDateTime: LocalDateTime? = null,
+
     @field:NotBlank(message = "keyPairId는 필수 입력값입니다.")
     val keyPairId: String? = null,
 ) {

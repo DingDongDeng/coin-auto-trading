@@ -12,6 +12,7 @@ import com.dingdongdeng.autotrading.domain.process.repository.ProcessRepository
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.domain.trade.service.CoinTradeService
 import com.dingdongdeng.autotrading.infra.common.annotation.UseCase
+import com.dingdongdeng.autotrading.infra.common.exception.WarnException
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
@@ -66,6 +67,9 @@ class CoinBackTestUseCase(
         candleUnits: List<CandleUnit>,
         keyPairId: String,
     ) {
+        if (startDateTime > endDateTime) {
+            throw WarnException.of("시작 시간은 끝 시간보다 이전이어야 합니다.")
+        }
         AsyncUtils.joinAll(coinTypes) { coinType ->
             coinChartService.loadCharts(
                 coinType = coinType,
