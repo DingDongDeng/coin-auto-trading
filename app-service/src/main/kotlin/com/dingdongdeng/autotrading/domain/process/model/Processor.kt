@@ -9,7 +9,7 @@ import java.util.UUID
 abstract class Processor(
     open val id: String = UUID.randomUUID().toString(),
     open val userId: Long,
-    val duration: Long = 60 * 1000, // milliseconds
+    open val duration: Long = 60 * 1000, // milliseconds
     private val slackSender: SlackSender?,
 ) {
     var status: ProcessStatus = ProcessStatus.INIT

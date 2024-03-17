@@ -21,7 +21,7 @@ class CoinAutoTradeProcessor(
     val exchangeType: ExchangeType,
     val coinTypes: List<CoinType>,
     val config: Map<String, Any>,
-    private val duration: Long = 60 * 1000, // milliseconds
+    override val duration: Long = 60 * 1000, // milliseconds
     private val slackSender: SlackSender?,
 
     private val strategy: SpotCoinStrategy,

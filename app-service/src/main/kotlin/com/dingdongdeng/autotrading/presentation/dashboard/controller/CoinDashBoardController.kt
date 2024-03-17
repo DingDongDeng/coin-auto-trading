@@ -84,7 +84,7 @@ class CoinDashBoardController(
                 startDateTime = request.startDateTime,
                 endDateTime = request.endDateTime,
                 durationUnit = request.durationUnit,
-                userId = 1234, //FIXME
+                userId = 12345, //FIXME
                 coinStrategyType = request.coinStrategyType,
                 exchangeType = request.exchangeType,
                 coinTypes = request.coinTypes,
@@ -106,7 +106,7 @@ class CoinDashBoardController(
         //@SessionAttribute userId: Long,
     ): CommonResponse<List<CoinAutoTradeProcessorDto>> {
         return CommonResponse(
-            body = coinAutoTradeUseCase.getList(userId = 1234)
+            body = coinAutoTradeUseCase.getList(userId = 12345) //FIXME
         )
     }
 
