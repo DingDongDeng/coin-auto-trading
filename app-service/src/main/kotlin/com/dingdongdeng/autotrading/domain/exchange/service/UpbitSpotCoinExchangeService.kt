@@ -155,7 +155,7 @@ class UpbitSpotCoinExchangeService(
     override fun getKeyPair(keyPairId: String): ExchangeKeyPair {
         val exchangeKeys = exchangeKeyRepository.findByExchangeTypeAndKeyPairId(EXCHANGE_TYPE, keyPairId)
         if (exchangeKeys.size < 2) {
-            WarnException.of("사용한 거래소 key가 부족하거나 없습니다.")
+            throw WarnException.of("사용한 거래소 key가 부족하거나 없습니다.")
         }
         return ExchangeKeyPair(
             accessKey = exchangeKeys.first { it.name == ACCESS_KEY_NAME }.value,
