@@ -4,5 +4,9 @@ enum class ProcessStatus {
     INIT,
     RUNNING,
     STOPPED,
-    TERMINATED
+    TERMINATED,
+    FAIL,
+    ;
+
+    fun isRunning(): Boolean = this == RUNNING
 }

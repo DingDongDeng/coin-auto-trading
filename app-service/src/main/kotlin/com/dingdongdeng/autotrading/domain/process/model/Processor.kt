@@ -19,21 +19,21 @@ abstract class Processor(
         status = ProcessStatus.RUNNING
         AsyncUtils.runAsync {
             val startTime = System.currentTimeMillis()
-            while (status == ProcessStatus.RUNNING && runnable()) {
+            while (status.isRunning() && runnable()) {
                 try {
                     sleep()
                     process()
                 } catch (e: Exception) {
                     log.error("processor 동작 중 실패, id={}, e.meesage={}", id, e.message, e)
                     slackSender?.send("userId : $userId, processorId : $id", e)
-                    this.stop()
+                    this.fail()
                     throw e
                 }
             }
+            this.stop()
             val endTime = System.currentTimeMillis()
             val elapsedTime = endTime - startTime
-
-            log.info("프로세서 종료 : {}, {}ms 소요", id, elapsedTime)
+            log.info("프로세서 정지 : {}, {}ms 소요", id, elapsedTime)
         }
     }
 
@@ -43,6 +43,10 @@ abstract class Processor(
 
     fun terminate() {
         status = ProcessStatus.TERMINATED
+    }
+
+    private fun fail() {
+        status = ProcessStatus.FAIL
     }
 
     abstract fun process()
