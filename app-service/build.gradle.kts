@@ -33,3 +33,6 @@ dependencies {
     // 보조 지표 계산을 위함
     implementation("com.tictactec:ta-lib:0.4.0")
 }
+//TODO 아크유닛 도입 어때
+// https://d2.naver.com/helloworld/9222129
+// https://www.archunit.org/
