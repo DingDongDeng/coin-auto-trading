@@ -96,9 +96,8 @@ class CoinAutoTradeUseCase(
             totalFee = tradeResult.totalFee.round(),
             tradeHistoriesMap = tradeResult.details
                 .map { it.summary }
-                .filter { it.tradeHistories.isNotEmpty() }
                 .associate {
-                    val coinType = it.tradeHistories.first().coinType
+                    val coinType = it.coinType
                     val histories = it.tradeHistories.map { history ->
                         CoinAutoTradeHistory(
                             coinType = history.coinType,
@@ -112,10 +111,9 @@ class CoinAutoTradeUseCase(
                     coinType to histories
                 },
             tradeStatisticsMap = tradeResult.details
-                .map { it.statistics }
                 .associate {
-                    val coinType = it.first().coinType
-                    val statistics = it.map { stat ->
+                    val coinType = it.summary.coinType
+                    val statistics = it.statistics.map { stat ->
                         CoinAutoTradeStatistics(
                             coinType = stat.coinType,
                             from = stat.from,

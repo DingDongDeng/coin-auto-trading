@@ -54,7 +54,7 @@ class CoinTradeService(
 
     fun getTradeResult(
         exchangeType: ExchangeType,
-        keyPairId: String = "",
+        keyPairId: String,
         processorId: String,
         coinTypes: List<CoinType>,
         now: LocalDateTime,
