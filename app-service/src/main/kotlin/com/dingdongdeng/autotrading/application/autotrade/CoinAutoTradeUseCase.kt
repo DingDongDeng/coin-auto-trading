@@ -3,21 +3,17 @@ package com.dingdongdeng.autotrading.application.autotrade
 import com.dingdongdeng.autotrading.application.autotrade.model.CoinAutoTradeProcessorDto
 import com.dingdongdeng.autotrading.domain.autotrade.factory.AutoTradeProcessorFactory
 import com.dingdongdeng.autotrading.domain.autotrade.model.CoinAutoTradeProcessor
-import com.dingdongdeng.autotrading.domain.chart.service.CoinChartService
 import com.dingdongdeng.autotrading.domain.process.repository.ProcessRepository
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.infra.common.annotation.UseCase
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
-import com.dingdongdeng.autotrading.infra.common.utils.AsyncUtils
-import java.time.LocalDateTime
 
 @UseCase
 class CoinAutoTradeUseCase(
     private val processRepository: ProcessRepository,
     private val autoTradeProcessorFactory: AutoTradeProcessorFactory,
-    private val coinChartService: CoinChartService,
 ) {
 
     fun register(
@@ -40,26 +36,6 @@ class CoinAutoTradeUseCase(
             coinStrategyType = coinStrategyType,
         )
         return processRepository.save(processor)
-    }
-
-    fun loadCharts(
-        exchangeType: ExchangeType,
-        coinTypes: List<CoinType>,
-        startDateTime: LocalDateTime,
-        endDateTime: LocalDateTime,
-        candleUnits: List<CandleUnit>,
-        keyPairId: String,
-    ) {
-        AsyncUtils.joinAll(coinTypes) { coinType ->
-            coinChartService.loadCharts(
-                coinType = coinType,
-                keyPairId = keyPairId,
-                exchangeType = exchangeType,
-                startDateTime = startDateTime,
-                endDateTime = endDateTime,
-                candleUnits = candleUnits,
-            )
-        }
     }
 
     fun getList(userId: Long): List<CoinAutoTradeProcessorDto> {

@@ -64,7 +64,7 @@ class CoinDashBoardController(
     fun chartLoad(
         @Valid @RequestBody request: CoinAutotradeChartLoadRequest,
     ): CommonResponse<Boolean> {
-        coinAutoTradeUseCase.loadCharts(
+        coinBackTestUseCase.loadCharts(
             exchangeType = request.exchangeType,
             coinTypes = request.coinTypes,
             startDateTime = request.startDateTime,

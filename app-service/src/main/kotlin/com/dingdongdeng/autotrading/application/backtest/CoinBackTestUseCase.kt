@@ -7,6 +7,7 @@ import com.dingdongdeng.autotrading.application.backtest.model.CoinBackTestTrade
 import com.dingdongdeng.autotrading.domain.autotrade.factory.AutoTradeProcessorFactory
 import com.dingdongdeng.autotrading.domain.backtest.factory.BackTestProcessorFactory
 import com.dingdongdeng.autotrading.domain.backtest.model.CoinBackTestProcessor
+import com.dingdongdeng.autotrading.domain.chart.service.CoinChartService
 import com.dingdongdeng.autotrading.domain.process.repository.ProcessRepository
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.domain.trade.service.CoinTradeService
@@ -14,6 +15,7 @@ import com.dingdongdeng.autotrading.infra.common.annotation.UseCase
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
+import com.dingdongdeng.autotrading.infra.common.utils.AsyncUtils
 import com.dingdongdeng.autotrading.infra.common.utils.round
 import java.time.LocalDateTime
 
@@ -23,6 +25,7 @@ class CoinBackTestUseCase(
     private val autoTradeProcessorFactory: AutoTradeProcessorFactory,
     private val backTestProcessorFactory: BackTestProcessorFactory,
     private val coinTradeService: CoinTradeService,
+    private val coinChartService: CoinChartService,
 ) {
     fun backTest(
         startDateTime: LocalDateTime,
@@ -53,6 +56,26 @@ class CoinBackTestUseCase(
         processRepository.save(backTestProcessor)
         backTestProcessor.start()
         return backTestProcessor.id
+    }
+
+    fun loadCharts(
+        exchangeType: ExchangeType,
+        coinTypes: List<CoinType>,
+        startDateTime: LocalDateTime,
+        endDateTime: LocalDateTime,
+        candleUnits: List<CandleUnit>,
+        keyPairId: String,
+    ) {
+        AsyncUtils.joinAll(coinTypes) { coinType ->
+            coinChartService.loadCharts(
+                coinType = coinType,
+                keyPairId = keyPairId,
+                exchangeType = exchangeType,
+                startDateTime = startDateTime,
+                endDateTime = endDateTime,
+                candleUnits = candleUnits,
+            )
+        }
     }
 
     fun getList(userId: Long): List<CoinBackTestProcessorDto> {
