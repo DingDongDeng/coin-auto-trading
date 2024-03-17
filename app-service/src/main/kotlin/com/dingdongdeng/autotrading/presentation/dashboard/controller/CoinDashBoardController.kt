@@ -83,15 +83,15 @@ class CoinDashBoardController(
     ): CommonResponse<String> {
         return CommonResponse(
             body = coinBackTestUseCase.backTest(
-                startDateTime = request.startDateTime,
-                endDateTime = request.endDateTime,
-                durationUnit = request.durationUnit,
+                startDateTime = request.startDateTime!!,
+                endDateTime = request.endDateTime!!,
+                durationUnit = request.durationUnit!!,
                 userId = 12345, //FIXME
-                coinStrategyType = request.coinStrategyType,
-                exchangeType = request.exchangeType,
-                coinTypes = request.coinTypes,
-                candleUnits = request.candleUnits,
-                config = request.config,
+                coinStrategyType = request.coinStrategyType!!,
+                exchangeType = request.exchangeType!!,
+                coinTypes = request.coinTypes!!,
+                candleUnits = request.candleUnits!!,
+                config = request.config!!,
             ),
         )
     }
