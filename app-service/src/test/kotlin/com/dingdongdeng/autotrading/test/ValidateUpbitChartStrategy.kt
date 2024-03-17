@@ -1,4 +1,4 @@
-package com.dingdongdeng.autotrading.domain.strategy.component.impl.validate
+package com.dingdongdeng.autotrading.test
 
 import com.dingdongdeng.autotrading.domain.strategy.component.SpotCoinStrategy
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyMakeTaskParam
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
 @Component
-class ValidateUpbitChart : SpotCoinStrategy {
+class ValidateUpbitChartStrategy : SpotCoinStrategy {
 
     override fun makeTask(
         params: List<SpotCoinStrategyMakeTaskParam>,
