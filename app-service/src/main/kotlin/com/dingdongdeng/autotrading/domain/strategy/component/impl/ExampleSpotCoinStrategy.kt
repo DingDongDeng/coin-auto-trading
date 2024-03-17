@@ -26,14 +26,14 @@ class ExampleSpotCoinStrategy(
         param: SpotCoinStrategyMakeTaskParam,
         config: ExampleSpotCoinStrategyConfig
     ): Boolean {
-        return param.tradeInfo.existsWaitTrade
+        return param.tradeSummary.existsWaitTrade
     }
 
     override fun thenWaitTrades(
         param: SpotCoinStrategyMakeTaskParam,
         config: ExampleSpotCoinStrategyConfig
     ): List<SpotCoinStrategyTask> {
-        return param.tradeInfo.getOldWaitTrades(30L)
+        return param.tradeSummary.getOldWaitTrades(30L)
             .map {
                 SpotCoinStrategyTask.ofCancel(
                     orderId = it.orderId,
@@ -49,15 +49,15 @@ class ExampleSpotCoinStrategy(
         param: SpotCoinStrategyMakeTaskParam,
         config: ExampleSpotCoinStrategyConfig
     ): Boolean {
-        if (param.tradeInfo.hasVolume) {
+        if (param.tradeSummary.hasVolume) {
             return false
         }
-        if (param.tradeInfo.lastTradedAt > TimeContext.now().minusDays(1)) {
+        if (param.tradeSummary.lastTradedAt > TimeContext.now().minusDays(1)) {
             return false
         }
 
         val chart15M = param.getChart(CandleUnit.UNIT_15M)
-        val rsi = chart15M.last(1).indicators.rsi
+        val rsi = chart15M.getLast(1).indicators.rsi
         return rsi < 0.3
     }
 
@@ -70,14 +70,14 @@ class ExampleSpotCoinStrategy(
             "매수",
             param.coinType,
             (config.onceTradeAmount / chart15M.currentPrice),
-            param.tradeInfo.currentPrice,
+            param.tradeSummary.currentPrice,
             0.0
         )
         return listOf(
             SpotCoinStrategyTask.ofBuyLimit(
                 coinType = param.coinType,
                 volume = (config.onceTradeAmount / chart15M.currentPrice).round(4.0),
-                price = param.tradeInfo.currentPrice,
+                price = param.tradeSummary.currentPrice,
             )
         )
     }
@@ -87,16 +87,16 @@ class ExampleSpotCoinStrategy(
         config: ExampleSpotCoinStrategyConfig
     ): Boolean {
         val chart15M = param.getChart(CandleUnit.UNIT_15M)
-        if (param.tradeInfo.profitRate <= 0) {
+        if (param.tradeSummary.profitRate <= 0) {
             return false
         }
-        if (chart15M.last(1).indicators.rsi < 0.65) {
+        if (chart15M.getLast(1).indicators.rsi < 0.65) {
             return false
         }
-        if (param.tradeInfo.profitRate <= 8.0) {
+        if (param.tradeSummary.profitRate <= 8.0) {
             return false
         }
-        if (param.tradeInfo.lastTradedAt > TimeContext.now().minusDays(1)) {
+        if (param.tradeSummary.lastTradedAt > TimeContext.now().minusDays(1)) {
             return false
         }
         return true
@@ -106,12 +106,18 @@ class ExampleSpotCoinStrategy(
         param: SpotCoinStrategyMakeTaskParam,
         config: ExampleSpotCoinStrategyConfig
     ): List<SpotCoinStrategyTask> {
-        log("익절", param.coinType, param.tradeInfo.volume, param.tradeInfo.currentPrice, param.tradeInfo.profitPrice)
+        log(
+            "익절",
+            param.coinType,
+            param.tradeSummary.volume,
+            param.tradeSummary.currentPrice,
+            param.tradeSummary.profitPrice
+        )
         return listOf(
             SpotCoinStrategyTask.ofSellLimit(
                 coinType = param.coinType,
-                volume = param.tradeInfo.volume,
-                price = param.tradeInfo.currentPrice,
+                volume = param.tradeSummary.volume,
+                price = param.tradeSummary.currentPrice,
             )
         )
     }
@@ -121,16 +127,16 @@ class ExampleSpotCoinStrategy(
         config: ExampleSpotCoinStrategyConfig
     ): Boolean {
         val chart15M = param.getChart(CandleUnit.UNIT_15M)
-        if (param.tradeInfo.profitRate >= 0) {
+        if (param.tradeSummary.profitRate >= 0) {
             return false
         }
-        if (chart15M.last(1).indicators.rsi > 0.30) {
+        if (chart15M.getLast(1).indicators.rsi > 0.30) {
             return false
         }
-        if (param.tradeInfo.profitRate >= -5.0) {
+        if (param.tradeSummary.profitRate >= -5.0) {
             return false
         }
-        if (param.tradeInfo.lastTradedAt > TimeContext.now().minusDays(1)) {
+        if (param.tradeSummary.lastTradedAt > TimeContext.now().minusDays(1)) {
             return false
         }
         return true
@@ -140,12 +146,18 @@ class ExampleSpotCoinStrategy(
         param: SpotCoinStrategyMakeTaskParam,
         config: ExampleSpotCoinStrategyConfig
     ): List<SpotCoinStrategyTask> {
-        log("손절", param.coinType, param.tradeInfo.volume, param.tradeInfo.currentPrice, param.tradeInfo.profitPrice)
+        log(
+            "손절",
+            param.coinType,
+            param.tradeSummary.volume,
+            param.tradeSummary.currentPrice,
+            param.tradeSummary.profitPrice
+        )
         return listOf(
             SpotCoinStrategyTask.ofSellLimit(
                 coinType = param.coinType,
-                volume = param.tradeInfo.volume,
-                price = param.tradeInfo.currentPrice,
+                volume = param.tradeSummary.volume,
+                price = param.tradeSummary.currentPrice,
             )
         )
     }
