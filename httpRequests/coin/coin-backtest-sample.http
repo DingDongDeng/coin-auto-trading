@@ -1,0 +1,87 @@
+### 거래소 키 등록
+POST http://localhost:8080/coin/exchange-key
+Content-Type: application/json
+
+{
+  "exchangeType": "UPBIT",
+  "accessKey": "access key",
+  "secretKey": "secret key"
+}
+
+### 서버에 거래소 캔들 정보 저장
+POST http://localhost:8080/coin/chart/load
+Content-Type: application/json
+
+{
+  "exchangeType": "UPBIT",
+  "coinTypes": [
+    "BITCOIN",
+    "ETHEREUM",
+    "SOLANA"
+  ],
+  "candleUnits": [
+    "UNIT_1M",
+    "UNIT_3M",
+    "UNIT_5M",
+    "UNIT_10M",
+    "UNIT_15M",
+    "UNIT_30M",
+    "UNIT_60M",
+    "UNIT_240M"
+  ],
+  "startDateTime": "2023-01-01T00:00:00",
+  "endDateTime": "2023-04-01T00:00:00",
+  "keyPairId": "354db64e-e208-4dc3-ab8b-8478ab55dc89"
+}
+
+### 백테스트
+POST http://localhost:8080/coin/processor/backtest
+Content-Type: application/json
+
+{
+  "startDateTime": "2023-02-15T00:00:00",
+  "endDateTime": "2023-03-31T00:00:00",
+  "durationUnit": "UNIT_1M",
+  "coinStrategyType": "EXAMPLE",
+  "exchangeType": "BACKTEST_UPBIT",
+  "coinTypes": [
+    "BITCOIN",
+    "ETHEREUM",
+    "SOLANA"
+  ],
+  "candleUnits": [
+    "UNIT_15M"
+  ],
+  "config": {
+    "onceTradeAmount": 100000
+  }
+}
+
+### 백테스트 결과 조회
+GET http://localhost:8080/coin/processor/backtest/1f99708a-276f-4e29-af1a-eef0714fc2f4/
+
+### 백테스트 프로세서 목록 조회
+GET http://localhost:8080/coin/processor/backtest
+
+
+### 번외) 백테스트 (비트코인 차트 검증용)
+POST http://localhost:8080/coin/processor/backtest
+Content-Type: application/json
+
+{
+  "startDateTime": "2023-02-15T00:00:00",
+  "endDateTime": "2023-03-31T00:00:00",
+  "durationUnit": "UNIT_1M",
+  "coinStrategyType": "UPBIT_CHART_VALIDATE",
+  "exchangeType": "BACKTEST_UPBIT",
+  "coinTypes": [
+    "BITCOIN"
+  ],
+  "candleUnits": [
+    "UNIT_1M",
+    "UNIT_15M"
+  ],
+  "config": {
+    "onceTradeAmount": 100000
+  }
+}

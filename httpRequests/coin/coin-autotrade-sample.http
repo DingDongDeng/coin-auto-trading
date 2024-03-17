@@ -1,0 +1,51 @@
+### 거래소 키 등록
+POST http://localhost:8080/coin/exchange-key
+Content-Type: application/json
+
+{
+  "exchangeType": "UPBIT",
+  "accessKey": "access key",
+  "secretKey": "secret key"
+}
+
+### 자동매매 등록
+POST http://localhost:8080/coin/processor/autotrade
+Content-Type: application/json
+
+{
+  "coinStrategyType": "EXAMPLE",
+  "exchangeType": "UPBIT",
+  "coinTypes": [
+    "BITCOIN",
+    "ETHEREUM",
+    "SOLANA"
+  ],
+  "candleUnits": [
+    "UNIT_1M",
+    "UNIT_3M"
+  ],
+  "keyPairId": "354db64e-e208-4dc3-ab8b-8478ab55dc89",
+  "config": {
+    "configA": "TESTA",
+    "configB": 123
+  }
+}
+
+### 자동매매 프로세서 목록 조회
+GET http://localhost:8080/coin/processor/autotrade
+
+### 자동매매 시작
+POST http://localhost:8080/coin/processor/BACKTEST-351d3add-c676-4b27-9b34-0843572fd726/start
+Content-Type: application/json
+
+### 자동매매 정지
+POST http://localhost:8080/coin/processor/160f2665-4f86-4d19-b6bf-7ef3f4fede46/stop
+Content-Type: application/json
+
+### 자동매매 제거
+POST http://localhost:8080/coin/processor/bdb74ff9-2d3a-4494-8ed4-70995ae7b748/terminate
+Content-Type: application/json
+
+### 자동매매 결과 조회
+GET http://localhost:8080/coin/processor/autotrade/2ee8da61-b263-4082-b885-e848c38cec94
+Content-Type: application/json
