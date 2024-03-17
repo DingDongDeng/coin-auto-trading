@@ -5,7 +5,7 @@ import com.dingdongdeng.autotrading.infra.common.exception.WarnException
 import org.springframework.stereotype.Repository
 
 @Repository
-class ProcessRepository {
+class ProcessorRepository {
 
     private val storedProcessors = mutableMapOf<String, Processor>()
 
