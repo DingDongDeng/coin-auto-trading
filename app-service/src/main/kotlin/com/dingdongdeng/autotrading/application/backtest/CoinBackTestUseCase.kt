@@ -8,7 +8,7 @@ import com.dingdongdeng.autotrading.domain.autotrade.factory.AutoTradeProcessorF
 import com.dingdongdeng.autotrading.domain.backtest.factory.BackTestProcessorFactory
 import com.dingdongdeng.autotrading.domain.backtest.model.CoinBackTestProcessor
 import com.dingdongdeng.autotrading.domain.chart.service.CoinChartService
-import com.dingdongdeng.autotrading.domain.process.repository.ProcessRepository
+import com.dingdongdeng.autotrading.domain.process.repository.ProcessorRepository
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.domain.trade.service.CoinTradeService
 import com.dingdongdeng.autotrading.infra.common.annotation.UseCase
@@ -22,7 +22,7 @@ import java.time.LocalDateTime
 
 @UseCase
 class CoinBackTestUseCase(
-    private val processRepository: ProcessRepository,
+    private val processorRepository: ProcessorRepository,
     private val autoTradeProcessorFactory: AutoTradeProcessorFactory,
     private val backTestProcessorFactory: BackTestProcessorFactory,
     private val coinTradeService: CoinTradeService,
@@ -54,7 +54,7 @@ class CoinBackTestUseCase(
             durationUnit = durationUnit,
             autoTradeProcessor = autoTradeProcessor,
         )
-        processRepository.save(backTestProcessor)
+        processorRepository.save(backTestProcessor)
         backTestProcessor.start()
         return backTestProcessor.id
     }
@@ -83,7 +83,7 @@ class CoinBackTestUseCase(
     }
 
     fun getList(userId: Long): List<CoinBackTestProcessorDto> {
-        val processors = processRepository.findAll(userId)
+        val processors = processorRepository.findAll(userId)
         return processors.filterIsInstance<CoinBackTestProcessor>().map {
             CoinBackTestProcessorDto(
                 id = it.id,
@@ -98,7 +98,7 @@ class CoinBackTestUseCase(
     }
 
     fun getResult(backTestProcessorId: String): CoinBackTestResultDto {
-        val processor = processRepository.findById(backTestProcessorId) as CoinBackTestProcessor
+        val processor = processorRepository.findById(backTestProcessorId) as CoinBackTestProcessor
         val tradeResult = coinTradeService.getTradeResult(
             exchangeType = processor.exchangeType,
             processorId = processor.id,

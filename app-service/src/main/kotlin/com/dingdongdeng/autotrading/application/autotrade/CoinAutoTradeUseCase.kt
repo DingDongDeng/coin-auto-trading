@@ -6,7 +6,7 @@ import com.dingdongdeng.autotrading.application.autotrade.model.CoinAutoTradeRes
 import com.dingdongdeng.autotrading.application.autotrade.model.CoinAutoTradeStatistics
 import com.dingdongdeng.autotrading.domain.autotrade.factory.AutoTradeProcessorFactory
 import com.dingdongdeng.autotrading.domain.autotrade.model.CoinAutoTradeProcessor
-import com.dingdongdeng.autotrading.domain.process.repository.ProcessRepository
+import com.dingdongdeng.autotrading.domain.process.repository.ProcessorRepository
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.domain.trade.service.CoinTradeService
 import com.dingdongdeng.autotrading.infra.common.annotation.UseCase
@@ -18,7 +18,7 @@ import com.dingdongdeng.autotrading.infra.common.utils.round
 
 @UseCase
 class CoinAutoTradeUseCase(
-    private val processRepository: ProcessRepository,
+    private val processorRepository: ProcessorRepository,
     private val coinTradeService: CoinTradeService,
     private val autoTradeProcessorFactory: AutoTradeProcessorFactory,
 ) {
@@ -42,11 +42,11 @@ class CoinAutoTradeUseCase(
             config = config,
             coinStrategyType = coinStrategyType,
         )
-        return processRepository.save(processor)
+        return processorRepository.save(processor)
     }
 
     fun getList(userId: Long): List<CoinAutoTradeProcessorDto> {
-        val processors = processRepository.findAll(userId)
+        val processors = processorRepository.findAll(userId)
         return processors.filterIsInstance<CoinAutoTradeProcessor>().map {
             CoinAutoTradeProcessorDto(
                 id = it.id,
@@ -61,25 +61,25 @@ class CoinAutoTradeUseCase(
     }
 
     fun start(autoTradeProcessorId: String): String {
-        val processor = processRepository.findById(autoTradeProcessorId)
+        val processor = processorRepository.findById(autoTradeProcessorId)
         processor.start()
         return autoTradeProcessorId
     }
 
     fun stop(autoTradeProcessorId: String): String {
-        val processor = processRepository.findById(autoTradeProcessorId)
+        val processor = processorRepository.findById(autoTradeProcessorId)
         processor.stop()
         return autoTradeProcessorId
     }
 
     fun terminate(autoTradeProcessorId: String): String {
-        val processor = processRepository.findById(autoTradeProcessorId)
+        val processor = processorRepository.findById(autoTradeProcessorId)
         processor.terminate()
         return autoTradeProcessorId
     }
 
     fun getResult(autoTradeProcessorId: String): CoinAutoTradeResultDto {
-        val processor = processRepository.findById(autoTradeProcessorId) as CoinAutoTradeProcessor
+        val processor = processorRepository.findById(autoTradeProcessorId) as CoinAutoTradeProcessor
         val tradeResult = coinTradeService.getTradeResult(
             exchangeType = processor.exchangeType,
             processorId = processor.id,
