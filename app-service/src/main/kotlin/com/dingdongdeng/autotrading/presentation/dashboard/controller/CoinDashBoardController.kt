@@ -66,12 +66,12 @@ class CoinDashBoardController(
         @Valid @RequestBody request: CoinAutotradeChartLoadRequest,
     ): CommonResponse<Boolean> {
         coinBackTestUseCase.loadCharts(
-            exchangeType = request.exchangeType,
-            coinTypes = request.coinTypes,
-            startDateTime = request.startDateTime,
-            endDateTime = request.endDateTime,
-            candleUnits = request.candleUnits,
-            keyPairId = request.keyPairId,
+            exchangeType = request.exchangeType!!,
+            coinTypes = request.coinTypes!!,
+            startDateTime = request.startDateTime!!,
+            endDateTime = request.endDateTime!!,
+            candleUnits = request.candleUnits!!,
+            keyPairId = request.keyPairId!!,
         )
         return CommonResponse(true)
     }
