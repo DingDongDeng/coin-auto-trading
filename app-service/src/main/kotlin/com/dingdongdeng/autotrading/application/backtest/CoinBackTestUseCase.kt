@@ -48,7 +48,6 @@ class CoinBackTestUseCase(
             coinStrategyType = coinStrategyType,
         )
         val backTestProcessor = backTestProcessorFactory.of(
-            exchangeType = exchangeType,
             startDateTime = startDateTime,
             endDateTime = endDateTime,
             durationUnit = durationUnit,
