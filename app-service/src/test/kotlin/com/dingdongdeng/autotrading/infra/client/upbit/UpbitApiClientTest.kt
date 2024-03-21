@@ -107,13 +107,13 @@ class UpbitApiClientTest(
     @DisplayName("분봉_캔들_조회_테스트")
     @Test
     fun test6() {
-        val to = LocalDateTime.of(2022, 1, 13, 21, 9, 0)
+        val to = LocalDateTime.of(2023, 4, 1, 5, 9, 0)
         val request = CandleRequest(
             unit = 1,
-            market = "KRW-ETH",
+            market = MarketType.of(CoinType.SOLANA).code,
             timeAsKst = to,
             candleUnit = CandleUnit.UNIT_1M,
-            count = 2,
+            count = 10,
         )
         val response = upbitApiClient.getCandle(request, makeToken(request))
         log.info("result : {}", response)
