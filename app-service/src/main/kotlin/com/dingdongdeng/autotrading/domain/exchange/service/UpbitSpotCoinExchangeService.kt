@@ -25,7 +25,7 @@ import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 @Service
 class UpbitSpotCoinExchangeService(
@@ -109,7 +109,7 @@ class UpbitSpotCoinExchangeService(
             val firstCandle = totalResponse.first()
             val isCompleted = firstCandle.candleDateTimeKst < param.from
             if (isCompleted) {
-                log.info("캔들 조회 완료, from={}, to={}", param.from, param.to)
+                log.info("캔들 조회 완료, exchangeType=${EXCHANGE_TYPE}, coinType=${param.coinType}, unit=${param.candleUnit}, from=${param.from}, to=${param.to}")
                 break
             }
             val response = requestCandles(
