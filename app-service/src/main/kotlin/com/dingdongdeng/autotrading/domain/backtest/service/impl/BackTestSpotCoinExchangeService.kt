@@ -15,7 +15,7 @@ import com.dingdongdeng.autotrading.infra.common.type.TradeState
 import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
 import com.dingdongdeng.autotrading.infra.common.utils.round
 import org.springframework.stereotype.Service
-import java.util.UUID
+import java.util.*
 
 @Service
 class BackTestSpotCoinExchangeService(
@@ -98,7 +98,7 @@ class BackTestSpotCoinExchangeService(
 
     companion object {
         private val EXCHANGE_TYPE = ExchangeType.BACKTEST_UPBIT
-        private val EXCHANGE_TYPE_FOR_BACKTEST = ExchangeType.UPBIT // 업비트 차트로 백테스트 진행
+        private val EXCHANGE_TYPE_FOR_BACKTEST = EXCHANGE_TYPE.asReal
         private const val FEE_RATE = 0.05 // upbit 수수료 0.05% 적용
     }
 }
