@@ -17,20 +17,19 @@ class BackTestProcessorFactory(
 ) {
 
     fun of(
-        exchangeType: ExchangeType,
         startDateTime: LocalDateTime,
         endDateTime: LocalDateTime,
         durationUnit: CandleUnit, // 백테스트 시간 간격
         autoTradeProcessor: CoinAutoTradeProcessor,
     ): CoinBackTestProcessor {
         autoTradeProcessor.coinTypes.forEach { coinType ->
-            val ranges = getAvailRanges(autoTradeProcessor.exchangeType, coinType, startDateTime, endDateTime)
+            val ranges = getAvailRanges(autoTradeProcessor.exchangeType.asReal, coinType, startDateTime, endDateTime)
             if (ranges.none { it.isRanged(coinType, startDateTime, endDateTime) }) {
                 throw WarnException.of("백테스트 불가능한 구간입니다. availBackTestRanges=$ranges")
             }
         }
         return CoinBackTestProcessor(
-            exchangeType = exchangeType,
+            exchangeType = autoTradeProcessor.exchangeType,
             coinTypes = autoTradeProcessor.coinTypes,
             startDateTime = startDateTime,
             endDateTime = endDateTime,
