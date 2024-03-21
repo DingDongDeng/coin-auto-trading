@@ -20,7 +20,7 @@ import java.time.LocalDateTime
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @SpringBootTest
 class CoinBackTestUseCaseTest(
-    val suite: CoinBackTestUseCase,
+    val coinBackTestUseCase: CoinBackTestUseCase,
     val processorRepository: ProcessorRepository
 ) {
     val keyParam = ExchangeKeyPair(
@@ -28,10 +28,9 @@ class CoinBackTestUseCaseTest(
         secretKey = TestEnv.UPBIT_SECRET_KEY,
     )
 
-    @DisplayName("[업비트][비트코인][2024-02-27 ~ 2024-02-29] 보조 지표 일관성 검증")
+    @DisplayName("[업비트][비트코인][2024-02-27 ~ 2024-02-29] 보조 지표 일관성 검증, 로컬에 데이터 세팅이 되어있어야함")
     @Test
     fun test1() {
-
         // given
         LoggingUtils.trace()
         val startDateTime = LocalDateTime.of(2023, 2, 15, 0, 0, 0)
@@ -44,9 +43,7 @@ class CoinBackTestUseCaseTest(
         val config = mutableMapOf<String, Any>().apply {
             this["onceTradeAmount"] = 100000
         }
-
-        // when
-        val backTestProcessorId = suite.backTest(
+        val backTestProcessorId = coinBackTestUseCase.backTest(
             startDateTime = startDateTime,
             endDateTime = endDateTime,
             durationUnit = durationUnit,
@@ -57,12 +54,14 @@ class CoinBackTestUseCaseTest(
             candleUnits = candleUnits,
             config = config,
         )
-        val backTestProcessor = processorRepository.findById(backTestProcessorId) as CoinBackTestProcessor
-        backTestProcessor.start()
+
+        // when
+        val suite = processorRepository.findById(backTestProcessorId) as CoinBackTestProcessor
+        suite.start()
 
         // then
-        waitByCondition { backTestProcessor.progressRate() >= 99.99 }
-        Assertions.assertEquals(backTestProcessor.status.isStop(), true)
-        Assertions.assertEquals(backTestProcessor.status.isFail(), false)
+        waitByCondition { suite.progressRate() >= 99.99 }
+        Assertions.assertEquals(suite.status.isStop(), true)
+        Assertions.assertEquals(suite.status.isFail(), false)
     }
 }
