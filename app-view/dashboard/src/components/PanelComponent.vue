@@ -24,11 +24,11 @@
 <script>
 
 
-export default {
-    name: 'PanelComponent',
+    export default {
+        name: 'PanelComponent',
 
-    props: {
-        title: String
+        props: {
+            title: String
+        }
     }
-}
 </script>

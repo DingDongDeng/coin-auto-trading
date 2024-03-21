@@ -1,5 +1,4 @@
-import { defineStore } from "pinia";
-import axios from 'axios';
+import {defineStore} from "pinia";
 
 // async function getContent(id) {
 //   const response = await axios.get('http://localhost:8080/' + id);
@@ -13,24 +12,21 @@ import axios from 'axios';
 // }
 
 
-
 export const useNoticeStore = defineStore("backtestStore", {
 
-  state: () => ({
-    notice: Object,
-    notices: [],
-    lastLoadedId: 0,
-    loading: false,
-  }),
+    state: () => ({
+        notice: Object,
+        notices: [],
+        lastLoadedId: 0,
+        loading: false,
+    }),
 
 
-  getters: {
+    getters: {},
 
-  },
+    actions: {
+        async loadData(id) {
 
-  actions: {
-    async loadData(id) {
-
+        }
     }
-  }
 });

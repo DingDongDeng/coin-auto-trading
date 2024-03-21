@@ -6,8 +6,8 @@
 
 <script>
 
-export default {
-    name: 'SettingView',
+    export default {
+        name: 'SettingView',
 
-}
+    }
 </script>
