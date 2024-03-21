@@ -24,9 +24,6 @@ object RestClientUtils {
     // 타임아웃 설정 관련 : https://github.com/spring-projects/spring-boot/issues/38716
 
     fun makeRestClient(baseUrl: String, readTimeout: Long, connectionTimeout: Long): RestClient {
-        //FIXME
-        // MDC 컨텍스트는 잘 유지될까?
-
         val requestFactory = ClientHttpRequestFactories.get(
             ClientHttpRequestFactorySettings.DEFAULTS
                 .withConnectTimeout(Duration.ofMillis(readTimeout))
@@ -50,49 +47,33 @@ object RestClientUtils {
 
         override fun intercept(
             request: HttpRequest,
-            body: ByteArray,
+            requestBody: ByteArray,
             execution: ClientHttpRequestExecution
         ): ClientHttpResponse {
-            logRequest(request, body)
-            val response = execution.execute(request, body)
-            logResponse(request, response)
+            val response = execution.execute(request, requestBody)
+            log(request, requestBody, response)
             return response
         }
 
-        private fun logRequest(request: HttpRequest, body: ByteArray) {
-            log.info(
-                """
-                ===log request start=== 
-                URI: {},
-                Method: {},
-                Headers: {},
-                Request body: {},
-                ===log request end=== 
-                """.trimIndent(),
-                request.uri,
-                request.method,
-                request.headers,
-                String(body, charset("UTF-8"))
-            )
-        }
-
-        private fun logResponse(request: HttpRequest, response: ClientHttpResponse) {
-            log.info(
-                """
-                ===log response start===
-                URI: {},
-                Status code: {},
-                Status text: {},
-                Headers: {},
-                Response body: {},
-                ===log response end===
-                """.trimIndent(),
-                request.uri,
-                response.statusCode,
-                response.statusText,
-                response.headers,
-                StreamUtils.copyToString(response.body, Charset.defaultCharset())
-            )
+        private fun log(request: HttpRequest, requestBody: ByteArray, response: ClientHttpResponse) {
+            if (response.statusCode.isError) {
+                log.error(
+                    """
+                    ====== rest client log ===== 
+                    ## request
+                    URI: ${request.uri},
+                    Method: ${request.method},
+                    Headers: ${request.headers},
+                    Request body: ${String(requestBody, charset("UTF-8"))},
+                    
+                    ## response
+                    Headers: ${response.headers}
+                    Status code: ${response.statusCode},
+                    Status text: ${response.statusText},                
+                    Response Body: ${StreamUtils.copyToString(response.body, Charset.defaultCharset())}
+                """.trimIndent()
+                )
+            }
         }
     }
 }
