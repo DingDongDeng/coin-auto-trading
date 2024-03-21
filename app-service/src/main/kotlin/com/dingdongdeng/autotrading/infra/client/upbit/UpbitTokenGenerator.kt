@@ -3,11 +3,10 @@ package com.dingdongdeng.autotrading.infra.client.upbit
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.dingdongdeng.autotrading.infra.client.common.QueryParamsConverter
-import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
 import org.springframework.stereotype.Component
 import java.math.BigInteger
 import java.security.MessageDigest
-import java.util.UUID
+import java.util.*
 
 @Component
 class UpbitTokenGenerator(
@@ -30,7 +29,6 @@ class UpbitTokenGenerator(
     private fun makeQueryHash(request: Any): String {
         return try {
             val params = queryParamsConverter.convertStr(request).substring(1) //?name=aaa&age=12 형태에서 ? 제거
-            log.info("upbit query hash by params : {}", params)
             val md = MessageDigest.getInstance("SHA-512")
             md.update(params.toByteArray(charset("UTF-8")))
             String.format("%0128x", BigInteger(1, md.digest()))
