@@ -59,7 +59,7 @@ class CoinBackTestUseCaseTest(
         val backTestProcessor = processorRepository.findById(backTestProcessorId) as CoinBackTestProcessor
 
         // then
-        waitByCondition { backTestProcessor.progressRate() >= 99.99 }
+        waitByCondition { backTestProcessor.progressRate() >= 99.99 || backTestProcessor.status.isFail() }
         Assertions.assertEquals(backTestProcessor.status.isStop(), true)
         Assertions.assertEquals(backTestProcessor.status.isFail(), false)
     }
