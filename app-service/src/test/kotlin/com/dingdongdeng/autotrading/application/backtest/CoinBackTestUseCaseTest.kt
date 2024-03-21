@@ -20,7 +20,7 @@ import java.time.LocalDateTime
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @SpringBootTest
 class CoinBackTestUseCaseTest(
-    val coinBackTestUseCase: CoinBackTestUseCase,
+    val suite: CoinBackTestUseCase,
     val processorRepository: ProcessorRepository
 ) {
     val keyParam = ExchangeKeyPair(
@@ -43,7 +43,9 @@ class CoinBackTestUseCaseTest(
         val config = mutableMapOf<String, Any>().apply {
             this["onceTradeAmount"] = 100000
         }
-        val backTestProcessorId = coinBackTestUseCase.backTest(
+
+        // when
+        val backTestProcessorId = suite.backTest(
             startDateTime = startDateTime,
             endDateTime = endDateTime,
             durationUnit = durationUnit,
@@ -54,14 +56,11 @@ class CoinBackTestUseCaseTest(
             candleUnits = candleUnits,
             config = config,
         )
-
-        // when
-        val suite = processorRepository.findById(backTestProcessorId) as CoinBackTestProcessor
-        suite.start()
+        val backTestProcessor = processorRepository.findById(backTestProcessorId) as CoinBackTestProcessor
 
         // then
-        waitByCondition { suite.progressRate() >= 99.99 }
-        Assertions.assertEquals(suite.status.isStop(), true)
-        Assertions.assertEquals(suite.status.isFail(), false)
+        waitByCondition { backTestProcessor.progressRate() >= 99.99 }
+        Assertions.assertEquals(backTestProcessor.status.isStop(), true)
+        Assertions.assertEquals(backTestProcessor.status.isFail(), false)
     }
 }
