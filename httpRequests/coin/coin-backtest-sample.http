@@ -21,16 +21,10 @@ Content-Type: application/json
   ],
   "candleUnits": [
     "UNIT_1M",
-    "UNIT_3M",
-    "UNIT_5M",
-    "UNIT_10M",
-    "UNIT_15M",
-    "UNIT_30M",
-    "UNIT_60M",
-    "UNIT_240M"
+    "UNIT_15M"
   ],
   "startDateTime": "2023-01-01T00:00:00",
-  "endDateTime": "2023-04-01T00:00:00",
+  "endDateTime": "2023-12-31T00:00:00",
   "keyPairId": "a773e707-0525-4827-8d42-f34e780755b7"
 }
 
