@@ -1,6 +1,5 @@
 package com.dingdongdeng.autotrading.infra.client.upbit
 
-import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
 import org.springframework.stereotype.Component
 import java.time.Duration
 import java.time.LocalDateTime
@@ -31,7 +30,6 @@ class UpbitApiRateLimiter {
             // API가 초당 N번 호출되었다면 sleep
             if (countPerSeconds > 4) {
                 Thread.sleep(1000)
-                log.warn("업비트API 호출량 조절을 위해 sleep 동작")
                 resetState()
                 countRequest()
                 return
