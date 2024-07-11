@@ -9,6 +9,8 @@ import java.time.LocalDateTime
 // [주문 요청]       초당 8회
 // [주문 요청 외 API] 초당 30회
 // 초당 10회 (종목, 캔들, 체결, 티커, 호가별 각각 적용)
+
+//FIXME bucket4j껄로 사용해보자
 @Component
 class UpbitApiRateLimiter {
 
