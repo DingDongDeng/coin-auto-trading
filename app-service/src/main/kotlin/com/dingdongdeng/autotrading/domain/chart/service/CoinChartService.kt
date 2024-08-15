@@ -72,16 +72,14 @@ class CoinChartService(
         from: LocalDateTime,
         to: LocalDateTime,
     ): Chart {
-        val chartParam = SpotCoinExchangeChartParam(
+        val exchangeCandles = getCandlesByCount(
+            exchangeType = exchangeType,
+            keyPairId = keyPairId,
             coinType = coinType,
             candleUnit = candleUnit,
-            from = from.minusSeconds(candleUnit.getSecondSize() * (CALCULATE_INDICATOR_CANDLE_COUNT + CANDLE_COUNT_BUFFER)),
             to = to,
+            candleCount = 2 * CALCULATE_INDICATOR_CANDLE_COUNT,
         )
-        val exchangeService = exchangeServices.first { it.support(exchangeType) }
-        val exchangeKeyPair = exchangeService.getKeyPair(keyPairId)
-        val exchangeChart = exchangeService.getChart(chartParam, exchangeKeyPair)
-        val exchangeCandles = exchangeChart.candles.sortedBy { it.candleDateTimeKst } // 혹시 모르니 한번 더 정렬
 
         val candles = mutableListOf<Candle>()
         for (startIndex in exchangeCandles.indices) {
@@ -121,22 +119,40 @@ class CoinChartService(
             throw CriticalException.of("캔들의 보조 지표 계산을 위한 적절한 수의 과거 캔들을 추출하는데 실패")
         }
 
-        if (candles.last().candleDateTimeKst != CandleDateTimeUtils.makeUnitDateTime(to, candleUnit)) {
-            throw CriticalException.of("생성된 캔들의 마지막 요소 시간이 단위시간과 상이함, to=$to, unit=$candleUnit, candleLastDateTime=${candles.last().candleDateTimeKst}")
-        }
-
-        //FIXME 백테는 안터질거같은데 실제 운영에서는 터질듯?? (캔들 누락)
-        if (candles.first().candleDateTimeKst != CandleDateTimeUtils.makeUnitDateTime(from, candleUnit, true)) {
-            throw CriticalException.of("생성된 캔들의 첫번째 요소 시간이 단위시간과 상이함, from=$from, unit=$candleUnit, candleLastDateTime=${candles.first().candleDateTimeKst}")
-        }
-
         return Chart(
             from = candles.first().candleDateTimeKst,
             to = candles.last().candleDateTimeKst,
-            currentPrice = candles.last().closingPrice,
             candleUnit = candleUnit,
             candles = candles,
         )
+    }
+
+    private fun getCandlesByCount(
+        exchangeType: ExchangeType,
+        keyPairId: String,
+        coinType: CoinType,
+        candleUnit: CandleUnit,
+        to: LocalDateTime,
+        candleCount: Int,
+    ): List<ExchangeChartCandle> {
+        val exchangeService = exchangeServices.first { it.support(exchangeType) }
+        val exchangeKeyPair = exchangeService.getKeyPair(keyPairId)
+        var candles = emptyList<ExchangeChartCandle>()
+        var loopCnt = 0
+        // 필요한 캔들 숫자가 조회될때까지 반복
+        while (candles.size < candleCount) {
+            val endDateTime = to.minusSeconds(candleUnit.getSecondSize() * candleCount * loopCnt++) // 루프마다 기준점이 달라짐
+            val startDateTime = endDateTime.minusSeconds(candleUnit.getSecondSize() * candleCount)
+            val chartParam2 = SpotCoinExchangeChartParam(
+                coinType = coinType,
+                candleUnit = candleUnit,
+                from = startDateTime,
+                to = endDateTime,
+            )
+            candles = candles + exchangeService.getChart(chartParam2, exchangeKeyPair).candles
+        }
+
+        return candles.takeLast(candleCount)
     }
 
     private fun loadChartProcess(
@@ -221,7 +237,6 @@ class CoinChartService(
     }
 
     companion object {
-        private const val CANDLE_COUNT_BUFFER = 50 // 캔들 유실 케이스 고려
         private const val CALCULATE_INDICATOR_CANDLE_COUNT = 200
         private const val CHART_LOAD_CHUNK_SIZE = 1000
     }
