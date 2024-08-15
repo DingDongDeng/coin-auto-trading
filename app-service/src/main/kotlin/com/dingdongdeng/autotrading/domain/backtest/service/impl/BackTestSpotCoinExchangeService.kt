@@ -8,14 +8,14 @@ import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartP
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrder
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderParam
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
-import com.dingdongdeng.autotrading.infra.common.exception.CriticalException
 import com.dingdongdeng.autotrading.infra.common.exception.WarnException
+import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.type.TradeState
 import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
 import com.dingdongdeng.autotrading.infra.common.utils.round
 import org.springframework.stereotype.Service
-import java.util.*
+import java.util.UUID
 
 @Service
 class BackTestSpotCoinExchangeService(
@@ -69,13 +69,12 @@ class BackTestSpotCoinExchangeService(
         }
 
         if (candles.isEmpty()) {
-            throw CriticalException.of("백테스트 캔들 조회 결과가 존재하지 않음, exchangeType=$EXCHANGE_TYPE_FOR_BACKTEST,  unit=${param.candleUnit}, from=${param.from}, to=${param.to}")
+            log.warn("백테스트 캔들 조회 결과가 존재하지 않음, exchangeType=$EXCHANGE_TYPE_FOR_BACKTEST,  unit=${param.candleUnit}, from=${param.from}, to=${param.to}")
         }
 
         return ExchangeChart(
             from = param.from,
             to = param.to,
-            currentPrice = candles.last().closingPrice,
             candles = candles,
         )
 
