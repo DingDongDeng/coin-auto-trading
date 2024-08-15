@@ -142,7 +142,7 @@ class CoinChartService(
         // 필요한 캔들 숫자가 조회될때까지 반복
         while (candles.size < candleCount) {
             val endDateTime = to.minusSeconds(candleUnit.getSecondSize() * candleCount * loopCnt++) // 루프마다 기준점이 달라짐
-            val startDateTime = endDateTime.minusSeconds(candleUnit.getSecondSize() * candleCount)
+            val startDateTime = endDateTime.minusSeconds(candleUnit.getSecondSize() * (candleCount - 1))
             val chartParam2 = SpotCoinExchangeChartParam(
                 coinType = coinType,
                 candleUnit = candleUnit,
