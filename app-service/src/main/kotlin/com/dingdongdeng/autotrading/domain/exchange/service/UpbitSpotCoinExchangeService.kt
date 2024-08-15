@@ -105,7 +105,7 @@ class UpbitSpotCoinExchangeService(
         )
 
         // from <= 조회 범위 <= to 를 만족하도록 부족한 캔들을 조회
-        while (true) {
+        while (totalResponse.isNotEmpty()) {
             val firstCandle = totalResponse.first()
             val isCompleted = firstCandle.candleDateTimeKst < param.from
             if (isCompleted) {
