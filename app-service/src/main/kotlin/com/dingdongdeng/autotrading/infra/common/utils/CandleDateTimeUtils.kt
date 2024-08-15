@@ -14,10 +14,10 @@ object CandleDateTimeUtils {
 
     /**
      * 캔들 단위와 일치하는 시간을 반환
-     * ex) 15:17, UNIT_15M, true = 15:15
-     * ex) 15:14, UNIT_15M, true = 15:00
-     * ex) 15:17, UNIT_15M, false = 15:30
-     * ex) 15:14, UNIT_15M, false = 15:15
+     * ex) 15:17, UNIT_15M, true = 15:30
+     * ex) 15:14, UNIT_15M, true = 15:15
+     * ex) 15:17, UNIT_15M, false = 15:15
+     * ex) 15:14, UNIT_15M, false = 15:00
      */
     fun makeUnitDateTime(
         dateTime: LocalDateTime,
@@ -89,7 +89,7 @@ object CandleDateTimeUtils {
         return missingCandles
     }
 
-    fun diffSeconds(from: LocalDateTime, to: LocalDateTime): Long {
+    private fun diffSeconds(from: LocalDateTime, to: LocalDateTime): Long {
         // Duration을 사용하여 계산하면 백테스트에서 적지않은 시간을 사용함
         // 단순 계산이 가능한 케이스에 한해서 직접 차이를 계산하여 시간 단축
         if (from.dayOfMonth == to.dayOfMonth
