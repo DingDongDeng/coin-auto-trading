@@ -1,24 +1,20 @@
 package com.dingdongdeng.autotrading.domain.chart.service
 
 import com.dingdongdeng.autotrading.domain.chart.entity.CoinCandle
-import com.dingdongdeng.autotrading.domain.chart.entity.MissingCoinCandle
 import com.dingdongdeng.autotrading.domain.chart.model.Candle
 import com.dingdongdeng.autotrading.domain.chart.model.Chart
 import com.dingdongdeng.autotrading.domain.chart.repository.CoinCandleRepository
-import com.dingdongdeng.autotrading.domain.chart.repository.MissingCoinCandleRepository
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChartCandle
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartParam
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
 import com.dingdongdeng.autotrading.domain.indicator.factory.IndicatorFactory
 import com.dingdongdeng.autotrading.infra.common.exception.CriticalException
-import com.dingdongdeng.autotrading.infra.common.exception.WarnException
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.utils.AsyncUtils
 import com.dingdongdeng.autotrading.infra.common.utils.CandleDateTimeUtils
 import com.dingdongdeng.autotrading.infra.common.utils.minDate
-import com.dingdongdeng.autotrading.infra.common.utils.toUtc
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
@@ -26,7 +22,6 @@ import java.time.LocalDateTime
 class CoinChartService(
     private val exchangeServices: List<SpotCoinExchangeService>,
     private val coinCandleRepository: CoinCandleRepository,
-    private val missingCoinCandleRepository: MissingCoinCandleRepository,
 ) {
 
     fun getCharts(
@@ -48,38 +43,6 @@ class CoinChartService(
             )
         }
     }
-
-    fun getMissingChart(
-        exchangeType: ExchangeType,
-        coinType: CoinType,
-        candleUnit: CandleUnit,
-        from: LocalDateTime,
-        to: LocalDateTime,
-    ): Chart {
-        val missingCandles =
-            missingCoinCandleRepository.findAllMissingCoinCandle(exchangeType, coinType, candleUnit, from, to)
-        return Chart(
-            from = from,
-            to = to,
-            currentPrice = 0.0,
-            candleUnit = candleUnit,
-            candles = missingCandles.map { missingCandle ->
-                Candle(
-                    candleUnit = candleUnit,
-                    candleDateTimeUtc = missingCandle.candleDateTimeUtc,
-                    candleDateTimeKst = missingCandle.candleDateTimeKst,
-                    openingPrice = 0.0,
-                    highPrice = 0.0,
-                    lowPrice = 0.0,
-                    closingPrice = 0.0,
-                    accTradePrice = 0.0,
-                    accTradeVolume = 0.0,
-                    indicatorsFunc = { throw WarnException.of("missingCandle은 보조지표를 지원하지 않음") },
-                )
-            },
-        )
-    }
-
 
     fun loadCharts(
         exchangeType: ExchangeType,
@@ -187,14 +150,6 @@ class CoinChartService(
         val exchangeService = exchangeServices.first { it.support(exchangeType) }
         val keyParam = exchangeService.getKeyPair(keyPairId)
 
-        /*
-         *  아래 과정을 구간별 반복
-         *  1. 거래소에서 캔들을 조회한다.
-         *  2. 거래소에서 누락된 캔들을 특정한다.
-         *  3. 거래소에서 누락된 캔들 정보를 저장한다.
-         *  4. DB에 저장되지 않는 캔들을 특정한다.
-         *  5. DB에 없는 캔들을 저장한다.
-         */
         var startDateTime = from
         while (true) {
             if (startDateTime >= to) {
@@ -208,14 +163,6 @@ class CoinChartService(
                 keyParam
             ).candles
 
-            loadMissingCandle(
-                exchangeType = exchangeType,
-                coinType = coinType,
-                candleUnit = candleUnit,
-                startDateTime = startDateTime,
-                endDateTime = endDateTime,
-                exchangeCandles = exchangeCandles
-            )
             loadExchangeCandle(
                 exchangeType = exchangeType,
                 coinType = coinType,
@@ -227,49 +174,6 @@ class CoinChartService(
 
             startDateTime = endDateTime
         }
-    }
-
-    private fun loadMissingCandle(
-        exchangeType: ExchangeType,
-        coinType: CoinType,
-        candleUnit: CandleUnit,
-        startDateTime: LocalDateTime,
-        endDateTime: LocalDateTime,
-        exchangeCandles: List<ExchangeChartCandle>
-    ) {
-        // 거래소에서 누락된 캔들 시간
-        val exchangeMissingCandleDateTimes = CandleDateTimeUtils.findMissingDateTimes(
-            candleUnit = candleUnit,
-            from = startDateTime,
-            to = endDateTime,
-            candleDateTimes = exchangeCandles.map { it.candleDateTimeKst }
-        )
-
-        // DB에 이미 저장되어있는 누락 시간
-        val missingCandleDateTimes = missingCoinCandleRepository.findAllMissingCoinCandle(
-            exchangeType = exchangeType,
-            coinType = coinType,
-            unit = candleUnit,
-            from = startDateTime,
-            to = endDateTime,
-        ).map { it.candleDateTimeKst }
-
-        // DB에 저장되어있지 않은 누락 시간
-        val missingCandles =
-            exchangeMissingCandleDateTimes
-                .filter { missingCandleDateTimes.contains(it).not() }
-                .map { missingDateTime ->
-                    MissingCoinCandle(
-                        exchangeType = exchangeType,
-                        coinType = coinType,
-                        unit = candleUnit,
-                        candleDateTimeUtc = missingDateTime.toUtc(),
-                        candleDateTimeKst = missingDateTime,
-                    )
-                }
-
-        // 거래소에 존재하지 않는 누락 캔들 저장
-        missingCoinCandleRepository.saveAll(missingCandles)
     }
 
     private fun loadExchangeCandle(
