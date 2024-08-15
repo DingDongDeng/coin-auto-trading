@@ -25,7 +25,7 @@ import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 @Service
 class UpbitSpotCoinExchangeService(
@@ -147,7 +147,6 @@ class UpbitSpotCoinExchangeService(
         return ExchangeChart(
             from = param.from,
             to = param.to,
-            currentPrice = if (totalResponse.isEmpty()) 0.0 else totalResponse.last().tradePrice,
             candles = resultCandles,
         )
     }
