@@ -24,7 +24,7 @@ Content-Type: application/json
     "UNIT_1M",
     "UNIT_3M"
   ],
-  "keyPairId": "a773e707-0525-4827-8d42-f34e780755b7",
+  "keyPairId": "03e10eaa-035f-4ebf-9fc2-e1686ce03bed",
   "config": {
     "configA": "TESTA",
     "configB": 123
