@@ -15,8 +15,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-noarg:$kotlinVersion")
 
     // spring plugin
-    implementation("org.springframework.boot:spring-boot-gradle-plugin:3.2.1")
-    implementation("io.spring.gradle:dependency-management-plugin:1.1.4")
+    implementation("org.springframework.boot:spring-boot-gradle-plugin:3.3.2")
+    implementation("io.spring.gradle:dependency-management-plugin:1.1.6")
 
     // test plugin
     implementation("org.asciidoctor:asciidoctor-gradle-jvm:3.3.2")
