@@ -18,7 +18,6 @@ import java.time.LocalDateTime
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @SpringBootTest
 class IndicatorFactoryTest(
-    val indicatorService: IndicatorFactory,
     val upbitSpotCoinExchangeService: UpbitSpotCoinExchangeService,
 ) {
     val keyParam = ExchangeKeyPair(
@@ -40,7 +39,7 @@ class IndicatorFactoryTest(
         val chart = upbitSpotCoinExchangeService.getChart(param, keyParam)
 
         // when
-        val rsi = indicatorService.getRsi(chart.candles)
+        val rsi = IndicatorFactory.getRsi(chart.candles)
 
         // then
         log.info("result : {}", rsi)
@@ -61,7 +60,7 @@ class IndicatorFactoryTest(
         val chart = upbitSpotCoinExchangeService.getChart(param, keyParam)
 
         // when
-        val macd = indicatorService.getMACD(chart.candles)
+        val macd = IndicatorFactory.getMACD(chart.candles)
 
         // then
         log.info("result : {}", macd)
@@ -82,7 +81,7 @@ class IndicatorFactoryTest(
         val chart = upbitSpotCoinExchangeService.getChart(param, keyParam)
 
         // when
-        val macd = indicatorService.getMACD(chart.candles)
+        val macd = IndicatorFactory.getMACD(chart.candles)
 
         // then
         log.info("result : {}", macd)
@@ -103,7 +102,7 @@ class IndicatorFactoryTest(
         val chart = upbitSpotCoinExchangeService.getChart(param, keyParam)
 
         // when
-        val bollingerBands = indicatorService.getBollingerBands(chart.candles)
+        val bollingerBands = IndicatorFactory.getBollingerBands(chart.candles)
 
         // then
         log.info("result : {}", bollingerBands)
@@ -126,7 +125,7 @@ class IndicatorFactoryTest(
         val chart = upbitSpotCoinExchangeService.getChart(param, keyParam)
 
         // when
-        val obv = indicatorService.getObv(chart.candles)
+        val obv = IndicatorFactory.getObv(chart.candles)
 
         // then
         log.info("result : {}", obv)
@@ -148,7 +147,7 @@ class IndicatorFactoryTest(
         val chart = upbitSpotCoinExchangeService.getChart(param, keyParam)
 
         // when
-        val ma = indicatorService.getMv(chart.candles)
+        val ma = IndicatorFactory.getMv(chart.candles)
 
         // then
         log.info("result : {}", ma)
