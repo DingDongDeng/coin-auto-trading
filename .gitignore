@@ -39,3 +39,4 @@ out/
 ### h2-database(file mode) ###
 h2-database/*.db
 /h2/
+/app-service/src/main/resources/static/
