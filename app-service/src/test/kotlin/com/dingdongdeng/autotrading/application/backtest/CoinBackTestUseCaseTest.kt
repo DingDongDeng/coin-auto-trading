@@ -33,8 +33,8 @@ class CoinBackTestUseCaseTest(
     fun test1() {
         // given
         LoggingUtils.trace()
-        val startDateTime = LocalDateTime.of(2023, 2, 15, 0, 0, 0)
-        val endDateTime = LocalDateTime.of(2023, 3, 31, 0, 0, 0)
+        val startDateTime = LocalDateTime.of(2024, 2, 26, 0, 0, 0)
+        val endDateTime = LocalDateTime.of(2024, 2, 29, 23, 59, 59)
         val durationUnit = CandleUnit.UNIT_1M
         val coinStrategyType = CoinStrategyType.UPBIT_CHART_VALIDATE
         val exchangeType = ExchangeType.BACKTEST_UPBIT
