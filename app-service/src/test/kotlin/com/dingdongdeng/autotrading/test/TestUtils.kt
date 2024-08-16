@@ -4,7 +4,7 @@ object TestUtils {
 }
 
 fun waitByCondition(condition: () -> Boolean) {
-    val timeoutMillis = 90000L // 대기 타임아웃 시간 (60초)
+    val timeoutMillis = 15000L // 대기 타임아웃 시간 (60초)
     val intervalMillis = 1000L // 확인 간격 (1초)
 
     val startTime = System.currentTimeMillis()
