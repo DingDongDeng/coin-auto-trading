@@ -17,7 +17,7 @@ const routes = [
     {
         path: '/backtest',
         name: 'backtest',
-        component: () => import(/* webpackChunkName: "backtest" */ '../views/BacktestView.vue')
+        component: () => import(/* webpackChunkName: "backtest" */ '../views/BackTestView.vue')
     },
 
     {

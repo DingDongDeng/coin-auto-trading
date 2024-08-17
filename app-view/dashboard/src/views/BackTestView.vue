@@ -12,7 +12,7 @@
     import PanelComponent from "@/components/PanelComponent.vue";
 
     export default {
-        name: 'BacktestView',
+        name: 'BackTestView',
         components: {PanelComponent},
 
         data() {
