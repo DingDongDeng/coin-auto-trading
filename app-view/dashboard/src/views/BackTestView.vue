@@ -4,16 +4,20 @@
             <v-col v-for="(variant, i) in variants" :key="i" cols="auto">
                 <BackTestDetailPanel :title="variant"/>
             </v-col>
+            <v-col cols="auto">
+                <BackTestRegisterPanel></BackTestRegisterPanel>
+            </v-col>
         </v-row>
     </v-container>
 </template>
 <script>
 
     import BackTestDetailPanel from "@/components/BackTestDetailPanel.vue";
+    import BackTestRegisterPanel from "@/components/BackTestRegisterPanel.vue";
 
     export default {
         name: 'BackTestView',
-        components: {BackTestDetailPanel},
+        components: {BackTestDetailPanel, BackTestRegisterPanel},
 
         data() {
             return {
