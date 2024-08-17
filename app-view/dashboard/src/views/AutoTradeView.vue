@@ -10,7 +10,7 @@
 
 
 <script>
-    import PanelComponent from '@/components/PanelComponent.vue'
+    import PanelComponent from '@/components/BackTestDetailPanel.vue'
 
 
     export default {
