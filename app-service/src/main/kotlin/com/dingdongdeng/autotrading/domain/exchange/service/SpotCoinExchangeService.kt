@@ -14,6 +14,7 @@ interface SpotCoinExchangeService {
     // from <= 범위 <= to
     fun getChart(param: SpotCoinExchangeChartParam, keyParam: ExchangeKeyPair): ExchangeChart
     fun getKeyPair(keyPairId: String): ExchangeKeyPair
+    fun getKeyPairs(userId: Long): List<ExchangeKeyPair>
     fun registerKeyPair(accessKey: String, secretKey: String, userId: Long): String
     fun support(exchangeType: ExchangeType): Boolean
 }

@@ -1,6 +1,7 @@
 package com.dingdongdeng.autotrading.presentation.dashboard.controller
 
 import com.dingdongdeng.autotrading.application.auth.AuthUseCase
+import com.dingdongdeng.autotrading.application.auth.model.AuthExchangeKey
 import com.dingdongdeng.autotrading.application.autotrade.CoinAutoTradeUseCase
 import com.dingdongdeng.autotrading.application.autotrade.model.CoinAutoTradeProcessorDto
 import com.dingdongdeng.autotrading.application.autotrade.model.CoinAutoTradeResultDto
@@ -27,6 +28,15 @@ class CoinDashBoardController(
     private val coinBackTestUseCase: CoinBackTestUseCase,
     private val authUseCase: AuthUseCase,
 ) {
+
+    @GetMapping("/exchange-key")
+    fun getExchangeKeys(
+        //@SessionAttribute userId: Long,
+    ): CommonResponse<List<AuthExchangeKey>> {
+        return CommonResponse(
+            body = authUseCase.getKeys(userId = 12345) //FIXME
+        )
+    }
 
     @PostMapping("/exchange-key")
     fun exchangeKeyRegister(

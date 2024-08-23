@@ -82,9 +82,15 @@ class BackTestSpotCoinExchangeService(
 
     override fun getKeyPair(keyPairId: String): ExchangeKeyPair {
         return ExchangeKeyPair(
+            exchangeType = EXCHANGE_TYPE_FOR_BACKTEST,
+            keyPairId = "",
             accessKey = "",
             secretKey = "",
         )
+    }
+
+    override fun getKeyPairs(userId: Long): List<ExchangeKeyPair> {
+        throw WarnException.of("백테스트에서는 지원하지 않는 기능입니다. (key 리스트 조회)")
     }
 
     override fun registerKeyPair(accessKey: String, secretKey: String, userId: Long): String {

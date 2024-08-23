@@ -157,9 +157,25 @@ class UpbitSpotCoinExchangeService(
             throw WarnException.of("사용한 거래소 key가 부족하거나 없습니다.")
         }
         return ExchangeKeyPair(
+            exchangeType = EXCHANGE_TYPE,
+            keyPairId = keyPairId,
             accessKey = exchangeKeys.first { it.name == ACCESS_KEY_NAME }.value,
             secretKey = exchangeKeys.first { it.name == SECRET_KEY_NAME }.value,
         )
+    }
+
+    override fun getKeyPairs(userId: Long): List<ExchangeKeyPair> {
+        val exchangeKeys = exchangeKeyRepository.findAllByExchangeTypeAndUserId(EXCHANGE_TYPE, userId)
+        return exchangeKeys
+            .groupBy { it.keyPairId }
+            .map {
+                ExchangeKeyPair(
+                    exchangeType = EXCHANGE_TYPE,
+                    keyPairId = exchangeKeys.first().keyPairId,
+                    accessKey = exchangeKeys.first { it.name == ACCESS_KEY_NAME }.value,
+                    secretKey = exchangeKeys.first { it.name == SECRET_KEY_NAME }.value,
+                )
+            }
     }
 
     override fun registerKeyPair(accessKey: String, secretKey: String, userId: Long): String {

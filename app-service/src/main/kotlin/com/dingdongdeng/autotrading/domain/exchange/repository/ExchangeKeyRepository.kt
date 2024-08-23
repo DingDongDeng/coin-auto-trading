@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 interface ExchangeKeyRepository : JpaRepository<ExchangeKey, Long> {
 
     fun findByExchangeTypeAndKeyPairId(exchangeType: ExchangeType, keyPairId: String): List<ExchangeKey>
+
+    fun findAllByExchangeTypeAndUserId(exchangeType: ExchangeType, userId: Long): List<ExchangeKey>
 }
