@@ -9,6 +9,12 @@ const routes = [
     },
 
     {
+        path: '/auth-exchange-key',
+        name: 'authExchangeKey',
+        component: () => import(/* webpackChunkName: "authKey" */ '../views/AuthExchangeKeyView.vue')
+    },
+
+    {
         path: '/autotrade',
         name: 'autotrade',
         component: () => import(/* webpackChunkName: "autotrade" */ '../views/AutoTradeView.vue')

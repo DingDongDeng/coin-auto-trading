@@ -27,6 +27,7 @@
             return {
                 items: [
                     {route: "/home", icon: "mdi-home", title: "홈"},
+                    {route: "/auth-exchange-key", icon: "mdi-key", title: "거래소 인증키"},
                     {route: "/autotrade", icon: "mdi-autorenew", title: "자동매매"},
                     {route: "/backtest", icon: "mdi-history", title: "백테스트"},
                     {route: "/setting", icon: "mdi-cog", title: "내 설정"},
