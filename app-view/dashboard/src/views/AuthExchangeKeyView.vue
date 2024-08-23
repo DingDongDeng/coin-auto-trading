@@ -5,7 +5,7 @@
 
     const authExchangeKey = useAuthExchangeKeyStore()
     storeToRefs(authExchangeKey.exchangeKeys)
-    authExchangeKey.loadData('12345')
+    authExchangeKey.loadData()
 </script>
 
 <template>
