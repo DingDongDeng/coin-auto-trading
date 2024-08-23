@@ -4,8 +4,7 @@
     import PanelComponent from "@/components/AuthExchangeKeyDetailPanel.vue";
 
     const authExchangeKey = useAuthExchangeKeyStore()
-    storeToRefs(authExchangeKey)
-
+    storeToRefs(authExchangeKey.exchangeKeys)
     authExchangeKey.loadData('12345')
 </script>
 

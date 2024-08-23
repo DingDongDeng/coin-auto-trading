@@ -17,7 +17,7 @@ export const useAuthExchangeKeyStore = defineStore("authExchangeKey", {
 
     actions: {
         async loadData(userId) {
-            this.exchangeKeys = getExchangeKeys(userId).body
+            this.exchangeKeys = (await getExchangeKeys(userId)).body
         }
     }
 });
