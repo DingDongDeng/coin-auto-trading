@@ -1,3 +1,6 @@
+### 거래소 키 조회
+GET http://localhost:8080/coin/exchange-key?userId=12345
+
 ### 거래소 키 등록
 POST http://localhost:8080/coin/exchange-key
 Content-Type: application/json
