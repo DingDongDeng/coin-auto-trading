@@ -3,18 +3,19 @@
         <v-card-item>
             <div>
                 <div class="text-overline mb-1">
-                    {{ title }}
                 </div>
                 <div class="text-h6 mb-1">
-                    Headline
+                    {{ title }}
                 </div>
-                <div class="text-caption">Greyhound divisely hello coldly fonwderfully</div>
+                <div class="text-caption">
+                    {{ keyPairId }}
+                </div>
             </div>
         </v-card-item>
 
         <v-card-actions>
             <v-btn @click="showDetail()">
-                상세보기
+                삭제
             </v-btn>
         </v-card-actions>
     </v-card>
@@ -40,7 +41,8 @@
         name: 'AuthExchangeKeyDetailPanel',
 
         props: {
-            title: String
+            title: String,
+            keyPairId: String
         },
         data() {
             return {

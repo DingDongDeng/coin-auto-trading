@@ -2,7 +2,7 @@ import {defineStore} from "pinia";
 import axios from 'axios';
 
 async function getExchangeKeys() {
-    const response = await axios.get('http://localhost:8080/coin/exchange-key');
+    const response = await axios.get('/coin/exchange-key');
     return response.data;
 }
 
