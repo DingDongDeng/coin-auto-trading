@@ -14,9 +14,7 @@
         </v-card-item>
 
         <v-card-actions>
-            <v-btn @click="showDetail()">
-                삭제
-            </v-btn>
+            <v-icon icon="mdi-delete" @click="showDetail()"></v-icon>
         </v-card-actions>
     </v-card>
     <v-dialog

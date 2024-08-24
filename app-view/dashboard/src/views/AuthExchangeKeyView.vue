@@ -12,7 +12,10 @@
     <v-container>
         <v-row>
             <v-col v-for="(exchangeKey, i) in authExchangeKey.exchangeKeys" :key="i" cols="auto">
-                <PanelComponent :title="exchangeKey.keyPairId"/>
+                <PanelComponent :title="exchangeKey.exchangeType.desc" :keyPairId="exchangeKey.keyPairId"/>
+            </v-col>
+            <v-col cols="auto">
+                <v-icon icon="mdi-plus-circle"></v-icon>
             </v-col>
         </v-row>
     </v-container>
