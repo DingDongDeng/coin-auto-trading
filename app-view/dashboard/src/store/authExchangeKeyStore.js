@@ -6,6 +6,11 @@ async function getExchangeKeys() {
     return response.data;
 }
 
+async function registerExchangeKey(body) {
+    const response = await axios.post('/coin/exchange-key', body);
+    return response.data;
+}
+
 
 export const useAuthExchangeKeyStore = defineStore("authExchangeKey", {
 
@@ -17,7 +22,7 @@ export const useAuthExchangeKeyStore = defineStore("authExchangeKey", {
     getters: {},
 
     actions: {
-        async loadData() {
+        async loadExchangeKeys() {
             this.exchangeKeys = (await getExchangeKeys()).body
         },
         showRegisterDialog() {

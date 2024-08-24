@@ -9,7 +9,7 @@
         exchangeKeys
     } = storeToRefs(authExchangeKey);
 
-    authExchangeKey.loadData()
+    authExchangeKey.loadExchangeKeys()
 </script>
 
 <template>
