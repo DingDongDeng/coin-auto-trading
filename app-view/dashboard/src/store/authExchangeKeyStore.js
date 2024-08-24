@@ -10,7 +10,8 @@ async function getExchangeKeys() {
 export const useAuthExchangeKeyStore = defineStore("authExchangeKey", {
 
     state: () => ({
-        exchangeKeys: []
+        exchangeKeys: [],
+        visibleRegisterDialog: false
     }),
 
     getters: {},
@@ -18,6 +19,9 @@ export const useAuthExchangeKeyStore = defineStore("authExchangeKey", {
     actions: {
         async loadData() {
             this.exchangeKeys = (await getExchangeKeys()).body
+        },
+        showRegisterDialog() {
+            this.visibleRegisterDialog = true
         }
     }
 });
