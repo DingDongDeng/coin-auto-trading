@@ -4,15 +4,18 @@
     import PanelComponent from "@/components/AuthExchangeKeyDetailPanel.vue";
 
     const authExchangeKey = useAuthExchangeKeyStore()
-    storeToRefs(authExchangeKey)
-    storeToRefs(authExchangeKey.exchangeKeys)
+    const {
+        visibleRegisterDialog,
+        exchangeKeys
+    } = storeToRefs(authExchangeKey);
+
     authExchangeKey.loadData()
 </script>
 
 <template>
     <v-container>
         <v-row>
-            <v-col v-for="(exchangeKey, i) in authExchangeKey.exchangeKeys" :key="i" cols="auto">
+            <v-col v-for="(exchangeKey, i) in exchangeKeys" :key="i" cols="auto">
                 <PanelComponent :title="exchangeKey.exchangeType.desc" :keyPairId="exchangeKey.keyPairId"/>
             </v-col>
             <v-col cols="auto">
@@ -23,7 +26,7 @@
         </v-row>
     </v-container>
     <v-dialog
-        v-model="authExchangeKey.visibleRegisterDialog"
+        v-model="visibleRegisterDialog"
         width="500">
         <v-card>
             <v-card-title class="headline black" primary-title>
