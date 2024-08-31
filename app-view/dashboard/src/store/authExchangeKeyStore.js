@@ -47,7 +47,7 @@ export const useAuthExchangeKeyStore = defineStore("authExchangeKey", {
             await this.loadExchangeKeys()
         },
         registerReset() {
-            this.register.visibleRegisterDialog = false;
+            this.register.visibleDialog = false;
             this.register.exchangeType = '';
             this.register.accessKey = '';
             this.register.secretKey = '';
