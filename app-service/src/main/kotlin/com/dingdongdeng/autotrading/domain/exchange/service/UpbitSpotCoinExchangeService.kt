@@ -171,9 +171,9 @@ class UpbitSpotCoinExchangeService(
             .map {
                 ExchangeKeyPair(
                     exchangeType = EXCHANGE_TYPE,
-                    keyPairId = exchangeKeys.first().keyPairId,
-                    accessKey = exchangeKeys.first { it.name == ACCESS_KEY_NAME }.value,
-                    secretKey = exchangeKeys.first { it.name == SECRET_KEY_NAME }.value,
+                    keyPairId = it.key,
+                    accessKey = it.value.first { key -> key.name == ACCESS_KEY_NAME }.value,
+                    secretKey = it.value.first { key -> key.name == SECRET_KEY_NAME }.value,
                 )
             }
     }
