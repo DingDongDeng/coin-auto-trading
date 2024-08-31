@@ -1,13 +1,22 @@
 <script setup>
     import {useAuthExchangeKeyStore} from '@/store/authExchangeKeyStore';
     import {storeToRefs} from 'pinia'
+    import {reactive} from 'vue'
     import PanelComponent from "@/components/AuthExchangeKeyDetailPanel.vue";
 
     const authExchangeKey = useAuthExchangeKeyStore()
+
+    // data
     const {
-        visibleRegisterDialog,
         exchangeKeys
     } = storeToRefs(authExchangeKey);
+
+    const register = reactive({
+        visibleRegisterDialog: false,
+        exchangeType: '',
+        accessKey: '',
+        secretKey: '',
+    })
 
     authExchangeKey.loadExchangeKeys()
 </script>
@@ -20,21 +29,30 @@
             </v-col>
             <v-col cols="auto">
                 <v-icon icon="mdi-plus-circle"
-                        @click="authExchangeKey.showRegisterDialog()"
+                        @click="register.visibleRegisterDialog = true"
                 ></v-icon>
             </v-col>
         </v-row>
     </v-container>
     <v-dialog
-        v-model="visibleRegisterDialog"
+        v-model="register.visibleRegisterDialog"
         width="500">
         <v-card>
             <v-card-title class="headline black" primary-title>
-                Compose Message222
+                거래소 인증키 등록하기
             </v-card-title>
             <v-card-text class="pa-5">
+                <v-text-field v-model="register.exchangeType" label="거래소"/>
+                <v-text-field v-model="register.accessKey" label="액세스 키"/>
+                <v-text-field v-model="register.secretKey" label="시크릿 키"/>
             </v-card-text>
             <v-card-actions class="pa-5">
+                <v-btn @click="authExchangeKey.registerExchangeKey(
+                    register.exchangeType,
+                    register.accessKey,
+                    register.secretKey,
+                )">등록
+                </v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
