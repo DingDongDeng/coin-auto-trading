@@ -1,22 +1,15 @@
 <script setup>
     import {useAuthExchangeKeyStore} from '@/store/authExchangeKeyStore';
     import {storeToRefs} from 'pinia'
-    import {reactive} from 'vue'
     import PanelComponent from "@/components/AuthExchangeKeyDetailPanel.vue";
 
     const authExchangeKey = useAuthExchangeKeyStore()
 
     // data
     const {
-        exchangeKeys
+        exchangeKeys,
+        register
     } = storeToRefs(authExchangeKey);
-
-    const register = reactive({
-        visibleRegisterDialog: false,
-        exchangeType: '',
-        accessKey: '',
-        secretKey: '',
-    })
 
     authExchangeKey.loadExchangeKeys()
 </script>
@@ -47,12 +40,7 @@
                 <v-text-field v-model="register.secretKey" label="시크릿 키"/>
             </v-card-text>
             <v-card-actions class="pa-5">
-                <v-btn @click="authExchangeKey.registerExchangeKey(
-                    register.exchangeType,
-                    register.accessKey,
-                    register.secretKey,
-                )">등록
-                </v-btn>
+                <v-btn @click="authExchangeKey.registerExchangeKey()">등록</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
