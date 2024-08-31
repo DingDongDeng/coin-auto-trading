@@ -8,6 +8,10 @@ module.exports = defineConfig({
                 target: 'http://localhost:8080',
                 changeOrigin: true,
             },
+            '/code': {
+                target: 'http://localhost:8080',
+                changeOrigin: true,
+            }
         },
     }
 })

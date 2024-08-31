@@ -1,17 +1,20 @@
 <script setup>
     import {useAuthExchangeKeyStore} from '@/store/authExchangeKeyStore';
+    import {useCodeStore} from '@/store/codeStore'
     import {storeToRefs} from 'pinia'
     import PanelComponent from "@/components/AuthExchangeKeyDetailPanel.vue";
+    import {onMounted} from "vue";
 
     const authExchangeKey = useAuthExchangeKeyStore()
+    const code = useCodeStore()
 
-    // data
-    const {
-        exchangeKeys,
-        register
-    } = storeToRefs(authExchangeKey);
+    const {exchangeKeys, register} = storeToRefs(authExchangeKey);
+    const {exchangeTypes} = storeToRefs(code);
 
-    authExchangeKey.loadExchangeKeys()
+    onMounted(() => {
+        code.loadExchangeTypes();
+        authExchangeKey.loadExchangeKeys();
+    })
 </script>
 
 <template>
@@ -35,7 +38,12 @@
                 거래소 인증키 등록하기
             </v-card-title>
             <v-card-text class="pa-5">
-                <v-text-field v-model="register.exchangeType" label="거래소"/>
+                <v-select v-model="register.exchangeType"
+                          lable="거래소"
+                          :items="exchangeTypes"
+                          item-title="desc"
+                          item-value="type"
+                ></v-select>
                 <v-text-field v-model="register.accessKey" label="액세스 키"/>
                 <v-text-field v-model="register.secretKey" label="시크릿 키"/>
             </v-card-text>
