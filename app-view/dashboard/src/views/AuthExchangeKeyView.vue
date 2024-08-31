@@ -25,13 +25,13 @@
             </v-col>
             <v-col cols="auto">
                 <v-icon icon="mdi-plus-circle"
-                        @click="register.visibleRegisterDialog = true"
+                        @click="register.visibleDialog = true"
                 ></v-icon>
             </v-col>
         </v-row>
     </v-container>
     <v-dialog
-        v-model="register.visibleRegisterDialog"
+        v-model="register.visibleDialog"
         width="500">
         <v-card>
             <v-card-title class="headline black" primary-title>
