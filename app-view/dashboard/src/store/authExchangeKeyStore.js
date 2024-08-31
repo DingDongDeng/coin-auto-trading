@@ -39,10 +39,12 @@ export const useAuthExchangeKeyStore = defineStore("authExchangeKey", {
         },
         async registerExchangeKey() {
             await registerExchangeKey(this.register)
+            await this.loadExchangeKeys()
             this.registerReset()
         },
         async removeExchangeKey() {
             await removeExchangeKey(this.remove.keyPairId)
+            await this.loadExchangeKeys()
         },
         registerReset() {
             this.register.visibleRegisterDialog = false;
