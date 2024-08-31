@@ -11,16 +11,23 @@ async function registerExchangeKey(body) {
     return response.data;
 }
 
+async function removeExchangeKey(keyPairId) {
+    const response = await axios.delete(`/coin/exchange-key/${keyPairId}`);
+    return response.data;
+}
 
 export const useAuthExchangeKeyStore = defineStore("authExchangeKey", {
 
     state: () => ({
         exchangeKeys: [],
         register: {
-            visibleRegisterDialog: false,
+            visibleDialog: false,
             exchangeType: '',
             accessKey: '',
             secretKey: '',
+        },
+        remove: {
+            keyPairId: '',
         }
     }),
 
@@ -33,6 +40,9 @@ export const useAuthExchangeKeyStore = defineStore("authExchangeKey", {
         async registerExchangeKey() {
             await registerExchangeKey(this.register)
             this.registerReset()
+        },
+        async removeExchangeKey() {
+            await removeExchangeKey(this.remove.keyPairId)
         },
         registerReset() {
             this.register.visibleRegisterDialog = false;
