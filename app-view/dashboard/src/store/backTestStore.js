@@ -1,7 +1,7 @@
 import {defineStore} from "pinia";
 import axios from 'axios';
 
-async function getExchangeKeys() {
+async function getBackTests() {
     const response = await axios.get('/coin/processor/backtest');
     return response.data;
 }
@@ -22,7 +22,7 @@ export const useBackTestStore = defineStore("backTest", {
 
     actions: {
         async loadBackTests() {
-            this.exchangeKeys = (await getExchangeKeys()).body
+            this.backTests = (await getBackTests()).body
         },
         // async registerBackTest() {
         //     await registerExchangeKey(this.register)
