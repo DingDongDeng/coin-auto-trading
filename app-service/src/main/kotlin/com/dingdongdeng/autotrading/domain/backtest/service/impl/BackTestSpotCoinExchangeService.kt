@@ -97,6 +97,10 @@ class BackTestSpotCoinExchangeService(
         throw WarnException.of("백테스트에서는 지원하지 않는 기능입니다. (key 등록)")
     }
 
+    override fun removeKeyPair(keyPairId: String): String {
+        throw WarnException.of("백테스트에서는 지원하지 않는 기능입니다. (key 삭제)")
+    }
+
     override fun support(exchangeType: ExchangeType): Boolean {
         return exchangeType == EXCHANGE_TYPE
     }

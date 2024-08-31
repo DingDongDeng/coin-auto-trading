@@ -16,5 +16,6 @@ interface SpotCoinExchangeService {
     fun getKeyPair(keyPairId: String): ExchangeKeyPair
     fun getKeyPairs(userId: Long): List<ExchangeKeyPair>
     fun registerKeyPair(accessKey: String, secretKey: String, userId: Long): String
+    fun removeKeyPair(keyPairId: String): String
     fun support(exchangeType: ExchangeType): Boolean
 }

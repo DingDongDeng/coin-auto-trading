@@ -200,6 +200,12 @@ class UpbitSpotCoinExchangeService(
         return keyPairId
     }
 
+    override fun removeKeyPair(keyPairId: String): String {
+        val keys = exchangeKeyRepository.findByExchangeTypeAndKeyPairId(EXCHANGE_TYPE, keyPairId)
+        exchangeKeyRepository.deleteAll(keys)
+        return keyPairId
+    }
+
     override fun support(exchangeType: ExchangeType): Boolean {
         return exchangeType == EXCHANGE_TYPE
     }

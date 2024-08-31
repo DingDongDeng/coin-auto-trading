@@ -14,6 +14,7 @@ import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinAutotradeRe
 import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinBackTestRegisterRequest
 import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinExchangeKeyRegisterRequest
 import jakarta.validation.Valid
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -50,6 +51,15 @@ class CoinDashBoardController(
                 secretKey = request.secretKey!!,
                 userId = 12345, //FIXME
             )
+        )
+    }
+
+    @DeleteMapping("/exchange-key/{keyPairId}")
+    fun exchangeKeyRemove(
+        @PathVariable keyPairId: String,
+    ): CommonResponse<String> {
+        return CommonResponse(
+            body = authUseCase.removeKey(keyPairId)
         )
     }
 

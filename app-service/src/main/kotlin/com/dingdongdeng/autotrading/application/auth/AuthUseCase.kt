@@ -29,4 +29,12 @@ class AuthUseCase(
             .flatMap { it.getKeyPairs(userId) }
             .map { AuthExchangeKey.of(it) }
     }
+
+    fun removeKey(
+        keyPairId: String,
+    ): String {
+        return coinExchangeServices.first { service ->
+            ExchangeType.ofNotBackTest().any { type -> service.support(type) }
+        }.removeKeyPair(keyPairId)
+    }
 }
