@@ -39,7 +39,7 @@
             </v-card-title>
             <v-card-text class="pa-5">
                 <v-select v-model="register.exchangeType"
-                          lable="거래소"
+                          label="거래소"
                           :items="exchangeTypes"
                           item-title="desc"
                           item-value="type"
