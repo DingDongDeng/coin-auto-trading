@@ -17,8 +17,19 @@
     const {register} = storeToRefs(backTest);
 
     const dateTimeRange = ref([]);
-    const startDateTime = computed(() => dateTimeRange.value[0] || '날짜를 선택하세요');
-    const endDateTime = computed(() => dateTimeRange.value[1] || '날짜를 선택하세요');
+
+    const startDateTime = computed(() => {
+        if (dateTimeRange.value[0]) {
+            return new Date(dateTimeRange.value[0]).toISOString().slice(0, 19)
+        }
+        return ''
+    });
+    const endDateTime = computed(() => {
+        if (dateTimeRange.value[1]) {
+            return new Date(dateTimeRange.value[1]).toISOString().slice(0, 19)
+        }
+        return ''
+    });
     watch([startDateTime, endDateTime], (newValues) => {
         register.value.startDateTime = newValues[0]
         register.value.endDateTime = newValues[1]
@@ -60,7 +71,7 @@
         width="500">
         <v-card>
             <v-card-title class="headline black" primary-title>
-                백테스트 등록
+                백테스트 실행
             </v-card-title>
             <v-card-text class="pa-5">
                 <v-date-picker
@@ -95,7 +106,7 @@
                           multiple
                 ></v-select>
                 <v-select v-model="register.candleUnits"
-                          label="전략에서 참조할 캔들 종류"
+                          label="전략에서 사용하는 차트 종류"
                           :items="candleUnits"
                           item-title="desc"
                           item-value="type"
