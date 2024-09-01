@@ -57,7 +57,7 @@
     <v-container>
         <v-row>
             <v-col v-for="(backTest, i) in backTests" :key="i" cols="auto">
-                <BackTestDetailPanel :back-test="backTest"/>
+                <BackTestDetailPanel :back-test-detail="backTest"/>
             </v-col>
             <v-col cols="auto">
                 <v-icon icon="mdi-plus-circle"

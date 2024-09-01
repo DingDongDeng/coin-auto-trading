@@ -15,6 +15,9 @@ export const useBackTestStore = defineStore("backTest", {
 
     state: () => ({
         backTests: [],
+        detail: {
+            visibleDialog: false,
+        },
         register: {
             visibleDialog: false,
             startDateTime: '',
