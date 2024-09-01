@@ -177,6 +177,6 @@ class ExampleSpotCoinStrategy(
 }
 
 data class ExampleSpotCoinStrategyConfig(
-    @GuideDescription("매수 주문당 거래 금액 (ex: 10만원 어치 매수)")
+    @property:GuideDescription("매수 주문당 거래 금액 (ex: 10만원 어치 매수)")
     val onceTradeAmount: Int,
 ) : StrategyConfig
