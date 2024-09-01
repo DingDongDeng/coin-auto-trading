@@ -4,10 +4,10 @@ import java.util.EnumMap
 
 
 enum class CandleUnit(
-    val desc: String,
+    override val desc: String,
     val unitType: UnitType,
     val size: Int,
-) {
+) : DescriptionType {
     UNIT_1M("1분 봉", UnitType.MIN, 1),
     UNIT_3M("3분 봉", UnitType.MIN, 3),
     UNIT_5M("5분 봉", UnitType.MIN, 5),
