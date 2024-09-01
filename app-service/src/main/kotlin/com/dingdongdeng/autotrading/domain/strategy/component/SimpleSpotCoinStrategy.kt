@@ -1,9 +1,10 @@
 package com.dingdongdeng.autotrading.domain.strategy.component
 
+import com.dingdongdeng.autotrading.domain.strategy.component.impl.StrategyConfig
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyMakeTaskParam
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyTask
 
-abstract class SimpleSpotCoinStrategy<T> : SpotCoinStrategy {
+abstract class SimpleSpotCoinStrategy<T : StrategyConfig> : SpotCoinStrategy {
 
     override fun makeTask(
         params: List<SpotCoinStrategyMakeTaskParam>,

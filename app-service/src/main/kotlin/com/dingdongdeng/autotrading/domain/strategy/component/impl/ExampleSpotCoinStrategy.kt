@@ -1,6 +1,7 @@
 package com.dingdongdeng.autotrading.domain.strategy.component.impl
 
 import com.dingdongdeng.autotrading.domain.strategy.component.SimpleSpotCoinStrategy
+import com.dingdongdeng.autotrading.domain.strategy.component.annotation.GuideDescription
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyMakeTaskParam
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyTask
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
@@ -176,5 +177,6 @@ class ExampleSpotCoinStrategy(
 }
 
 data class ExampleSpotCoinStrategyConfig(
+    @GuideDescription("매수 주문당 거래 금액 (ex: 10만원 어치 매수)")
     val onceTradeAmount: Int,
-)
+) : StrategyConfig
