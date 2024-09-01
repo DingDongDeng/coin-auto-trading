@@ -102,10 +102,9 @@
                           chips
                           multiple
                 ></v-select>
-                {{ configMap }}
-                <v-row v-for="(guideDescription, key) in configMap" :key="key">
-                    <v-input v-model="register.config[key]" :label="guideDescription"></v-input>
-                </v-row>
+                <v-text-field
+                    v-for="(guideDescription, key) in configMap" :key="key"
+                    v-model="register.config[key]" :label="guideDescription"/>
             </v-card-text>
             <v-card-actions class="pa-5">
                 버튼
