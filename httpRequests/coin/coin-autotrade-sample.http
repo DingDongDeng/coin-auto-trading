@@ -46,7 +46,7 @@ POST http://localhost:8080/coin/processor/160f2665-4f86-4d19-b6bf-7ef3f4fede46/s
 Content-Type: application/json
 
 ### 자동매매 제거
-POST http://localhost:8080/coin/processor/bdb74ff9-2d3a-4494-8ed4-70995ae7b748/terminate
+DELETE http://localhost:8080/coin/processor/bdb74ff9-2d3a-4494-8ed4-70995ae7b748/terminate
 Content-Type: application/json
 
 ### 자동매매 결과 조회
