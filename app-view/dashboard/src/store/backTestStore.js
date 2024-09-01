@@ -17,8 +17,8 @@ export const useBackTestStore = defineStore("backTest", {
         backTests: [],
         register: {
             visibleDialog: false,
-            startDate: '',
-            endDate: '',
+            startDateTime: '',
+            endDateTime: '',
             durationUnit: '',
             coinStrategyType: '',
             exchangeType: '',
@@ -48,8 +48,8 @@ export const useBackTestStore = defineStore("backTest", {
         // },
         registerReset() {
             this.register.visibleDialog = false;
-            this.register.startDate = ''
-            this.register.endDate = ''
+            this.register.startDateTime = ''
+            this.register.endDateTime = ''
             this.register.durationUnit = ''
             this.register.coinStrategyType = ''
             this.register.exchangeType = ''

@@ -16,12 +16,12 @@
     } = storeToRefs(code);
     const {register} = storeToRefs(backTest);
 
-    const dateRange = ref([]);
-    const startDate = computed(() => dateRange.value[0] || '날짜를 선택하세요');
-    const endDate = computed(() => dateRange.value[1] || '날짜를 선택하세요');
-    watch([startDate, endDate], (newValues) => {
-        register.value.startDate = newValues[0]
-        register.value.endDate = newValues[1]
+    const dateTimeRange = ref([]);
+    const startDateTime = computed(() => dateTimeRange.value[0] || '날짜를 선택하세요');
+    const endDateTime = computed(() => dateTimeRange.value[1] || '날짜를 선택하세요');
+    watch([startDateTime, endDateTime], (newValues) => {
+        register.value.startDateTime = newValues[0]
+        register.value.endDateTime = newValues[1]
     })
 
     const configMap = ref({});
@@ -66,7 +66,7 @@
                 <v-date-picker
                     title="백테스트 시작일/종료일"
                     multiple="range"
-                    v-model="dateRange"
+                    v-model="dateTimeRange"
                 />
                 <v-select v-model="register.durationUnit"
                           label="백테스트 실행 시간 단위"
