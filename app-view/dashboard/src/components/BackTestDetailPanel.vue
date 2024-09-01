@@ -4,7 +4,7 @@
     import {storeToRefs} from "pinia";
 
     const backTest = useBackTestStore()
-    const {detail} = storeToRefs(backTest)
+    const {detail, remove} = storeToRefs(backTest)
     defineProps({
         backTestDetail: Object,
     });
@@ -29,6 +29,10 @@
             <v-btn @click="detail.visibleDialog = true">
                 상세보기
             </v-btn>
+            <v-icon icon="mdi-delete" @click="(() => {
+                remove.processorId = backTestDetail.id;
+                backTest.removeBackTest()
+            })"></v-icon>
         </v-card-actions>
     </v-card>
     <v-dialog

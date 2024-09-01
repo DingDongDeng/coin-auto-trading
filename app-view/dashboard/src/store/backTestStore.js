@@ -11,6 +11,11 @@ async function registerBackTest(body) {
     return response.data;
 }
 
+async function removeBackTest(processorId) {
+    const response = await axios.delete(`/coin/processor/${processorId}/terminate`);
+    return response.data;
+}
+
 export const useBackTestStore = defineStore("backTest", {
 
     state: () => ({
@@ -30,7 +35,7 @@ export const useBackTestStore = defineStore("backTest", {
             config: {},
         },
         remove: {
-            keyPairId: '',
+            processorId: '',
         }
     }),
 
@@ -45,10 +50,10 @@ export const useBackTestStore = defineStore("backTest", {
             await this.loadBackTests()
             this.registerReset()
         },
-        // async removeBackTest() {
-        //     await removeExchangeKey(this.remove.keyPairId)
-        //     await this.loadExchangeKeys()
-        // },
+        async removeBackTest() {
+            await removeBackTest(this.remove.processorId)
+            await this.loadBackTests()
+        },
         registerReset() {
             this.register.visibleDialog = false;
             this.register.startDateTime = ''

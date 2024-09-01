@@ -159,7 +159,7 @@ class CoinDashBoardController(
         )
     }
 
-    @PostMapping("/processor/{processorId}/terminate")
+    @DeleteMapping("/processor/{processorId}/terminate")
     fun processorTerminate(
         @PathVariable processorId: String,
     ): CommonResponse<String> {
