@@ -19,11 +19,19 @@
     const dateRange = ref([]);
     const startDate = computed(() => dateRange.value[0] || '날짜를 선택하세요');
     const endDate = computed(() => dateRange.value[1] || '날짜를 선택하세요');
-
     watch([startDate, endDate], (newValues) => {
         register.value.startDate = newValues[0]
         register.value.endDate = newValues[1]
     })
+
+    const configMap = ref({});
+    watch(() => register.value.coinStrategyType, (newValue) => {
+        const strategy = coinStrategyTypes.value.find(it => it.type === newValue);
+        if (strategy) {
+            configMap.value = strategy.configMap;
+        }
+    })
+
 
     onMounted(() => {
         code.loadCoinTypes();
@@ -94,6 +102,10 @@
                           chips
                           multiple
                 ></v-select>
+                {{ configMap }}
+                <v-row v-for="(guideDescription, key) in configMap" :key="key">
+                    <v-input v-model="register.config[key]" :label="guideDescription"></v-input>
+                </v-row>
             </v-card-text>
             <v-card-actions class="pa-5">
                 버튼
