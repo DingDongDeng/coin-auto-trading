@@ -10,9 +10,9 @@
 
     const {
         exchangeTypes,
-        // candleUnits,
-        // coinStrategyTypes,
-        // coinTypes
+        candleUnits,
+        coinStrategyTypes,
+        coinTypes
     } = storeToRefs(code);
     const {register} = storeToRefs(backTest);
 
@@ -60,14 +60,40 @@
                     multiple="range"
                     v-model="dateRange"
                 />
+                <v-select v-model="register.durationUnit"
+                          label="백테스트 실행 시간 단위"
+                          :items="candleUnits"
+                          item-title="desc"
+                          item-value="type"
+                ></v-select>
+                <v-select v-model="register.coinStrategyType"
+                          label="자동매매 전략"
+                          :items="coinStrategyTypes"
+                          item-title="desc"
+                          item-value="type"
+                ></v-select>
                 <v-select v-model="register.exchangeType"
                           label="거래소"
                           :items="exchangeTypes"
                           item-title="desc"
                           item-value="type"
                 ></v-select>
-                <v-text-field v-model="register.accessKey" label="액세스 키"/>
-                <v-text-field v-model="register.secretKey" label="시크릿 키"/>
+                <v-select v-model="register.coinTypes"
+                          label="코인 종류"
+                          :items="coinTypes"
+                          item-title="desc"
+                          item-value="type"
+                          chips
+                          multiple
+                ></v-select>
+                <v-select v-model="register.candleUnits"
+                          label="전략에서 참조할 캔들 종류"
+                          :items="candleUnits"
+                          item-title="desc"
+                          item-value="type"
+                          chips
+                          multiple
+                ></v-select>
             </v-card-text>
             <v-card-actions class="pa-5">
                 버튼

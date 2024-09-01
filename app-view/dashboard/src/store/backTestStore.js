@@ -14,6 +14,12 @@ export const useBackTestStore = defineStore("backTest", {
             visibleDialog: false,
             startDate: '',
             endDate: '',
+            durationUnit: '',
+            coinStrategyType: '',
+            exchangeType: '',
+            coinTypes: [],
+            candleUnits: [],
+            config: {},
         },
         remove: {
             keyPairId: '',
