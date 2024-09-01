@@ -107,7 +107,7 @@
                     v-model="register.config[key]" :label="guideDescription"/>
             </v-card-text>
             <v-card-actions class="pa-5">
-                버튼
+                <v-btn @click="backTest.registerBackTest()">실행</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>

@@ -6,6 +6,11 @@ async function getBackTests() {
     return response.data;
 }
 
+async function registerBackTest(body) {
+    const response = await axios.post('/coin/processor/backtest', body);
+    return response.data;
+}
+
 export const useBackTestStore = defineStore("backTest", {
 
     state: () => ({
@@ -32,17 +37,25 @@ export const useBackTestStore = defineStore("backTest", {
         async loadBackTests() {
             this.backTests = (await getBackTests()).body
         },
-        // async registerBackTest() {
-        //     await registerExchangeKey(this.register)
-        //     await this.loadExchangeKeys()
-        //     this.registerReset()
-        // },
+        async registerBackTest() {
+            await registerBackTest(this.register)
+            await this.loadBackTests()
+            this.registerReset()
+        },
         // async removeBackTest() {
         //     await removeExchangeKey(this.remove.keyPairId)
         //     await this.loadExchangeKeys()
         // },
-        // registerReset() {
-        //     this.register.visibleDialog = false;
-        // }
+        registerReset() {
+            this.register.visibleDialog = false;
+            this.register.startDate = ''
+            this.register.endDate = ''
+            this.register.durationUnit = ''
+            this.register.coinStrategyType = ''
+            this.register.exchangeType = ''
+            this.register.coinTypes = []
+            this.register.candleUnits = []
+            this.register.config = {}
+        }
     }
 });
