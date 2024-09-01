@@ -75,6 +75,7 @@ class CoinAutoTradeUseCase(
     fun terminate(autoTradeProcessorId: String): String {
         val processor = processorRepository.findById(autoTradeProcessorId)
         processor.terminate()
+        processorRepository.delete(processor)
         return autoTradeProcessorId
     }
 

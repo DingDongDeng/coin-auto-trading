@@ -24,4 +24,9 @@ class ProcessorRepository {
         storedProcessors[processor.id] = processor
         return processor.id
     }
+
+    fun delete(processor: Processor): String {
+        storedProcessors.remove(processor.id)
+        return processor.id
+    }
 }
