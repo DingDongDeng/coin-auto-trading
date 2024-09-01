@@ -1,12 +1,20 @@
+<script setup>
+    import {defineProps} from 'vue';
+
+    defineProps({
+        backTest: Object,
+    });
+
+</script>
 <template>
     <v-card color="#181B1F" variant="elevated" class="mx-auto" width="350" max-width="350">
         <v-card-item>
             <div>
                 <div class="text-overline mb-1">
-                    {{ title }}
+                    {{ backTest.id }}
                 </div>
                 <div class="text-h6 mb-1">
-                    Headline
+                    {{ backTest }}
                 </div>
                 <div class="text-caption">Greyhound divisely hello coldly fonwderfully</div>
             </div>
@@ -18,39 +26,4 @@
             </v-btn>
         </v-card-actions>
     </v-card>
-    <v-dialog
-        v-model="dialog"
-        width="500">
-        <v-card>
-            <v-card-title class="headline black" primary-title>
-                Compose Message
-            </v-card-title>
-            <v-card-text class="pa-5">
-            </v-card-text>
-            <v-card-actions class="pa-5">
-
-
-            </v-card-actions>
-        </v-card>
-    </v-dialog>
 </template>
-
-<script>
-    export default {
-        name: 'BackTestDetailPanel',
-
-        props: {
-            title: String
-        },
-        data() {
-            return {
-                dialog: false,
-            }
-        },
-        methods: {
-            showDetail() {
-                this.dialog = true
-            }
-        }
-    }
-</script>

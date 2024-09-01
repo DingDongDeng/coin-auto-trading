@@ -6,7 +6,7 @@
     const authExchangeKey = useAuthExchangeKeyStore();
     const {remove} = storeToRefs(authExchangeKey);
 
-    const props = defineProps({
+    defineProps({
         title: String,
         keyPairId: String,
     });
@@ -28,7 +28,7 @@
 
         <v-card-actions>
             <v-icon icon="mdi-delete" @click="(() => {
-                remove.keyPairId = props.keyPairId;
+                remove.keyPairId = keyPairId;
                 authExchangeKey.removeExchangeKey();
             })"></v-icon>
         </v-card-actions>

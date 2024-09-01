@@ -14,7 +14,7 @@
         coinStrategyTypes,
         coinTypes
     } = storeToRefs(code);
-    const {register} = storeToRefs(backTest);
+    const {backTests, register} = storeToRefs(backTest);
 
     const dateTimeRange = ref([]);
 
@@ -56,8 +56,8 @@
 <template>
     <v-container>
         <v-row>
-            <v-col v-for="(variant, i) in variants" :key="i" cols="auto">
-                <BackTestDetailPanel :title="variant"/>
+            <v-col v-for="(backTest, i) in backTests" :key="i" cols="auto">
+                <BackTestDetailPanel :back-test="backTest"/>
             </v-col>
             <v-col cols="auto">
                 <v-icon icon="mdi-plus-circle"
