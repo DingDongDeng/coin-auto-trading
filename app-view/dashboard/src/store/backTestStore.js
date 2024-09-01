@@ -12,6 +12,8 @@ export const useBackTestStore = defineStore("backTest", {
         backTests: [],
         register: {
             visibleDialog: false,
+            startDate: '',
+            endDate: '',
         },
         remove: {
             keyPairId: '',
