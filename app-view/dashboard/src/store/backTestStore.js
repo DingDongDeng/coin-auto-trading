@@ -25,6 +25,7 @@ export const useBackTestStore = defineStore("backTest", {
         },
         register: {
             visibleDialog: false,
+            title: '',
             startDateTime: '',
             endDateTime: '',
             durationUnit: '',
@@ -56,6 +57,7 @@ export const useBackTestStore = defineStore("backTest", {
         },
         registerReset() {
             this.register.visibleDialog = false;
+            this.register.title = ''
             this.register.startDateTime = ''
             this.register.endDateTime = ''
             this.register.durationUnit = ''

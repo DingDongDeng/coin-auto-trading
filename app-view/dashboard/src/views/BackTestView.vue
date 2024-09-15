@@ -79,6 +79,8 @@
                     multiple="range"
                     v-model="dateTimeRange"
                 />
+                <v-text-field
+                    v-model="register.title" label="제목"/>
                 <v-select v-model="register.durationUnit"
                           label="백테스트 실행 시간 단위"
                           :items="candleUnits"
