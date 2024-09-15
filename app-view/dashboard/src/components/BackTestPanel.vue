@@ -55,18 +55,47 @@
             </v-card-title>
             <v-card-text class="pa-5">
                 <v-row>
-                    <v-col cols="4">
-                        <div><strong>기간 및 진행률</strong></div>
-                        <div> 진행률 : {{ detail.progressRate }}%</div>
-                        <div> 시작일 : {{ detail.startDateTime }}</div>
-                        <div> 종료일 : {{ detail.endDateTime }}</div>
+                    <v-col cols="5">
+                        <v-row class="mb-2" no-gutters>
+                            <v-col cols="3">
+                                <strong>기간 및 진행률</strong>
+                            </v-col>
+                        </v-row>
+                        <v-row class="mb-1" no-gutters>
+                            <v-col cols="3">진행률</v-col>
+                            <v-col cols="6">{{ detail.progressRate }}%</v-col>
+                        </v-row>
+                        <v-row class="mb-1" no-gutters>
+                            <v-col cols="3">시작일</v-col>
+                            <v-col cols="6">{{ detail.startDateTime }}</v-col>
+                        </v-row>
+                        <v-row no-gutters>
+                            <v-col cols="3">종료일</v-col>
+                            <v-col cols="6">{{ detail.endDateTime }}</v-col>
+                        </v-row>
                     </v-col>
-                    <v-col cols="4">
-                        <div><strong> 진행 상황 </strong></div>
-                        <div> 총 누적 이익금 (수수료 제외) : {{ detail.totalAccProfitValuePrice }} 원</div>
-                        <div> 총 수수료 : {{ detail.totalFee }}</div>
-                        <div> 미실현 평가금액 : {{ detail.totalProfitPrice }}</div>
-                        <div> 미실현 손익률 : {{ detail.totalProfitRate }}%</div>
+                    <v-col cols="5">
+                        <v-row class="mb-2" no-gutters>
+                            <v-col cols="3">
+                                <strong>진행 상황</strong>
+                            </v-col>
+                        </v-row>
+                        <v-row class="mb-1" no-gutters>
+                            <v-col cols="4">총 누적 이익금 <br> (수수료 제외)</v-col>
+                            <v-col cols="6">{{ detail.totalAccProfitValuePrice }}원</v-col>
+                        </v-row>
+                        <v-row class="mb-1" no-gutters>
+                            <v-col cols="4">총 수수료</v-col>
+                            <v-col cols="6">{{ detail.totalFee }}</v-col>
+                        </v-row>
+                        <v-row no-gutters>
+                            <v-col cols="4">미실현 평가금액</v-col>
+                            <v-col cols="6">{{ detail.totalProfitPrice }}원</v-col>
+                        </v-row>
+                        <v-row no-gutters>
+                            <v-col cols="4">미실현 손익률</v-col>
+                            <v-col cols="6">{{ detail.totalProfitRate }}%</v-col>
+                        </v-row>
                     </v-col>
                 </v-row>
 
