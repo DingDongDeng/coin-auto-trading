@@ -13,6 +13,7 @@ import com.dingdongdeng.autotrading.domain.trade.repository.CoinTradeHistoryRepo
 import com.dingdongdeng.autotrading.infra.common.exception.CriticalException
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
+import com.dingdongdeng.autotrading.infra.common.type.ExchangeModeType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.type.OrderType
 import com.dingdongdeng.autotrading.infra.common.type.PriceType
@@ -32,11 +33,12 @@ class CoinTradeService(
 
     fun syncTradeHistories(
         exchangeType: ExchangeType,
+        exchangeModeType: ExchangeModeType,
         keyPairId: String,
         autoTradeProcessorId: String,
         coinType: CoinType,
     ): List<CoinTradeHistory> {
-        val exchangeService = exchangeServices.first { it.support(exchangeType) }
+        val exchangeService = exchangeServices.first { it.support(exchangeType, exchangeModeType) }
         val exchangeKeyPair = exchangeService.getKeyPair(keyPairId)
         val notSyncedTradeHistories =
             coinTradeHistoryRepository.findAllCoinTradeHistories(autoTradeProcessorId, coinType)
@@ -54,6 +56,7 @@ class CoinTradeService(
 
     fun getTradeResult(
         exchangeType: ExchangeType,
+        exchangeModeType: ExchangeModeType,
         keyPairId: String,
         processorId: String,
         coinTypes: List<CoinType>,
@@ -62,6 +65,7 @@ class CoinTradeService(
         val tradeDetails = coinTypes.map { coinType ->
             val summary = this.getTradeSummary(
                 exchangeType = exchangeType,
+                exchangeModeType = exchangeModeType,
                 keyPairId = keyPairId,
                 autoTradeProcessorId = processorId,
                 coinType = coinType,
@@ -91,6 +95,7 @@ class CoinTradeService(
 
     fun getTradeSummary(
         exchangeType: ExchangeType,
+        exchangeModeType: ExchangeModeType,
         keyPairId: String,
         autoTradeProcessorId: String,
         coinType: CoinType,
@@ -101,6 +106,7 @@ class CoinTradeService(
             .filter { it.tradedAt <= now }
         val currentPrice = getCurrentPrice(
             exchangeType = exchangeType,
+            exchangeModeType = exchangeModeType,
             keyPairId = keyPairId,
             coinType = coinType,
             now = now,
@@ -144,6 +150,7 @@ class CoinTradeService(
         orderId: String?,
         autoTradeProcessorId: String,
         exchangeType: ExchangeType,
+        exchangeModeType: ExchangeModeType,
         keyPairId: String,
         orderType: OrderType,
         coinType: CoinType,
@@ -151,7 +158,7 @@ class CoinTradeService(
         price: Double,
         priceType: PriceType,
     ) {
-        val exchangeService = exchangeServices.first { it.support(exchangeType) }
+        val exchangeService = exchangeServices.first { it.support(exchangeType, exchangeModeType) }
         val exchangeKeyPair = exchangeService.getKeyPair(keyPairId)
         val orderResponse = when {
             orderType.isBuy() || orderType.isSell() -> {
@@ -179,6 +186,7 @@ class CoinTradeService(
         // 매수, 매도 기록
         val tradeSummary = this.getTradeSummary(
             exchangeType = exchangeType,
+            exchangeModeType = exchangeModeType,
             keyPairId = keyPairId,
             autoTradeProcessorId = autoTradeProcessorId,
             coinType = coinType,
@@ -239,11 +247,12 @@ class CoinTradeService(
 
     private fun getCurrentPrice(
         exchangeType: ExchangeType,
+        exchangeModeType: ExchangeModeType,
         keyPairId: String,
         coinType: CoinType,
         now: LocalDateTime
     ): Double {
-        val exchangeService = exchangeServices.first { it.support(exchangeType) }
+        val exchangeService = exchangeServices.first { it.support(exchangeType, exchangeModeType) }
         val keyPair = exchangeService.getKeyPair(keyPairId)
         val chart = exchangeService.getChart(
             param = SpotCoinExchangeChartParam(

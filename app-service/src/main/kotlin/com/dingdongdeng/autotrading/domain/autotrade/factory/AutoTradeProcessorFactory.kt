@@ -9,6 +9,7 @@ import com.dingdongdeng.autotrading.domain.trade.service.CoinTradeService
 import com.dingdongdeng.autotrading.infra.client.slack.SlackSender
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
+import com.dingdongdeng.autotrading.infra.common.type.ExchangeModeType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
@@ -25,6 +26,7 @@ class AutoTradeProcessorFactory(
         userId: Long,
         title: String,
         exchangeType: ExchangeType,
+        exchangeModeType: ExchangeModeType,
         coinTypes: List<CoinType>,
         candleUnits: List<CandleUnit>,
         keyPairId: String = "",
@@ -35,6 +37,7 @@ class AutoTradeProcessorFactory(
         val chartFinder = { coinType: CoinType, now: LocalDateTime ->
             coinChartService.getCharts(
                 exchangeType = exchangeType,
+                exchangeModeType = exchangeModeType,
                 keyPairId = keyPairId,
                 coinType = coinType,
                 candleUnits = candleUnits,
@@ -49,6 +52,7 @@ class AutoTradeProcessorFactory(
                 orderId = task.orderId,
                 autoTradeProcessorId = processorId,
                 exchangeType = exchangeType,
+                exchangeModeType = exchangeModeType,
                 keyPairId = keyPairId,
                 orderType = task.orderType,
                 coinType = task.coinType,
@@ -60,13 +64,14 @@ class AutoTradeProcessorFactory(
 
         // 주문 상태 동기화
         val tradeSyncer = { processorId: String, coinType: CoinType ->
-            coinTradeService.syncTradeHistories(exchangeType, keyPairId, processorId, coinType)
+            coinTradeService.syncTradeHistories(exchangeType, exchangeModeType, keyPairId, processorId, coinType)
         }
 
         // 거래 정보 조회
         val tradeInfoFinder = { processorId: String, coinType: CoinType, now: LocalDateTime ->
             coinTradeService.getTradeSummary(
                 exchangeType = exchangeType,
+                exchangeModeType = exchangeModeType,
                 keyPairId = keyPairId,
                 autoTradeProcessorId = processorId,
                 coinType = coinType,

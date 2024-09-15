@@ -12,6 +12,7 @@ import com.dingdongdeng.autotrading.domain.trade.service.CoinTradeService
 import com.dingdongdeng.autotrading.infra.common.annotation.UseCase
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
+import com.dingdongdeng.autotrading.infra.common.type.ExchangeModeType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
 import com.dingdongdeng.autotrading.infra.common.utils.round
@@ -38,6 +39,7 @@ class CoinAutoTradeUseCase(
             userId = userId,
             title = title,
             exchangeType = exchangeType,
+            exchangeModeType = ExchangeModeType.PRODUCTION,
             coinTypes = coinTypes,
             candleUnits = candleUnits,
             keyPairId = keyPairId,
@@ -85,6 +87,7 @@ class CoinAutoTradeUseCase(
         val processor = processorRepository.findById(autoTradeProcessorId) as CoinAutoTradeProcessor
         val tradeResult = coinTradeService.getTradeResult(
             exchangeType = processor.exchangeType,
+            exchangeModeType = ExchangeModeType.PRODUCTION,
             processorId = processor.id,
             keyPairId = processor.keyPairId,
             coinTypes = processor.coinTypes,

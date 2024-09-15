@@ -15,6 +15,7 @@ import com.dingdongdeng.autotrading.infra.common.annotation.UseCase
 import com.dingdongdeng.autotrading.infra.common.exception.WarnException
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
+import com.dingdongdeng.autotrading.infra.common.type.ExchangeModeType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.utils.AsyncUtils
 import com.dingdongdeng.autotrading.infra.common.utils.round
@@ -44,6 +45,7 @@ class CoinBackTestUseCase(
             userId = userId,
             title = title,
             exchangeType = exchangeType,
+            exchangeModeType = ExchangeModeType.BACKTEST,
             coinTypes = coinTypes,
             candleUnits = candleUnits,
             config = config,
@@ -104,6 +106,7 @@ class CoinBackTestUseCase(
         val processor = processorRepository.findById(backTestProcessorId) as CoinBackTestProcessor
         val tradeResult = coinTradeService.getTradeResult(
             exchangeType = processor.exchangeType,
+            exchangeModeType = ExchangeModeType.BACKTEST,
             processorId = processor.id,
             keyPairId = "",
             coinTypes = processor.coinTypes,

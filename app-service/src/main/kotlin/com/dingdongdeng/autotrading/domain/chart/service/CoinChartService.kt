@@ -11,6 +11,7 @@ import com.dingdongdeng.autotrading.domain.indicator.factory.IndicatorFactory
 import com.dingdongdeng.autotrading.infra.common.exception.CriticalException
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
+import com.dingdongdeng.autotrading.infra.common.type.ExchangeModeType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.utils.AsyncUtils
 import com.dingdongdeng.autotrading.infra.common.utils.CandleDateTimeUtils
@@ -26,6 +27,7 @@ class CoinChartService(
 
     fun getCharts(
         exchangeType: ExchangeType,
+        exchangeModeType: ExchangeModeType,
         keyPairId: String = "",
         coinType: CoinType,
         candleUnits: List<CandleUnit>,
@@ -35,6 +37,7 @@ class CoinChartService(
         return AsyncUtils.joinAll(candleUnits) { candleUnit ->
             makeChartProcess(
                 exchangeType = exchangeType,
+                exchangeModeType = exchangeModeType,
                 keyPairId = keyPairId,
                 coinType = coinType,
                 candleUnit = candleUnit,
@@ -66,6 +69,7 @@ class CoinChartService(
 
     private fun makeChartProcess(
         exchangeType: ExchangeType,
+        exchangeModeType: ExchangeModeType,
         keyPairId: String,
         coinType: CoinType,
         candleUnit: CandleUnit,
@@ -74,6 +78,7 @@ class CoinChartService(
     ): Chart {
         val exchangeCandles = getCandlesByCount(
             exchangeType = exchangeType,
+            exchangeModeType = exchangeModeType,
             keyPairId = keyPairId,
             coinType = coinType,
             candleUnit = candleUnit,
@@ -129,13 +134,14 @@ class CoinChartService(
 
     private fun getCandlesByCount(
         exchangeType: ExchangeType,
+        exchangeModeType: ExchangeModeType,
         keyPairId: String,
         coinType: CoinType,
         candleUnit: CandleUnit,
         to: LocalDateTime,
         candleCount: Int,
     ): List<ExchangeChartCandle> {
-        val exchangeService = exchangeServices.first { it.support(exchangeType) }
+        val exchangeService = exchangeServices.first { it.support(exchangeType, exchangeModeType) }
         val exchangeKeyPair = exchangeService.getKeyPair(keyPairId)
         var candles = emptyList<ExchangeChartCandle>()
         var loopCnt = 0
@@ -163,7 +169,7 @@ class CoinChartService(
         to: LocalDateTime,
         keyPairId: String,
     ) {
-        val exchangeService = exchangeServices.first { it.support(exchangeType) }
+        val exchangeService = exchangeServices.first { it.support(exchangeType, ExchangeModeType.PRODUCTION) }
         val keyParam = exchangeService.getKeyPair(keyPairId)
 
         var startDateTime = from
