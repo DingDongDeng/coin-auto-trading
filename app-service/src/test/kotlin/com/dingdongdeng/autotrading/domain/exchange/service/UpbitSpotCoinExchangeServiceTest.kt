@@ -1,7 +1,8 @@
 package com.dingdongdeng.autotrading.domain.exchange.service
 
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeKeyPair
-import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartParam
+import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartByCountParam
+import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartByDateTimeParam
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderParam
 import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
@@ -9,6 +10,7 @@ import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.type.OrderType
 import com.dingdongdeng.autotrading.infra.common.type.PriceType
+import com.dingdongdeng.autotrading.infra.common.utils.CandleDateTimeUtils
 import com.dingdongdeng.autotrading.test.TestEnv
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DisplayName
@@ -56,7 +58,7 @@ class UpbitSpotCoinExchangeServiceTest(
         fun test22() {
             // given
             val now = LocalDateTime.now()
-            val param = SpotCoinExchangeChartParam(
+            val param = SpotCoinExchangeChartByDateTimeParam(
                 coinType = CoinType.ETHEREUM,
                 candleUnit = CandleUnit.UNIT_1M,
                 from = now.minusMinutes(5),
@@ -65,7 +67,7 @@ class UpbitSpotCoinExchangeServiceTest(
             )
 
             // when
-            val result = upbitSpotCoinExchangeService.getChart(param, keyParam)
+            val result = upbitSpotCoinExchangeService.getChartByDateTime(param, keyParam)
             log.info("result={}", result)
 
             // then
@@ -82,7 +84,7 @@ class UpbitSpotCoinExchangeServiceTest(
         fun test23() {
             // given
             val now = LocalDateTime.of(2023, 12, 25, 0, 0, 0)
-            val param = SpotCoinExchangeChartParam(
+            val param = SpotCoinExchangeChartByDateTimeParam(
                 coinType = CoinType.ETHEREUM,
                 candleUnit = CandleUnit.UNIT_1M,
                 from = now.minusMinutes(5),
@@ -91,7 +93,7 @@ class UpbitSpotCoinExchangeServiceTest(
             )
 
             // when
-            val result = upbitSpotCoinExchangeService.getChart(param, keyParam)
+            val result = upbitSpotCoinExchangeService.getChartByDateTime(param, keyParam)
             log.info("result={}", result)
 
             // then
@@ -105,7 +107,7 @@ class UpbitSpotCoinExchangeServiceTest(
         fun test24() {
             // given
             val now = LocalDateTime.of(2023, 12, 25, 0, 0, 0)
-            val param = SpotCoinExchangeChartParam(
+            val param = SpotCoinExchangeChartByDateTimeParam(
                 coinType = CoinType.ETHEREUM,
                 candleUnit = CandleUnit.UNIT_5M,
                 from = now.minusMinutes(53),
@@ -114,7 +116,7 @@ class UpbitSpotCoinExchangeServiceTest(
             )
 
             // when
-            val result = upbitSpotCoinExchangeService.getChart(param, keyParam)
+            val result = upbitSpotCoinExchangeService.getChartByDateTime(param, keyParam)
             log.info("result={}", result)
 
             // then
@@ -128,7 +130,7 @@ class UpbitSpotCoinExchangeServiceTest(
         fun test123() {
             // given
             val now = LocalDateTime.of(2023, 12, 25, 9, 0, 0)
-            val param = SpotCoinExchangeChartParam(
+            val param = SpotCoinExchangeChartByDateTimeParam(
                 coinType = CoinType.ETHEREUM,
                 candleUnit = CandleUnit.UNIT_1D,
                 from = now.minusDays(5),
@@ -137,7 +139,7 @@ class UpbitSpotCoinExchangeServiceTest(
             )
 
             // when
-            val result = upbitSpotCoinExchangeService.getChart(param, keyParam)
+            val result = upbitSpotCoinExchangeService.getChartByDateTime(param, keyParam)
             log.info("result={}", result)
 
             // then
@@ -151,7 +153,7 @@ class UpbitSpotCoinExchangeServiceTest(
         fun test124() {
             // given
             val now = LocalDateTime.of(2023, 12, 25, 9, 0, 0)
-            val param = SpotCoinExchangeChartParam(
+            val param = SpotCoinExchangeChartByDateTimeParam(
                 coinType = CoinType.ETHEREUM,
                 candleUnit = CandleUnit.UNIT_1W,
                 from = now.minusWeeks(5),
@@ -160,13 +162,41 @@ class UpbitSpotCoinExchangeServiceTest(
             )
 
             // when
-            val result = upbitSpotCoinExchangeService.getChart(param, keyParam)
+            val result = upbitSpotCoinExchangeService.getChartByDateTime(param, keyParam)
             log.info("result={}", result)
 
             // then
             Assertions.assertEquals(6, result.candles.size)
             Assertions.assertEquals(param.from, result.candles.first().candleDateTimeKst)
             Assertions.assertEquals(param.to, result.candles.last().candleDateTimeKst)
+        }
+    }
+
+    @DisplayName("차트 정보를 조회할때 개수로 조회할 수 있다.")
+    @Nested
+    inner class Test2 {
+        @DisplayName("[1분봉] 현재 실시간으로 생성중인 캔들에 대해서도 잘 조회되어야한다. (to=15:05:30 일때, 마지막 캔들은 15:05시간을 갖고 있어야함)")
+        @Test
+        fun test22() {
+            // given
+            val now = LocalDateTime.now()
+            val param = SpotCoinExchangeChartByCountParam(
+                coinType = CoinType.ETHEREUM,
+                candleUnit = CandleUnit.UNIT_1M,
+                to = now,
+                count = 3
+            )
+
+            // when
+            val result = upbitSpotCoinExchangeService.getChartByCount(param, keyParam)
+            log.info("result={}", result)
+
+            // then
+            Assertions.assertEquals(3, result.candles.size)
+            Assertions.assertEquals(
+                CandleDateTimeUtils.makeUnitDateTime(now, CandleUnit.UNIT_1M),
+                result.candles.last().candleDateTimeKst
+            )
         }
     }
 

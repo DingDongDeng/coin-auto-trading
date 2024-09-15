@@ -4,7 +4,8 @@ import com.dingdongdeng.autotrading.domain.exchange.entity.ExchangeKey
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChart
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChartCandle
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeKeyPair
-import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartParam
+import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartByCountParam
+import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartByDateTimeParam
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrder
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderParam
 import com.dingdongdeng.autotrading.domain.exchange.repository.ExchangeKeyRepository
@@ -95,7 +96,10 @@ class UpbitSpotCoinExchangeService(
     }
 
     // from <= 조회범위 <= to
-    override fun getChart(param: SpotCoinExchangeChartParam, keyParam: ExchangeKeyPair): ExchangeChart {
+    override fun getChartByDateTime(
+        param: SpotCoinExchangeChartByDateTimeParam,
+        keyParam: ExchangeKeyPair
+    ): ExchangeChart {
         var totalResponse = requestCandles(
             unit = param.candleUnit,
             coinType = param.coinType,
@@ -149,6 +153,40 @@ class UpbitSpotCoinExchangeService(
             from = param.from,
             to = param.to,
             candles = resultCandles,
+        )
+    }
+
+    override fun getChartByCount(param: SpotCoinExchangeChartByCountParam, keyParam: ExchangeKeyPair): ExchangeChart {
+
+        val response = requestCandles(
+            unit = param.candleUnit,
+            coinType = param.coinType,
+            to = param.to,
+            candleUnit = param.candleUnit,
+            chunkSize = param.count,
+            keyParam = keyParam,
+        ).map {
+            ExchangeChartCandle(
+                candleUnit = param.candleUnit,
+                candleDateTimeUtc = it.candleDateTimeUtc,
+                candleDateTimeKst = it.candleDateTimeKst,
+                openingPrice = it.openingPrice,
+                highPrice = it.highPrice,
+                lowPrice = it.lowPrice,
+                closingPrice = it.tradePrice,
+                accTradePrice = it.candleAccTradePrice,
+                accTradeVolume = it.candleAccTradeVolume,
+            )
+        }
+
+        if (response.isEmpty()) {
+            log.warn("거래소 캔들 조회 결과가 존재하지 않음, exchangeType=${EXCHANGE_TYPE}, coinType=${param.coinType}, unit=${param.candleUnit}, count=${param.count}, to=${param.to}")
+        }
+
+        return ExchangeChart(
+            from = response.first().candleDateTimeKst,
+            to = param.to,
+            candles = response,
         )
     }
 

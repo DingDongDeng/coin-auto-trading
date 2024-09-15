@@ -9,6 +9,7 @@ import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 data class SpotCoinStrategyMakeTaskParam(
     val exchangeType: ExchangeType,
     val coinType: CoinType,
+    val currentPrice: Double,
     val charts: List<Chart>, // 1분봉, 5분봉, 60분봉 등
     val tradeSummary: CoinTradeSummary,
 ) {

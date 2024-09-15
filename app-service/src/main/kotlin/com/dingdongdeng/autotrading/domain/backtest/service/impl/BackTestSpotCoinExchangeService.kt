@@ -4,7 +4,8 @@ import com.dingdongdeng.autotrading.domain.backtest.repository.VirtualCoinCandle
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChart
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChartCandle
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeKeyPair
-import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartParam
+import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartByCountParam
+import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartByDateTimeParam
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrder
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderParam
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
@@ -48,7 +49,10 @@ class BackTestSpotCoinExchangeService(
     }
 
     // from <= 조회범위 <= to
-    override fun getChart(param: SpotCoinExchangeChartParam, keyParam: ExchangeKeyPair): ExchangeChart {
+    override fun getChartByDateTime(
+        param: SpotCoinExchangeChartByDateTimeParam,
+        keyParam: ExchangeKeyPair
+    ): ExchangeChart {
         val candles = virtualCoinCandleRepository.findAllCoinCandle(
             exchangeType = EXCHANGE_TYPE,
             coinType = param.coinType,
@@ -78,7 +82,31 @@ class BackTestSpotCoinExchangeService(
             to = param.to,
             candles = candles,
         )
+    }
 
+    override fun getChartByCount(param: SpotCoinExchangeChartByCountParam, keyParam: ExchangeKeyPair): ExchangeChart {
+        var candles = emptyList<ExchangeChartCandle>()
+        var loopCnt = 0
+        // 필요한 캔들 숫자가 조회될때까지 반복
+        while (candles.size < param.count) {
+            val endDateTime =
+                param.to.minusSeconds(param.candleUnit.getSecondSize() * param.count * loopCnt++) // 루프마다 기준점이 달라짐
+            val startDateTime = endDateTime.minusSeconds(param.candleUnit.getSecondSize() * (param.count - 1))
+            val chartParam = SpotCoinExchangeChartByDateTimeParam(
+                coinType = param.coinType,
+                candleUnit = param.candleUnit,
+                from = startDateTime,
+                to = endDateTime,
+            )
+            candles = getChartByDateTime(chartParam, keyParam).candles + candles
+        }
+        candles = candles.takeLast(param.count)
+
+        return ExchangeChart(
+            from = candles.first().candleDateTimeKst,
+            to = param.to,
+            candles = candles,
+        )
     }
 
     override fun getKeyPair(keyPairId: String): ExchangeKeyPair {

@@ -5,6 +5,7 @@ import com.dingdongdeng.autotrading.domain.chart.model.Candle
 import com.dingdongdeng.autotrading.domain.chart.model.Chart
 import com.dingdongdeng.autotrading.domain.chart.repository.CoinCandleRepository
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChartCandle
+import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartByCountParam
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartByDateTimeParam
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
 import com.dingdongdeng.autotrading.domain.indicator.factory.IndicatorFactory
@@ -76,15 +77,17 @@ class CoinChartService(
         count: Int,
         to: LocalDateTime,
     ): Chart {
-        val exchangeCandles = getCandlesByCount(
-            exchangeType = exchangeType,
-            exchangeModeType = exchangeModeType,
-            keyPairId = keyPairId,
-            coinType = coinType,
-            candleUnit = candleUnit,
-            to = to,
-            candleCount = count + CALCULATE_INDICATOR_CANDLE_COUNT - 1,
-        )
+        val exchangeService = exchangeServices.first { it.support(exchangeType, exchangeModeType) }
+        val exchangeKeyPair = exchangeService.getKeyPair(keyPairId)
+        val exchangeCandles = exchangeService.getChartByCount(
+            SpotCoinExchangeChartByCountParam(
+                coinType = coinType,
+                candleUnit = candleUnit,
+                to = to,
+                count = count + CALCULATE_INDICATOR_CANDLE_COUNT,
+            ),
+            exchangeKeyPair
+        ).candles
 
         val candles = mutableListOf<Candle>()
         for (startIndex in exchangeCandles.indices) {
@@ -132,35 +135,6 @@ class CoinChartService(
             candleUnit = candleUnit,
             candles = candles,
         )
-    }
-
-    private fun getCandlesByCount(
-        exchangeType: ExchangeType,
-        exchangeModeType: ExchangeModeType,
-        keyPairId: String,
-        coinType: CoinType,
-        candleUnit: CandleUnit,
-        to: LocalDateTime,
-        candleCount: Int,
-    ): List<ExchangeChartCandle> {
-        val exchangeService = exchangeServices.first { it.support(exchangeType, exchangeModeType) }
-        val exchangeKeyPair = exchangeService.getKeyPair(keyPairId)
-        var candles = emptyList<ExchangeChartCandle>()
-        var loopCnt = 0
-        // 필요한 캔들 숫자가 조회될때까지 반복
-        while (candles.size < candleCount) {
-            val endDateTime = to.minusSeconds(candleUnit.getSecondSize() * candleCount * loopCnt++) // 루프마다 기준점이 달라짐
-            val startDateTime = endDateTime.minusSeconds(candleUnit.getSecondSize() * (candleCount - 1))
-            val chartParam = SpotCoinExchangeChartByDateTimeParam(
-                coinType = coinType,
-                candleUnit = candleUnit,
-                from = startDateTime,
-                to = endDateTime,
-            )
-            candles = exchangeService.getChartByDateTime(chartParam, exchangeKeyPair).candles + candles
-        }
-
-        return candles.takeLast(candleCount)
     }
 
     private fun loadChartProcess(
