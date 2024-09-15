@@ -18,8 +18,8 @@ data class CachedCandles(
 ) {
     val key = makeCacheKey(exchangeType, coinType, unit)
     private val dateTimes = candles.map { it.candleDateTimeKst }
-    private val firstDateTime = candles.first().candleDateTimeKst
-    private val lastDateTime = candles.last().candleDateTimeKst
+    private val firstDateTime = if (candles.isEmpty()) LocalDateTime.MAX else candles.first().candleDateTimeKst
+    private val lastDateTime = if (candles.isEmpty()) LocalDateTime.MIN else candles.last().candleDateTimeKst
 
     fun get(from: LocalDateTime, to: LocalDateTime): List<CoinCandle> {
         val startIndex = indexMap[CandleDateTimeUtils.makeUnitDateTime(from, unit, true)]
