@@ -9,6 +9,7 @@ import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartB
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrder
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderParam
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
+import com.dingdongdeng.autotrading.infra.common.exception.CriticalException
 import com.dingdongdeng.autotrading.infra.common.exception.WarnException
 import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeModeType
@@ -99,6 +100,10 @@ class BackTestSpotCoinExchangeService(
                 to = endDateTime,
             )
             candles = getChartByDateTime(chartParam, keyParam).candles + candles
+
+            if (loopCnt > 5) {
+                throw CriticalException.of("무한 루프 발생 의심되어 에러 발생, coinType=${param.coinType}, candleUnit=${param.candleUnit}")
+            }
         }
         candles = candles.takeLast(param.count)
 

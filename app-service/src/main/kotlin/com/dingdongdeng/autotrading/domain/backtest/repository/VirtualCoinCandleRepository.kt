@@ -43,7 +43,7 @@ class VirtualCoinCandleRepository(
             addAll(dbCandles)
             sortBy { it.candleDateTimeKst }
             if (lastCandle != null) {
-                if (lastCandle.candleDateTimeKst == last().candleDateTimeKst) {
+                if (isNotEmpty() && lastCandle.candleDateTimeKst == last().candleDateTimeKst) {
                     removeAt(size - 1)
                 }
                 add(lastCandle)
