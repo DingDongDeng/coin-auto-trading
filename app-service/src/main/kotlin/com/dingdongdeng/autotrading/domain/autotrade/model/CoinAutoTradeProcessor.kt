@@ -18,6 +18,7 @@ import java.util.UUID
 class CoinAutoTradeProcessor(
     override val id: String = "${UUID.randomUUID()}",
     override val userId: Long,
+    val title: String,
     val exchangeType: ExchangeType,
     val coinTypes: List<CoinType>,
     val keyPairId: String,

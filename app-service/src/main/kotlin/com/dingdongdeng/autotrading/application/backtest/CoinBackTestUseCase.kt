@@ -29,6 +29,7 @@ class CoinBackTestUseCase(
     private val coinChartService: CoinChartService,
 ) {
     fun backTest(
+        title: String,
         startDateTime: LocalDateTime,
         endDateTime: LocalDateTime,
         durationUnit: CandleUnit, // 백테스트 시간 간격
@@ -41,6 +42,7 @@ class CoinBackTestUseCase(
     ): String {
         val autoTradeProcessor = autoTradeProcessorFactory.of(
             userId = userId,
+            title = title,
             exchangeType = exchangeType,
             coinTypes = coinTypes,
             candleUnits = candleUnits,

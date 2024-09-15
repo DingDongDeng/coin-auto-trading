@@ -30,6 +30,7 @@ class CoinDashBoardController(
     private val authUseCase: AuthUseCase,
 ) {
 
+    // 거래소 키 조회
     @GetMapping("/exchange-key")
     fun getExchangeKeys(
         //@SessionAttribute userId: Long,
@@ -39,6 +40,7 @@ class CoinDashBoardController(
         )
     }
 
+    // 거래소 키 등록
     @PostMapping("/exchange-key")
     fun exchangeKeyRegister(
         @Valid @RequestBody request: CoinExchangeKeyRegisterRequest,
@@ -54,6 +56,8 @@ class CoinDashBoardController(
         )
     }
 
+
+    // 거래소 키 삭제
     @DeleteMapping("/exchange-key/{keyPairId}")
     fun exchangeKeyRemove(
         @PathVariable keyPairId: String,
@@ -63,6 +67,7 @@ class CoinDashBoardController(
         )
     }
 
+    // 자동매매 프로세서 등록
     @PostMapping("/processor/autotrade")
     fun autotradeRegister(
         @Valid @RequestBody request: CoinAutotradeRegisterRequest,
@@ -81,6 +86,7 @@ class CoinDashBoardController(
         )
     }
 
+    // 거래소 차트 데이터 다운로드
     @PostMapping("/chart/load")
     fun chartLoad(
         @Valid @RequestBody request: CoinAutotradeChartLoadRequest,
@@ -96,6 +102,7 @@ class CoinDashBoardController(
         return CommonResponse(true)
     }
 
+    // 프로세서 백테스트 등록 및 실행
     @PostMapping("/processor/backtest")
     fun backTest(
         @Valid @RequestBody request: CoinBackTestRegisterRequest,
@@ -103,6 +110,7 @@ class CoinDashBoardController(
     ): CommonResponse<String> {
         return CommonResponse(
             body = coinBackTestUseCase.backTest(
+                title = request.title!!,
                 startDateTime = request.startDateTime!!,
                 endDateTime = request.endDateTime!!,
                 durationUnit = request.durationUnit!!,
@@ -116,6 +124,7 @@ class CoinDashBoardController(
         )
     }
 
+    // 프로세서 백테스트 결과 조회
     @GetMapping("/processor/backtest/{processorId}")
     fun getBackTestResult(@PathVariable processorId: String): CommonResponse<CoinBackTestResultDto> {
         return CommonResponse(
@@ -123,6 +132,7 @@ class CoinDashBoardController(
         )
     }
 
+    // 프로세서 자동매매 등록
     @GetMapping("/processor/autotrade")
     fun processAutoTradeList(
         //@SessionAttribute userId: Long,
@@ -132,6 +142,7 @@ class CoinDashBoardController(
         )
     }
 
+    // 프로세서 백테스트 목록 조회
     @GetMapping("/processor/backtest")
     fun processBackTestList(
         //@SessionAttribute userId: Long,
@@ -141,6 +152,7 @@ class CoinDashBoardController(
         )
     }
 
+    // 프로세서 실행
     @PostMapping("/processor/{processorId}/start")
     fun processorStart(
         @PathVariable processorId: String,
@@ -150,6 +162,7 @@ class CoinDashBoardController(
         )
     }
 
+    // 프로세서 정지
     @PostMapping("/processor/{processorId}/stop")
     fun processorStop(
         @PathVariable processorId: String,
@@ -159,6 +172,7 @@ class CoinDashBoardController(
         )
     }
 
+    // 프로세서 제거
     @DeleteMapping("/processor/{processorId}/terminate")
     fun processorTerminate(
         @PathVariable processorId: String,
@@ -168,6 +182,7 @@ class CoinDashBoardController(
         )
     }
 
+    // 자동매매 프로세서 결과 조회
     @GetMapping("/processor/autotrade/{processorId}")
     fun getAutoTradeResult(@PathVariable processorId: String): CommonResponse<CoinAutoTradeResultDto> {
         return CommonResponse(

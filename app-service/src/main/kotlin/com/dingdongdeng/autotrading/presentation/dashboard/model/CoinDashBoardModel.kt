@@ -68,6 +68,9 @@ data class CoinAutotradeChartLoadRequest(
 )
 
 data class CoinBackTestRegisterRequest(
+    @field:NotBlank(message = "title은 필수값 입니다.")
+    val title: String? = null,
+
     @field:Past(message = "endDateTime는 현재보다 과거 시간이어야 합니다.")
     @field:NotNull(message = "endDateTime는 필수 값입니다.")
     val startDateTime: LocalDateTime? = null,

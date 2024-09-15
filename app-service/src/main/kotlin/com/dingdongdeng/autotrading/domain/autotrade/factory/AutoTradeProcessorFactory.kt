@@ -23,6 +23,7 @@ class AutoTradeProcessorFactory(
     //FIXME 마켓 조회했을때 종목 상태가 warn이면 exception 던지자
     fun of(
         userId: Long,
+        title: String,
         exchangeType: ExchangeType,
         coinTypes: List<CoinType>,
         candleUnits: List<CandleUnit>,
@@ -75,6 +76,7 @@ class AutoTradeProcessorFactory(
 
         return CoinAutoTradeProcessor(
             userId = userId,
+            title = title,
             exchangeType = exchangeType,
             coinTypes = coinTypes,
             config = config,
