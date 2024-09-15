@@ -98,6 +98,14 @@
                         </v-row>
                     </v-col>
                 </v-row>
+                <v-row>
+                    <v-row class="mb-2" no-gutters>
+                        <v-col cols="3">
+                            <div><strong>전략 상세 설정</strong></div>
+                            <div style="white-space: pre-wrap">{{ JSON.stringify(detail.config, null, 4) }}</div>
+                        </v-col>
+                    </v-row>
+                </v-row>
 
                 <!-- 거래 이력 -->
                 <div> 거래 이력 :</div>
@@ -146,7 +154,6 @@
                     </tr>
                     </tbody>
                 </table>
-                <div style="white-space: pre-wrap"> 전략 상세 설정 : {{ JSON.stringify(detail.config, null, 4) }}</div>
             </v-card-text>
             <v-card-actions class="pa-5">
 
