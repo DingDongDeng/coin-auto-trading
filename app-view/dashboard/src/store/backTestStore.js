@@ -6,6 +6,11 @@ async function getBackTests() {
     return response.data;
 }
 
+async function getBackTestResult(backTestProcessorId) {
+    const response = await axios.get(`/coin/processor/backtest/${backTestProcessorId}`);
+    return response.data;
+}
+
 async function registerBackTest(body) {
     const response = await axios.post('/coin/processor/backtest', body);
     return response.data;
@@ -45,6 +50,12 @@ export const useBackTestStore = defineStore("backTest", {
     actions: {
         async loadBackTests() {
             this.backTests = (await getBackTests()).body
+        },
+        async loadBackTestDetail(backTestProcessorId) {
+            const detail = (await getBackTestResult(backTestProcessorId)).body
+            this.detail = {
+                ...detail
+            };
         },
         async registerBackTest() {
             await registerBackTest(this.register)

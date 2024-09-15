@@ -1,5 +1,5 @@
 <script setup>
-    import BackTestDetailPanel from "@/components/BackTestDetailPanel.vue";
+    import BackTestPanel from "@/components/BackTestPanel.vue";
     import {useBackTestStore} from "@/store/backTestStore";
     import {useCodeStore} from "@/store/codeStore";
     import {storeToRefs} from "pinia";
@@ -57,7 +57,7 @@
     <v-container>
         <v-row>
             <v-col v-for="(backTest, i) in backTests" :key="i" cols="auto">
-                <BackTestDetailPanel :back-test-detail="backTest"/>
+                <BackTestPanel :back-test="backTest"/>
             </v-col>
             <v-col cols="auto">
                 <v-icon icon="mdi-plus-circle"
