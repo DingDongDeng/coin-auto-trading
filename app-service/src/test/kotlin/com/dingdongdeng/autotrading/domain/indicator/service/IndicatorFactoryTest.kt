@@ -1,7 +1,7 @@
 package com.dingdongdeng.autotrading.domain.indicator.service
 
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeKeyPair
-import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartParam
+import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartByDateTimeParam
 import com.dingdongdeng.autotrading.domain.exchange.service.UpbitSpotCoinExchangeService
 import com.dingdongdeng.autotrading.domain.indicator.factory.IndicatorFactory
 import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
@@ -33,13 +33,13 @@ class IndicatorFactoryTest(
     fun test1() {
         // given
         val now = LocalDateTime.of(2022, 4, 17, 13, 13, 10)
-        val param = SpotCoinExchangeChartParam(
+        val param = SpotCoinExchangeChartByDateTimeParam(
             coinType = CoinType.ETHEREUM,
             candleUnit = CandleUnit.UNIT_15M,
             from = now.minusMinutes(15 * 200),
             to = now,
         )
-        val chart = upbitSpotCoinExchangeService.getChart(param, keyParam)
+        val chart = upbitSpotCoinExchangeService.getChartByDateTime(param, keyParam)
 
         // when
         val rsi = IndicatorFactory.getRsi(chart.candles)
@@ -54,13 +54,13 @@ class IndicatorFactoryTest(
     fun test2() {
         // given
         val now = LocalDateTime.of(2022, 8, 6, 9, 45, 10)
-        val param = SpotCoinExchangeChartParam(
+        val param = SpotCoinExchangeChartByDateTimeParam(
             coinType = CoinType.ETHEREUM,
             candleUnit = CandleUnit.UNIT_15M,
             from = now.minusMinutes(15 * 200),
             to = now,
         )
-        val chart = upbitSpotCoinExchangeService.getChart(param, keyParam)
+        val chart = upbitSpotCoinExchangeService.getChartByDateTime(param, keyParam)
 
         // when
         val macd = IndicatorFactory.getMACD(chart.candles)
@@ -75,13 +75,13 @@ class IndicatorFactoryTest(
     fun test3() {
         // given
         val now = LocalDateTime.of(2022, 12, 24, 13, 0, 10)
-        val param = SpotCoinExchangeChartParam(
+        val param = SpotCoinExchangeChartByDateTimeParam(
             coinType = CoinType.ETHEREUM,
             candleUnit = CandleUnit.UNIT_240M,
             from = now.minusMinutes(240 * 200),
             to = now,
         )
-        val chart = upbitSpotCoinExchangeService.getChart(param, keyParam)
+        val chart = upbitSpotCoinExchangeService.getChartByDateTime(param, keyParam)
 
         // when
         val macd = IndicatorFactory.getMACD(chart.candles)
@@ -96,13 +96,13 @@ class IndicatorFactoryTest(
     fun test4() {
         // given
         val now = LocalDateTime.of(2023, 1, 29, 1, 1, 10)
-        val param = SpotCoinExchangeChartParam(
+        val param = SpotCoinExchangeChartByDateTimeParam(
             coinType = CoinType.ETHEREUM,
             candleUnit = CandleUnit.UNIT_240M,
             from = now.minusMinutes(240 * 200),
             to = now,
         )
-        val chart = upbitSpotCoinExchangeService.getChart(param, keyParam)
+        val chart = upbitSpotCoinExchangeService.getChartByDateTime(param, keyParam)
 
         // when
         val bollingerBands = IndicatorFactory.getBollingerBands(chart.candles)
@@ -119,13 +119,13 @@ class IndicatorFactoryTest(
     fun test5() {
         // given
         val now = LocalDateTime.of(2023, 1, 29, 1, 1, 10)
-        val param = SpotCoinExchangeChartParam(
+        val param = SpotCoinExchangeChartByDateTimeParam(
             coinType = CoinType.ETHEREUM,
             candleUnit = CandleUnit.UNIT_240M,
             from = now.minusMinutes(240 * 200),
             to = now,
         )
-        val chart = upbitSpotCoinExchangeService.getChart(param, keyParam)
+        val chart = upbitSpotCoinExchangeService.getChartByDateTime(param, keyParam)
 
         // when
         val obv = IndicatorFactory.getObv(chart.candles)
@@ -141,13 +141,13 @@ class IndicatorFactoryTest(
     fun test7() {
         // given
         val now = LocalDateTime.of(2023, 1, 29, 1, 1, 10)
-        val param = SpotCoinExchangeChartParam(
+        val param = SpotCoinExchangeChartByDateTimeParam(
             coinType = CoinType.ETHEREUM,
             candleUnit = CandleUnit.UNIT_240M,
             from = now.minusMinutes(240 * 200),
             to = now,
         )
-        val chart = upbitSpotCoinExchangeService.getChart(param, keyParam)
+        val chart = upbitSpotCoinExchangeService.getChartByDateTime(param, keyParam)
 
         // when
         val ma = IndicatorFactory.getMv(chart.candles)

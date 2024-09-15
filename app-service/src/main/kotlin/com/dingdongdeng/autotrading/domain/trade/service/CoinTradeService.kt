@@ -1,6 +1,6 @@
 package com.dingdongdeng.autotrading.domain.trade.service
 
-import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartParam
+import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartByCountParam
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrder
 import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderParam
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
@@ -104,18 +104,22 @@ class CoinTradeService(
         val tradeHistories = coinTradeHistoryRepository
             .findAllCoinTradeHistories(autoTradeProcessorId, coinType)
             .filter { it.tradedAt <= now }
-        val currentPrice = getCurrentPrice(
-            exchangeType = exchangeType,
-            exchangeModeType = exchangeModeType,
-            keyPairId = keyPairId,
-            coinType = coinType,
-            now = now,
+        val exchangeService = exchangeServices.first { it.support(exchangeType, exchangeModeType) }
+        val keyPair = exchangeService.getKeyPair(keyPairId)
+        val chart = exchangeService.getChartByCount(
+            param = SpotCoinExchangeChartByCountParam(
+                coinType = coinType,
+                candleUnit = CandleUnit.min(),
+                to = now,
+                count = 1,
+            ),
+            keyParam = keyPair
         )
         return CoinTradeSummary(
             coinType = coinType,
             now = now,
             processorId = autoTradeProcessorId,
-            currentPrice = currentPrice,
+            currentPrice = chart.candles.last().closingPrice,
             tradeHistories = tradeHistories,
         )
     }
@@ -243,26 +247,5 @@ class CoinTradeService(
             profit = profit,
             tradedAt = if (order.orderType == OrderType.CANCEL) order.cancelDateTime!! else order.orderDateTime!!,
         )
-    }
-
-    private fun getCurrentPrice(
-        exchangeType: ExchangeType,
-        exchangeModeType: ExchangeModeType,
-        keyPairId: String,
-        coinType: CoinType,
-        now: LocalDateTime
-    ): Double {
-        val exchangeService = exchangeServices.first { it.support(exchangeType, exchangeModeType) }
-        val keyPair = exchangeService.getKeyPair(keyPairId)
-        val chart = exchangeService.getChart(
-            param = SpotCoinExchangeChartParam(
-                coinType = coinType,
-                candleUnit = CandleUnit.min(),
-                from = now.minusSeconds(CandleUnit.min().getSecondSize() * 2),
-                to = now,
-            ),
-            keyParam = keyPair
-        )
-        return chart.currentPrice
     }
 }

@@ -70,14 +70,14 @@ class ExampleSpotCoinStrategy(
         log(
             "매수",
             param.coinType,
-            (config.onceTradeAmount / chart15M.currentPrice),
+            (config.onceTradeAmount / param.currentPrice),
             param.tradeSummary.currentPrice,
             0.0
         )
         return listOf(
             SpotCoinStrategyTask.ofBuyLimit(
                 coinType = param.coinType,
-                volume = (config.onceTradeAmount / chart15M.currentPrice).round(4.0),
+                volume = (config.onceTradeAmount / param.currentPrice).round(4.0),
                 price = param.tradeSummary.currentPrice,
             )
         )

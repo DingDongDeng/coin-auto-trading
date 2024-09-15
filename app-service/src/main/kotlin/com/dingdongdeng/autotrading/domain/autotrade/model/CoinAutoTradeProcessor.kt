@@ -59,7 +59,13 @@ class CoinAutoTradeProcessor(
         tradeSyncer(id, coinType)
         val tradeInfo = tradeInfoFinder(id, coinType, now)
 
-        return SpotCoinStrategyMakeTaskParam(exchangeType, coinType, charts, tradeInfo)
+        return SpotCoinStrategyMakeTaskParam(
+            exchangeType = exchangeType,
+            coinType = coinType,
+            currentPrice = tradeInfo.currentPrice,
+            charts = charts,
+            tradeSummary = tradeInfo
+        )
     }
 
     override fun runnable(): Boolean {

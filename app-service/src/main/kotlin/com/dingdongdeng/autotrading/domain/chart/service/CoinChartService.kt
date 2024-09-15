@@ -5,7 +5,7 @@ import com.dingdongdeng.autotrading.domain.chart.model.Candle
 import com.dingdongdeng.autotrading.domain.chart.model.Chart
 import com.dingdongdeng.autotrading.domain.chart.repository.CoinCandleRepository
 import com.dingdongdeng.autotrading.domain.exchange.model.ExchangeChartCandle
-import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartParam
+import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeChartByDateTimeParam
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
 import com.dingdongdeng.autotrading.domain.indicator.factory.IndicatorFactory
 import com.dingdongdeng.autotrading.infra.common.exception.CriticalException
@@ -151,13 +151,13 @@ class CoinChartService(
         while (candles.size < candleCount) {
             val endDateTime = to.minusSeconds(candleUnit.getSecondSize() * candleCount * loopCnt++) // 루프마다 기준점이 달라짐
             val startDateTime = endDateTime.minusSeconds(candleUnit.getSecondSize() * (candleCount - 1))
-            val chartParam = SpotCoinExchangeChartParam(
+            val chartParam = SpotCoinExchangeChartByDateTimeParam(
                 coinType = coinType,
                 candleUnit = candleUnit,
                 from = startDateTime,
                 to = endDateTime,
             )
-            candles = exchangeService.getChart(chartParam, exchangeKeyPair).candles + candles
+            candles = exchangeService.getChartByDateTime(chartParam, exchangeKeyPair).candles + candles
         }
 
         return candles.takeLast(candleCount)
@@ -182,8 +182,8 @@ class CoinChartService(
             val endDateTime = minDate(startDateTime.plusSeconds(candleUnit.getSecondSize() * CHART_LOAD_CHUNK_SIZE), to)
 
             // 거래소에서 조회한 캔들
-            val exchangeCandles = exchangeService.getChart(
-                SpotCoinExchangeChartParam(coinType, candleUnit, startDateTime, endDateTime),
+            val exchangeCandles = exchangeService.getChartByDateTime(
+                SpotCoinExchangeChartByDateTimeParam(coinType, candleUnit, startDateTime, endDateTime),
                 keyParam
             ).candles
 
