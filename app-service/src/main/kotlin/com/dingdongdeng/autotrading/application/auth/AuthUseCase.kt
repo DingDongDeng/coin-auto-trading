@@ -3,6 +3,7 @@ package com.dingdongdeng.autotrading.application.auth
 import com.dingdongdeng.autotrading.application.auth.model.AuthExchangeKey
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
 import com.dingdongdeng.autotrading.infra.common.annotation.UseCase
+import com.dingdongdeng.autotrading.infra.common.type.ExchangeModeType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 
 @UseCase
@@ -15,7 +16,7 @@ class AuthUseCase(
         secretKey: String,
         userId: Long
     ): String {
-        val exchangeService = coinExchangeServices.first { it.support(exchangeType) }
+        val exchangeService = coinExchangeServices.first { it.support(exchangeType, ExchangeModeType.PRODUCTION) }
         return exchangeService.registerKeyPair(
             accessKey = accessKey,
             secretKey = secretKey,
@@ -25,7 +26,14 @@ class AuthUseCase(
 
     fun getKeys(userId: Long): List<AuthExchangeKey> {
         return coinExchangeServices
-            .filter { service -> ExchangeType.ofNotBackTest().any { type -> service.support(type) } }
+            .filter { service ->
+                ExchangeType.entries.any { type ->
+                    service.support(
+                        type,
+                        ExchangeModeType.PRODUCTION
+                    )
+                }
+            }
             .flatMap { it.getKeyPairs(userId) }
             .map { AuthExchangeKey.of(it) }
     }
@@ -34,7 +42,7 @@ class AuthUseCase(
         keyPairId: String,
     ): String {
         return coinExchangeServices.first { service ->
-            ExchangeType.ofNotBackTest().any { type -> service.support(type) }
+            ExchangeType.entries.any { type -> service.support(type, ExchangeModeType.PRODUCTION) }
         }.removeKeyPair(keyPairId)
     }
 }

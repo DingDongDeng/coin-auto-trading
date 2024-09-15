@@ -16,7 +16,7 @@ class CodeController {
     @GetMapping("/exchange-type")
     fun getExchangeKeys(): CommonResponse<List<ExchangeType>> {
         return CommonResponse(
-            body = ExchangeType.ofNotBackTest()
+            body = ExchangeType.entries
         )
     }
 

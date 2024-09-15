@@ -22,6 +22,7 @@ import com.dingdongdeng.autotrading.infra.common.exception.WarnException
 import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
+import com.dingdongdeng.autotrading.infra.common.type.ExchangeModeType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -206,8 +207,8 @@ class UpbitSpotCoinExchangeService(
         return keyPairId
     }
 
-    override fun support(exchangeType: ExchangeType): Boolean {
-        return exchangeType == EXCHANGE_TYPE
+    override fun support(exchangeType: ExchangeType, modeType: ExchangeModeType): Boolean {
+        return exchangeType == EXCHANGE_TYPE && modeType.isProduction()
     }
 
     private fun requestCandles(

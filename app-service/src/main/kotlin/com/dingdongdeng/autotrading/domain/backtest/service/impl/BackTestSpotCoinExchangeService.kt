@@ -10,6 +10,7 @@ import com.dingdongdeng.autotrading.domain.exchange.model.SpotCoinExchangeOrderP
 import com.dingdongdeng.autotrading.domain.exchange.service.SpotCoinExchangeService
 import com.dingdongdeng.autotrading.infra.common.exception.WarnException
 import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
+import com.dingdongdeng.autotrading.infra.common.type.ExchangeModeType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.type.TradeState
 import com.dingdongdeng.autotrading.infra.common.utils.TimeContext
@@ -49,7 +50,7 @@ class BackTestSpotCoinExchangeService(
     // from <= 조회범위 <= to
     override fun getChart(param: SpotCoinExchangeChartParam, keyParam: ExchangeKeyPair): ExchangeChart {
         val candles = virtualCoinCandleRepository.findAllCoinCandle(
-            exchangeType = EXCHANGE_TYPE_FOR_BACKTEST,
+            exchangeType = EXCHANGE_TYPE,
             coinType = param.coinType,
             unit = param.candleUnit,
             from = param.from,
@@ -69,7 +70,7 @@ class BackTestSpotCoinExchangeService(
         }
 
         if (candles.isEmpty()) {
-            log.warn("백테스트 캔들 조회 결과가 존재하지 않음, exchangeType=$EXCHANGE_TYPE_FOR_BACKTEST,  unit=${param.candleUnit}, from=${param.from}, to=${param.to}")
+            log.warn("백테스트 캔들 조회 결과가 존재하지 않음, exchangeType=$EXCHANGE_TYPE,  unit=${param.candleUnit}, from=${param.from}, to=${param.to}")
         }
 
         return ExchangeChart(
@@ -82,7 +83,7 @@ class BackTestSpotCoinExchangeService(
 
     override fun getKeyPair(keyPairId: String): ExchangeKeyPair {
         return ExchangeKeyPair(
-            exchangeType = EXCHANGE_TYPE_FOR_BACKTEST,
+            exchangeType = EXCHANGE_TYPE,
             keyPairId = "",
             accessKey = "",
             secretKey = "",
@@ -101,13 +102,12 @@ class BackTestSpotCoinExchangeService(
         throw WarnException.of("백테스트에서는 지원하지 않는 기능입니다. (key 삭제)")
     }
 
-    override fun support(exchangeType: ExchangeType): Boolean {
-        return exchangeType == EXCHANGE_TYPE
+    override fun support(exchangeType: ExchangeType, modeType: ExchangeModeType): Boolean {
+        return exchangeType == EXCHANGE_TYPE && modeType.isBackTest()
     }
 
     companion object {
-        private val EXCHANGE_TYPE = ExchangeType.BACKTEST_UPBIT
-        private val EXCHANGE_TYPE_FOR_BACKTEST = EXCHANGE_TYPE.asReal
+        private val EXCHANGE_TYPE = ExchangeType.UPBIT
         private const val FEE_RATE = 0.05 // upbit 수수료 0.05% 적용
     }
 }
