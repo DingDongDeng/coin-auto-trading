@@ -7,6 +7,7 @@ import com.dingdongdeng.autotrading.domain.indicator.factory.IndicatorFactory
 import com.dingdongdeng.autotrading.infra.common.log.Slf4j.Companion.log
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
+import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.test.TestEnv
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
@@ -21,6 +22,8 @@ class IndicatorFactoryTest(
     val upbitSpotCoinExchangeService: UpbitSpotCoinExchangeService,
 ) {
     val keyParam = ExchangeKeyPair(
+        exchangeType = ExchangeType.UPBIT,
+        keyPairId = "abc",
         accessKey = TestEnv.UPBIT_ACCESS_KEY,
         secretKey = TestEnv.UPBIT_SECRET_KEY,
     )

@@ -83,7 +83,7 @@ class CoinChartService(
             coinType = coinType,
             candleUnit = candleUnit,
             to = to,
-            candleCount = count + CALCULATE_INDICATOR_CANDLE_COUNT,
+            candleCount = count + CALCULATE_INDICATOR_CANDLE_COUNT - 1,
         )
 
         val candles = mutableListOf<Candle>()
@@ -122,7 +122,7 @@ class CoinChartService(
 
         val candleLastDateTime = candles.last().candleDateTimeKst
         val toUnitDateTime = CandleDateTimeUtils.makeUnitDateTime(to, candleUnit)
-        if (candleLastDateTime == toUnitDateTime) {
+        if (candleLastDateTime != toUnitDateTime) {
             throw CriticalException.of("캔들 조회 실패, candleLastDateTime=$candleLastDateTime, toUnitDateTime=$toUnitDateTime")
         }
 
@@ -157,7 +157,7 @@ class CoinChartService(
                 from = startDateTime,
                 to = endDateTime,
             )
-            candles = candles + exchangeService.getChart(chartParam, exchangeKeyPair).candles
+            candles = exchangeService.getChart(chartParam, exchangeKeyPair).candles + candles
         }
 
         return candles.takeLast(candleCount)

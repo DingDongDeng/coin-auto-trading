@@ -1,5 +1,6 @@
 package com.dingdongdeng.autotrading.application.backtest
 
+import com.dingdongdeng.autotrading.application.auth.AuthUseCase
 import com.dingdongdeng.autotrading.domain.backtest.model.CoinBackTestProcessor
 import com.dingdongdeng.autotrading.domain.process.repository.ProcessorRepository
 import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
@@ -7,8 +8,10 @@ import com.dingdongdeng.autotrading.infra.common.log.LoggingUtils
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
+import com.dingdongdeng.autotrading.test.TestEnv
 import com.dingdongdeng.autotrading.test.waitByCondition
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
@@ -31,7 +34,7 @@ class CoinBackTestUseCaseTest(
         val endDateTime = LocalDateTime.of(2024, 2, 29, 23, 59, 59)
         val durationUnit = CandleUnit.UNIT_1M
         val coinStrategyType = CoinStrategyType.UPBIT_CHART_VALIDATE
-        val exchangeType = ExchangeType.BACKTEST_UPBIT
+        val exchangeType = ExchangeType.UPBIT
         val coinTypes = listOf(CoinType.BITCOIN)
         val candleUnits = listOf(CandleUnit.UNIT_1M, CandleUnit.UNIT_15M)
         val config = mutableMapOf<String, Any>().apply {
@@ -40,6 +43,7 @@ class CoinBackTestUseCaseTest(
 
         // when
         val backTestProcessorId = suite.backTest(
+            title = "test-title",
             startDateTime = startDateTime,
             endDateTime = endDateTime,
             durationUnit = durationUnit,
