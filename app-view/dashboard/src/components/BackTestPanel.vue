@@ -49,9 +49,20 @@
                 <div class="text-h6 mb-1">
                     {{ detail.title }}
                 </div>
+                <div class="text-caption">
+                    {{ detail.backTestProcessorId }}
+                </div>
             </v-card-title>
             <v-card-text class="pa-5">
-                <div></div>
+                <div> 기간 : {{ detail.startDateTime }} ~ {{ detail.endDateTime }}</div>
+                <div> 진행율 : {{ detail.progressRate }}</div>
+                <div> 총 누적 이익금(수수료 제외) : {{ detail.totalAccProfitValuePrice }}</div>
+                <div> 총 수수료 : {{ detail.totalFee }}</div>
+                <div> 현재 미실현 이익금 : {{ detail.totalProfitPrice }}</div>
+                <div> 현재 미실현 이익율 : {{ detail.totalProfitRate }}</div>
+                <div> 거래 이력 : {{ detail.tradeHistoriesMap }}</div>
+                <div> 통계 : {{ detail.tradeStatisticsMap }}</div>
+                <div> 전략 상세 설정 : {{ detail.config }}</div>
             </v-card-text>
             <v-card-actions class="pa-5">
 
