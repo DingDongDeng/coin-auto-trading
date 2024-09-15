@@ -40,7 +40,7 @@
     </v-card>
     <v-dialog
         v-model="detail.visibleDialog"
-        width="500">
+        width="1000">
         <v-card>
             <v-card-title class="headline black" primary-title>
                 <div class="text-overline mb-1">
@@ -54,17 +54,69 @@
                 </div>
             </v-card-title>
             <v-card-text class="pa-5">
-                <div> 기간 : {{ detail.startDateTime }} ~ {{ detail.endDateTime }}</div>
-                <div> 진행율 : {{ detail.progressRate }}</div>
-                <div> 총 누적 이익금(수수료 제외) : {{ detail.totalAccProfitValuePrice }}</div>
-                <div> 총 수수료 : {{ detail.totalFee }}</div>
-                <div> 현재 미실현 이익금 : {{ detail.totalProfitPrice }}</div>
-                <div> 현재 미실현 이익율 : {{ detail.totalProfitRate }}</div>
-                <div style="white-space: pre-wrap"> 거래 이력 : {{
-                        JSON.stringify(detail.tradeHistoriesMap, null, 4)
-                    }}
-                </div>
-                <div style="white-space: pre-wrap"> 통계 : {{ JSON.stringify(detail.tradeStatisticsMap, null, 4) }}</div>
+                <v-row>
+                    <v-col cols="4">
+                        <div><strong>기간 및 진행률</strong></div>
+                        <div> 진행률 : {{ detail.progressRate }}%</div>
+                        <div> 시작일 : {{ detail.startDateTime }}</div>
+                        <div> 종료일 : {{ detail.endDateTime }}</div>
+                    </v-col>
+                    <v-col cols="4">
+                        <div><strong> 진행 상황 </strong></div>
+                        <div> 총 누적 이익금 (수수료 제외) : {{ detail.totalAccProfitValuePrice }} 원</div>
+                        <div> 총 수수료 : {{ detail.totalFee }}</div>
+                        <div> 미실현 평가금액 : {{ detail.totalProfitPrice }}</div>
+                        <div> 미실현 손익률 : {{ detail.totalProfitRate }}%</div>
+                    </v-col>
+                </v-row>
+
+                <!-- 거래 이력 -->
+                <div> 거래 이력 :</div>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>코인 종류</th>
+                        <th>주문 타입</th>
+                        <th>거래량</th>
+                        <th>가격</th>
+                        <th>이익</th>
+                        <th>거래 시간</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="(histories, coinType) in detail.tradeHistoriesMap" :key="coinType">
+                        <td v-for="history in histories" :key="history.tradeAt">
+                            {{ history.coinType.desc }}
+                            {{ history.orderType }}
+                            {{ history.volume }}
+                            {{ history.price }}
+                            {{ history.profit }}
+                            {{ history.tradeAt }}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <!-- 통계 -->
+                <div> 통계 :</div>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>코인 종류</th>
+                        <th>기간</th>
+                        <th>총 누적 이익금</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="(statistics, coinType) in detail.tradeStatisticsMap" :key="coinType">
+                        <td v-for="stat in statistics" :key="stat.from">
+                            {{ stat.coinType.desc }}
+                            {{ stat.from }} ~ {{ stat.to }}
+                            {{ stat.totalAccProfitPrice }}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
                 <div style="white-space: pre-wrap"> 전략 상세 설정 : {{ JSON.stringify(detail.config, null, 4) }}</div>
             </v-card-text>
             <v-card-actions class="pa-5">
