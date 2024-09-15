@@ -60,9 +60,12 @@
                 <div> 총 수수료 : {{ detail.totalFee }}</div>
                 <div> 현재 미실현 이익금 : {{ detail.totalProfitPrice }}</div>
                 <div> 현재 미실현 이익율 : {{ detail.totalProfitRate }}</div>
-                <div> 거래 이력 : {{ detail.tradeHistoriesMap }}</div>
-                <div> 통계 : {{ detail.tradeStatisticsMap }}</div>
-                <div> 전략 상세 설정 : {{ detail.config }}</div>
+                <div style="white-space: pre-wrap"> 거래 이력 : {{
+                        JSON.stringify(detail.tradeHistoriesMap, null, 4)
+                    }}
+                </div>
+                <div style="white-space: pre-wrap"> 통계 : {{ JSON.stringify(detail.tradeStatisticsMap, null, 4) }}</div>
+                <div style="white-space: pre-wrap"> 전략 상세 설정 : {{ JSON.stringify(detail.config, null, 4) }}</div>
             </v-card-text>
             <v-card-actions class="pa-5">
 
