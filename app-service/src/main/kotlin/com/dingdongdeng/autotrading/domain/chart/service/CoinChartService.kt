@@ -41,7 +41,7 @@ class CoinChartService(
                 keyPairId = keyPairId,
                 coinType = coinType,
                 candleUnit = candleUnit,
-                from = to.minusSeconds(count * candleUnit.getSecondSize()),
+                count = count,
                 to = to,
             )
         }
@@ -73,7 +73,7 @@ class CoinChartService(
         keyPairId: String,
         coinType: CoinType,
         candleUnit: CandleUnit,
-        from: LocalDateTime,
+        count: Int,
         to: LocalDateTime,
     ): Chart {
         val exchangeCandles = getCandlesByCount(
@@ -83,7 +83,7 @@ class CoinChartService(
             coinType = coinType,
             candleUnit = candleUnit,
             to = to,
-            candleCount = 2 * CALCULATE_INDICATOR_CANDLE_COUNT,
+            candleCount = count + CALCULATE_INDICATOR_CANDLE_COUNT,
         )
 
         val candles = mutableListOf<Candle>()
@@ -92,10 +92,6 @@ class CoinChartService(
 
             if (endIndex >= exchangeCandles.size) {
                 break
-            }
-
-            if (exchangeCandles[endIndex].candleDateTimeKst < from) {
-                continue
             }
 
             val subCandles = exchangeCandles.subList(startIndex, endIndex + 1) // 참조만 변경 (deep copy x)
@@ -120,8 +116,14 @@ class CoinChartService(
             )
         }
 
-        if (candles.size < CALCULATE_INDICATOR_CANDLE_COUNT) {
-            throw CriticalException.of("캔들의 보조 지표 계산을 위한 적절한 수의 과거 캔들을 추출하는데 실패")
+        if (candles.size != count) {
+            throw CriticalException.of("캔들 조회 실패, candles.size=${candles.size}, count=$count")
+        }
+
+        val candleLastDateTime = candles.last().candleDateTimeKst
+        val toUnitDateTime = CandleDateTimeUtils.makeUnitDateTime(to, candleUnit)
+        if (candleLastDateTime == toUnitDateTime) {
+            throw CriticalException.of("캔들 조회 실패, candleLastDateTime=$candleLastDateTime, toUnitDateTime=$toUnitDateTime")
         }
 
         return Chart(
