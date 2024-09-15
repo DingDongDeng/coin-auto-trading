@@ -156,37 +156,31 @@ class UpbitSpotCoinExchangeService(
         )
     }
 
+    //FIXME 날짜 단위로 쪼개서 조회하게 했는데
+    // 이게 아니라 upbit는 개수로 조회하기 핏한 api니까
+    // 이를 고려해서 로직 최적화하여 다시 작성 필요
     override fun getChartByCount(param: SpotCoinExchangeChartByCountParam, keyParam: ExchangeKeyPair): ExchangeChart {
-
-        val response = requestCandles(
-            unit = param.candleUnit,
-            coinType = param.coinType,
-            to = param.to,
-            candleUnit = param.candleUnit,
-            chunkSize = param.count,
-            keyParam = keyParam,
-        ).map {
-            ExchangeChartCandle(
+        var candles = emptyList<ExchangeChartCandle>()
+        var loopCnt = 0
+        // 필요한 캔들 숫자가 조회될때까지 반복
+        while (candles.size < param.count) {
+            val endDateTime =
+                param.to.minusSeconds(param.candleUnit.getSecondSize() * param.count * loopCnt++) // 루프마다 기준점이 달라짐
+            val startDateTime = endDateTime.minusSeconds(param.candleUnit.getSecondSize() * (param.count - 1))
+            val chartParam = SpotCoinExchangeChartByDateTimeParam(
+                coinType = param.coinType,
                 candleUnit = param.candleUnit,
-                candleDateTimeUtc = it.candleDateTimeUtc,
-                candleDateTimeKst = it.candleDateTimeKst,
-                openingPrice = it.openingPrice,
-                highPrice = it.highPrice,
-                lowPrice = it.lowPrice,
-                closingPrice = it.tradePrice,
-                accTradePrice = it.candleAccTradePrice,
-                accTradeVolume = it.candleAccTradeVolume,
+                from = startDateTime,
+                to = endDateTime,
             )
+            candles = getChartByDateTime(chartParam, keyParam).candles + candles
         }
-
-        if (response.isEmpty()) {
-            log.warn("거래소 캔들 조회 결과가 존재하지 않음, exchangeType=${EXCHANGE_TYPE}, coinType=${param.coinType}, unit=${param.candleUnit}, count=${param.count}, to=${param.to}")
-        }
+        candles = candles.takeLast(param.count)
 
         return ExchangeChart(
-            from = response.first().candleDateTimeKst,
+            from = candles.first().candleDateTimeKst,
             to = param.to,
-            candles = response,
+            candles = candles,
         )
     }
 

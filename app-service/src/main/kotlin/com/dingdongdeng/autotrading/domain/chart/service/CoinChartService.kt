@@ -84,7 +84,7 @@ class CoinChartService(
                 coinType = coinType,
                 candleUnit = candleUnit,
                 to = to,
-                count = count + CALCULATE_INDICATOR_CANDLE_COUNT,
+                count = count + CALCULATE_INDICATOR_CANDLE_COUNT - 1,
             ),
             exchangeKeyPair
         ).candles
