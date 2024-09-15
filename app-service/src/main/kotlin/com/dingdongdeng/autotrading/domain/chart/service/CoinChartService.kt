@@ -120,13 +120,7 @@ class CoinChartService(
         }
 
         if (candles.size != count) {
-            throw CriticalException.of("캔들 조회 실패, candles.size=${candles.size}, count=$count")
-        }
-
-        val candleLastDateTime = candles.last().candleDateTimeKst
-        val toUnitDateTime = CandleDateTimeUtils.makeUnitDateTime(to, candleUnit)
-        if (candleLastDateTime != toUnitDateTime) {
-            throw CriticalException.of("캔들 조회 실패, candleLastDateTime=$candleLastDateTime, toUnitDateTime=$toUnitDateTime")
+            throw CriticalException.of("캔들 조회 실패, coinType=$coinType, candleUnit=$candleUnit, candles.size=${candles.size}, count=$count")
         }
 
         return Chart(
