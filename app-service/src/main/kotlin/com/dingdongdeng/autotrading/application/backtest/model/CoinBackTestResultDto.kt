@@ -1,12 +1,18 @@
 package com.dingdongdeng.autotrading.application.backtest.model
 
+import com.dingdongdeng.autotrading.domain.process.type.ProcessStatus
+import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.OrderType
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class CoinBackTestResultDto(
+    val title: String,
+    val strategyType: CoinStrategyType,
+    val processStatus: ProcessStatus,
     val backTestProcessorId: String,
+    val config: Map<String, Any>,
     val progressRate: Double,
     val startDateTime: LocalDateTime,
     val endDateTime: LocalDateTime,

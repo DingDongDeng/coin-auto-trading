@@ -133,7 +133,7 @@ class CoinDashBoardController(
         )
     }
 
-    // 프로세서 자동매매 등록
+    // 프로세서 자동매매 목록 조회
     @GetMapping("/processor/autotrade")
     fun processAutoTradeList(
         //@SessionAttribute userId: Long,

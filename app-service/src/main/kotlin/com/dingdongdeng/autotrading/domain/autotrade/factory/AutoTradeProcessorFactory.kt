@@ -83,6 +83,7 @@ class AutoTradeProcessorFactory(
             duration = 60_000,
             keyPairId = keyPairId,
             slackSender = slackSender,
+            strategyType = coinStrategyType,
             strategy = strategies.first { it.support(coinStrategyType) },
             chartFinder = chartFinder,
             tradeExecutor = tradeExecutor,

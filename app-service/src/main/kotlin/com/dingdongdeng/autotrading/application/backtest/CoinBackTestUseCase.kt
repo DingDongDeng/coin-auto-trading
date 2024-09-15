@@ -89,12 +89,13 @@ class CoinBackTestUseCase(
             CoinBackTestProcessorDto(
                 id = it.id,
                 title = it.title,
+                strategyType = it.strategyType,
                 userId = it.userId,
                 status = it.status,
                 duration = it.duration,
                 exchangeType = it.exchangeType,
                 coinTypes = it.coinTypes,
-                config = it.config(),
+                config = it.config,
             )
         }
     }
@@ -110,7 +111,11 @@ class CoinBackTestUseCase(
         )
 
         return CoinBackTestResultDto(
+            title = processor.title,
             backTestProcessorId = processor.id,
+            strategyType = processor.strategyType,
+            processStatus = processor.status,
+            config = processor.config,
             progressRate = processor.progressRate().round(2.0),
             startDateTime = processor.startDateTime,
             endDateTime = processor.endDateTime,

@@ -2,6 +2,7 @@ package com.dingdongdeng.autotrading.domain.backtest.model
 
 import com.dingdongdeng.autotrading.domain.autotrade.model.CoinAutoTradeProcessor
 import com.dingdongdeng.autotrading.domain.process.model.Processor
+import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
@@ -25,6 +26,8 @@ class CoinBackTestProcessor(
     slackSender = null,
 ) {
     val title: String = autoTradeProcessor.title
+    val strategyType: CoinStrategyType = autoTradeProcessor.strategyType
+    val config: Map<String, Any> = autoTradeProcessor.config
 
     private var now = startDateTime
     private var initialize = false
@@ -50,8 +53,6 @@ class CoinBackTestProcessor(
         // xx.xx%
         return (progressDiff.toDouble() / totalDiff.toDouble()) * 100
     }
-
-    fun config(): Map<String, Any> = autoTradeProcessor.config
 
     fun now(): LocalDateTime = now
 }

@@ -5,6 +5,7 @@ import com.dingdongdeng.autotrading.domain.process.model.Processor
 import com.dingdongdeng.autotrading.domain.strategy.component.SpotCoinStrategy
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyMakeTaskParam
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyTask
+import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.domain.trade.entity.CoinTradeHistory
 import com.dingdongdeng.autotrading.domain.trade.model.CoinTradeSummary
 import com.dingdongdeng.autotrading.infra.client.slack.SlackSender
@@ -19,6 +20,7 @@ class CoinAutoTradeProcessor(
     override val id: String = "${UUID.randomUUID()}",
     override val userId: Long,
     val title: String,
+    val strategyType: CoinStrategyType,
     val exchangeType: ExchangeType,
     val coinTypes: List<CoinType>,
     val keyPairId: String,

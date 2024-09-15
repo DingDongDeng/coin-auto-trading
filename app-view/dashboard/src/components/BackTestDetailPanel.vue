@@ -14,9 +14,10 @@
         <v-card-item>
             <div>
                 <div class="text-overline mb-1">
+                    [{{ backTestDetail.status.desc }}] {{ backTestDetail.strategyType.desc }}
                 </div>
                 <div class="text-h6 mb-1">
-                    [{{ backTestDetail.status.desc }}] {{ backTestDetail.title }}
+                    {{ backTestDetail.title }}
                 </div>
                 <div class="text-caption">
                     {{ backTestDetail.id }}
@@ -42,7 +43,9 @@
                 Compose Message
             </v-card-title>
             <v-card-text class="pa-5">
-                <!-- FIXME 프로세서의 상세 정보가 필요, 백테스트 진행결과도 필요               -->
+                <!--
+                FIXME 프로세서의 상세 정보가 필요, 백테스트 진행결과도 필요
+                             -->
             </v-card-text>
             <v-card-actions class="pa-5">
 
