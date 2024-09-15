@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 data class CoinBackTestResultDto(
     val title: String,
     val strategyType: CoinStrategyType,
-    val processStatus: ProcessStatus,
+    val status: ProcessStatus,
     val backTestProcessorId: String,
     val config: Map<String, Any>,
     val progressRate: Double,
