@@ -76,6 +76,7 @@ class CoinDashBoardController(
         return CommonResponse(
             body = coinAutoTradeUseCase.register(
                 userId = 12345, //FIXME
+                title = request.title!!,
                 coinStrategyType = request.coinStrategyType!!,
                 exchangeType = request.exchangeType!!,
                 coinTypes = request.coinTypes!!,

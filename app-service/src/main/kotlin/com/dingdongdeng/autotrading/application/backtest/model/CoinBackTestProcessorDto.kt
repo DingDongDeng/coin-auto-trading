@@ -6,6 +6,7 @@ import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 
 data class CoinBackTestProcessorDto(
     val id: String,
+    val title: String,
     val userId: Long,
     val status: ProcessStatus,
     val duration: Long, // milliseconds

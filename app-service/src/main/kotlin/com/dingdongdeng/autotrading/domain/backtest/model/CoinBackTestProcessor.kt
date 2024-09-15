@@ -24,6 +24,7 @@ class CoinBackTestProcessor(
     duration = 0,
     slackSender = null,
 ) {
+    val title: String = autoTradeProcessor.title
 
     private var now = startDateTime
     private var initialize = false

@@ -25,6 +25,7 @@ class CoinAutoTradeUseCase(
 
     fun register(
         userId: Long,
+        title: String,
         coinStrategyType: CoinStrategyType,
         exchangeType: ExchangeType,
         coinTypes: List<CoinType>,
@@ -35,6 +36,7 @@ class CoinAutoTradeUseCase(
         // 자동매매 등록
         val processor = autoTradeProcessorFactory.of(
             userId = userId,
+            title = title,
             exchangeType = exchangeType,
             coinTypes = coinTypes,
             candleUnits = candleUnits,

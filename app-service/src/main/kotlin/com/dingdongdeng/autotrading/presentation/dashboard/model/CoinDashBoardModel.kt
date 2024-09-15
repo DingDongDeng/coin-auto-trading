@@ -22,6 +22,9 @@ data class CoinExchangeKeyRegisterRequest(
 )
 
 data class CoinAutotradeRegisterRequest(
+    @field:NotBlank(message = "title은 필수값 입니다.")
+    val title: String? = null,
+
     @field:NotNull(message = "coinStrategyType는 필수 값입니다.")
     val coinStrategyType: CoinStrategyType? = null,
 

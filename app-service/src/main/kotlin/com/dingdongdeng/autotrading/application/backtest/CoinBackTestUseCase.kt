@@ -88,6 +88,7 @@ class CoinBackTestUseCase(
         return processors.filterIsInstance<CoinBackTestProcessor>().map {
             CoinBackTestProcessorDto(
                 id = it.id,
+                title = it.title,
                 userId = it.userId,
                 status = it.status,
                 duration = it.duration,
