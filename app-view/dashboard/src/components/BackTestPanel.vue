@@ -43,12 +43,15 @@
         width="500">
         <v-card>
             <v-card-title class="headline black" primary-title>
-                {{ detail.title }} 123123
+                <div class="text-overline mb-1">
+                    [{{ detail.status.desc }}] {{ detail.strategyType.desc }}
+                </div>
+                <div class="text-h6 mb-1">
+                    {{ detail.title }}
+                </div>
             </v-card-title>
             <v-card-text class="pa-5">
-                <!--
-                FIXME 프로세서의 상세 정보가 필요, 백테스트 진행결과도 필요
-                             -->
+                <div></div>
             </v-card-text>
             <v-card-actions class="pa-5">
 

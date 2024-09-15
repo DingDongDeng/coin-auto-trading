@@ -117,7 +117,7 @@ class CoinBackTestUseCase(
             title = processor.title,
             backTestProcessorId = processor.id,
             strategyType = processor.strategyType,
-            processStatus = processor.status,
+            status = processor.status,
             config = processor.config,
             progressRate = processor.progressRate().round(2.0),
             startDateTime = processor.startDateTime,

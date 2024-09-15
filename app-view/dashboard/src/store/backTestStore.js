@@ -27,6 +27,20 @@ export const useBackTestStore = defineStore("backTest", {
         backTests: [],
         detail: {
             visibleDialog: false,
+            title: '',
+            strategyType: {},
+            status: {},
+            backTestProcessorId: '',
+            config: {},
+            progressRate: 0,
+            startDateTime: '',
+            endDateTime: '',
+            totalProfitRate: 0,
+            totalProfitPrice: 0,
+            totalAccProfitValuePrice: 0,
+            totalFee: 0,
+            tradeHistoriesMap: {},
+            tradeStatisticsMap: {},
         },
         register: {
             visibleDialog: false,
@@ -54,7 +68,8 @@ export const useBackTestStore = defineStore("backTest", {
         async loadBackTestDetail(backTestProcessorId) {
             const detail = (await getBackTestResult(backTestProcessorId)).body
             this.detail = {
-                ...detail
+                ...this.detail,
+                ...detail,
             };
         },
         async registerBackTest() {
