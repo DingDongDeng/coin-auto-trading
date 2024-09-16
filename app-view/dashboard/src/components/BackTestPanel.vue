@@ -50,7 +50,8 @@
                     {{ detail.title }}
                 </div>
                 <div class="text-caption">
-                    {{ detail.backTestProcessorId }}
+                    <div>{{ detail.backTestProcessorId }}</div>
+                    <div style="white-space: pre-wrap">{{ JSON.stringify(detail.config, null, 4) }}</div>
                 </div>
             </v-card-title>
             <v-card-text class="pa-5">
@@ -98,41 +99,34 @@
                         </v-row>
                     </v-col>
                 </v-row>
-                <v-row>
-                    <v-row class="mb-2" no-gutters>
-                        <v-col cols="3">
-                            <div><strong>전략 상세 설정</strong></div>
-                            <div style="white-space: pre-wrap">{{ JSON.stringify(detail.config, null, 4) }}</div>
-                        </v-col>
-                    </v-row>
-                </v-row>
 
-                <!-- 거래 이력 -->
-                <div> 거래 이력 :</div>
-                <table>
-                    <thead>
-                    <tr>
-                        <th>코인 종류</th>
-                        <th>주문 타입</th>
-                        <th>거래량</th>
-                        <th>가격</th>
-                        <th>이익</th>
-                        <th>거래 시간</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr v-for="(histories, coinType) in detail.tradeHistoriesMap" :key="coinType">
-                        <td v-for="history in histories" :key="history.tradeAt">
-                            {{ history.coinType.desc }}
-                            {{ history.orderType }}
-                            {{ history.volume }}
-                            {{ history.price }}
-                            {{ history.profit }}
-                            {{ history.tradeAt }}
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                <v-row>
+                    <v-col cols="10">
+                        <v-row class="mb-2" no-gutters>
+                            <v-col cols="3">
+                                <strong>거래 이력</strong>
+                            </v-col>
+                        </v-row>
+                        <v-row class="mb-1" no-gutters>
+                            <v-col cols="12">
+                                <v-data-table
+                                    :headers="[
+                                        { title: '코인 종류', value: 'coinType.desc' },
+                                        { title: '거래 유형', value: 'orderType.desc' },
+                                        { title: '수량', value: 'volume' },
+                                        { title: '가격', value: 'price' },
+                                        { title: '이익', value: 'profit' },
+                                        { title: '거래 시각', value: 'tradeAt' },
+                                    ]"
+                                    :items="detail.tradeHistoriesMap['BITCOIN']"
+                                    items-per-page="10"
+                                >
+
+                                </v-data-table>
+                            </v-col>
+                        </v-row>
+                    </v-col>
+                </v-row>
 
                 <!-- 통계 -->
                 <div> 통계 :</div>
