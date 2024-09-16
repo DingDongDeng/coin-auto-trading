@@ -9,6 +9,7 @@ enum class ProcessStatus(
     RUNNING("진행 중"),
     STOPPED("정지"),
     TERMINATED("제거"),
+    COMPLETED("완료"),
     FAIL("실패"),
     ;
 
@@ -16,4 +17,5 @@ enum class ProcessStatus(
     fun isRunning(): Boolean = this == RUNNING
     fun isFail(): Boolean = this == FAIL
     fun isStop(): Boolean = this == STOPPED
+    fun isCompleted(): Boolean = this == COMPLETED
 }
