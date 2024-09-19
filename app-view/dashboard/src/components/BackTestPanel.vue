@@ -113,18 +113,30 @@
                 </v-row>
 
                 <v-row>
-                    <!--
-                        코인 종류별로 필터가 되면 좋겠어
-                    -->
                     <v-col cols="10">
                         <v-row class="mb-2" no-gutters>
                             <v-col cols="3">
                                 <strong>거래 이력</strong>
                             </v-col>
                         </v-row>
+                        <v-row>
+                            <v-col cols="6">
+                                <v-text-field
+                                    v-model="detail.searchText"
+                                    density="compact"
+                                    label="Search"
+                                    prepend-inner-icon="mdi-magnify"
+                                    variant="solo-filled"
+                                    flat
+                                    hide-details
+                                    single-line
+                                ></v-text-field>
+                            </v-col>
+                        </v-row>
                         <v-row class="mb-1" no-gutters>
                             <v-col cols="12">
                                 <v-data-table
+                                    :search="detail.searchText"
                                     :headers="[
                                         { title: '코인 종류', value: 'coinType.desc' },
                                         { title: '거래 유형', value: 'orderType.desc' },

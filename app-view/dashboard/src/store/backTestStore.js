@@ -27,6 +27,7 @@ export const useBackTestStore = defineStore("backTest", {
         backTests: [],
         detail: {
             visibleDialog: false,
+            searchText: '',
             title: '',
             strategyType: {},
             status: {},
