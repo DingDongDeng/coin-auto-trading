@@ -83,24 +83,40 @@
                         </v-row>
                         <v-row class="mb-1" no-gutters>
                             <v-col cols="4">총 누적 이익금 <br> (수수료 제외)</v-col>
-                            <v-col cols="6">{{ detail.totalAccProfitValuePrice.toLocaleString() }}원</v-col>
+                            <v-col cols="6">{{
+                                    detail.totalAccProfitValuePrice > 0 ? '+' + detail.totalAccProfitValuePrice.toLocaleString() : detail.totalAccProfitValuePrice.toLocaleString()
+                                }}원
+                            </v-col>
                         </v-row>
                         <v-row class="mb-1" no-gutters>
                             <v-col cols="4">총 수수료</v-col>
-                            <v-col cols="6">{{ detail.totalFee.toLocaleString() }}원</v-col>
+                            <v-col cols="6">{{
+                                    detail.totalFee > 0 ? '-' + detail.totalFee.toLocaleString() : detail.totalFee.toLocaleString()
+                                }}원
+                            </v-col>
                         </v-row>
                         <v-row no-gutters>
                             <v-col cols="4">미실현 평가금액</v-col>
-                            <v-col cols="6">{{ detail.totalProfitPrice.toLocaleString() }}원</v-col>
+                            <v-col cols="6">{{
+                                    detail.totalProfitPrice > 0 ? '+' + detail.totalProfitPrice.toLocaleString() : detail.totalProfitPrice.toLocaleString()
+                                }}원
+                            </v-col>
                         </v-row>
                         <v-row no-gutters>
                             <v-col cols="4">미실현 손익률</v-col>
-                            <v-col cols="6">{{ detail.totalProfitRate }}%</v-col>
+                            <v-col cols="6">{{
+                                    detail.totalProfitRate > 0 ? '+' + detail.totalProfitRate : detail.totalProfitRate
+                                }}%
+                            </v-col>
                         </v-row>
                     </v-col>
                 </v-row>
 
                 <v-row>
+                    <!--
+                        거래 시각 오름차순이 되면 좋겠어
+                        코인 종류별로 필터가 되면 좋겠어
+                    -->
                     <v-col cols="10">
                         <v-row class="mb-2" no-gutters>
                             <v-col cols="3">
@@ -121,6 +137,19 @@
                                     :items="Object.values(detail.tradeHistoriesMap).flat()"
                                     items-per-page="10"
                                 >
+                                    <template v-slot:[`item.price`]="{ item }">
+                                        <div> {{ item.price.toLocaleString() }}원</div>
+                                    </template>
+                                    <template v-slot:[`item.profit`]="{ item }">
+                                        <div v-if="item.orderType.type !== 'BUY'">
+                                            {{
+                                                item.profit > 0 ? '+' + item.profit.toLocaleString() : item.profit.toLocaleString()
+                                            }}원
+                                        </div>
+                                        <div v-else>
+                                            -
+                                        </div>
+                                    </template>
                                 </v-data-table>
                             </v-col>
                         </v-row>
@@ -146,6 +175,13 @@
                                     :items="Object.values(detail.tradeStatisticsMap).flat()"
                                     items-per-page="10"
                                 >
+                                    <template v-slot:[`item.totalAccProfitPrice`]="{ item }">
+                                        <div>
+                                            {{
+                                                item.totalAccProfitPrice > 0 ? '+' + item.totalAccProfitPrice.toLocaleString() : item.totalAccProfitPrice.toLocaleString()
+                                            }}원
+                                        </div>
+                                    </template>
                                 </v-data-table>
                             </v-col>
                         </v-row>
