@@ -59,7 +59,7 @@
                     <v-col cols="5">
                         <v-row class="mb-2" no-gutters>
                             <v-col cols="3">
-                                <strong>기간 및 진행률</strong>
+                                <strong>진행 정보</strong>
                             </v-col>
                         </v-row>
                         <v-row class="mb-1" no-gutters>
@@ -107,6 +107,16 @@
                             <v-col cols="6">{{
                                     detail.totalProfitRate > 0 ? '+' + detail.totalProfitRate : detail.totalProfitRate
                                 }}%
+                            </v-col>
+                        </v-row>
+                    </v-col>
+                </v-row>
+
+                <v-row>
+                    <v-col cols="10">
+                        <v-row class="mb-2" no-gutters>
+                            <v-col cols="3">
+                                <strong>차트</strong>
                             </v-col>
                         </v-row>
                     </v-col>
