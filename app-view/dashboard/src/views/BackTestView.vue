@@ -25,8 +25,8 @@
         return ''
     });
     const endDateTime = computed(() => {
-        if (dateTimeRange.value[1]) {
-            return new Date(dateTimeRange.value[1]).toISOString().slice(0, 19)
+        if (dateTimeRange.value[dateTimeRange.value.length - 1]) {
+            return new Date(dateTimeRange.value[dateTimeRange.value.length - 1]).toISOString().slice(0, 19)
         }
         return ''
     });
