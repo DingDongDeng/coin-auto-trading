@@ -94,8 +94,8 @@ class BackTestSpotCoinExchangeService(
                 throw CriticalException.of("무한 루프 발생 의심되어 에러 발생, coinType=${param.coinType}, candleUnit=${param.candleUnit}")
             }
             val endDateTime =
-                param.to.minusSeconds(param.candleUnit.getSecondSize() * param.count * loopCnt++) // 루프마다 기준점이 달라짐
-            val startDateTime = endDateTime.minusSeconds(param.candleUnit.getSecondSize() * (param.count - 1))
+                param.to.minusSeconds(param.candleUnit.getSecondSize() * param.chunkSize * loopCnt++) // 루프마다 기준점이 달라짐
+            val startDateTime = endDateTime.minusSeconds(param.candleUnit.getSecondSize() * (param.chunkSize - 1))
             val chartParam = SpotCoinExchangeChartByDateTimeParam(
                 coinType = param.coinType,
                 candleUnit = param.candleUnit,

@@ -17,4 +17,5 @@ data class SpotCoinExchangeChartByCountParam(
     val candleUnit: CandleUnit,
     val to: LocalDateTime,
     val count: Int,
+    val chunkSize: Int = 200, // 한번에 조회하는 개수 (1000개를 조회하더라도 200개씩 나눠서 조회)
 )

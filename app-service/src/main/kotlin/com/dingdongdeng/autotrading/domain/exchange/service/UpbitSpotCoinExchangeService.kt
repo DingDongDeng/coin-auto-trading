@@ -165,9 +165,12 @@ class UpbitSpotCoinExchangeService(
         var loopCnt = 0
         // 필요한 캔들 숫자가 조회될때까지 반복
         while (candles.size < param.count) {
+            if (loopCnt > 5) {
+                throw CriticalException.of("무한 루프 발생 의심되어 에러 발생, coinType=${param.coinType}, candleUnit=${param.candleUnit}")
+            }
             val endDateTime =
-                param.to.minusSeconds(param.candleUnit.getSecondSize() * param.count * loopCnt++) // 루프마다 기준점이 달라짐
-            val startDateTime = endDateTime.minusSeconds(param.candleUnit.getSecondSize() * (param.count - 1))
+                param.to.minusSeconds(param.candleUnit.getSecondSize() * param.chunkSize * loopCnt++) // 루프마다 기준점이 달라짐
+            val startDateTime = endDateTime.minusSeconds(param.candleUnit.getSecondSize() * (param.chunkSize - 1))
             val chartParam = SpotCoinExchangeChartByDateTimeParam(
                 coinType = param.coinType,
                 candleUnit = param.candleUnit,
@@ -175,10 +178,6 @@ class UpbitSpotCoinExchangeService(
                 to = endDateTime,
             )
             candles = getChartByDateTime(chartParam, keyParam).candles + candles
-
-            if (loopCnt > 5) {
-                throw CriticalException.of("무한 루프 발생 의심되어 에러 발생, coinType=${param.coinType}, candleUnit=${param.candleUnit}")
-            }
         }
         candles = candles.takeLast(param.count)
 
