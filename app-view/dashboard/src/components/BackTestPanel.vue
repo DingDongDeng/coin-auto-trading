@@ -114,7 +114,6 @@
 
                 <v-row>
                     <!--
-                        거래 시각 오름차순이 되면 좋겠어
                         코인 종류별로 필터가 되면 좋겠어
                     -->
                     <v-col cols="10">
@@ -134,7 +133,7 @@
                                         { title: '이익', value: 'profit' },
                                         { title: '거래 시각', value: 'tradeAt' },
                                     ]"
-                                    :items="Object.values(detail.tradeHistoriesMap).flat()"
+                                    :items="Object.values(detail.tradeHistoriesMap).flat().sort((a, b) => new Date(b.tradeAt) - new Date(a.tradeAt))"
                                     items-per-page="10"
                                 >
                                     <template v-slot:[`item.price`]="{ item }">
@@ -172,7 +171,7 @@
                                         { title: '종료일', value: 'to' },
                                         { title: '이익금', value: 'totalAccProfitPrice' },
                                     ]"
-                                    :items="Object.values(detail.tradeStatisticsMap).flat()"
+                                    :items="Object.values(detail.tradeStatisticsMap).flat().sort((a, b) => new Date(b.from) - new Date(a.from))"
                                     items-per-page="10"
                                 >
                                     <template v-slot:[`item.totalAccProfitPrice`]="{ item }">
