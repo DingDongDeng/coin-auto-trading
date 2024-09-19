@@ -119,6 +119,12 @@
                                 <strong>차트</strong>
                             </v-col>
                         </v-row>
+                        <v-row>
+                            <v-col cols="6">
+                                chart.js
+                                https://vue-chartjs.org/guide/#creating-your-first-chart
+                            </v-col>
+                        </v-row>
                     </v-col>
                 </v-row>
 
