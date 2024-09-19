@@ -118,7 +118,7 @@
                                         { title: '이익', value: 'profit' },
                                         { title: '거래 시각', value: 'tradeAt' },
                                     ]"
-                                    :items="detail.tradeHistoriesMap['BITCOIN']"
+                                    :items="Object.values(detail.tradeHistoriesMap).flat()"
                                     items-per-page="10"
                                 >
                                 </v-data-table>
@@ -143,7 +143,7 @@
                                         { title: '종료일', value: 'to' },
                                         { title: '이익금', value: 'totalAccProfitPrice' },
                                     ]"
-                                    :items="detail.tradeStatisticsMap['BITCOIN']"
+                                    :items="Object.values(detail.tradeStatisticsMap).flat()"
                                     items-per-page="10"
                                 >
                                 </v-data-table>
