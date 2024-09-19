@@ -121,33 +121,36 @@
                                     :items="detail.tradeHistoriesMap['BITCOIN']"
                                     items-per-page="10"
                                 >
-
                                 </v-data-table>
                             </v-col>
                         </v-row>
                     </v-col>
                 </v-row>
 
-                <!-- 통계 -->
-                <div> 통계 :</div>
-                <table>
-                    <thead>
-                    <tr>
-                        <th>코인 종류</th>
-                        <th>기간</th>
-                        <th>총 누적 이익금</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr v-for="(statistics, coinType) in detail.tradeStatisticsMap" :key="coinType">
-                        <td v-for="stat in statistics" :key="stat.from">
-                            {{ stat.coinType.desc }}
-                            {{ stat.from }} ~ {{ stat.to }}
-                            {{ stat.totalAccProfitPrice }}
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                <v-row>
+                    <v-col cols="10">
+                        <v-row class="mb-2" no-gutters>
+                            <v-col cols="3">
+                                <strong>통계</strong>
+                            </v-col>
+                        </v-row>
+                        <v-row class="mb-1" no-gutters>
+                            <v-col cols="12">
+                                <v-data-table
+                                    :headers="[
+                                        { title: '코인 종류', value: 'coinType.desc' },
+                                        { title: '시작일', value: 'from' },
+                                        { title: '종료일', value: 'to' },
+                                        { title: '이익금', value: 'totalAccProfitPrice' },
+                                    ]"
+                                    :items="detail.tradeStatisticsMap['BITCOIN']"
+                                    items-per-page="10"
+                                >
+                                </v-data-table>
+                            </v-col>
+                        </v-row>
+                    </v-col>
+                </v-row>
             </v-card-text>
             <v-card-actions class="pa-5">
 
