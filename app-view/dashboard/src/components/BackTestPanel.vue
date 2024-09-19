@@ -2,6 +2,7 @@
     import {defineProps} from 'vue';
     import {useBackTestStore} from "@/store/backTestStore";
     import {storeToRefs} from "pinia";
+    import TradingChart from "@/components/TradingChart.vue";
 
     const backTestStore = useBackTestStore()
     const {detail, remove} = storeToRefs(backTestStore)
@@ -121,8 +122,7 @@
                         </v-row>
                         <v-row>
                             <v-col cols="6">
-                                chart.js
-                                https://vue-chartjs.org/guide/#creating-your-first-chart
+                                <trading-chart/>
                             </v-col>
                         </v-row>
                     </v-col>
