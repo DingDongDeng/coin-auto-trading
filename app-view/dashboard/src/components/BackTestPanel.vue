@@ -122,7 +122,7 @@
                         <v-row>
                             <v-col cols="6">
                                 <v-text-field
-                                    v-model="detail.searchText"
+                                    v-model="detail.tradeHistoriesSearchText"
                                     density="compact"
                                     label="Search"
                                     prepend-inner-icon="mdi-magnify"
@@ -136,7 +136,7 @@
                         <v-row class="mb-1" no-gutters>
                             <v-col cols="12">
                                 <v-data-table
-                                    :search="detail.searchText"
+                                    :search="detail.tradeHistoriesSearchText"
                                     :headers="[
                                         { title: '코인 종류', value: 'coinType.desc' },
                                         { title: '거래 유형', value: 'orderType.desc' },
@@ -174,9 +174,24 @@
                                 <strong>통계</strong>
                             </v-col>
                         </v-row>
+                        <v-row>
+                            <v-col cols="6">
+                                <v-text-field
+                                    v-model="detail.tradeStatisticsSearchText"
+                                    density="compact"
+                                    label="Search"
+                                    prepend-inner-icon="mdi-magnify"
+                                    variant="solo-filled"
+                                    flat
+                                    hide-details
+                                    single-line
+                                ></v-text-field>
+                            </v-col>
+                        </v-row>
                         <v-row class="mb-1" no-gutters>
                             <v-col cols="12">
                                 <v-data-table
+                                    :search="detail.tradeStatisticsSearchText"
                                     :headers="[
                                         { title: '코인 종류', value: 'coinType.desc' },
                                         { title: '시작일', value: 'from' },
