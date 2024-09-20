@@ -41,6 +41,15 @@
                             unchanged: 'gray',
                         },
                     },
+                    {
+                        type: 'scatter', // scatter 데이터셋을 추가
+                        label: 'Buy Order',
+                        data: [
+                            {x: candleDate('2024-09-10T09:30:00'), y: 75}, // 매수 주문 시점과 가격
+                        ],
+                        pointBackgroundColor: 'blue', // 매수 주문을 나타낼 점의 색
+                        pointRadius: 5, // 점의 크기
+                    },
                 ],
             },
             options: {
