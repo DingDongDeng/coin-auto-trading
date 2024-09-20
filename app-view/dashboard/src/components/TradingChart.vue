@@ -19,14 +19,20 @@
 
         // 차트 생성
         new Chart(ctx, {
-            type: 'candlestick', // 'ohlc'도 가능
+            type: 'ohlc', // 'ohlc', 'candlestick'도 가능
             data: {
                 datasets: [
                     {
                         label: 'OHLC Data',
                         data: [
-                            {x: new Date('2024-09-10'), o: 60, h: 70, l: 50, c: 65},
-                            {x: new Date('2024-09-11'), o: 65, h: 75, l: 55, c: 70},
+                            {x: new Date('2024-09-10'), o: 60, h: 70, l: 55, c: 65},
+                            {x: new Date('2024-09-11'), o: 65, h: 80, l: 60, c: 75},
+                            {x: new Date('2024-09-12'), o: 75, h: 85, l: 70, c: 80},
+                            {x: new Date('2024-09-13'), o: 80, h: 90, l: 75, c: 85},
+                            {x: new Date('2024-09-14'), o: 85, h: 88, l: 82, c: 84},
+                            {x: new Date('2024-09-15'), o: 84, h: 87, l: 80, c: 83},
+                            {x: new Date('2024-09-16'), o: 83, h: 86, l: 79, c: 82},
+                            {x: new Date('2024-09-17'), o: 82, h: 84, l: 78, c: 80},
                         ],
                         borderColor: 'black',
                         color: {
