@@ -19,20 +19,20 @@
 
         // 차트 생성
         new Chart(ctx, {
-            type: 'ohlc', // 'ohlc', 'candlestick'도 가능
+            type: 'candlestick', // 'ohlc', 'candlestick'도 가능
             data: {
                 datasets: [
                     {
                         label: 'OHLC Data',
                         data: [
-                            {x: new Date('2024-09-10'), o: 60, h: 70, l: 55, c: 65},
-                            {x: new Date('2024-09-11'), o: 65, h: 80, l: 60, c: 75},
-                            {x: new Date('2024-09-12'), o: 75, h: 85, l: 70, c: 80},
-                            {x: new Date('2024-09-13'), o: 80, h: 90, l: 75, c: 85},
-                            {x: new Date('2024-09-14'), o: 85, h: 88, l: 82, c: 84},
-                            {x: new Date('2024-09-15'), o: 84, h: 87, l: 80, c: 83},
-                            {x: new Date('2024-09-16'), o: 83, h: 86, l: 79, c: 82},
-                            {x: new Date('2024-09-17'), o: 82, h: 84, l: 78, c: 80},
+                            {x: candleDate('2024-09-10T09:15:00'), o: 60, h: 70, l: 55, c: 65},
+                            {x: candleDate('2024-09-10T09:30:00'), o: 65, h: 80, l: 60, c: 75},
+                            {x: candleDate('2024-09-10T09:45:00'), o: 75, h: 85, l: 70, c: 80},
+                            {x: candleDate('2024-09-10T10:00:00'), o: 80, h: 90, l: 75, c: 85},
+                            {x: candleDate('2024-09-10T10:15:00'), o: 85, h: 88, l: 82, c: 84},
+                            {x: candleDate('2024-09-10T10:30:00'), o: 84, h: 87, l: 80, c: 83},
+                            {x: candleDate('2024-09-10T10:45:00'), o: 83, h: 86, l: 79, c: 82},
+                            {x: candleDate('2024-09-10T11:00:00'), o: 160, h: 235, l: 160, c: 205},
                         ],
                         borderColor: 'black',
                         color: {
@@ -48,7 +48,7 @@
                     x: {
                         type: 'time', // 시간 스케일 사용
                         time: {
-                            unit: 'day',
+                            unit: 'minute', // 시간 단위를 분으로 설정
                         },
                     },
                     y: {
@@ -58,4 +58,8 @@
             },
         })
     })
+
+    function candleDate(dateStr) {
+        return new Date(dateStr).valueOf();
+    }
 </script>
