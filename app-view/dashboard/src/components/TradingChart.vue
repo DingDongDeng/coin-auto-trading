@@ -17,11 +17,17 @@
     onMounted(() => {
         const ctx = financialChart.value.getContext('2d')
 
+        //FIXME
+        // phase 1 : 차트와 매수/매도 주문을 표현하자
+        // phase 2 : 보조지표를 표현하자
+
         // 차트 생성
         new Chart(ctx, {
             type: 'candlestick', // 'ohlc', 'candlestick'도 가능
             data: {
                 datasets: [
+
+                    // 차트 정보
                     {
                         label: 'OHLC Data',
                         data: [
@@ -40,7 +46,10 @@
                             down: 'red',
                             unchanged: 'gray',
                         },
+                        yAxisID: 'candlestick', // Y축을 분리
                     },
+
+                    // 주문 정보
                     {
                         type: 'scatter', // scatter 데이터셋을 추가
                         label: 'Buy Order',
@@ -49,6 +58,25 @@
                         ],
                         pointBackgroundColor: 'blue', // 매수 주문을 나타낼 점의 색
                         pointRadius: 5, // 점의 크기
+                        yAxisID: 'candlestick', // Y축을 분리
+                    },
+
+                    // 차트 위에 그려지는데 이평선 같은거 노출하면 되겠다
+                    {
+                        type: 'line', // RSI는 일반적으로 선형 차트로 표시
+                        label: 'mv Indicator',
+                        data: [
+                            {x: candleDate('2024-09-10T09:15:00'), y: 45},
+                            {x: candleDate('2024-09-10T09:30:00'), y: 55},
+                            {x: candleDate('2024-09-10T09:45:00'), y: 65},
+                            {x: candleDate('2024-09-10T10:00:00'), y: 70},
+                            {x: candleDate('2024-09-10T10:15:00'), y: 75},
+                            {x: candleDate('2024-09-10T10:30:00'), y: 65},
+                            {x: candleDate('2024-09-10T10:45:00'), y: 60},
+                            {x: candleDate('2024-09-10T11:00:00'), y: 50},
+                        ],
+                        borderColor: 'blue',
+                        yAxisID: 'candlestick',
                     },
                 ],
             },
@@ -61,7 +89,10 @@
                         },
                     },
                     y: {
-                        type: 'linear',
+                        candlestick: {
+                            type: 'linear',
+                            position: 'left',
+                        }
                     },
                 },
             },
