@@ -60,7 +60,7 @@
                     <v-col cols="5">
                         <v-row class="mb-2" no-gutters>
                             <v-col cols="3">
-                                <strong>진행 정보</strong>
+                                <strong class="text-h6">진행 정보</strong>
                             </v-col>
                         </v-row>
                         <v-row class="mb-1" no-gutters>
@@ -79,7 +79,7 @@
                     <v-col cols="5">
                         <v-row class="mb-2" no-gutters>
                             <v-col cols="3">
-                                <strong>진행 상황</strong>
+                                <strong class="text-h6">진행 상황</strong>
                             </v-col>
                         </v-row>
                         <v-row class="mb-1" no-gutters>
@@ -117,7 +117,7 @@
                     <v-col cols="10">
                         <v-row class="mb-2" no-gutters>
                             <v-col cols="3">
-                                <strong>차트</strong>
+                                <strong class="text-h6">차트</strong>
                             </v-col>
                         </v-row>
                         <v-row>
@@ -132,7 +132,7 @@
                     <v-col cols="10">
                         <v-row class="mb-2" no-gutters>
                             <v-col cols="3">
-                                <strong>거래 이력</strong>
+                                <strong class="text-h6">거래 이력</strong>
                             </v-col>
                         </v-row>
                         <v-row>
@@ -187,7 +187,7 @@
                     <v-col cols="10">
                         <v-row class="mb-2" no-gutters>
                             <v-col cols="3">
-                                <strong>통계</strong>
+                                <strong class="text-h6">통계</strong>
                             </v-col>
                         </v-row>
                         <v-row>
