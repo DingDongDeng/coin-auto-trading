@@ -1,54 +1,55 @@
-<script setup>
-    import {Line} from 'vue-chartjs'
-    import {
-        CategoryScale,
-        Chart as ChartJS,
-        Legend,
-        LinearScale,
-        LineElement,
-        PointElement,
-        Title,
-        Tooltip
-    } from 'chart.js'
-    import {ref} from 'vue'
-
-    // Chart.js 구성 요소 등록
-    ChartJS.register(Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement)
-
-    // 차트 데이터
-    const chartData = ref({
-        labels: ['2024-09-01', '2024-09-02', '2024-09-03', '2024-09-04'], // 날짜
-        datasets: [
-            {
-                label: 'Stock Price',
-                data: [120, 130, 125, 140], // 주식 가격 데이터
-                borderColor: '#42A5F5',
-                backgroundColor: 'rgba(66, 165, 245, 0.2)',
-                fill: true
-            }
-        ]
-    })
-
-    // 차트 옵션
-    const chartOptions = ref({
-        responsive: true,
-        scales: {
-            x: {
-                beginAtZero: true
-            },
-            y: {
-                beginAtZero: true
-            }
-        }
-    })
-</script>
-
 <template>
-    <div>
-        <Line :data="chartData" :options="chartOptions"/>
-    </div>
+    <canvas ref="financialChart"></canvas>
 </template>
 
-<style scoped>
-    /* 여기에 스타일을 추가할 수 있습니다. */
-</style>
+<script setup>
+    import {onMounted, ref} from 'vue'
+    import {Chart, registerables} from 'chart.js'
+    import 'chartjs-chart-financial' // OHLC 및 Candlestick 차트를 위한 플러그인
+    import 'chartjs-adapter-date-fns' // 날짜 어댑터 불러오기
+    import {CandlestickController, CandlestickElement, OhlcController, OhlcElement} from 'chartjs-chart-financial'
+
+    // Chart.js에서 필요한 요소 및 컨트롤러, 엘리먼트를 등록
+    Chart.register(...registerables, CandlestickController, OhlcController, CandlestickElement, OhlcElement)
+
+    const financialChart = ref(null)
+
+    onMounted(() => {
+        const ctx = financialChart.value.getContext('2d')
+
+        // 차트 생성
+        new Chart(ctx, {
+            type: 'candlestick', // 'ohlc'도 가능
+            data: {
+                datasets: [
+                    {
+                        label: 'OHLC Data',
+                        data: [
+                            {x: new Date('2024-09-10'), o: 60, h: 70, l: 50, c: 65},
+                            {x: new Date('2024-09-11'), o: 65, h: 75, l: 55, c: 70},
+                        ],
+                        borderColor: 'black',
+                        color: {
+                            up: 'green',
+                            down: 'red',
+                            unchanged: 'gray',
+                        },
+                    },
+                ],
+            },
+            options: {
+                scales: {
+                    x: {
+                        type: 'time', // 시간 스케일 사용
+                        time: {
+                            unit: 'day',
+                        },
+                    },
+                    y: {
+                        type: 'linear',
+                    },
+                },
+            },
+        })
+    })
+</script>
