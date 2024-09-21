@@ -26,6 +26,7 @@ export const useBackTestStore = defineStore("backTest", {
     state: () => ({
         backTests: [],
         detail: {
+            isRunningRefreshScheduler: false,
             visibleDialog: false,
             tradeHistoriesSearchText: '',
             tradeStatisticsSearchText: '',
@@ -68,11 +69,23 @@ export const useBackTestStore = defineStore("backTest", {
             this.backTests = (await getBackTests()).body
         },
         async loadBackTestDetail(backTestProcessorId) {
+            console.log('loadBackTestDetail...', backTestProcessorId)
             const detail = (await getBackTestResult(backTestProcessorId)).body
             this.detail = {
                 ...this.detail,
                 ...detail,
             };
+            if (!this.detail.isRunningRefreshScheduler) {
+                this.detail.isRunningRefreshScheduler = true
+                setInterval(async () => {
+                    const backTestProcessorId = this.detail.backTestProcessorId
+                    const isExistsBackTestProcessorId = backTestProcessorId && backTestProcessorId !== ''
+                    const isRunning = this.detail.status.type === 'RUNNING'
+                    if (isExistsBackTestProcessorId && isRunning) {
+                        await this.loadBackTestDetail(backTestProcessorId);
+                    }
+                }, 3000);
+            }
         },
         async registerBackTest() {
             await registerBackTest(this.register)
