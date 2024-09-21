@@ -7,7 +7,7 @@ import com.dingdongdeng.autotrading.infra.common.type.OrderType
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-data class CoinBackTestResultDto(
+data class CoinBackTestResultDto( //FIXME durationUnit 있어야하지않음?
     val title: String,
     val strategyType: CoinStrategyType,
     val status: ProcessStatus,
