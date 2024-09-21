@@ -1,6 +1,8 @@
 package com.dingdongdeng.autotrading.application.backtest
 
 import com.dingdongdeng.autotrading.application.backtest.model.CoinBackTestProcessorDto
+import com.dingdongdeng.autotrading.application.backtest.model.CoinBackTestReplayChartDto
+import com.dingdongdeng.autotrading.application.backtest.model.CoinBackTestReplayDto
 import com.dingdongdeng.autotrading.application.backtest.model.CoinBackTestResultDto
 import com.dingdongdeng.autotrading.application.backtest.model.CoinBackTestTradeHistory
 import com.dingdongdeng.autotrading.application.backtest.model.CoinBackTestTradeStatistics
@@ -18,6 +20,7 @@ import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeModeType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.utils.AsyncUtils
+import com.dingdongdeng.autotrading.infra.common.utils.CandleDateTimeUtils
 import com.dingdongdeng.autotrading.infra.common.utils.round
 import java.time.LocalDateTime
 
@@ -157,5 +160,48 @@ class CoinBackTestUseCase(
                 },
         )
 
+    }
+
+    fun getReplay(
+        backTestProcessorId: String,
+        replayCandleUnit: CandleUnit,
+        replayDateTime: LocalDateTime, // replayDateTime 보다 큰 시간대의 정보를 조회
+        limit: Int,
+    ): CoinBackTestReplayDto {
+
+        val processor = processorRepository.findById(backTestProcessorId) as CoinBackTestProcessor
+        val to = CandleDateTimeUtils
+            .makeUnitDateTime(replayDateTime, replayCandleUnit)
+            .plusSeconds(limit * replayCandleUnit.getSecondSize())
+
+        val charts = processor.coinTypes.map { coinType ->
+            CoinBackTestReplayChartDto.of(
+                replayDateTime = replayDateTime,
+                exchangeType = processor.exchangeType,
+                coinType = coinType,
+                chart = coinChartService.getCharts(
+                    exchangeType = processor.exchangeType,
+                    exchangeModeType = ExchangeModeType.BACKTEST,
+                    coinType = coinType,
+                    candleUnits = listOf(replayCandleUnit),
+                    count = limit,
+                    to = to,
+                ).first(),
+                tradeSummary = coinTradeService.getTradeSummary(
+                    exchangeType = processor.exchangeType,
+                    exchangeModeType = ExchangeModeType.BACKTEST,
+                    autoTradeProcessorId = processor.id,
+                    coinType = coinType,
+                    now = to,
+                )
+            )
+        }
+
+        return CoinBackTestReplayDto(
+            backTestProcessorId = processor.id,
+            replayDateTime = replayDateTime,
+            next = to < processor.endDateTime,
+            charts = charts,
+        )
     }
 }
