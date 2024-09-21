@@ -83,8 +83,8 @@ class VirtualCoinCandleRepository(
         var accTradeVolume = 0.0
 
         minUnitCandles.forEach { candle ->
-            highPrice = max(highPrice, candle.closingPrice)
-            lowPrice = min(lowPrice, candle.closingPrice)
+            highPrice = max(openingPrice, candle.closingPrice)
+            lowPrice = min(openingPrice, candle.closingPrice)
             closingPrice = candle.closingPrice
             accTradePrice += candle.accTradePrice
             accTradeVolume += candle.accTradeVolume
