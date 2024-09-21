@@ -2,7 +2,9 @@ package com.dingdongdeng.autotrading.presentation.dashboard.controller
 
 import com.dingdongdeng.autotrading.application.backtest.CoinBackTestUseCase
 import com.dingdongdeng.autotrading.application.backtest.model.CoinBackTestProcessorDto
+import com.dingdongdeng.autotrading.application.backtest.model.CoinBackTestReplayDto
 import com.dingdongdeng.autotrading.application.backtest.model.CoinBackTestResultDto
+import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.web.CommonResponse
 import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinAutotradeChartLoadRequest
 import com.dingdongdeng.autotrading.presentation.dashboard.model.CoinBackTestRegisterRequest
@@ -12,7 +14,9 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDateTime
 
 @RequestMapping("/coin")
 @RestController
@@ -76,13 +80,20 @@ class CoinBackTestController(
         )
     }
 
-    /**
-     * 백테스트 차트 조회 API
-     * - 코인 타입 받아야함? (아니면 프로세서 ID로? <<< 이게 맞으려나??)
-     * - 어떤 캔들로 볼껀지 (백테스트 진행 단위와 무관하게 ㅇㅇ)
-     * - 매수/매도 주문도 같이 응답되어야함
-     * - 보조지표 포함 여부 (일단은 spec out)
-     * - 날짜데이터는 timestamp를 포함해서 내리자 (클라에서 컨버팅하면 너무 힘들어)
-     *
-     */
+    @GetMapping("processor/backtest/{processorId}/replay")
+    fun getBackTestCharts(
+        @PathVariable processorId: String,
+        @RequestParam replayCandleUnit: CandleUnit,
+        @RequestParam replayDateTime: LocalDateTime,
+        @RequestParam(defaultValue = "1000") limit: Int,
+    ): CommonResponse<CoinBackTestReplayDto> {
+        return CommonResponse(
+            body = coinBackTestUseCase.getReplay(
+                backTestProcessorId = processorId,
+                replayCandleUnit = replayCandleUnit,
+                replayDateTime = replayDateTime,
+                limit = limit,
+            ),
+        )
+    }
 }
