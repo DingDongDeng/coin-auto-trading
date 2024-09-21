@@ -37,3 +37,8 @@ fun minDate(d1: LocalDateTime, d2: LocalDateTime): LocalDateTime {
         d2
     }
 }
+
+fun LocalDateTime.toKstTimestamp(): Long {
+    val zoneId = ZoneId.of("Asia/Seoul")
+    return this.atZone(zoneId).toInstant().toEpochMilli()
+}

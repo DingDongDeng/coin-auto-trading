@@ -7,6 +7,7 @@ import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.type.OrderType
+import com.dingdongdeng.autotrading.infra.common.utils.toKstTimestamp
 import java.time.LocalDateTime
 
 data class CoinBackTestReplayDto(
@@ -44,7 +45,7 @@ data class CoinBackTestReplayChartDto(
                         CoinBackTestReplayTradeDto(
                             orderType = it.orderType,
                             price = it.price,
-                            timestamp = it.tradedAt,
+                            timestamp = it.tradedAt.toKstTimestamp(),
                         )
                     }
             )
@@ -66,7 +67,7 @@ data class CoinBackTestReplayChartCandleDto(
                 highPrice = candle.highPrice,
                 lowPrice = candle.lowPrice,
                 closingPrice = candle.closingPrice,
-                timestamp = candle.candleDateTimeKst,
+                timestamp = candle.candleDateTimeKst.toKstTimestamp(),
             )
         }
     }
