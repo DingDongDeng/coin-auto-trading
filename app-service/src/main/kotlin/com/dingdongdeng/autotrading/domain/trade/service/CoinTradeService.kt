@@ -96,7 +96,7 @@ class CoinTradeService(
     fun getTradeSummary(
         exchangeType: ExchangeType,
         exchangeModeType: ExchangeModeType,
-        keyPairId: String,
+        keyPairId: String = "",
         autoTradeProcessorId: String,
         coinType: CoinType,
         now: LocalDateTime,
