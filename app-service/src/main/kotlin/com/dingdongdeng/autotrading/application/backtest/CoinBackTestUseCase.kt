@@ -165,18 +165,18 @@ class CoinBackTestUseCase(
     fun getReplay(
         backTestProcessorId: String,
         replayCandleUnit: CandleUnit,
-        replayDateTime: LocalDateTime, // replayDateTime 보다 큰 시간대의 정보를 조회
+        replayStartDateTime: LocalDateTime, // replayDateTime 보다 큰 시간대의 정보를 조회
         limit: Int,
     ): CoinBackTestReplayDto {
 
         val processor = processorRepository.findById(backTestProcessorId) as CoinBackTestProcessor
-        val to = CandleDateTimeUtils
-            .makeUnitDateTime(replayDateTime, replayCandleUnit)
+        val replayEndDateTime = CandleDateTimeUtils
+            .makeUnitDateTime(replayStartDateTime, replayCandleUnit)
             .plusSeconds(limit * replayCandleUnit.getSecondSize())
 
         val charts = processor.coinTypes.map { coinType ->
             CoinBackTestReplayChartDto.of(
-                replayDateTime = replayDateTime,
+                replayStartDateTime = replayStartDateTime,
                 exchangeType = processor.exchangeType,
                 coinType = coinType,
                 chart = coinChartService.getCharts(
@@ -185,22 +185,23 @@ class CoinBackTestUseCase(
                     coinType = coinType,
                     candleUnits = listOf(replayCandleUnit),
                     count = limit,
-                    to = to,
+                    to = replayEndDateTime,
                 ).first(),
                 tradeSummary = coinTradeService.getTradeSummary(
                     exchangeType = processor.exchangeType,
                     exchangeModeType = ExchangeModeType.BACKTEST,
                     autoTradeProcessorId = processor.id,
                     coinType = coinType,
-                    now = to,
+                    now = replayEndDateTime,
                 )
             )
         }
 
         return CoinBackTestReplayDto(
             backTestProcessorId = processor.id,
-            replayDateTime = replayDateTime,
-            next = to < processor.endDateTime,
+            replayStartDateTime = replayStartDateTime,
+            replayEndDateTime = replayEndDateTime,
+            next = replayEndDateTime < processor.endDateTime,
             charts = charts,
         )
     }

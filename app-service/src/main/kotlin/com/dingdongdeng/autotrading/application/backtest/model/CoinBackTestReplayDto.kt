@@ -12,7 +12,8 @@ import java.time.LocalDateTime
 
 data class CoinBackTestReplayDto(
     val backTestProcessorId: String,
-    val replayDateTime: LocalDateTime,
+    val replayStartDateTime: LocalDateTime,
+    val replayEndDateTime: LocalDateTime,
     val next: Boolean,
     val charts: List<CoinBackTestReplayChartDto>,
 )
@@ -26,7 +27,7 @@ data class CoinBackTestReplayChartDto(
 ) {
     companion object {
         fun of(
-            replayDateTime: LocalDateTime,
+            replayStartDateTime: LocalDateTime,
             exchangeType: ExchangeType,
             coinType: CoinType,
             chart: Chart,
@@ -37,10 +38,10 @@ data class CoinBackTestReplayChartDto(
                 coinType = coinType,
                 candleUnit = chart.candleUnit,
                 candles = chart.candles
-                    .filter { it.candleDateTimeKst > replayDateTime }
+                    .filter { it.candleDateTimeKst > replayStartDateTime }
                     .map { CoinBackTestReplayChartCandleDto.of(it) },
                 trades = tradeSummary.tradeHistories
-                    .filter { it.tradedAt > replayDateTime }
+                    .filter { it.tradedAt > replayStartDateTime }
                     .map {
                         CoinBackTestReplayTradeDto(
                             orderType = it.orderType,
