@@ -1,7 +1,3 @@
-<template>
-    <canvas ref="financialChart"></canvas>
-</template>
-
 <script setup>
     import {onMounted, ref} from 'vue'
     import {Chart, registerables} from 'chart.js'
@@ -38,7 +34,7 @@
                             {x: candleDate('2024-09-10T10:15:00'), o: 85, h: 88, l: 82, c: 84},
                             {x: candleDate('2024-09-10T10:30:00'), o: 84, h: 87, l: 80, c: 83},
                             {x: candleDate('2024-09-10T10:45:00'), o: 83, h: 86, l: 79, c: 82},
-                            {x: candleDate('2024-09-10T11:00:00'), o: 160, h: 235, l: 160, c: 205},
+                            {x: candleDate('2024-09-15T11:00:00'), o: 160, h: 235, l: 160, c: 205},
                         ],
                         borderColor: 'black',
                         color: {
@@ -103,3 +99,7 @@
         return new Date(dateStr).valueOf();
     }
 </script>
+
+<template>
+    <canvas ref="financialChart"></canvas>
+</template>
