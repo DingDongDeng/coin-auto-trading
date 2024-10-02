@@ -8,6 +8,7 @@ import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 import com.dingdongdeng.autotrading.infra.common.type.OrderType
 import com.dingdongdeng.autotrading.infra.common.utils.toKstTimestamp
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDateTime
 
 data class CoinBackTestReplayDto(
@@ -55,10 +56,15 @@ data class CoinBackTestReplayChartDto(
 }
 
 data class CoinBackTestReplayChartCandleDto(
+    @field:JsonProperty("o")
     val openingPrice: Double,
+    @field:JsonProperty("h")
     val highPrice: Double,
+    @field:JsonProperty("l")
     val lowPrice: Double,
+    @field:JsonProperty("c")
     val closingPrice: Double,
+    @field:JsonProperty("x")
     val timestamp: Long,
 ) {
     companion object {
