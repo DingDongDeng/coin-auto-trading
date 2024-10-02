@@ -56,7 +56,7 @@
 <template>
     <v-container>
         <v-row>
-            <v-col v-for="(backTest, i) in backTests" :key="i" cols="auto">
+            <v-col v-for="(backTest) in backTests" :key="backTest.id" cols="auto">
                 <BackTestPanel :back-test="backTest"/>
             </v-col>
             <v-col cols="auto">
