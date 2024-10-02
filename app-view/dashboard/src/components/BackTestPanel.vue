@@ -122,9 +122,12 @@
                                 <strong class="text-h6">차트</strong>
                             </v-col>
                         </v-row>
-                        <v-row>
+                        <v-row no-gutters>
                             <v-col cols="12">
-                                <trading-chart/>
+                                <TradingChart
+                                    :processor-id="backTest.id"
+                                    :start-date-time="detail.startDateTime"
+                                />
                             </v-col>
                         </v-row>
                     </v-col>
