@@ -1,80 +1,89 @@
 <script setup>
-    import {onMounted, ref} from 'vue'
+    import {defineProps, onMounted, ref} from 'vue'
     import {Chart, registerables} from 'chart.js'
     import 'chartjs-chart-financial' // OHLC 및 Candlestick 차트를 위한 플러그인
     import 'chartjs-adapter-date-fns' // 날짜 어댑터 불러오기
     import {CandlestickController, CandlestickElement, OhlcController, OhlcElement} from 'chartjs-chart-financial'
+    import {useTradingChartStore} from "@/store/TradingChartStore";
+
+    const props = defineProps({
+        processorId: String,
+        candleUnit: String,
+        startDateTime: String,
+    });
+    const tradingChart = useTradingChartStore()
 
     // Chart.js에서 필요한 요소 및 컨트롤러, 엘리먼트를 등록
     Chart.register(...registerables, CandlestickController, OhlcController, CandlestickElement, OhlcElement)
-
     const financialChart = ref(null)
 
+    tradingChart.loadTradingChart(
+        props.processorId,
+        props.candleUnit,
+        props.startDateTime
+    )
+
+    function createCharts(processorId) {
+        const processor = tradingChart.processors
+            .find(p => p.processorId === processorId)
+        return processor.charts.map(chart => {
+            return {
+                label: chart.coinType.desc,
+                data: chart.candles,
+                borderColor: 'black',
+                color: {
+                    up: 'red',
+                    down: 'blue',
+                    unchanged: 'gray',
+                },
+                yAxisID: 'candlestick', // Y축을 분리
+            }
+        })
+    }
+
+    function createTrades(processorId) {
+        const processor = tradingChart.processors
+            .find(p => p.processorId === processorId)
+        const buys = processor.charts.map(chart => {
+            return {
+                type: 'scatter', // scatter 데이터셋을 추가
+                label: 'Buy',
+                data: [
+                    {x: candleDate('2024-09-10T09:30:00'), y: 75}, // 매수 주문 시점과 가격
+                ],
+                pointBackgroundColor: 'green', // 주문을 나타낼 점의 색
+                pointRadius: 5, // 점의 크기
+                yAxisID: 'candlestick', // Y축을 분리
+            }
+        })
+
+        const sells = processor.charts.map(chart => {
+            return {
+                type: 'scatter', // scatter 데이터셋을 추가
+                label: 'Sell',
+                data: [
+                    {x: candleDate('2024-09-10T09:30:00'), y: 75}, // 매수 주문 시점과 가격
+                ],
+                pointBackgroundColor: 'yellow', // 주문을 나타낼 점의 색
+                pointRadius: 5, // 점의 크기
+                yAxisID: 'candlestick', // Y축을 분리
+            }
+        })
+        // 주문 정보
+        return [buys, sells]
+    }
+
     onMounted(() => {
+        const datasets = []
+        datasets.concat(createCharts(props.processorId))
+        datasets.concat(createTrades(props.processorId))
+        console.log("datasets=", datasets)
         const ctx = financialChart.value.getContext('2d')
-
-        //FIXME
-        // phase 1 : 차트와 매수/매도 주문을 표현하자
-        // phase 2 : 보조지표를 표현하자
-
         // 차트 생성
         new Chart(ctx, {
             type: 'candlestick', // 'ohlc', 'candlestick'도 가능
             data: {
-                datasets: [
-
-                    // 차트 정보
-                    {
-                        label: 'OHLC Data',
-                        data: [
-                            {x: candleDate('2024-09-10T09:15:00'), o: 60, h: 70, l: 55, c: 65},
-                            {x: candleDate('2024-09-10T09:30:00'), o: 65, h: 80, l: 60, c: 75},
-                            {x: candleDate('2024-09-10T09:45:00'), o: 75, h: 85, l: 70, c: 80},
-                            {x: candleDate('2024-09-10T10:00:00'), o: 80, h: 90, l: 75, c: 85},
-                            {x: candleDate('2024-09-10T10:15:00'), o: 85, h: 88, l: 82, c: 84},
-                            {x: candleDate('2024-09-10T10:30:00'), o: 84, h: 87, l: 80, c: 83},
-                            {x: candleDate('2024-09-10T10:45:00'), o: 83, h: 86, l: 79, c: 82},
-                            {x: candleDate('2024-09-15T11:00:00'), o: 160, h: 235, l: 160, c: 205},
-                        ],
-                        borderColor: 'black',
-                        color: {
-                            up: 'green',
-                            down: 'red',
-                            unchanged: 'gray',
-                        },
-                        yAxisID: 'candlestick', // Y축을 분리
-                    },
-
-                    // 주문 정보
-                    {
-                        type: 'scatter', // scatter 데이터셋을 추가
-                        label: 'Buy Order',
-                        data: [
-                            {x: candleDate('2024-09-10T09:30:00'), y: 75}, // 매수 주문 시점과 가격
-                        ],
-                        pointBackgroundColor: 'blue', // 매수 주문을 나타낼 점의 색
-                        pointRadius: 5, // 점의 크기
-                        yAxisID: 'candlestick', // Y축을 분리
-                    },
-
-                    // 차트 위에 그려지는데 이평선 같은거 노출하면 되겠다
-                    {
-                        type: 'line', // RSI는 일반적으로 선형 차트로 표시
-                        label: 'mv Indicator',
-                        data: [
-                            {x: candleDate('2024-09-10T09:15:00'), y: 45},
-                            {x: candleDate('2024-09-10T09:30:00'), y: 55},
-                            {x: candleDate('2024-09-10T09:45:00'), y: 65},
-                            {x: candleDate('2024-09-10T10:00:00'), y: 70},
-                            {x: candleDate('2024-09-10T10:15:00'), y: 75},
-                            {x: candleDate('2024-09-10T10:30:00'), y: 65},
-                            {x: candleDate('2024-09-10T10:45:00'), y: 60},
-                            {x: candleDate('2024-09-10T11:00:00'), y: 50},
-                        ],
-                        borderColor: 'blue',
-                        yAxisID: 'candlestick',
-                    },
-                ],
+                datasets: datasets,
             },
             options: {
                 scales: {
@@ -94,10 +103,6 @@
             },
         })
     })
-
-    function candleDate(dateStr) {
-        return new Date(dateStr).valueOf();
-    }
 </script>
 
 <template>
