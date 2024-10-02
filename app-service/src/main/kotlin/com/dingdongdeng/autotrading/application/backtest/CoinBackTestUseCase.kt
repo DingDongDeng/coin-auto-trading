@@ -165,11 +165,12 @@ class CoinBackTestUseCase(
     fun getReplay(
         backTestProcessorId: String,
         replayCandleUnit: CandleUnit,
-        replayStartDateTime: LocalDateTime, // replayDateTime 보다 큰 시간대의 정보를 조회
+        replayStartDateTimeNullable: LocalDateTime?, // replayDateTime 보다 큰 시간대의 정보를 조회
         limit: Int,
     ): CoinBackTestReplayDto {
 
         val processor = processorRepository.findById(backTestProcessorId) as CoinBackTestProcessor
+        val replayStartDateTime = replayStartDateTimeNullable ?: processor.startDateTime
         val replayEndDateTime = CandleDateTimeUtils
             .makeUnitDateTime(replayStartDateTime, replayCandleUnit)
             .plusSeconds(limit * replayCandleUnit.getSecondSize())

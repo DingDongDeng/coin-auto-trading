@@ -84,14 +84,14 @@ class CoinBackTestController(
     fun getBackTestCharts(
         @PathVariable processorId: String,
         @RequestParam replayCandleUnit: CandleUnit,
-        @RequestParam replayStartDateTime: LocalDateTime,
+        @RequestParam(required = false) replayStartDateTime: LocalDateTime?,
         @RequestParam(defaultValue = "1000") limit: Int,
     ): CommonResponse<CoinBackTestReplayDto> {
         return CommonResponse(
             body = coinBackTestUseCase.getReplay(
                 backTestProcessorId = processorId,
                 replayCandleUnit = replayCandleUnit,
-                replayStartDateTime = replayStartDateTime,
+                replayStartDateTimeNullable = replayStartDateTime,
                 limit = limit,
             ),
         )
