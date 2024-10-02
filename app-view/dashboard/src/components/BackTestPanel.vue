@@ -124,10 +124,7 @@
                         </v-row>
                         <v-row no-gutters>
                             <v-col cols="12">
-                                <TradingChart
-                                    :processor-id="backTest.id"
-                                    :start-date-time="detail.startDateTime"
-                                />
+                                <TradingChart :processor-id="backTest.id"/>
                             </v-col>
                         </v-row>
                     </v-col>
