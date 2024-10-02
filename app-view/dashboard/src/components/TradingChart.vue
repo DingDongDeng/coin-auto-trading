@@ -79,7 +79,6 @@
         const datasets = []
         datasets.concat(createCharts(props.processorId))
         datasets.concat(createTrades(props.processorId))
-        console.log("datasets=", datasets)
         const ctx = financialChart.value.getContext('2d')
         // 차트 생성
         new Chart(ctx, {
@@ -123,9 +122,9 @@
                 <div class="ml-2">
                     <v-btn :disabled="isDisabledReplay"
                            @click="(() => {
-                           isDisabledReplay = true
-                           tradingChart.loadTradingChart(processorId, selectedReplayCandleUnit, null)
-                       })">
+                               isDisabledReplay = true
+                               tradingChart.loadTradingChart(processorId, selectedReplayCandleUnit, null)
+                           })">
                         실행
                     </v-btn>
                 </div>
