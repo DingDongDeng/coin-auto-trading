@@ -85,7 +85,17 @@
                 datasets: addDatasets(props.processorId),
             },
             options: {
-                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom', // 'bottom', 'left', 'right'로 변경 가능
+                        align: 'center', // 'start', 'center', 'end'로 변경 가능
+                        labels: {
+                            boxWidth: 20, // 라벨 앞에 있는 상자의 너비
+                            padding: 10, // 라벨 간 간격
+                            color: 'white', // 텍스트 색상
+                        }
+                    }
+                },
                 scales: {
                     x: {
                         type: 'time', // 시간 스케일 사용
