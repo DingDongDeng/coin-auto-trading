@@ -26,7 +26,35 @@
     Chart.register(...registerables, CandlestickController, OhlcController, CandlestickElement, OhlcElement)
     const financialChart = ref(null)
     let chart = null
-    const datasets = [];
+    const datasets = []
+    const buyTrades = computed(() => {
+        const processor = tradingChart.getProcessorById(props.processorId);
+        if (processor?.charts) {
+            return processor.charts.flatMap(chart =>
+                chart.trades
+                    .filter(trade => trade.orderType.type === "BUY")
+                    .map(trade => ({
+                        x: trade.timestamp,
+                        y: trade.price,
+                    }))
+            );
+        }
+        return [];
+    });
+    const sellTrades = computed(() => {
+        const processor = tradingChart.getProcessorById(props.processorId);
+        if (processor?.charts) {
+            return processor.charts.flatMap(chart =>
+                chart.trades
+                    .filter(trade => trade.orderType.type === "SELL")
+                    .map(trade => ({
+                        x: trade.timestamp,
+                        y: trade.price,
+                    }))
+            );
+        }
+        return [];
+    });
 
     function addDatasets(processorId) {
         if (datasets.length === 0) {
@@ -57,37 +85,28 @@
     }
 
     function createTrades(processorId) {
-        console.log(processorId)
-        // const processor = tradingChart.processors
-        //     .find(p => p.processorId === processorId)
-        // const buys = processor.charts.map(chart => {
-        //     return {
-        //         type: 'scatter', // scatter 데이터셋을 추가
-        //         label: 'Buy',
-        //         data: [
-        //             {x: candleDate('2024-09-10T09:30:00'), y: 75}, // 매수 주문 시점과 가격
-        //         ],
-        //         pointBackgroundColor: 'green', // 주문을 나타낼 점의 색
-        //         pointRadius: 5, // 점의 크기
-        //         yAxisID: 'candlestick', // Y축을 분리
-        //     }
-        // })
-        //
-        // const sells = processor.charts.map(chart => {
-        //     return {
-        //         type: 'scatter', // scatter 데이터셋을 추가
-        //         label: 'Sell',
-        //         data: [
-        //             {x: candleDate('2024-09-10T09:30:00'), y: 75}, // 매수 주문 시점과 가격
-        //         ],
-        //         pointBackgroundColor: 'yellow', // 주문을 나타낼 점의 색
-        //         pointRadius: 5, // 점의 크기
-        //         yAxisID: 'candlestick', // Y축을 분리
-        //     }
-        // })
-        // // 주문 정보
-        // return [buys, sells]
-        return []
+        const processor = tradingChart.getProcessorById(processorId)
+        if (!processor) {
+            return []
+        }
+        const buys = {
+            type: 'scatter', // scatter 데이터셋을 추가
+            label: 'Buy',
+            data: buyTrades.value,
+            pointBackgroundColor: 'green', // 주문을 나타낼 점의 색
+            pointRadius: 5, // 점의 크기
+            yAxisID: 'candlestick', // Y축을 분리
+        }
+
+        const sells = {
+            type: 'scatter', // scatter 데이터셋을 추가
+            label: 'Sell',
+            data: sellTrades.value,
+            pointBackgroundColor: 'yellow', // 주문을 나타낼 점의 색
+            pointRadius: 5, // 점의 크기
+            yAxisID: 'candlestick', // Y축을 분리
+        }
+        return [buys, sells]
     }
 
     onMounted(() => {
@@ -135,7 +154,7 @@
                 <div class="ml-2">
                     <v-btn :disabled="isDisabledReplay"
                            @click="(async () => {
-                               await tradingChart.loadTradingChart(processorId, selectedReplayCandleUnit, null, () => { chart.update()})
+                               await tradingChart.loadTradingChart(processorId, selectedReplayCandleUnit, null, () => { chart.update('none')})
                                addDatasets(processorId)
                            })">
                         실행
