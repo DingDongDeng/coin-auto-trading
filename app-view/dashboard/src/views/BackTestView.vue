@@ -128,7 +128,7 @@
     </v-dialog>
     <v-dialog
         v-model="detail.visibleDialog"
-        width="1000">
+        width="1500">
         <v-card>
             <v-card-title class="headline black" primary-title>
                 <div class="text-h5 mb-1">
