@@ -42,19 +42,19 @@
             return []
         }
         return processor.charts.flatMap(chart => {
-            const yAxisID = chart.coinType.type
+            const yAxisID = chart.coinType.type // 동일한 y 축 사용
             const title = chart.coinType.desc;
             return [
                 {
                     label: title,
                     data: chart.candles,
-                    borderColor: 'black',
+                    backgroundColor: 'white',
                     color: {
                         up: 'red',
                         down: 'blue',
                         unchanged: 'gray',
                     },
-                    yAxisID: yAxisID, // Y축을 분리
+                    yAxisID: yAxisID,
                 },
                 {
                     type: 'scatter', // scatter 데이터셋을 추가
@@ -99,11 +99,11 @@
                         },
                     },
                     y: {
-                        candlestick: {
-                            type: 'linear',
-                            position: 'left',
-                        }
+                        display: false,
                     },
+                    yAxis: {
+                        display: false,
+                    }
                 },
             },
         })
