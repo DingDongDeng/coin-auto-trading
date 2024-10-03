@@ -8,34 +8,30 @@
     import {storeToRefs} from "pinia";
     import {useCodeStore} from "@/store/codeStore";
 
-    const props = defineProps({
-        processorId: String,
-    });
+    //  변수
+    const props = defineProps({processorId: String});
     const code = useCodeStore()
     const {candleUnits} = storeToRefs(code)
-
     const tradingChart = useTradingChartStore()
-
     const isDisabledReplay = ref(false);
     const selectedReplayCandleUnit = ref(null)
 
-    // Chart.js에서 필요한 요소 및 컨트롤러, 엘리먼트를 등록
+    // Chart.js 관련
     Chart.register(...registerables, CandlestickController, OhlcController, CandlestickElement, OhlcElement)
     const financialChart = ref(null)
     let chart = null
     const datasets = [];
 
     function addDatasets(processorId) {
-        if (datasets.length == 0) {
+        if (datasets.length === 0) {
             datasets.push(...createCharts(processorId))
             datasets.push(...createTrades(processorId))
         }
-        console.warn("datasets가 비어있지 않습니다. datasets.length=", datasets.length)
         return datasets
     }
 
     function createCharts(processorId) {
-        const processor = tradingChart.processors.find(p => p.processorId === processorId)
+        const processor = tradingChart.getProcessor(processorId)
         if (!processor) {
             return []
         }
