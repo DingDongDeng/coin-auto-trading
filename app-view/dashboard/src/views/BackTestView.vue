@@ -203,7 +203,7 @@
                 </v-row>
 
                 <v-row>
-                    <v-col cols="10">
+                    <v-col cols="12">
                         <v-row class="mb-2" no-gutters>
                             <v-col cols="3">
                                 <strong class="text-h6">차트</strong>

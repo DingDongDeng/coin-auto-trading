@@ -58,7 +58,7 @@
                 },
                 {
                     type: 'scatter', // scatter 데이터셋을 추가
-                    label: `Buy ${title}`,
+                    label: `${title} 매수`,
                     data: chart.buyTrades,
                     pointBackgroundColor: 'green', // 주문을 나타낼 점의 색
                     pointRadius: 5, // 점의 크기
@@ -66,7 +66,7 @@
                 },
                 {
                     type: 'scatter',
-                    label: `Sell ${title}`,
+                    label: `${title} 매도`,
                     data: chart.sellTrades,
                     pointBackgroundColor: 'yellow',
                     pointRadius: 5,
@@ -87,7 +87,7 @@
             options: {
                 plugins: {
                     legend: {
-                        position: 'bottom', // 'bottom', 'left', 'right'로 변경 가능
+                        position: 'right', // 'bottom', 'left', 'right'로 변경 가능
                         align: 'center', // 'start', 'center', 'end'로 변경 가능
                         labels: {
                             boxWidth: 20, // 라벨 앞에 있는 상자의 너비
