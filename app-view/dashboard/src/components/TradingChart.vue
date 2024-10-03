@@ -13,7 +13,13 @@
     const code = useCodeStore()
     const {candleUnits} = storeToRefs(code)
     const tradingChart = useTradingChartStore()
-    const isDisabledReplay = computed(() => tradingChart.getProcessorById(props.processorId)?.isLoading);
+    const isDisabledReplay = computed(() => {
+        const processor = tradingChart.getProcessorById(props.processorId)
+        if (processor?.charts) {
+            return true
+        }
+        return processor?.isLoading
+    });
     const selectedReplayCandleUnit = ref(null)
 
     // Chart.js 관련
@@ -129,7 +135,7 @@
                 <div class="ml-2">
                     <v-btn :disabled="isDisabledReplay"
                            @click="(async () => {
-                               await tradingChart.loadTradingChart(processorId, selectedReplayCandleUnit, null, ()=>{ chart.update()})
+                               await tradingChart.loadTradingChart(processorId, selectedReplayCandleUnit, null, () => { chart.update()})
                                addDatasets(processorId)
                            })">
                         실행
