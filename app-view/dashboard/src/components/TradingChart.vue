@@ -107,6 +107,11 @@
                         type: 'time', // 시간 스케일 사용
                         time: {
                             unit: 'minute', // 시간 단위를 분으로 설정
+                            tooltipFormat: 'yyyy-MM-dd HH:mm:ss', // 툴팁 포맷 설정
+                            displayFormats: {
+                                minute: 'yyyy-MM-dd HH:mm:ss', // x축 레이블 포맷 설정
+                                hour: 'yyyy-MM-dd HH:mm:ss',
+                            },
                         },
                     },
                     y: {
