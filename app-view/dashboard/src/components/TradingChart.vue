@@ -28,6 +28,7 @@
     let chart = null
     const datasets = []
     const buyTrades = computed(() => {
+        console.log("computed buyTrade, processorId=", props.processorId)
         const processor = tradingChart.getProcessorById(props.processorId);
         if (processor?.charts) {
             return processor.charts.flatMap(chart =>
@@ -42,6 +43,7 @@
         return [];
     });
     const sellTrades = computed(() => {
+        console.log("computed sellTrade, processorId=", props.processorId)
         const processor = tradingChart.getProcessorById(props.processorId);
         if (processor?.charts) {
             return processor.charts.flatMap(chart =>
