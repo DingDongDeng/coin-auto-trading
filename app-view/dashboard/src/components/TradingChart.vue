@@ -32,8 +32,6 @@
     function addDatasets(processorId) {
         if (datasets.length === 0) {
             datasets.push(...createCharts(processorId))
-            datasets.push(...createBuyTrades(processorId))
-            datasets.push(...createSellTrades(processorId))
         }
         return datasets
     }
@@ -43,52 +41,38 @@
         if (!processor) {
             return []
         }
-        return processor.charts.map(chart => {
-            return {
-                label: chart.coinType.desc,
-                data: chart.candles,
-                borderColor: 'black',
-                color: {
-                    up: 'red',
-                    down: 'blue',
-                    unchanged: 'gray',
+        return processor.charts.flatMap(chart => {
+            const yAxisID = chart.coinType.type
+            const title = chart.coinType.desc;
+            return [
+                {
+                    label: title,
+                    data: chart.candles,
+                    borderColor: 'black',
+                    color: {
+                        up: 'red',
+                        down: 'blue',
+                        unchanged: 'gray',
+                    },
+                    yAxisID: yAxisID, // Y축을 분리
                 },
-                yAxisID: 'candlestick', // Y축을 분리
-            }
-        })
-    }
-
-    function createBuyTrades(processorId) {
-        const processor = tradingChart.getProcessorById(processorId)
-        if (!processor) {
-            return []
-        }
-        return processor.charts.map(chart => {
-            return {
-                type: 'scatter', // scatter 데이터셋을 추가
-                label: 'Buy',
-                data: chart.buyTrades,
-                pointBackgroundColor: 'green', // 주문을 나타낼 점의 색
-                pointRadius: 5, // 점의 크기
-                yAxisID: 'candlestick', // Y축을 분리
-            }
-        })
-    }
-
-    function createSellTrades(processorId) {
-        const processor = tradingChart.getProcessorById(processorId)
-        if (!processor) {
-            return []
-        }
-        return processor.charts.map(chart => {
-            return {
-                type: 'scatter', // scatter 데이터셋을 추가
-                label: 'Sell',
-                data: chart.sellTrades,
-                pointBackgroundColor: 'yellow', // 주문을 나타낼 점의 색
-                pointRadius: 5, // 점의 크기
-                yAxisID: 'candlestick', // Y축을 분리
-            }
+                {
+                    type: 'scatter', // scatter 데이터셋을 추가
+                    label: `Buy ${title}`,
+                    data: chart.buyTrades,
+                    pointBackgroundColor: 'green', // 주문을 나타낼 점의 색
+                    pointRadius: 5, // 점의 크기
+                    yAxisID: yAxisID,
+                },
+                {
+                    type: 'scatter',
+                    label: `Sell ${title}`,
+                    data: chart.sellTrades,
+                    pointBackgroundColor: 'yellow',
+                    pointRadius: 5,
+                    yAxisID: yAxisID,
+                }
+            ]
         })
     }
 
