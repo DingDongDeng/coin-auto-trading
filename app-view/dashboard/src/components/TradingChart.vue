@@ -49,11 +49,6 @@
                     label: title,
                     data: chart.candles,
                     backgroundColor: 'white',
-                    color: {
-                        up: 'red',
-                        down: 'blue',
-                        unchanged: 'gray',
-                    },
                     yAxisID: yAxisID,
                 },
                 {
