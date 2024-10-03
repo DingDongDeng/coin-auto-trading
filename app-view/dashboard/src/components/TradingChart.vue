@@ -101,9 +101,7 @@
                     y: {
                         display: false,
                     },
-                    yAxis: {
-                        display: false,
-                    }
+                    // BITCOIN: {display:false} y축 숨김
                 },
             },
         })
