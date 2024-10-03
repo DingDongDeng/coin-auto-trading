@@ -26,7 +26,7 @@ export const useTradingChartStore = defineStore("tradingChart", {
 
     actions: {
         async loadTradingChart(processorId, replayCandleUnit, replayStartDateTime, callback) {
-            const processor = this.getProcessorById(processorId)
+            let processor = this.getProcessorById(processorId)
             const data = (await replayBackTest(processorId, replayCandleUnit, replayStartDateTime)).body
 
             if (processor) {
@@ -48,13 +48,12 @@ export const useTradingChartStore = defineStore("tradingChart", {
                     throw new Error("차트를 찾지 못함")
                 });
             } else {
-                this.processors.push(
-                    {
-                        isLoading: data.next,
-                        processorId: data.backTestProcessorId,
-                        charts: data.charts,
-                    }
-                )
+                processor = {
+                    isLoading: data.next,
+                    processorId: data.backTestProcessorId,
+                    charts: data.charts,
+                }
+                this.processors.push(processor)
             }
 
             if (data.next) {
