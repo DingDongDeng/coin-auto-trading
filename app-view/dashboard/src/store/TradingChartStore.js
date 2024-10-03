@@ -21,7 +21,7 @@ export const useTradingChartStore = defineStore("tradingChart", {
     getters: {},
 
     actions: {
-        async loadTradingChart(processorId, replayCandleUnit, replayStartDateTime) {
+        async loadTradingChart(processorId, replayCandleUnit, replayStartDateTime, callback) {
             const processor = this.processors.find(p => p.processorId === processorId)
             const data = (await replayBackTest(processorId, replayCandleUnit, replayStartDateTime)).body
 
@@ -54,8 +54,10 @@ export const useTradingChartStore = defineStore("tradingChart", {
 
             if (data.next) {
                 setTimeout(async () => {
-                    await this.loadTradingChart(processorId, replayCandleUnit, data.replayEndDateTime)
+                    await this.loadTradingChart(processorId, replayCandleUnit, data.replayEndDateTime, callback)
                 }, 100)
+            } else {
+                callback()
             }
         }
     }
