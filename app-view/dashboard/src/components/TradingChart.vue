@@ -12,9 +12,9 @@
         processorId: String,
     });
     const code = useCodeStore()
-    const tradingChart = useTradingChartStore()
-
     const {candleUnits} = storeToRefs(code)
+
+    const tradingChart = useTradingChartStore()
 
     const isDisabledReplay = ref(false);
     const selectedReplayCandleUnit = ref(null)
@@ -22,27 +22,40 @@
     // Chart.js에서 필요한 요소 및 컨트롤러, 엘리먼트를 등록
     Chart.register(...registerables, CandlestickController, OhlcController, CandlestickElement, OhlcElement)
     const financialChart = ref(null)
+    let chart = null
+    const datasets = [];
 
-    function createCharts() {
-        // const processor = tradingChart.processors
-        //     .find(p => p.processorId === processorId)
-        // return processor.charts.map(chart => {
-        //     return {
-        //         label: chart.coinType.desc,
-        //         data: chart.candles,
-        //         borderColor: 'black',
-        //         color: {
-        //             up: 'red',
-        //             down: 'blue',
-        //             unchanged: 'gray',
-        //         },
-        //         yAxisID: 'candlestick', // Y축을 분리
-        //     }
-        // })
-        return []
+    function addDatasets(processorId) {
+        if (datasets.length == 0) {
+            datasets.push(...createCharts(processorId))
+            datasets.push(...createTrades(processorId))
+        }
+        console.warn("datasets가 비어있지 않습니다. datasets.length=", datasets.length)
+        return datasets
     }
 
-    function createTrades() {
+    function createCharts(processorId) {
+        const processor = tradingChart.processors.find(p => p.processorId === processorId)
+        if (!processor) {
+            return []
+        }
+        return processor.charts.map(chart => {
+            return {
+                label: chart.coinType.desc,
+                data: chart.candles,
+                borderColor: 'black',
+                color: {
+                    up: 'red',
+                    down: 'blue',
+                    unchanged: 'gray',
+                },
+                yAxisID: 'candlestick', // Y축을 분리
+            }
+        })
+    }
+
+    function createTrades(processorId) {
+        console.log(processorId)
         // const processor = tradingChart.processors
         //     .find(p => p.processorId === processorId)
         // const buys = processor.charts.map(chart => {
@@ -76,17 +89,15 @@
     }
 
     onMounted(() => {
-        const datasets = []
-        datasets.concat(createCharts(props.processorId))
-        datasets.concat(createTrades(props.processorId))
         const ctx = financialChart.value.getContext('2d')
         // 차트 생성
-        new Chart(ctx, {
+        chart = new Chart(ctx, {
             type: 'candlestick', // 'ohlc', 'candlestick'도 가능
             data: {
-                datasets: datasets,
+                datasets: addDatasets(props.processorId),
             },
             options: {
+                responsive: true,
                 scales: {
                     x: {
                         type: 'time', // 시간 스케일 사용
@@ -121,9 +132,10 @@
             <v-col cols="2">
                 <div class="ml-2">
                     <v-btn :disabled="isDisabledReplay"
-                           @click="(() => {
+                           @click="(async () => {
                                isDisabledReplay = true
-                               tradingChart.loadTradingChart(processorId, selectedReplayCandleUnit, null)
+                               await tradingChart.loadTradingChart(processorId, selectedReplayCandleUnit, null, ()=>{ chart.update()})
+                               addDatasets(processorId)
                            })">
                         실행
                     </v-btn>
