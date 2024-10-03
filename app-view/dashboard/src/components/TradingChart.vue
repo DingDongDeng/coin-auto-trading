@@ -1,5 +1,5 @@
 <script setup>
-    import {defineProps, onMounted, ref} from 'vue'
+    import {computed, defineProps, onMounted, ref} from 'vue'
     import {Chart, registerables} from 'chart.js'
     import 'chartjs-chart-financial' // OHLC 및 Candlestick 차트를 위한 플러그인
     import 'chartjs-adapter-date-fns' // 날짜 어댑터 불러오기
@@ -13,7 +13,7 @@
     const code = useCodeStore()
     const {candleUnits} = storeToRefs(code)
     const tradingChart = useTradingChartStore()
-    const isDisabledReplay = ref(false);
+    const isDisabledReplay = computed(() => tradingChart.getProcessorById(props.processorId)?.isLoading);
     const selectedReplayCandleUnit = ref(null)
 
     // Chart.js 관련
@@ -31,7 +31,7 @@
     }
 
     function createCharts(processorId) {
-        const processor = tradingChart.getProcessor(processorId)
+        const processor = tradingChart.getProcessorById(processorId)
         if (!processor) {
             return []
         }
@@ -129,7 +129,6 @@
                 <div class="ml-2">
                     <v-btn :disabled="isDisabledReplay"
                            @click="(async () => {
-                               isDisabledReplay = true
                                await tradingChart.loadTradingChart(processorId, selectedReplayCandleUnit, null, ()=>{ chart.update()})
                                addDatasets(processorId)
                            })">

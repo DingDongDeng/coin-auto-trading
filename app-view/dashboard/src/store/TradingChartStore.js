@@ -18,14 +18,15 @@ export const useTradingChartStore = defineStore("tradingChart", {
         processors: []
     }),
 
-    getters: {},
+    getters: {
+        getProcessorById: (state) => {
+            return (processorId) => state.processors.find(p => p.processorId === processorId)
+        }
+    },
 
     actions: {
-        getProcessor(processorId) {
-            return this.processors.find(p => p.processorId === processorId)
-        },
         async loadTradingChart(processorId, replayCandleUnit, replayStartDateTime, callback) {
-            const processor = this.getProcessor(processorId)
+            const processor = this.getProcessorById(processorId)
             const data = (await replayBackTest(processorId, replayCandleUnit, replayStartDateTime)).body
 
             if (processor) {
@@ -48,7 +49,7 @@ export const useTradingChartStore = defineStore("tradingChart", {
             } else {
                 this.processors.push(
                     {
-                        isCompleted: data.next,
+                        isLoading: data.next,
                         processorId: data.backTestProcessorId,
                         charts: data.charts,
                     }
@@ -60,7 +61,7 @@ export const useTradingChartStore = defineStore("tradingChart", {
                     await this.loadTradingChart(processorId, replayCandleUnit, data.replayEndDateTime, callback)
                 }, 100)
             } else {
-                processor.isCompleted = true
+                processor.isLoading = false
                 callback()
             }
         }
