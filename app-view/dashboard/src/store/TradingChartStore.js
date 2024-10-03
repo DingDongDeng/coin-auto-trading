@@ -40,7 +40,8 @@ export const useTradingChartStore = defineStore("tradingChart", {
                     if (existingChart) {
                         // 기존 차트가 있으면 캔들과 거래 데이터를 append
                         existingChart.candles.push(...chart.candles)
-                        existingChart.trades.push(...chart.trades)
+                        existingChart.buyTrades.push(...chart.buyTrades)
+                        existingChart.sellTrades.push(...chart.sellTrades)
                         return
                     }
 

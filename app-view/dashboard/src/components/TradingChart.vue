@@ -13,8 +13,9 @@
     const code = useCodeStore()
     const {candleUnits} = storeToRefs(code)
     const tradingChart = useTradingChartStore()
+    const {getProcessorById} = storeToRefs(tradingChart)
     const isDisabledReplay = computed(() => {
-        const processor = tradingChart.getProcessorById(props.processorId)
+        const processor = getProcessorById.value(props.processorId)
         if (processor?.charts) {
             return true
         }
@@ -27,41 +28,12 @@
     const financialChart = ref(null)
     let chart = null
     const datasets = []
-    const buyTrades = computed(() => {
-        console.log("computed buyTrade, processorId=", props.processorId)
-        const processor = tradingChart.getProcessorById(props.processorId);
-        if (processor?.charts) {
-            return processor.charts.flatMap(chart =>
-                chart.trades
-                    .filter(trade => trade.orderType.type === "BUY")
-                    .map(trade => ({
-                        x: trade.timestamp,
-                        y: trade.price,
-                    }))
-            );
-        }
-        return [];
-    });
-    const sellTrades = computed(() => {
-        console.log("computed sellTrade, processorId=", props.processorId)
-        const processor = tradingChart.getProcessorById(props.processorId);
-        if (processor?.charts) {
-            return processor.charts.flatMap(chart =>
-                chart.trades
-                    .filter(trade => trade.orderType.type === "SELL")
-                    .map(trade => ({
-                        x: trade.timestamp,
-                        y: trade.price,
-                    }))
-            );
-        }
-        return [];
-    });
 
     function addDatasets(processorId) {
         if (datasets.length === 0) {
             datasets.push(...createCharts(processorId))
-            datasets.push(...createTrades(processorId))
+            datasets.push(...createBuyTrades(processorId))
+            datasets.push(...createSellTrades(processorId))
         }
         return datasets
     }
@@ -86,29 +58,38 @@
         })
     }
 
-    function createTrades(processorId) {
+    function createBuyTrades(processorId) {
         const processor = tradingChart.getProcessorById(processorId)
         if (!processor) {
             return []
         }
-        const buys = {
-            type: 'scatter', // scatter 데이터셋을 추가
-            label: 'Buy',
-            data: buyTrades.value,
-            pointBackgroundColor: 'green', // 주문을 나타낼 점의 색
-            pointRadius: 5, // 점의 크기
-            yAxisID: 'candlestick', // Y축을 분리
-        }
+        return processor.charts.map(chart => {
+            return {
+                type: 'scatter', // scatter 데이터셋을 추가
+                label: 'Buy',
+                data: chart.buyTrades,
+                pointBackgroundColor: 'green', // 주문을 나타낼 점의 색
+                pointRadius: 5, // 점의 크기
+                yAxisID: 'candlestick', // Y축을 분리
+            }
+        })
+    }
 
-        const sells = {
-            type: 'scatter', // scatter 데이터셋을 추가
-            label: 'Sell',
-            data: sellTrades.value,
-            pointBackgroundColor: 'yellow', // 주문을 나타낼 점의 색
-            pointRadius: 5, // 점의 크기
-            yAxisID: 'candlestick', // Y축을 분리
+    function createSellTrades(processorId) {
+        const processor = tradingChart.getProcessorById(processorId)
+        if (!processor) {
+            return []
         }
-        return [buys, sells]
+        return processor.charts.map(chart => {
+            return {
+                type: 'scatter', // scatter 데이터셋을 추가
+                label: 'Sell',
+                data: chart.sellTrades,
+                pointBackgroundColor: 'yellow', // 주문을 나타낼 점의 색
+                pointRadius: 5, // 점의 크기
+                yAxisID: 'candlestick', // Y축을 분리
+            }
+        })
     }
 
     onMounted(() => {

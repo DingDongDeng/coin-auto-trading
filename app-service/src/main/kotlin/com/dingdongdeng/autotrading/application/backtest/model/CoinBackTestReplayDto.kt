@@ -24,7 +24,8 @@ data class CoinBackTestReplayChartDto(
     val coinType: CoinType,
     val candleUnit: CandleUnit,
     val candles: List<CoinBackTestReplayChartCandleDto>,
-    val trades: List<CoinBackTestReplayTradeDto>,
+    val buyTrades: List<CoinBackTestReplayTradeDto>,
+    val sellTrades: List<CoinBackTestReplayTradeDto>,
 ) {
     companion object {
         fun of(
@@ -41,8 +42,19 @@ data class CoinBackTestReplayChartDto(
                 candles = chart.candles
                     .filter { it.candleDateTimeKst > replayStartDateTime }
                     .map { CoinBackTestReplayChartCandleDto.of(it) },
-                trades = tradeSummary.tradeHistories
+                buyTrades = tradeSummary.tradeHistories
                     .filter { it.tradedAt > replayStartDateTime }
+                    .filter { it.orderType.isBuy() }
+                    .map {
+                        CoinBackTestReplayTradeDto(
+                            orderType = it.orderType,
+                            price = it.price,
+                            timestamp = it.tradedAt.toKstTimestamp(),
+                        )
+                    },
+                sellTrades = tradeSummary.tradeHistories
+                    .filter { it.tradedAt > replayStartDateTime }
+                    .filter { it.orderType.isSell() }
                     .map {
                         CoinBackTestReplayTradeDto(
                             orderType = it.orderType,
@@ -82,6 +94,8 @@ data class CoinBackTestReplayChartCandleDto(
 
 data class CoinBackTestReplayTradeDto(
     val orderType: OrderType,
+    @field:JsonProperty("y")
     val price: Double,
+    @field:JsonProperty("x")
     val timestamp: Long,
 )
