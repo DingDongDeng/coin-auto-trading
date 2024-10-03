@@ -116,10 +116,10 @@
 <template>
     <v-container>
         <v-row no-gutters>
-            <v-col cols="3">
+            <v-col cols="1">
                 <v-select v-model="selectedReplayCandleUnit"
                           :disabled="isDisabledReplay"
-                          label="차트 캔들 단위"
+                          label="캔들"
                           :items="candleUnits"
                           item-title="desc"
                           item-value="type"
