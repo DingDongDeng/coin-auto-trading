@@ -211,7 +211,8 @@
                         </v-row>
                         <v-row no-gutters>
                             <v-col cols="12">
-                                <TradingChart :processor-id="detail.backTestProcessorId"/>
+                                <TradingChart :processor-id="detail.backTestProcessorId"
+                                              :key="detail.backTestProcessorId"/>
                             </v-col>
                         </v-row>
                     </v-col>
