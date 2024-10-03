@@ -62,8 +62,11 @@ export const useTradingChartStore = defineStore("tradingChart", {
                 }, 100)
             } else {
                 processor.isLoading = false
-                callback()
-                console.log("completed loadTradingChart processorId=", processor.processorId)
+                // 데이터 양이 많으면 바로 호출했을때 렌더링이 안되는 경우가 존재
+                setTimeout(() => {
+                    callback()
+                    console.log("completed loadTradingChart processorId=", processor.processorId)
+                }, 3000)
             }
         }
     }
