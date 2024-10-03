@@ -63,6 +63,7 @@ export const useTradingChartStore = defineStore("tradingChart", {
             } else {
                 processor.isLoading = false
                 callback()
+                console.log("completed loadTradingChart processorId=", processor.id)
             }
         }
     }
