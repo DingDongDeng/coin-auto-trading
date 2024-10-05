@@ -86,26 +86,30 @@ class BackTestSpotCoinExchangeService(
     }
 
     override fun getChartByCount(param: SpotCoinExchangeChartByCountParam, keyParam: ExchangeKeyPair): ExchangeChart {
-        var candles = emptyList<ExchangeChartCandle>()
-        var loopCnt = 0
-        // 필요한 캔들 숫자가 조회될때까지 반복
-        while (candles.size < param.count) {
-            if (loopCnt > 10) {
-                throw CriticalException.of("무한 루프 발생 의심되어 에러 발생, coinType=${param.coinType}, candleUnit=${param.candleUnit}")
+        val candles = virtualCoinCandleRepository.findAllCoinCandle(
+            exchangeType = EXCHANGE_TYPE,
+            coinType = param.coinType,
+            unit = param.candleUnit,
+            from = param.to.minusSeconds(param.candleUnit.getSecondSize() * (param.count + 2000)),
+            to = param.to,
+        )
+            .takeLast(param.count)
+            .map {
+                ExchangeChartCandle(
+                    candleUnit = it.unit,
+                    candleDateTimeUtc = it.candleDateTimeUtc,
+                    candleDateTimeKst = it.candleDateTimeKst,
+                    openingPrice = it.openingPrice,
+                    highPrice = it.highPrice,
+                    lowPrice = it.lowPrice,
+                    closingPrice = it.closingPrice,
+                    accTradePrice = it.accTradePrice,
+                    accTradeVolume = it.accTradeVolume,
+                )
             }
-            val endDateTime =
-                param.to.minusSeconds(param.candleUnit.getSecondSize() * param.chunkSize * loopCnt++) // 루프마다 기준점이 달라짐
-            val startDateTime = endDateTime.minusSeconds(param.candleUnit.getSecondSize() * (param.chunkSize - 1))
-            val chartParam = SpotCoinExchangeChartByDateTimeParam(
-                coinType = param.coinType,
-                candleUnit = param.candleUnit,
-                from = startDateTime,
-                to = endDateTime,
-            )
-            candles = getChartByDateTime(chartParam, keyParam).candles + candles
+        if (candles.size < param.count) {
+            throw CriticalException.of("충분한 캔들을 조회하지 못했습니다.")
         }
-        candles = candles.takeLast(param.count)
-
         return ExchangeChart(
             from = candles.first().candleDateTimeKst,
             to = param.to,
