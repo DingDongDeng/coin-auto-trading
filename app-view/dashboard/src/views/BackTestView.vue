@@ -134,12 +134,8 @@
                 <div class="text-h5 mb-1">
                     [{{ detail.status.desc }}] {{ detail.strategyType.desc }} : {{ detail.title }}
                 </div>
-                <v-divider class="mb-5"/>
-                <div class="text-caption">
-                    <div></div>
-                    <div style="white-space: pre-wrap">{{ JSON.stringify(detail.config, null, 4) }}</div>
-                </div>
             </v-card-title>
+            <v-divider class="mb-5"/>
             <v-card-text class="pa-5">
                 <v-row>
                     <v-col cols="5">
@@ -319,11 +315,27 @@
                         </v-row>
                     </v-col>
                 </v-row>
+                <v-row>
+                    <v-col cols="10">
+                        <v-row class="mb-2" no-gutters>
+                            <v-col cols="3">
+                                <strong class="text-h6">상세 설정</strong>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col>
+                                <div class="text-caption">
+                                    <div></div>
+                                    <div style="white-space: pre-wrap">{{
+                                            JSON.stringify(detail.config, null, 4)
+                                        }}
+                                    </div>
+                                </div>
+                            </v-col>
+                        </v-row>
+                    </v-col>
+                </v-row>
             </v-card-text>
-            <v-card-actions class="pa-5">
-
-
-            </v-card-actions>
         </v-card>
     </v-dialog>
 
