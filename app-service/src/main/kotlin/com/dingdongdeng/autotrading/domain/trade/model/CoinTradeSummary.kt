@@ -32,6 +32,8 @@ data class CoinTradeSummary(
     val existsWaitTrade = tradeHistories.any { it.isWait() }
     val hasVolume = volume != 0.0
     val lastTradedAt = if (tradeHistories.isEmpty()) LocalDateTime.MIN else tradeHistories.last().tradedAt
+    val lastBuyTradedAt = if (buyTradeHistories.isEmpty()) LocalDateTime.MIN else buyTradeHistories.last().tradedAt
+    val lastSellTradedAt = if (sellTradeHistories.isEmpty()) LocalDateTime.MIN else sellTradeHistories.last().tradedAt
 
     fun getOldWaitTrades(seconds: Long): List<CoinTradeHistory> {
         return tradeHistories.filter { it.isOldWait(seconds) }
