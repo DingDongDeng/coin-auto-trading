@@ -118,13 +118,15 @@
             <v-divider class="mb-5"/>
 
             <v-card-actions class="pa-5">
-                <v-btn @click="(() => {
-                    autoTrade.startAutoTrade(detail.autoTradeProcessorId)
-                })"> 시작하기
+                <v-btn variant="outlined"
+                       @click="(() => {
+                           autoTrade.startAutoTrade(detail.autoTradeProcessorId)
+                       })"> 시작
                 </v-btn>
-                <v-btn @click="(() => {
-                    autoTrade.stopAutoTrade(detail.autoTradeProcessorId)
-                })"> 정지하기
+                <v-btn variant="outlined"
+                       @click="(() => {
+                           autoTrade.stopAutoTrade(detail.autoTradeProcessorId)
+                       })"> 정지
                 </v-btn>
             </v-card-actions>
 

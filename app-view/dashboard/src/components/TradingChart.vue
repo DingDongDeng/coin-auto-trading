@@ -116,7 +116,7 @@
 <template>
     <v-container>
         <v-row no-gutters>
-            <v-col cols="1">
+            <v-col cols="2">
                 <v-select v-model="selectedReplayCandleUnit"
                           :disabled="isDisabledReplay"
                           label="캔들"
@@ -128,6 +128,7 @@
             <v-col cols="2">
                 <div class="ml-2">
                     <v-btn :disabled="isDisabledReplay"
+                           variant="outlined"
                            @click="(async () => {
                                await tradingChart.loadTradingChart(processorId, selectedReplayCandleUnit, null, () => { chart.update('none')})
                                addDatasets(processorId)
