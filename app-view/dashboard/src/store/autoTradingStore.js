@@ -11,6 +11,10 @@ async function registerBackTest(body) {
     return response.data;
 }
 
+async function removeAutoTrading(processorId) {
+    const response = await axios.delete(`/coin/processor/${processorId}/terminate`);
+    return response.data;
+}
 
 export const useAutoTradingStore = defineStore("autoTrading", {
 
@@ -26,6 +30,9 @@ export const useAutoTradingStore = defineStore("autoTrading", {
             keyPairId: '',
             config: {},
             duration: 0,
+        },
+        remove: {
+            processorId: '',
         }
     }),
 
@@ -40,6 +47,10 @@ export const useAutoTradingStore = defineStore("autoTrading", {
             await this.loadAutoTradings()
             this.registerReset()
         },
+        async removeAutoTrading() {
+            await removeAutoTrading(this.remove.processorId)
+            await this.loadAutoTradings()
+        },
         registerReset() {
             this.register.visibleDialog = false;
             this.register.title = ''
@@ -50,6 +61,6 @@ export const useAutoTradingStore = defineStore("autoTrading", {
             this.register.keyPairId = ''
             this.register.config = {}
             this.register.duration = 0
-        }
+        },
     }
 });

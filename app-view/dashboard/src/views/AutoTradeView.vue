@@ -36,6 +36,7 @@
         code.loadCandleUnits()
         code.loadCoinStrategyTypes();
         authExchangeKey.loadExchangeKeys();
+        autoTrading.loadAutoTradings()
     })
 </script>
 <template>

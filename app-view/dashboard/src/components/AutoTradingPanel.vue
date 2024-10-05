@@ -1,9 +1,14 @@
 <script setup>
     import {defineProps} from 'vue';
+    import {useAutoTradingStore} from "@/store/autoTradingStore";
+    import {storeToRefs} from "pinia";
 
     defineProps({
         autoTrading: Object,
     });
+
+    const autoTradingStore = useAutoTradingStore()
+    const {remove} = storeToRefs(autoTradingStore)
 </script>
 <template>
     <v-card color="#181B1F" variant="elevated" class="mx-auto" width="350" max-width="350">
@@ -20,7 +25,10 @@
                 </div>
             </div>
         </v-card-item>
-
+        <v-icon icon="mdi-delete" @click="(() => {
+                remove.processorId = autoTrading.id;
+                autoTradingStore.removeAutoTrading()
+            })"></v-icon>
         <v-card-actions>
         </v-card-actions>
     </v-card>
