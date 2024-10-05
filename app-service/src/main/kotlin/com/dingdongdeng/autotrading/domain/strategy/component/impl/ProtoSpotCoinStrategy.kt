@@ -62,7 +62,7 @@ class ProtoSpotCoinStrategy(
         if (acc < 0) {
             return false
         }
-        return false
+        return true
     }
 
     override fun thenBuyTrade(
