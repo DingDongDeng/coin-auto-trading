@@ -3,6 +3,7 @@ package com.dingdongdeng.autotrading.domain.strategy.type
 import com.dingdongdeng.autotrading.domain.strategy.component.annotation.GuideDescription
 import com.dingdongdeng.autotrading.domain.strategy.component.impl.EmptyStrategyConfig
 import com.dingdongdeng.autotrading.domain.strategy.component.impl.ExampleSpotCoinStrategyConfig
+import com.dingdongdeng.autotrading.domain.strategy.component.impl.ProtoSpotCoinStrategyConfig
 import com.dingdongdeng.autotrading.domain.strategy.component.impl.StrategyConfig
 import com.dingdongdeng.autotrading.infra.common.type.DescriptionType
 import kotlin.reflect.KClass
@@ -13,6 +14,10 @@ enum class CoinStrategyType(
     override val desc: String,
     private val configClass: KClass<out StrategyConfig>,
 ) : DescriptionType {
+    PROTO(
+        desc = "연구중",
+        configClass = ProtoSpotCoinStrategyConfig::class,
+    ),
     EXAMPLE(
         desc = "코인 현물 전략 예제(RSI 매매)",
         configClass = ExampleSpotCoinStrategyConfig::class,
