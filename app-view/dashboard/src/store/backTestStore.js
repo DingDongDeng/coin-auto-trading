@@ -72,6 +72,8 @@ export const useBackTestStore = defineStore("backTest", {
                 ...this.detail,
                 ...detail,
             };
+
+            // 현재 detail에 포커스된 processorId에 대해 주기적으로 리프레시 (processorId가 바뀌면 해당 항목에 대해 리프레시
             if (!this.detail.isRunningRefreshScheduler) {
                 this.detail.isRunningRefreshScheduler = true
                 setInterval(async () => {

@@ -78,13 +78,17 @@ export const useAutoTradeStore = defineStore("autoTrade", {
                 ...this.detail,
                 ...detail,
             };
+
+            // 현재 detail에 포커스된 processorId에 대해 주기적으로 리프레시 (processorId가 바뀌면 해당 항목에 대해 리프레시
             if (!this.detail.isRunningRefreshScheduler) {
                 this.detail.isRunningRefreshScheduler = true
                 setInterval(async () => {
                     const autoTradeProcessorId = this.detail.autoTradeProcessorId
-                    const isExist = autoTradeProcessorId && autoTradeProcessorId !== ''
+                    const isExists = autoTradeProcessorId && autoTradeProcessorId !== ''
+                    const isInit = this.detail.status.type === 'INIT'
                     const isRunning = this.detail.status.type === 'RUNNING'
-                    if (isExist && isRunning) {
+                    const isStopped = this.detail.status.type === 'STOPPED'
+                    if (isExists && (isInit || isRunning || isStopped)) {
                         await this.loadAutoTradeDetail(autoTradeProcessorId);
                     }
                 }, 3000);
