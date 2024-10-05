@@ -44,7 +44,7 @@
         width="500">
         <v-card>
             <v-card-title class="headline black" primary-title>
-                백테스트 실행
+                자동매매 등록
             </v-card-title>
             <v-card-text class="pa-5">
                 <v-text-field v-model="register.title" label="제목"/>
