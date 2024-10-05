@@ -57,9 +57,6 @@ export const useBackTestStore = defineStore("backTest", {
             candleUnits: [],
             config: {},
         },
-        remove: {
-            processorId: '',
-        }
     }),
 
     getters: {},
@@ -92,8 +89,8 @@ export const useBackTestStore = defineStore("backTest", {
             await this.loadBackTests()
             this.registerReset()
         },
-        async removeBackTest() {
-            await removeBackTest(this.remove.processorId)
+        async removeBackTest(backTestProcessorId) {
+            await removeBackTest(backTestProcessorId)
             await this.loadBackTests()
         },
         registerReset() {

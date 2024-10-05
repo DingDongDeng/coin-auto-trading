@@ -4,7 +4,7 @@
     import {storeToRefs} from "pinia";
 
     const backTestStore = useBackTestStore()
-    const {detail, remove} = storeToRefs(backTestStore)
+    const {detail} = storeToRefs(backTestStore)
     defineProps({
         backTest: Object,
     });
@@ -33,8 +33,7 @@
                 상세보기
             </v-btn>
             <v-icon icon="mdi-delete" @click="(() => {
-                remove.processorId = backTest.id;
-                backTestStore.removeBackTest()
+                backTestStore.removeBackTest(backTest.id)
             })"></v-icon>
         </v-card-actions>
     </v-card>
