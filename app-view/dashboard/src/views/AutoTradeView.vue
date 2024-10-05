@@ -117,6 +117,17 @@
             </v-card-title>
             <v-divider class="mb-5"/>
 
+            <v-card-actions class="pa-5">
+                <v-btn @click="(() => {
+                    autoTrade.startAutoTrade(detail.autoTradeProcessorId)
+                })"> 시작하기
+                </v-btn>
+                <v-btn @click="(() => {
+                    autoTrade.stopAutoTrade(detail.autoTradeProcessorId)
+                })"> 정지하기
+                </v-btn>
+            </v-card-actions>
+
             <v-card-text class="pa-5">
                 <v-row>
                     <v-col cols="5">
