@@ -98,7 +98,11 @@ class CoinAutoTradeUseCase(
         )
 
         return CoinAutoTradeResultDto(
+            title = processor.title,
             autoTradeProcessorId = processor.id,
+            strategyType = processor.strategyType,
+            status = processor.status,
+            config = processor.config,
             totalProfitRate = tradeResult.totalProfitRate.round(2.0),
             totalProfitPrice = tradeResult.totalProfitPrice.round(),
             totalAccProfitValuePrice = tradeResult.totalAccProfitPrice.round(),
@@ -133,6 +137,5 @@ class CoinAutoTradeUseCase(
                     coinType to statistics
                 },
         )
-
     }
 }

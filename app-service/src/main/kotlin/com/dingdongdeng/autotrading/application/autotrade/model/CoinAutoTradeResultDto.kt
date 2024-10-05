@@ -1,12 +1,18 @@
 package com.dingdongdeng.autotrading.application.autotrade.model
 
+import com.dingdongdeng.autotrading.domain.process.type.ProcessStatus
+import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.OrderType
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class CoinAutoTradeResultDto(
+    val title: String,
+    val strategyType: CoinStrategyType,
+    val status: ProcessStatus,
     val autoTradeProcessorId: String,
+    val config: Map<String, Any>,
     val totalProfitRate: Double,
     val totalProfitPrice: Double,
     val totalAccProfitValuePrice: Double, // 수수료 제외되어있음
