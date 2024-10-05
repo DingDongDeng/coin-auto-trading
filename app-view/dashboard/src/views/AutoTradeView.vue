@@ -1,29 +1,19 @@
+<script setup>
+
+    import AutoTradingPanel from "@/components/AutoTradingPanel.vue";
+    import {useAutoTradingStore} from "@/store/autoTradingStore";
+    import {storeToRefs} from "pinia";
+
+    const autoTrading = useAutoTradingStore()
+    const {autoTradings} = storeToRefs(autoTrading)
+
+</script>
 <template>
     <v-container>
         <v-row>
-            <v-col v-for="(variant, i) in variants" :key="i" cols="auto">
-                <PanelComponent :title="variant"/>
+            <v-col v-for="(autoTrading) in autoTradings" :key="autoTrading.id" cols="auto">
+                <AutoTradingPanel :auto-trading="autoTrading"></AutoTradingPanel>
             </v-col>
         </v-row>
     </v-container>
 </template>
-
-
-<script>
-    import PanelComponent from '@/components/BackTestPanel.vue'
-
-
-    export default {
-        name: 'AutoTradeView',
-        components: {
-            PanelComponent
-        },
-
-        data() {
-            return {
-                variants: ['비트코인', '이더리움', '솔라나', '도지투더문', '일론머스크'],
-            }
-
-        }
-    }
-</script>
