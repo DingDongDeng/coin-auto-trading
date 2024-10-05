@@ -14,19 +14,13 @@ object IndicatorFactory {
     private val core = Core()
 
     fun calculate(candles: List<ExchangeChartCandle>): Indicators {
-        val rsi = getRsi(candles)
-        val macd = getMACD(candles)
-        val bollingerBands = getBollingerBands(candles)
-        val obv = getObv(candles)
-        val mv = getMv(candles)
-
         return Indicators(
             indicatorDateTimeKst = candles.last().candleDateTimeKst,
-            rsi = rsi,
-            macd = macd,
-            bollingerBands = bollingerBands,
-            obv = obv,
-            ma = mv,
+            rsiFunc = { getRsi(candles) },
+            macdFunc = { getMACD(candles) },
+            bollingerBandsFunc = { getBollingerBands(candles) },
+            obvFunc = { getObv(candles) },
+            maFunc = { getMv(candles) },
         )
     }
 
@@ -53,7 +47,7 @@ object IndicatorFactory {
         val sma60OutNBElement = MInteger()
         val sma60OutReal = DoubleArray(inReal.size)
         core.sma(0, inReal.size - 1, inReal, SMA60_TIME_PERIOD, sma60OutBegIdx, sma60OutNBElement, sma60OutReal)
-        
+
         // SMA 120
         val SMA120_TIME_PERIOD = 120
         val sma120OutBegIdx = MInteger()
