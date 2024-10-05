@@ -8,7 +8,7 @@
     });
 
     const autoTradingStore = useAutoTradingStore()
-    const {remove} = storeToRefs(autoTradingStore)
+    const {remove, detail} = storeToRefs(autoTradingStore)
 </script>
 <template>
     <v-card color="#181B1F" variant="elevated" class="mx-auto" width="350" max-width="350">
@@ -25,11 +25,17 @@
                 </div>
             </div>
         </v-card-item>
-        <v-icon icon="mdi-delete" @click="(() => {
+        <v-card-actions>
+            <v-btn @click="(() => {
+                autoTradingStore.loadAutoTradingDetail(autoTrading.id)
+                detail.visibleDialog = true
+            })">
+                상세보기
+            </v-btn>
+            <v-icon icon="mdi-delete" @click="(() => {
                 remove.processorId = autoTrading.id;
                 autoTradingStore.removeAutoTrading()
             })"></v-icon>
-        <v-card-actions>
         </v-card-actions>
     </v-card>
 </template>
