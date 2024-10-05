@@ -1,5 +1,6 @@
 package com.dingdongdeng.autotrading.domain.strategy.component.impl
 
+import com.dingdongdeng.autotrading.domain.chart.model.Chart
 import com.dingdongdeng.autotrading.domain.strategy.component.SimpleSpotCoinStrategy
 import com.dingdongdeng.autotrading.domain.strategy.component.annotation.GuideDescription
 import com.dingdongdeng.autotrading.domain.strategy.model.SpotCoinStrategyMakeTaskParam
@@ -57,9 +58,7 @@ class ProtoSpotCoinStrategy(
         }
 
         // 하락 추세라면 (약 36시간 추세 분석)
-        val candles = param.getChart(CandleUnit.UNIT_15M).candles.takeLast(145)
-        val acc = candles.sumOf { it.closingPrice - it.indicators.ma.sma120 }
-        if (acc < 0) {
+        if (isUpTrend(param.getChart(CandleUnit.UNIT_15M)).not()) {
             return false
         }
         return true
@@ -90,9 +89,7 @@ class ProtoSpotCoinStrategy(
             return false
         }
         // 상승 추세라면 (약 36시간 추세 분석)
-        val candles = param.getChart(CandleUnit.UNIT_15M).candles.takeLast(145)
-        val acc = candles.sumOf { it.closingPrice - it.indicators.ma.sma120 }
-        if (acc > 0) {
+        if (isUpTrend(param.getChart(CandleUnit.UNIT_15M))) {
             return false
         }
         return true
@@ -122,10 +119,8 @@ class ProtoSpotCoinStrategy(
         if (param.tradeSummary.lastTradedAt > TimeContext.now().minusHours(36)) {
             return false
         }
-        // 하락 추세라면 (약 36시간 추세 분석)
-        val candles = param.getChart(CandleUnit.UNIT_15M).candles.takeLast(145)
-        val acc = candles.sumOf { it.closingPrice - it.indicators.ma.sma120 }
-        if (acc < 0) {
+        // 상승 추세라면
+        if (isUpTrend(param.getChart(CandleUnit.UNIT_15M))) {
             return false
         }
         return true
@@ -146,6 +141,12 @@ class ProtoSpotCoinStrategy(
 
     override fun support(param: CoinStrategyType): Boolean {
         return param == CoinStrategyType.PROTO
+    }
+
+    private fun isUpTrend(chart: Chart): Boolean {
+        val candles = chart.candles.takeLast(145)
+        val acc = candles.sumOf { it.closingPrice - it.indicators.ma.sma120 }
+        return acc > 0
     }
 }
 
