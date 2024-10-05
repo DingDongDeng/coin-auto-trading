@@ -4,7 +4,7 @@
     import 'chartjs-chart-financial' // OHLC 및 Candlestick 차트를 위한 플러그인
     import 'chartjs-adapter-date-fns' // 날짜 어댑터 불러오기
     import {CandlestickController, CandlestickElement, OhlcController, OhlcElement} from 'chartjs-chart-financial'
-    import {useTradingChartStore} from "@/store/TradingChartStore";
+    import {useTradingChartStore} from "@/store/tradingChartStore";
     import {storeToRefs} from "pinia";
     import {useCodeStore} from "@/store/codeStore";
 
