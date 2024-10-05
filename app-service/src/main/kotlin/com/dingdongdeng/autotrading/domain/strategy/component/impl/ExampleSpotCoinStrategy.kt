@@ -66,7 +66,6 @@ class ExampleSpotCoinStrategy(
         param: SpotCoinStrategyMakeTaskParam,
         config: ExampleSpotCoinStrategyConfig
     ): List<SpotCoinStrategyTask> {
-        val chart15M = param.getChart(CandleUnit.UNIT_15M)
         log(
             "매수",
             param.coinType,
