@@ -16,6 +16,16 @@ async function registerAutoTrade(body) {
     return response.data;
 }
 
+async function startAutoTrade(processorId) {
+    const response = await axios.post(`/coin/processor/${processorId}/start`);
+    return response.data;
+}
+
+async function stopAutoTrade(processorId) {
+    const response = await axios.post(`/coin/processor/${processorId}/stop`);
+    return response.data;
+}
+
 async function removeAutoTrade(processorId) {
     const response = await axios.delete(`/coin/processor/${processorId}/terminate`);
     return response.data;
@@ -53,9 +63,6 @@ export const useAutoTradeStore = defineStore("autoTrade", {
             config: {},
             duration: 0,
         },
-        remove: {
-            processorId: '',
-        }
     }),
 
     getters: {},
@@ -88,8 +95,16 @@ export const useAutoTradeStore = defineStore("autoTrade", {
             await this.loadAutoTrades()
             this.registerReset()
         },
-        async removeAutoTrade() {
-            await removeAutoTrade(this.remove.processorId)
+        async startAutoTrade(autoTradeProcessorId) {
+            await startAutoTrade(autoTradeProcessorId)
+            await this.loadAutoTrades()
+        },
+        async stopAutoTrade(autoTradeProcessorId) {
+            await stopAutoTrade(autoTradeProcessorId)
+            await this.loadAutoTrades()
+        },
+        async removeAutoTrade(autoTradeProcessorId) {
+            await removeAutoTrade(autoTradeProcessorId)
             await this.loadAutoTrades()
         },
         registerReset() {
