@@ -5,7 +5,7 @@
     import {storeToRefs} from "pinia";
     import {useCodeStore} from "@/store/codeStore";
     import {useAuthExchangeKeyStore} from "@/store/authExchangeKeyStore";
-    import {computed, onMounted} from "vue";
+    import {computed, onMounted, ref, watch} from "vue";
 
     const code = useCodeStore()
     const authExchangeKey = useAuthExchangeKeyStore()
@@ -14,9 +14,7 @@
     const {exchangeKeys} = storeToRefs(authExchangeKey)
     const {autoTradings, register} = storeToRefs(autoTrading)
 
-    const filteredKeys = computed(() => {
-        return exchangeKeys.value.filter(key => key.exchangeType === register.exchangeType)
-    })
+    const filteredKeys = computed(() => exchangeKeys.value.filter(key => key.exchangeType.type === register.value.exchangeType))
     const {
         exchangeTypes,
         candleUnits,
@@ -24,9 +22,18 @@
         coinTypes
     } = storeToRefs(code);
 
+    const configMap = ref({});
+    watch(() => register.value.coinStrategyType, (newValue) => {
+        const strategy = coinStrategyTypes.value.find(it => it.type === newValue);
+        if (strategy) {
+            configMap.value = strategy.configMap;
+        }
+    })
+
     onMounted(() => {
         code.loadCoinTypes();
         code.loadExchangeTypes();
+        code.loadCandleUnits()
         code.loadCoinStrategyTypes();
         authExchangeKey.loadExchangeKeys();
     })
@@ -36,6 +43,11 @@
         <v-row>
             <v-col v-for="(autoTrading) in autoTradings" :key="autoTrading.id" cols="auto">
                 <AutoTradingPanel :auto-trading="autoTrading"></AutoTradingPanel>
+            </v-col>
+            <v-col cols="auto">
+                <v-icon icon="mdi-plus-circle"
+                        @click="register.visibleDialog = true"
+                ></v-icon>
             </v-col>
         </v-row>
     </v-container>
@@ -51,12 +63,6 @@
                 <v-select v-model="register.coinStrategyType"
                           label="자동매매 전략"
                           :items="coinStrategyTypes"
-                          item-title="desc"
-                          item-value="type"
-                ></v-select>
-                <v-select v-model="register.exchangeType"
-                          label="거래소"
-                          :items="exchangeTypes"
                           item-title="desc"
                           item-value="type"
                 ></v-select>
