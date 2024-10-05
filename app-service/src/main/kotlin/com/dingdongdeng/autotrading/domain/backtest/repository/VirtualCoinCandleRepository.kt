@@ -41,7 +41,6 @@ class VirtualCoinCandleRepository(
 
         val candles = mutableListOf<CoinCandle>().apply {
             addAll(dbCandles)
-            sortBy { it.candleDateTimeKst }
             if (lastCandle != null) {
                 if (isNotEmpty() && lastCandle.candleDateTimeKst == last().candleDateTimeKst) {
                     removeAt(size - 1)
