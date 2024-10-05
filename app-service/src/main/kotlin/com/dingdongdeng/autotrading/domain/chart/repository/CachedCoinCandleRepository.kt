@@ -35,7 +35,7 @@ class CachedCoinCandleRepository(
             if (cachedCandles.hasEnough(from, to)) {
                 return cachedCandles.get(from, to)
             }
-            if (cachedCandles.isRightContext(from, to)) {
+            if (cachedCandles.isSequenceContext(from, to)) {
                 return saveCachedData(exchangeType, coinType, unit, from, to).get(from, to)
             }
         }
