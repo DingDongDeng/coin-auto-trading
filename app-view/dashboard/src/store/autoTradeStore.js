@@ -6,6 +6,11 @@ async function getAutoTrades() {
     return response.data;
 }
 
+async function getAutoTradeResult(autoTradeProcessorId) {
+    const response = await axios.get(`/coin/processor/autotrade/${autoTradeProcessorId}`);
+    return response.data;
+}
+
 async function registerAutoTrade(body) {
     const response = await axios.post('/coin/processor/autotrade', body);
     return response.data;
@@ -28,11 +33,8 @@ export const useAutoTradeStore = defineStore("autoTrade", {
             title: '',
             strategyType: {},
             status: {},
-            backTestProcessorId: '',
+            autoTradeProcessorId: '',
             config: {},
-            progressRate: 0,
-            startDateTime: '',
-            endDateTime: '',
             totalProfitRate: 0,
             totalProfitPrice: 0,
             totalAccProfitValuePrice: 0,
@@ -64,7 +66,7 @@ export const useAutoTradeStore = defineStore("autoTrade", {
         },
         async loadAutoTradeDetail(autoTradeProcessorId) {
             console.log('loadAutoTradeDetail...', autoTradeProcessorId)
-            const detail = (await getBackTestResult(autoTradeProcessorId)).body
+            const detail = (await getAutoTradeResult(autoTradeProcessorId)).body
             this.detail = {
                 ...this.detail,
                 ...detail,
@@ -72,11 +74,11 @@ export const useAutoTradeStore = defineStore("autoTrade", {
             if (!this.detail.isRunningRefreshScheduler) {
                 this.detail.isRunningRefreshScheduler = true
                 setInterval(async () => {
-                    const backTestProcessorId = this.detail.backTestProcessorId
-                    const isExistsBackTestProcessorId = backTestProcessorId && backTestProcessorId !== ''
+                    const autoTradeProcessorId = this.detail.autoTradeProcessorId
+                    const isExist = autoTradeProcessorId && autoTradeProcessorId !== ''
                     const isRunning = this.detail.status.type === 'RUNNING'
-                    if (isExistsBackTestProcessorId && isRunning) {
-                        await this.loadBackTestDetail(backTestProcessorId);
+                    if (isExist && isRunning) {
+                        await this.loadAutoTradeDetail(autoTradeProcessorId);
                     }
                 }, 3000);
             }
