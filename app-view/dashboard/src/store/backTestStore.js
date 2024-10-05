@@ -76,9 +76,9 @@ export const useBackTestStore = defineStore("backTest", {
                 this.detail.isRunningRefreshScheduler = true
                 setInterval(async () => {
                     const backTestProcessorId = this.detail.backTestProcessorId
-                    const isExistsBackTestProcessorId = backTestProcessorId && backTestProcessorId !== ''
+                    const isExists = backTestProcessorId && backTestProcessorId !== ''
                     const isRunning = this.detail.status.type === 'RUNNING'
-                    if (isExistsBackTestProcessorId && isRunning) {
+                    if (isExists && isRunning) {
                         await this.loadBackTestDetail(backTestProcessorId);
                     }
                 }, 3000);
