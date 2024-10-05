@@ -85,10 +85,7 @@ export const useAutoTradeStore = defineStore("autoTrade", {
                 setInterval(async () => {
                     const autoTradeProcessorId = this.detail.autoTradeProcessorId
                     const isExists = autoTradeProcessorId && autoTradeProcessorId !== ''
-                    const isInit = this.detail.status.type === 'INIT'
-                    const isRunning = this.detail.status.type === 'RUNNING'
-                    const isStopped = this.detail.status.type === 'STOPPED'
-                    if (isExists && (isInit || isRunning || isStopped)) {
+                    if (isExists) {
                         await this.loadAutoTradeDetail(autoTradeProcessorId);
                     }
                 }, 3000);
@@ -101,10 +98,12 @@ export const useAutoTradeStore = defineStore("autoTrade", {
         },
         async startAutoTrade(autoTradeProcessorId) {
             await startAutoTrade(autoTradeProcessorId)
+            await this.loadAutoTradeDetail(autoTradeProcessorId)
             await this.loadAutoTrades()
         },
         async stopAutoTrade(autoTradeProcessorId) {
             await stopAutoTrade(autoTradeProcessorId)
+            await this.loadAutoTradeDetail(autoTradeProcessorId)
             await this.loadAutoTrades()
         },
         async removeAutoTrade(autoTradeProcessorId) {

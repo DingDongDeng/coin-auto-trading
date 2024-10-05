@@ -79,8 +79,7 @@ export const useBackTestStore = defineStore("backTest", {
                 setInterval(async () => {
                     const backTestProcessorId = this.detail.backTestProcessorId
                     const isExists = backTestProcessorId && backTestProcessorId !== ''
-                    const isRunning = this.detail.status.type === 'RUNNING'
-                    if (isExists && isRunning) {
+                    if (isExists) {
                         await this.loadBackTestDetail(backTestProcessorId);
                     }
                 }, 3000);
