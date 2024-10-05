@@ -32,7 +32,7 @@ class AutoTradeProcessorFactory(
         keyPairId: String = "",
         config: Map<String, Any>,
         coinStrategyType: CoinStrategyType,
-        duration: Long,
+        duration: Long = 60_000,
     ): CoinAutoTradeProcessor {
         // 차트 정보 조회
         val chartFinder = { coinType: CoinType, now: LocalDateTime ->
