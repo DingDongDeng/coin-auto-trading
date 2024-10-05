@@ -189,7 +189,7 @@ class UpbitSpotCoinExchangeService(
     }
 
     override fun getKeyPair(keyPairId: String): ExchangeKeyPair {
-        val exchangeKeys = exchangeKeyRepository.findByExchangeTypeAndKeyPairId(EXCHANGE_TYPE, keyPairId)
+        val exchangeKeys = exchangeKeyRepository.findByKeyPairId(keyPairId)
         if (exchangeKeys.size < 2) {
             throw WarnException.of("사용한 거래소 key가 부족하거나 없습니다.")
         }
@@ -238,7 +238,7 @@ class UpbitSpotCoinExchangeService(
     }
 
     override fun removeKeyPair(keyPairId: String): String {
-        val keys = exchangeKeyRepository.findByExchangeTypeAndKeyPairId(EXCHANGE_TYPE, keyPairId)
+        val keys = exchangeKeyRepository.findByKeyPairId(keyPairId)
         exchangeKeyRepository.deleteAll(keys)
         return keyPairId
     }
