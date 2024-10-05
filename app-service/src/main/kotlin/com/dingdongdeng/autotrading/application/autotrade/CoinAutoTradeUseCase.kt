@@ -60,6 +60,7 @@ class CoinAutoTradeUseCase(
                 status = it.status,
                 duration = it.duration,
                 exchangeType = it.exchangeType,
+                strategyType = it.strategyType,
                 coinTypes = it.coinTypes,
                 config = it.config,
             )

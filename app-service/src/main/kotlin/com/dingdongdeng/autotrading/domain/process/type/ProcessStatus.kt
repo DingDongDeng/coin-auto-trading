@@ -5,7 +5,7 @@ import com.dingdongdeng.autotrading.infra.common.type.DescriptionType
 enum class ProcessStatus(
     override val desc: String,
 ) : DescriptionType {
-    INIT("초기화"),
+    INIT("준비"),
     RUNNING("진행 중"),
     STOPPED("정지"),
     TERMINATED("제거"),
