@@ -159,7 +159,6 @@ class CoinBackTestUseCase(
                     coinType to statistics
                 },
         )
-
     }
 
     fun getReplay(
