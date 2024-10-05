@@ -7,6 +7,7 @@ import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
 
 data class CoinAutoTradeProcessorDto(
     val id: String,
+    val title: String,
     val userId: Long,
     val status: ProcessStatus,
     val duration: Long, // milliseconds

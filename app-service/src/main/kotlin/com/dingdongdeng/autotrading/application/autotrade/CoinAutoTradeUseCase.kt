@@ -56,6 +56,7 @@ class CoinAutoTradeUseCase(
         return processors.filterIsInstance<CoinAutoTradeProcessor>().map {
             CoinAutoTradeProcessorDto(
                 id = it.id,
+                title = it.title,
                 userId = it.userId,
                 status = it.status,
                 duration = it.duration,
