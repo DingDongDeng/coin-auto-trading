@@ -74,7 +74,7 @@ class ExampleSpotCoinStrategy(
             0.0
         )
         return listOf(
-            SpotCoinStrategyTask.ofBuyLimit(
+            SpotCoinStrategyTask.ofLimitBuy(
                 coinType = param.coinType,
                 volume = (config.onceTradeAmount / param.currentPrice).round(4.0),
                 price = param.tradeSummary.currentPrice,
@@ -114,7 +114,7 @@ class ExampleSpotCoinStrategy(
             param.tradeSummary.profitPrice
         )
         return listOf(
-            SpotCoinStrategyTask.ofSellLimit(
+            SpotCoinStrategyTask.ofLimitSell(
                 coinType = param.coinType,
                 volume = param.tradeSummary.volume,
                 price = param.tradeSummary.currentPrice,
@@ -154,7 +154,7 @@ class ExampleSpotCoinStrategy(
             param.tradeSummary.profitPrice
         )
         return listOf(
-            SpotCoinStrategyTask.ofSellLimit(
+            SpotCoinStrategyTask.ofLimitSell(
                 coinType = param.coinType,
                 volume = param.tradeSummary.volume,
                 price = param.tradeSummary.currentPrice,

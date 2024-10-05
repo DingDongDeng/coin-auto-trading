@@ -13,7 +13,7 @@ data class SpotCoinStrategyTask(
     val orderId: String? = null, // 취소의 경우 사용
 ) {
     companion object {
-        fun ofBuyLimit(coinType: CoinType, volume: Double, price: Double): SpotCoinStrategyTask {
+        fun ofLimitBuy(coinType: CoinType, volume: Double, price: Double): SpotCoinStrategyTask {
             return SpotCoinStrategyTask(
                 coinType = coinType,
                 volume = volume,
@@ -23,7 +23,7 @@ data class SpotCoinStrategyTask(
             )
         }
 
-        fun ofSellLimit(coinType: CoinType, volume: Double, price: Double): SpotCoinStrategyTask {
+        fun ofLimitSell(coinType: CoinType, volume: Double, price: Double): SpotCoinStrategyTask {
             return SpotCoinStrategyTask(
                 coinType = coinType,
                 volume = volume,
