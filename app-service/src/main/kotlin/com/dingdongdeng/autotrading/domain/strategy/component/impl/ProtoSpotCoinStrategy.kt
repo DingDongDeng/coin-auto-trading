@@ -145,7 +145,7 @@ class ProtoSpotCoinStrategy(
 
     private fun isUpTrend(chart: Chart): Boolean {
         val candles = chart.candles.takeLast(145)
-        val acc = candles.sumOf { it.closingPrice - it.indicators.ma.sma120 }
+        val acc = candles.sumOf { it.closingPrice * it.accTradeVolume - it.indicators.ma.sma120 * it.accTradeVolume }
         return acc > 0
     }
 }
