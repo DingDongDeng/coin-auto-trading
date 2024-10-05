@@ -10,7 +10,7 @@
     <v-divider></v-divider>
 
     <v-list>
-        <v-list-item prepend-icon="mdi-account-circle" title="coldrain"></v-list-item>
+        <v-list-item prepend-icon="mdi-account-circle" title="admin"></v-list-item>
     </v-list>
 
 
