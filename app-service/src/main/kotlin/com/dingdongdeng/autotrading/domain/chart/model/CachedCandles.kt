@@ -62,12 +62,6 @@ data class CachedCandles(
         return true
     }
 
-    // 시간 맥락을 벗어나는 조회건들은 캐시 히트를 할 수 없음 (즉, from >= firstDateTime일때 캐시를 갱신해줘야 히트율이 좋음)
-    // 왜냐하면 시간 흐름에 따라 연속적으로 데이터를 조회하는 자연스러운 상황이 아닐것이기 때문
-    fun isSequenceContext(from: LocalDateTime, to: LocalDateTime): Boolean {
-        return from >= firstDateTime
-    }
-
     companion object {
         fun of(
             exchangeType: ExchangeType,

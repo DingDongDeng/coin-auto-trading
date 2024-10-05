@@ -35,11 +35,8 @@ class CachedCoinCandleRepository(
             if (cachedCandles.hasEnough(from, to)) {
                 return cachedCandles.get(from, to)
             }
-            if (cachedCandles.isSequenceContext(from, to)) {
-                return saveCachedData(exchangeType, coinType, unit, from, to).get(from, to)
-            }
         }
-        return findData(exchangeType, coinType, unit, from, to)
+        return saveCachedData(exchangeType, coinType, unit, from, to).get(from, to)
     }
 
     private fun saveCachedData(
@@ -79,7 +76,7 @@ class CachedCoinCandleRepository(
     }
 
     companion object {
-        private const val PREV_BUFFER_COUNT = 600
-        private const val NEXT_BUFFER_COUNT = 1000
+        private const val PREV_BUFFER_COUNT = 2500
+        private const val NEXT_BUFFER_COUNT = 2500
     }
 }
