@@ -43,7 +43,7 @@
     <v-container>
         <v-row>
             <v-col v-for="(autoTrade) in autoTrades" :key="autoTrade.id" cols="auto">
-                <AutoTradePanel :auto-trades="autoTrade"></AutoTradePanel>
+                <AutoTradePanel :auto-trade="autoTrade"></AutoTradePanel>
             </v-col>
             <v-col cols="auto">
                 <v-icon icon="mdi-plus-circle"
