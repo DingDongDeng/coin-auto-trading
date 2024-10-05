@@ -30,9 +30,13 @@ abstract class Processor(
                     throw e
                 }
             }
-            this.complete()
             val endTime = System.currentTimeMillis()
             val elapsedTime = endTime - startTime
+            if (this.status.isStop()) {
+                log.info("프로세서 정지 : {}, {}ms 소요", id, elapsedTime)
+                return@runAsync
+            }
+            this.complete()
             log.info("프로세서 완료 : {}, {}ms 소요", id, elapsedTime)
         }
     }
