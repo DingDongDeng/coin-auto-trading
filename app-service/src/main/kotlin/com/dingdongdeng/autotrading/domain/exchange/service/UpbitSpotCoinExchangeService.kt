@@ -272,8 +272,8 @@ class UpbitSpotCoinExchangeService(
     }
 
     companion object {
-        val EXCHANGE_TYPE = ExchangeType.UPBIT
-        const val ACCESS_KEY_NAME = "access_key"
-        const val SECRET_KEY_NAME = "secret_key"
+        private val EXCHANGE_TYPE = ExchangeType.UPBIT
+        private const val ACCESS_KEY_NAME = "access_key"
+        private const val SECRET_KEY_NAME = "secret_key"
     }
 }
