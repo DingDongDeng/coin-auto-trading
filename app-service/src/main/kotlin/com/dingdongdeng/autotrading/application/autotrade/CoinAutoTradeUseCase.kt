@@ -32,7 +32,8 @@ class CoinAutoTradeUseCase(
         coinTypes: List<CoinType>,
         candleUnits: List<CandleUnit>,
         keyPairId: String,
-        config: Map<String, Any>
+        config: Map<String, Any>,
+        duration: Long,
     ): String {
         // 자동매매 등록
         val processor = autoTradeProcessorFactory.of(
@@ -45,6 +46,7 @@ class CoinAutoTradeUseCase(
             keyPairId = keyPairId,
             config = config,
             coinStrategyType = coinStrategyType,
+            duration = duration,
         )
         return processorRepository.save(processor)
     }

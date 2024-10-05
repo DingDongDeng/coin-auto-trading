@@ -4,6 +4,7 @@ import com.dingdongdeng.autotrading.domain.strategy.type.CoinStrategyType
 import com.dingdongdeng.autotrading.infra.common.type.CandleUnit
 import com.dingdongdeng.autotrading.infra.common.type.CoinType
 import com.dingdongdeng.autotrading.infra.common.type.ExchangeType
+import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Past
@@ -44,6 +45,10 @@ data class CoinAutotradeRegisterRequest(
 
     @field:NotNull(message = "config는 필수 값입니다.")
     val config: Map<String, Any>? = null,
+
+    @field:NotNull(message = "duration는 필수 값입니다.")
+    @field:Min(value = 1000, message = "duration가 너무 작습니다.")
+    val duration: Long? = null,
 )
 
 data class CoinAutotradeChartLoadRequest(

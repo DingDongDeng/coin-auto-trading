@@ -36,6 +36,7 @@ class CoinAutoTradeController(
                 candleUnits = request.candleUnits!!,
                 keyPairId = request.keyPairId!!,
                 config = request.config!!,
+                duration = request.duration!!,
             )
         )
     }
