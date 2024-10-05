@@ -1,40 +1,40 @@
 <script setup>
     import {defineProps} from 'vue';
-    import {useAutoTradingStore} from "@/store/autoTradingStore";
+    import {useAutoTradeStore} from "@/store/autoTradeStore";
     import {storeToRefs} from "pinia";
 
     defineProps({
-        autoTrading: Object,
+        autoTrade: Object,
     });
 
-    const autoTradingStore = useAutoTradingStore()
-    const {remove, detail} = storeToRefs(autoTradingStore)
+    const autoTradeStore = useAutoTradeStore()
+    const {remove, detail} = storeToRefs(autoTradeStore)
 </script>
 <template>
     <v-card color="#181B1F" variant="elevated" class="mx-auto" width="350" max-width="350">
         <v-card-item>
             <div>
                 <div class="text-overline mb-1">
-                    [{{ autoTrading.status.desc }}] {{ autoTrading.strategyType.desc }}
+                    [{{ autoTrade.status.desc }}] {{ autoTrade.strategyType.desc }}
                 </div>
                 <div class="text-h6 mb-1">
-                    {{ autoTrading.title }}
+                    {{ autoTrade.title }}
                 </div>
                 <div class="text-caption">
-                    {{ autoTrading.id }}
+                    {{ autoTrade.id }}
                 </div>
             </div>
         </v-card-item>
         <v-card-actions>
             <v-btn @click="(() => {
-                autoTradingStore.loadAutoTradingDetail(autoTrading.id)
+                autoTradeStore.loadAutoTradeDetail(autoTrade.id)
                 detail.visibleDialog = true
             })">
                 상세보기
             </v-btn>
             <v-icon icon="mdi-delete" @click="(() => {
-                remove.processorId = autoTrading.id;
-                autoTradingStore.removeAutoTrading()
+                remove.processorId = autoTrade.id;
+                autoTradeStore.removeAutoTrade()
             })"></v-icon>
         </v-card-actions>
     </v-card>
