@@ -25,7 +25,7 @@ object IndicatorFactory {
     }
 
     fun getMv(candles: List<ExchangeChartCandle>): Ma {
-        val inReal = candles.map { it.closingPrice }.toDoubleArray()
+        val inReal = DoubleArray(candles.size) { candles[it].closingPrice }
         return Ma(
             sma10Func = {
                 // SMA 10
@@ -102,8 +102,8 @@ object IndicatorFactory {
 
     fun getObv(candles: List<ExchangeChartCandle>): Obv {
         // obv 계산
-        val obvInReal = candles.map { it.closingPrice }.toDoubleArray()
-        val obvInVolume = candles.map { it.accTradeVolume }.toDoubleArray()
+        val obvInReal = DoubleArray(candles.size) { candles[it].closingPrice }
+        val obvInVolume = DoubleArray(candles.size) { candles[it].accTradeVolume }
         val obvOutBegIdx = MInteger()
         val obvOutNBElement = MInteger()
         val obvOutReal = DoubleArray(obvInReal.size)
@@ -129,7 +129,7 @@ object IndicatorFactory {
         val TIME_PERIOD = 20
         val NB_DEV_UP = 2
         val NB_DEV_DOWN = 2
-        val bbandsInReal = candles.map { it.closingPrice }.toDoubleArray()
+        val bbandsInReal = DoubleArray(candles.size) { candles[it].closingPrice }
         val bbandsOutRealUpperBand = DoubleArray(bbandsInReal.size)
         val bbandsOutRealMiddleBand = DoubleArray(bbandsInReal.size)
         val bbandsOutRealLowerBand = DoubleArray(bbandsInReal.size)
@@ -183,7 +183,7 @@ object IndicatorFactory {
         val FAST_PERIOD = 12
         val SLOW_PERIOD = 26
         val SIGNAL_PERIOD = 9
-        val inReal = candles.map { it.closingPrice }.toDoubleArray()
+        val inReal = DoubleArray(candles.size) { candles[it].closingPrice }
         val outMACD = DoubleArray(inReal.size)
         val outMACDSignal = DoubleArray(inReal.size)
         val outMACDHist = DoubleArray(inReal.size)
