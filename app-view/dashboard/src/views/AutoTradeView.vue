@@ -1,7 +1,7 @@
 <script setup>
 
-    import AutoTradingPanel from "@/components/AutoTradingPanel.vue";
-    import {useAutoTradingStore} from "@/store/autoTradingStore";
+    import AutoTradePanel from "@/components/AutoTradePanel.vue";
+    import {useAutoTradeStore} from "@/store/autoTradeStore";
     import {storeToRefs} from "pinia";
     import {useCodeStore} from "@/store/codeStore";
     import {useAuthExchangeKeyStore} from "@/store/authExchangeKeyStore";
@@ -9,10 +9,10 @@
 
     const code = useCodeStore()
     const authExchangeKey = useAuthExchangeKeyStore()
-    const autoTrading = useAutoTradingStore()
+    const autoTrade = useAutoTradeStore()
 
     const {exchangeKeys} = storeToRefs(authExchangeKey)
-    const {autoTradings, register} = storeToRefs(autoTrading)
+    const {autoTrades, register} = storeToRefs(autoTrade)
 
     const filteredKeys = computed(() => exchangeKeys.value.filter(key => key.exchangeType.type === register.value.exchangeType))
     const {
@@ -36,14 +36,14 @@
         code.loadCandleUnits()
         code.loadCoinStrategyTypes();
         authExchangeKey.loadExchangeKeys();
-        autoTrading.loadAutoTradings()
+        autoTrade.loadAutoTrades()
     })
 </script>
 <template>
     <v-container>
         <v-row>
-            <v-col v-for="(autoTrading) in autoTradings" :key="autoTrading.id" cols="auto">
-                <AutoTradingPanel :auto-trading="autoTrading"></AutoTradingPanel>
+            <v-col v-for="(autoTrade) in autoTrades" :key="autoTrade.id" cols="auto">
+                <AutoTradePanel :auto-trades="autoTrade"></AutoTradePanel>
             </v-col>
             <v-col cols="auto">
                 <v-icon icon="mdi-plus-circle"
@@ -102,7 +102,7 @@
                     v-model="register.config[key]" :label="guideDescription"/>
             </v-card-text>
             <v-card-actions class="pa-5">
-                <v-btn @click="autoTrading.registerAutoTrading()">등록</v-btn>
+                <v-btn @click="autoTrade.registerAutoTrade()">등록</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
