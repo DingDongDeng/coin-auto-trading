@@ -165,7 +165,7 @@ class UpbitSpotCoinExchangeService(
         var loopCnt = 0
         // 필요한 캔들 숫자가 조회될때까지 반복
         while (candles.size < param.count) {
-            if (loopCnt > 5) {
+            if (loopCnt > 10) {
                 throw CriticalException.of("무한 루프 발생 의심되어 에러 발생, coinType=${param.coinType}, candleUnit=${param.candleUnit}")
             }
             val endDateTime =
