@@ -76,25 +76,26 @@
                 백테스트 실행
             </v-card-title>
             <v-card-text class="pa-5">
-                <v-date-picker
-                    title="백테스트 시작일/종료일"
-                    multiple="range"
-                    v-model="dateTimeRange"
-                />
                 <v-text-field
                     v-model="register.title" label="제목"/>
+
+                <v-divider class="mt-5"/>
+                <v-card-text>
+                    <div>백테스트 실행 단위는 자유롭게 선택가능합니다.</div>
+                    <div>(차트 다운로드와 관련 없음)</div>
+                </v-card-text>
                 <v-select v-model="register.durationUnit"
                           label="백테스트 실행 시간 단위"
                           :items="candleUnits"
                           item-title="desc"
                           item-value="type"
                 ></v-select>
-                <v-select v-model="register.coinStrategyType"
-                          label="자동매매 전략"
-                          :items="coinStrategyTypes"
-                          item-title="desc"
-                          item-value="type"
-                ></v-select>
+                <v-divider class="mt-5"/>
+                <v-card-text>
+                    <div>사용 할 코인별, 캔들을 사전에 다운받아야 합니다.</div>
+                    <div>전략에서 사용안하더라도 1분봉은 필수로 다운받아야합니다.</div>
+                    <div>(1분당 캔들을 상세하게 재현하기 위함)</div>
+                </v-card-text>
                 <v-select v-model="register.exchangeType"
                           label="거래소"
                           :items="exchangeTypes"
@@ -110,19 +111,43 @@
                           multiple
                 ></v-select>
                 <v-select v-model="register.candleUnits"
-                          label="전략에서 사용하는 차트 종류"
+                          label="전략에서 사용할 차트 종류"
                           :items="candleUnits"
                           item-title="desc"
                           item-value="type"
                           chips
                           multiple
                 ></v-select>
+                <v-divider class="mt-5"/>
+                <v-card-text>
+                    전략을 선택하고, 상세 파라미터를 정의해주세요.
+                </v-card-text>
+                <v-select v-model="register.coinStrategyType"
+                          label="자동매매 전략"
+                          :items="coinStrategyTypes"
+                          item-title="desc"
+                          item-value="type"
+                ></v-select>
                 <v-text-field
                     v-for="(guideDescription, key) in configMap" :key="key"
                     v-model="register.config[key]" :label="guideDescription"/>
+                <v-divider class="mt-5"/>
+                <v-card-text>
+                    <div>백테스트를 실행한 기간을 설정해주세요.</div>
+                    <div>캔들이 다운되어 있지 않은 구간을 설정하면 실패하거나 결과가 적절하지 않을 수 있습니다.</div>
+                </v-card-text>
+                <v-date-picker
+                    title=""
+                    multiple="range"
+                    v-model="dateTimeRange"
+                />
+                <v-divider/>
             </v-card-text>
             <v-card-actions class="pa-5">
-                <v-btn @click="backTest.registerBackTest()">실행</v-btn>
+                <v-btn @click="backTest.registerBackTest()"
+                       variant="outlined"
+                >실행
+                </v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
