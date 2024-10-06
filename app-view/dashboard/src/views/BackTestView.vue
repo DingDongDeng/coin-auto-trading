@@ -138,10 +138,12 @@
                     <div>안정적인 실행을 위해 시작일/종료일에 대해 1달 여유를 두어 다운로드해주세요.</div>
                     <div>캔들이 다운되어 있지 않은 구간을 설정하면 실패하거나 결과가 적절하지 않을 수 있습니다.</div>
                 </v-card-text>
-                <!-- FIXME https://vuetifyjs.com/en/api/v-date-picker/           -->
+                <!-- https://vuetifyjs.com/en/api/v-date-picker/           -->
+                <div>시작일 : {{ startDateTime }}</div>
+                <div>종료일 : {{ endDateTime }}</div>
                 <v-date-picker
-                    title=""
                     show-adjacent-months
+                    hide-header
                     multiple="range"
                     v-model="dateTimeRange"
                 />
