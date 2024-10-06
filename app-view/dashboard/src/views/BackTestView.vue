@@ -70,7 +70,7 @@
     </v-container>
     <v-dialog
         v-model="register.visibleDialog"
-        width="500">
+        width="800">
         <v-card>
             <v-card-title class="headline black" primary-title>
                 백테스트 실행
@@ -139,15 +139,23 @@
                     <div>캔들이 다운되어 있지 않은 구간을 설정하면 실패하거나 결과가 적절하지 않을 수 있습니다.</div>
                 </v-card-text>
                 <!-- https://vuetifyjs.com/en/api/v-date-picker/           -->
-                <div>시작일 : {{ startDateTime }}</div>
-                <div>종료일 : {{ endDateTime }}</div>
-                <v-date-picker
-                    show-adjacent-months
-                    hide-header
-                    multiple="range"
-                    v-model="dateTimeRange"
-                />
-                <v-divider/>
+                <v-row>
+                    <v-col>
+                        <v-date-picker
+                            show-adjacent-months
+                            hide-header
+                            multiple="range"
+                            v-model="dateTimeRange"
+                        />
+                        <v-divider/>
+                    </v-col>
+                    <v-col>
+                        <div class="mt-5">
+                            <div>시작일 : {{ startDateTime }}</div>
+                            <div>종료일 : {{ endDateTime }}</div>
+                        </div>
+                    </v-col>
+                </v-row>
             </v-card-text>
             <v-card-actions class="pa-5">
                 <v-btn @click="backTest.registerBackTest()"
